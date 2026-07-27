@@ -1,0 +1,7 @@
+# Dependencies used by G2 raw-data audit and conversion tools.
+h5py
+
+# OpenDM pins NumPy 1.26 while newer OpenCV wheels require NumPy 2.x.
+# Pin the resolved compatible wheel to avoid downloading several rejected
+# OpenCV versions during every clean image build.
+opencv-python-headless==4.11.0.86

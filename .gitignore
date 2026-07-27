@@ -1,0 +1,18 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Model and training artifacts
+checkpoints/
+user_checkpoints/
+norm_stats/
+wandb/
+
+# Large or reproducible local data
+data/raw_samples/
+
+# Keep audit reports and future manifests visible.
+!data/audits/
+!data/manifests/

@@ -1,0 +1,57 @@
+{
+  "version": "g2-sort-absolute-joint-v1",
+  "dimension": 34,
+  "representation": "absolute_joint_position",
+  "state_semantics": "measured_joint_position_feedback",
+  "action_semantics": "recorded_absolute_joint_position_command",
+  "units": "preserve_source_h5_units_until_g2_sdk_contract_is_verified",
+  "order": [
+    "arm_l_joint1",
+    "arm_l_joint2",
+    "arm_l_joint3",
+    "arm_l_joint4",
+    "arm_l_joint5",
+    "arm_l_joint6",
+    "arm_l_joint7",
+    "arm_r_joint1",
+    "arm_r_joint2",
+    "arm_r_joint3",
+    "arm_r_joint4",
+    "arm_r_joint5",
+    "arm_r_joint6",
+    "arm_r_joint7",
+    "hand_l_thumb_roll",
+    "hand_l_thumb_abad",
+    "hand_l_thumb_mcp",
+    "hand_l_index_abad",
+    "hand_l_index_pip",
+    "hand_l_middle_pip",
+    "hand_l_ring_abad",
+    "hand_l_ring_pip",
+    "hand_l_pinky_abad",
+    "hand_l_pinky_pip",
+    "hand_r_thumb_roll",
+    "hand_r_thumb_abad",
+    "hand_r_thumb_mcp",
+    "hand_r_index_abad",
+    "hand_r_index_pip",
+    "hand_r_middle_pip",
+    "hand_r_ring_abad",
+    "hand_r_ring_pip",
+    "hand_r_pinky_abad",
+    "hand_r_pinky_pip"
+  ],
+  "source_h5": {
+    "state": [
+      "state/joint/position[0:14]",
+      "state/left_effector/position[0:10]",
+      "state/right_effector/position[0:10]"
+    ],
+    "action": [
+      "action/joint/position[0:14]",
+      "action/left_effector/position[0:10]",
+      "action/right_effector/position[0:10]"
+    ]
+  },
+  "prompt": "Use the left hand to pick up each bottle, hand it to the right hand, then place the Sprite bottle in the left tray compartment and the orange juice bottle in the right tray compartment."
+}
