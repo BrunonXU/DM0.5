@@ -6,10 +6,11 @@
 ## 当前状态
 
 - OpenDM 固定于 commit `6ce8e7f13e0c46906b141fda1773364f18a577c2`；
-- 34D absolute-joint合同、数据工具和模型动作头适配已实现；
+- 34D absolute-joint合同、ZIP/episode数据工具和模型动作头适配已实现；
 - 本地镜像 `opendm:g2-34d-6ce8e7f` 已通过4090D、单元测试和真实数据smoke；
 - 本地未下载DM0.5 base权重；
-- 全量归档处理、正式服务器训练和真机接入尚未开始。
+- 正迁移到RTX 6000D服务器；tar全量工具、全量归档处理、正式训练和真机
+  接入尚未开始。
 
 ## 目录入口
 
@@ -23,11 +24,12 @@
 
 优先阅读：
 
-1. [主计划](docs/01_REPRODUCTION_PLAN.md)
-2. [当前状态](docs/02_IMPLEMENTATION_STATUS.md)
-3. [数据审计](docs/03_DATA_AUDIT.md)
-4. [训练与部署合同](docs/04_TRAINING_DEPLOYMENT.md)
-5. [相对上游改造索引](docs/05_CUSTOMIZATION_MAP.md)
+1. [RTX 6000D服务器迁移与新对话交接](docs/07_RTX6000D_SERVER_HANDOFF.md)
+2. [主计划](docs/01_REPRODUCTION_PLAN.md)
+3. [当前状态](docs/02_IMPLEMENTATION_STATUS.md)
+4. [数据审计](docs/03_DATA_AUDIT.md)
+5. [训练与部署合同](docs/04_TRAINING_DEPLOYMENT.md)
+6. [相对上游改造索引](docs/05_CUSTOMIZATION_MAP.md)
 
 ## 本地镜像
 

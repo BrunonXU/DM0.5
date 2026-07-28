@@ -12,9 +12,38 @@ train/validation/test：
 | `record_20260413.tar.gz` | 215,996,415,546 | 新 AID，软件 2.2.0，task 5 |
 
 `record_20260409.zip` 的元数据全量索引结果是：401 个 episode，其中 371
-个元数据有效；367 个同时存在 `aligned_joints.h5`；30 个 600 秒异常录制；
-另有 4 个元数据有效但缺 H5。其余两个 tar.gz 归档将在复制到服务器本地
+个元数据有效；367 个同时存在 `aligned_joints.h5`；总计34个缺H5，其中
+30个同时被标记为600秒异常，另有4个非600秒episode缺H5。两条600秒异常
+实查视频分别只有3.8秒和16.33秒，H.265可以正常解码，但采集未完成、
+`file_size=0`且验证字段为空，因此必须排除。其余两个 tar.gz 归档将在复制到服务器本地
 NVMe 后做同样的顺序索引，避免经 SMB 对压缩 tar 做多次全流扫描。
+
+## 三个归档的受控抽样兼容性
+
+2026-07-27分别从三个归档抽取一条正常完整episode：
+
+| 归档 | Episode | 时长 | H5对齐帧 |
+|---|---|---:|---:|
+| `record.tar.gz` | `5c138904-5e66-468d-98cd-77d6ccc7c7c6` | 47秒 | 1389 |
+| `record_20260409.zip` | `sorting_19700101095605` | 33秒 | 977 |
+| `record_20260413.tar.gz` | `sorting_20260413154256` | 37秒 | 1083 |
+
+三条都包含相同的训练目标字段：
+
+- `state/joint/position`：14D；
+- `state/left_effector/position`：10D；
+- `state/right_effector/position`：10D；
+- 对应的三组absolute-position action；
+- 头部、左腕、右腕RGB及可精确映射的相机时间戳。
+
+三条34D数值范围和任务流程兼容，因此三个归档统一进入joint候选集合。注意：
+
+- H5没有关节名attrs，只提供固定14/10/10数组；项目名称与顺序来自
+  `g2_sort/config/action_contract.json`，powered motion前仍需G2 SDK确认。
+- `record.tar.gz`的软件为2.1.1，部分EEF诊断字段结构与两个2.2.0归档不同；
+  本项目不使用EEF，因此不因该差异拆分joint数据。
+- 这只是兼容性结论，不代表所有episode都有效；服务器仍需按episode自动
+  排除缺文件、非有限值、时间戳错误、损坏流和未完成任务。
 
 ## 单 episode 格式
 
