@@ -1,75 +1,93 @@
-# Embodied AI Robotics Workspace
+# 具身智能机器人研发工作区
 
-This repository is the top-level workspace for embodied-AI research and robot
-demos. DM0.5 is one policy stack within the workspace; it is not the repository
-boundary or the long-term project identity.
+这是一个面向具身智能研究、机器人策略训练和真机 Demo 的顶层工作区。
+DM0.5 是其中一套策略栈，不是整个仓库的边界，也不是项目长期唯一的主题。
 
-## Components
+## 主要组件
 
-| Path | Responsibility |
+| 路径 | 职责 |
 | --- | --- |
-| `DM0.5/` | DM0.5 training, validation, inference server, and deployment tooling |
-| `PI0.5/` | Official Physical Intelligence OpenPI source, tracked as an upstream submodule |
-| `RLinf/` | Official RLinf source, tracked as an upstream submodule |
-| `g2_robot/` | G2 robot-side cameras, state, safety, control, operations, and policy runtime |
-| `tasks/` | Task-level integration, configs, experiments, and evaluation |
+| `DM0.5/` | DM0.5 训练、验证、推理服务和部署工具 |
+| `PI0.5/` | Physical Intelligence 官方 OpenPI 源码，以上游子模块管理 |
+| `RLinf/` | RLinf 官方源码，以上游子模块管理 |
+| `g2_robot/` | G2 相机、状态、安全、控制、运维和策略运行时 |
+| `tasks/` | 任务级集成、配置、实验记录和评测 |
 
-## Current demo
+## 当前 Demo
 
-The first PI0.5 + RLinf task is a dual-arm phone-packaging demo:
+第一个 PI0.5 + RLinf 任务是双臂手机装盒 Demo：
 
-1. pick up a staged dummy phone;
-2. hand it from one gripper to the other;
-3. place it into a phone box;
-4. align and close the lid.
+1. 从指定位置抓起仿真手机；
+2. 将手机从一个夹爪交接给另一个夹爪；
+3. 把手机放入手机盒底；
+4. 对齐盒盖并完成合盖。
 
-See [`tasks/g2_phone_packaging_pi05_rl/`](tasks/g2_phone_packaging_pi05_rl/)
-for the task scope and layout.
+任务范围和目录说明见
+[`tasks/g2_phone_packaging_pi05_rl/`](tasks/g2_phone_packaging_pi05_rl/README.md)。
 
-## Architecture
+## 架构边界
 
-The workspace separates reusable capabilities from task integration:
+工作区将可复用能力与具体任务集成分开：
 
 ```text
-task definition and evaluation
-        |       |
-        |       +---- RLinf post-training
-        +------------ DM0.5 / PI0.5 policy
+任务定义与评测
+      |       |
+      |       +---- RLinf 强化学习后训练
+      +------------ DM0.5 / PI0.5 策略
                          |
-                    policy contract
+                      策略合同
                          |
                      g2_robot
                          |
                         G2
 ```
 
-Model repositories should not own robot safety logic. Robot-side code should
-consume an explicit observation/action contract instead of importing a model's
-training internals.
+模型仓库不负责机器人安全逻辑。机器人侧代码应通过明确的观测/动作合同调用策略，
+不直接依赖某个模型的训练内部实现。
 
-## Repository policy
+## Git 内容边界
 
-Source code, small configurations, documentation, tests, and reproducibility
-manifests belong in Git. The following do not:
+以下内容适合进入 Git：
 
-- datasets and converted episodes;
-- model weights and checkpoints;
-- robot and training logs;
-- generated artifacts, videos, and evaluation outputs;
-- deployment archives and local caches;
-- credentials or machine-local environment files.
+- 源码和小型配置；
+- 设计、运行和复现文档；
+- 自动化测试；
+- 数据、模型及实验产物的不可变清单或引用。
 
-Large objects should be stored in the appropriate dataset, model, or artifact
-store and referenced by immutable identifiers from the repository.
+以下内容不进入 Git：
 
-## Upstream dependencies
+- 原始或转换后的数据集；
+- 模型权重和 checkpoint；
+- 机器人日志和训练日志；
+- 生成的视频、评测输出及其他大体积产物；
+- 部署压缩包、本地缓存和临时文件；
+- 凭据及机器私有环境文件。
 
-OpenPI and RLinf retain their official upstream histories. After cloning this
-workspace, initialize them with:
+大文件应保存到对应的数据集、模型或产物存储中，仓库只记录可复现的标识与说明。
+
+## 克隆与初始化
+
+OpenPI 和 RLinf 保留各自的官方上游历史。克隆本工作区后执行：
 
 ```bash
 git submodule update --init --recursive
 ```
 
-Task-specific integration belongs under `tasks/`; do not copy either upstream
-source tree into a task directory.
+OpenPI 自身还包含 ALOHA 和 LIBERO 子模块，递归初始化会一并获取。
+
+## 当前 PI0.5 基础模型
+
+官方 `pi05_base` 存放在本机：
+
+```text
+PI0.5/checkpoints/pi05_base/
+```
+
+该目录被 Git 忽略，不会上传到 GitHub。可以使用下面的任务脚本进行首次下载、
+断点续传或完整性复核：
+
+```bash
+./tasks/g2_phone_packaging_pi05_rl/scripts/download_pi05_base.sh
+```
+
+任务相关的集成代码应放在 `tasks/` 中，不要把 OpenPI 或 RLinf 源码复制进任务目录。
