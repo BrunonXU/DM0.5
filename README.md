@@ -1,44 +1,93 @@
-# DM0.5 × 智元 G2 双臂灵巧手分拣
+# 具身智能机器人研发工作区
 
-本项目使用固定版本 OpenDM/DM0.5，通过 LoRA 适配 G2 双臂灵巧手数据，最终
-在真机验证“左手抓瓶、交接右手、分别放入托盘区域”的完整任务。
+这是一个面向具身智能研究、机器人策略训练和真机 Demo 的顶层工作区。
+DM0.5 是其中一套策略栈，不是整个仓库的边界，也不是项目长期唯一的主题。
 
-## 当前状态
+## 主要组件
 
-- OpenDM 固定于 commit `6ce8e7f13e0c46906b141fda1773364f18a577c2`；
-- 34D absolute-joint合同、ZIP/episode数据工具和模型动作头适配已实现；
-- 本地镜像 `opendm:g2-34d-6ce8e7f` 已通过4090D、单元测试和真实数据smoke；
-- 本地未下载DM0.5 base权重；
-- 正迁移到RTX 6000D服务器；tar全量工具、全量归档处理、正式训练和真机
-  接入尚未开始。
+| 路径 | 职责 |
+| --- | --- |
+| `DM0.5/` | DM0.5 训练、验证、推理服务和部署工具 |
+| `PI0.5/` | Physical Intelligence 官方 OpenPI 源码，以上游子模块管理 |
+| `RLinf/` | RLinf 官方源码，以上游子模块管理 |
+| `g2_robot/` | G2 相机、状态、安全、控制、运维和策略运行时 |
+| `tasks/` | 任务级集成、配置、实验记录和评测 |
 
-## 目录入口
+## 当前 Demo
 
-| 目录 | 内容 |
-|---|---|
-| `docs/` | 主计划、实施状态、数据审计、运行合同和改造索引 |
-| `g2_sort/` | G2项目专用训练、数据、部署和验证代码 |
-| `data/` | 真实样本、转换产物、审计报告和manifest |
-| `infra/` | 本项目Docker、宿主机配置和额外依赖 |
-| `opendm/` | 固定commit的上游仓库及必要34D核心补丁 |
+第一个 PI0.5 + RLinf 任务是双臂手机装盒 Demo：
 
-优先阅读：
+1. 从指定位置抓起仿真手机；
+2. 将手机从一个夹爪交接给另一个夹爪；
+3. 把手机放入手机盒底；
+4. 对齐盒盖并完成合盖。
 
-1. [RTX 6000D服务器迁移与新对话交接](docs/07_RTX6000D_SERVER_HANDOFF.md)
-2. [主计划](docs/01_REPRODUCTION_PLAN.md)
-3. [当前状态](docs/02_IMPLEMENTATION_STATUS.md)
-4. [数据审计](docs/03_DATA_AUDIT.md)
-5. [训练与部署合同](docs/04_TRAINING_DEPLOYMENT.md)
-6. [相对上游改造索引](docs/05_CUSTOMIZATION_MAP.md)
+任务范围和目录说明见
+[`tasks/g2_phone_packaging_pi05_rl/`](tasks/g2_phone_packaging_pi05_rl/README.md)。
 
-## 本地镜像
+## 架构边界
 
-从项目根目录构建精简开发镜像：
+工作区将可复用能力与具体任务集成分开：
 
-```bash
-docker build -f infra/docker/Dockerfile.opendm-g2 \
-  -t opendm:g2-34d-6ce8e7f .
+```text
+任务定义与评测
+      |       |
+      |       +---- RLinf 强化学习后训练
+      +------------ DM0.5 / PI0.5 策略
+                         |
+                      策略合同
+                         |
+                     g2_robot
+                         |
+                        G2
 ```
 
-本地默认跳过FlashAttention并使用eager/SDPA。服务器型号确定后，才按需添加
-`--build-arg INSTALL_FLASH_ATTN=1`。Docker镜像不包含DM0.5 base权重。
+模型仓库不负责机器人安全逻辑。机器人侧代码应通过明确的观测/动作合同调用策略，
+不直接依赖某个模型的训练内部实现。
+
+## Git 内容边界
+
+以下内容适合进入 Git：
+
+- 源码和小型配置；
+- 设计、运行和复现文档；
+- 自动化测试；
+- 数据、模型及实验产物的不可变清单或引用。
+
+以下内容不进入 Git：
+
+- 原始或转换后的数据集；
+- 模型权重和 checkpoint；
+- 机器人日志和训练日志；
+- 生成的视频、评测输出及其他大体积产物；
+- 部署压缩包、本地缓存和临时文件；
+- 凭据及机器私有环境文件。
+
+大文件应保存到对应的数据集、模型或产物存储中，仓库只记录可复现的标识与说明。
+
+## 克隆与初始化
+
+OpenPI 和 RLinf 保留各自的官方上游历史。克隆本工作区后执行：
+
+```bash
+git submodule update --init --recursive
+```
+
+OpenPI 自身还包含 ALOHA 和 LIBERO 子模块，递归初始化会一并获取。
+
+## 当前 PI0.5 基础模型
+
+官方 `pi05_base` 存放在本机：
+
+```text
+PI0.5/checkpoints/pi05_base/
+```
+
+该目录被 Git 忽略，不会上传到 GitHub。可以使用下面的任务脚本进行首次下载、
+断点续传或完整性复核：
+
+```bash
+./tasks/g2_phone_packaging_pi05_rl/scripts/download_pi05_base.sh
+```
+
+任务相关的集成代码应放在 `tasks/` 中，不要把 OpenPI 或 RLinf 源码复制进任务目录。

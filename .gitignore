@@ -1,18 +1,60 @@
-__pycache__/
-*.py[cod]
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
+# Python and test caches
+**/__pycache__/
+**/*.py[cod]
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/.coverage
+**/htmlcov/
 
-# Model and training artifacts
-checkpoints/
-user_checkpoints/
-norm_stats/
-wandb/
+# Local environments and editor state
+**/.venv/
+**/venv/
+**/.idea/
+**/.vscode/
+**/.DS_Store
+**/.env
+**/.env.*
+!**/.env.example
 
-# Large or reproducible local data
-data/raw_samples/
+# DM0.5 datasets and generated data (keep source packages named `data`)
+/DM0.5/data/audits/
+/DM0.5/data/manifests/
+/DM0.5/data/processed/
+/DM0.5/user_checkpoints/
 
-# Keep audit reports and future manifests visible.
-!data/audits/
-!data/manifests/
+# Task-local datasets
+/tasks/**/data/
+/tasks/**/datasets/
+
+# Models and training outputs
+**/checkpoints/
+**/wandb/
+**/runs/
+**/results/
+**/*.ckpt
+**/*.safetensors
+**/*.pt
+**/*.pth
+
+# Runtime and generated artifacts
+/DM0.5/artifacts/
+/g2_robot/logs/
+/tasks/**/logs/
+/tasks/**/artifacts/*
+!/tasks/**/artifacts/README.md
+**/*.log
+**/*.mp4
+**/*.avi
+
+# Archives and local delivery bundles
+**/*.zip
+**/*.tar
+**/*.tar.gz
+**/*.tgz
+**/*.sha256
+
+# Temporary files
+**/*.partial
+**/*.tmp
+**/*~
