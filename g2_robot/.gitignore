@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.bak*
+*.before_*
+
+logs/**/*.jsonl
+logs/**/*.jpg
+logs/**/*.png
+logs/**/*.INFO*
+logs/**/*.log
+logs/bundles/
+logs/diagnostics/preflight_*/

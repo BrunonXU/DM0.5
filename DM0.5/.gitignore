@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Model and training artifacts
+checkpoints/
+user_checkpoints/
+norm_stats/
+wandb/
+
+# Server NVMe is bind-mounted here. Its layout and README templates are tracked
+# under infra/layout/nvme, but its large runtime contents must never enter Git.
+/server/
+
+# Large, generated, or reproducible local data
+data/raw_samples/
+data/audits/
+data/manifests/
+data/processed/
