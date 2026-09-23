@@ -5,6 +5,8 @@ import argparse,copy,hashlib,http.cookies,json,mimetypes,os,secrets,signal,sys,t
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 from pathlib import Path
 from core import ActionManager,ControlLease,EventLog,OfflineAdapter,PresetStore,finite,utc
+from control_auth import ControlCode,AuthThrottled
+from data_service import DataService
 
 ROOT=Path(__file__).resolve().parent
 class App:
@@ -13,6 +15,8 @@ class App:
         self.profile=profile;self.runtime=Path(runtime);self.runtime.mkdir(parents=True,exist_ok=True)
         self.events=EventLog(self.runtime/'events.jsonl');self.presets=PresetStore(self.runtime/'presets.json',profile)
         self.health_cache={};self.health_at=0
+        self.control_code=ControlCode(self.runtime/'control_code.json')
+        self.data=DataService(profile.get('data_path','/home/user/lxl/pico_data'),self.runtime,self.web_root)
         self.sessions={};self.session_lock=threading.RLock();self.op_lock=threading.RLock();self.closed=threading.Event()
         self.token_path=self.runtime/'access.token'
         if not self.token_path.exists():
@@ -56,7 +60,9 @@ class App:
         s=self.adapter.snapshot();s.update(robot_id=self.profile['id'],control=self.lease.snapshot(sid),action=self.actions.latest(),authenticated=self.sessions[sid]['authenticated'],capabilities=self.adapter.capabilities())
         s['system_health']=self.health();s['services']=s['system_health'].get('services',{})
         s['pico']={'mode':'upper_body_only','start_script':'/home/user/Bruno/F1/pico_upper/current/start.sh','status':'运行中' if s['services'].get('pico_upper',{}).get('running') else '未运行','version':'meaxiao 1.4.4 / upper-v2','commands':{k:'/home/user/Bruno/F1/pico_upper/current/'+k+'.sh' for k in ('check','start','stop')},'reason':'PCService已运行' if s['services'].get('pico_pc_service',{}).get('running') else 'PCService未运行；现场单独启动后再试遥操'}
-        s['data']={'local_path':self.profile.get('data_path'),'mode':'unchanged','recording_control_enabled':False,'transfer_configured':False,'message':'现有数采逻辑未修改；服务器与分析平台位置待确定'}
+        s['data']={'local_path':self.profile.get('data_path'),'mode':'unchanged','recording_control_enabled':False,'transfer_configured':False,'review_enabled':True,'message':'原始录制只读；审核保存在独立 runtime；采集/上传保持现状'}
+        s['control']['code_configured']=self.control_code.configured()
+        s['control']['owner_label']=self.sessions.get(self.lease.owner,{}).get('owner') if self.lease.owner else s['control'].get('owner')
         return s
     def health(self):
         if time.monotonic()-self.health_at>5:
@@ -73,7 +79,8 @@ class App:
     def revision(self):
         h=hashlib.sha256()
         for p in sorted(self.web_root.rglob('*')):
-            if p.is_file():h.update(str(p.relative_to(self.web_root)).encode());h.update(p.read_bytes())
+            if p.is_file():
+                st=p.stat();h.update(str(p.relative_to(self.web_root)).encode());h.update(f'{st.st_size}:{st.st_mtime_ns}:{st.st_ctime_ns}'.encode())
         return h.hexdigest()[:16]
 
 class Server(ThreadingHTTPServer):
@@ -100,13 +107,16 @@ class Handler(BaseHTTPRequestHandler):
         if not self.prepare():return
         app=self.server.app;path=urllib.parse.urlsplit(self.path).path
         try:
-            if path=='/api/session':data={'authenticated':self.session_data['authenticated']}
+            if path=='/api/session':data={'authenticated':self.session_data['authenticated'],'control_code_configured':app.control_code.configured()}
             elif path=='/api/robot':data={'robot':dict(app.profile,capabilities=app.adapter.capabilities())}
             elif path=='/api/state':data=app.state(self.sid)
             elif path=='/api/presets':data={'presets':app.presets.all()}
             elif path=='/api/events':data={'events':app.events.list()}
             elif path=='/api/dev/revision':data={'revision':app.revision()}
             elif path=='/api/storage':data={'health':app.health()}
+            elif path in ('/api/data','/api/data/catalog'):data=app.data.catalog()
+            elif path=='/api/data/recording':data={'recording':app.data.recording()}
+            elif path.startswith('/api/data/episodes/'):data={'episode':app.data.episode(path.rsplit('/',1)[-1])}
             elif path=='/api/system':data={'robot':app.profile['id'],'version':app.profile['version'],'runtime':str(app.runtime),'data_mode':'unchanged','upstream_ui':'http://192.168.31.58/','motion_capabilities':app.adapter.capabilities(),'access_script':'./access.sh','hot_reload':True,'contract':app.contract,'ros_distro':'Jazzy','mode':'以本机动作能力检查为准'}
             elif path.startswith('/api/actions/'):data={'action':app.actions.get(path.rsplit('/',1)[-1])}
             elif path.startswith('/api/cameras/') and path.endswith('.jpg'):
@@ -135,14 +145,28 @@ class Handler(BaseHTTPRequestHandler):
         if path=='/api/login':
             if not isinstance(body.get('token'),str) or not secrets.compare_digest(body['token'],app.token):self.send(401,{'ok':False,'error':'访问码不正确'});return
             self.session_data['authenticated']=True;self.send(200,{'ok':True,'authenticated':True});return
-        if not self.session_data['authenticated']:self.send(401,{'ok':False,'error':'请先启用操作并输入本机访问码'});return
+        if path=='/api/control/acquire':
+            try:
+                if not app.control_code.verify(body.get('control_code'),self.client_address[0]):
+                    self.send(401,{'ok':False,'error':'控制码不正确'});return
+                owner=body.get('owner','现场操作者')
+                if not isinstance(owner,str) or not 1<=len(owner.strip())<=80 or any(ord(ch)<32 for ch in owner):
+                    raise ValueError('操作者名称须为 1–80 字符')
+                with app.op_lock:
+                    token=app.lease.acquire(self.sid)
+                    self.session_data.update(authenticated=True,owner=owner.strip())
+                    app.events.add('control_acquired','浏览器取得研发控制权',owner=owner.strip())
+                self.send(200,{'ok':True,'authenticated':True,'lease_id':token,'expires_in_s':app.lease.ttl});return
+            except AuthThrottled as exc:
+                self.send(429,{'ok':False,'error':str(exc),'retry_after_s':exc.retry_after});return
+            except ValueError as exc:
+                self.send(409,{'ok':False,'error':str(exc)});return
+        if not self.session_data['authenticated']:self.send(401,{'ok':False,'error':'请先输入控制码取得控制权，或使用本机访问码登录'});return
         try:
             with app.op_lock:
                 if path=='/api/logout':
                     if app.lease.owner==self.sid:app.lease.stopping=True;app.actions.stop()
                     self.session_data['authenticated']=False;data={'authenticated':False}
-                elif path=='/api/control/acquire':
-                    token=app.lease.acquire(self.sid);data={'lease_id':token,'expires_in_s':app.lease.ttl};app.events.add('control_acquired','浏览器取得研发控制权')
                 elif path in ('/api/control/heartbeat','/api/control/release','/api/stop'):
                     app.lease.require(self.sid,body.get('lease_id'),renew=path.endswith('heartbeat'))
                     if path.endswith('heartbeat'):data={'expires_in_s':app.lease.ttl}
@@ -158,6 +182,9 @@ class Handler(BaseHTTPRequestHandler):
                     if spec.get('kind')=='base_jog':spec={'kind':'base',**spec.get('targets',{}),'ttl_s':spec.get('ttl_s',.25)}
                     if spec.get('kind') not in ('joints','gripper','base'):raise ValueError('未知动作类型')
                     data={'action':app.actions.start(spec,self.sid)}
+                elif path=='/api/data/reviews':
+                    row=app.data.save_review(body.get('episode_id'),body.get('status'),body.get('notes',''),self.session_data.get('owner','已登录操作者'))
+                    app.events.add('data_review_saved','已保存独立数据审核',episode_id=row['episode_id'],status=row['status']);data={'review':row}
                 elif path=='/api/presets':
                     p=dict(body)
                     if p.get('capture'):
