@@ -1,0 +1,11 @@
+Host H20-transfer
+    HostName ops.huaqin.com
+    Port 54321
+    User 100850113/10.77.55.52/opsadmin
+    UserKnownHostsFile /home/xza_100850113/projects/h20-transfer-test/known_hosts
+    StrictHostKeyChecking yes
+    NumberOfPasswordPrompts 1
+    ConnectTimeout 10
+    ForwardAgent no
+    ServerAliveInterval 30
+    ServerAliveCountMax 3

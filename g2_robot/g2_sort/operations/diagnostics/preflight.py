@@ -9,13 +9,16 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import time
+from io import BytesIO
 from pathlib import Path
 
 import numpy as np
 
 from g2_sort.deployment.g2_client.cameras import G2CameraRig
+from g2_sort.deployment.g2_client.dm05_backend import encode_rgb_jpeg
 from g2_sort.deployment.g2_client.joint_layout import POLICY_JOINT_NAMES
 from g2_sort.deployment.g2_client.robot_state import StrictRobotStateReader
 
@@ -98,7 +101,7 @@ def main() -> None:
             last_camera_error = None
             for attempt in range(1, args.camera_retries + 1):
                 try:
-                    image = cameras.capture_channel(name)
+                    image, native_frame = cameras.capture_transport_pair(name)
                     break
                 except Exception as exc:
                     last_camera_error = exc
@@ -113,7 +116,9 @@ def main() -> None:
                 camera_errors.append(f"{display_name}: {last_camera_error}")
                 print(f"  - 【失败】{display_name}连续取帧失败", flush=True)
             else:
-                captured_images.append((name, display_name, image))
+                captured_images.append(
+                    (name, display_name, image, native_frame)
+                )
                 print(
                     f"  - 【成功】{display_name}: shape={tuple(image.shape)} "
                     f"亮度范围={int(np.min(image))}～{int(np.max(image))}",
@@ -124,22 +129,67 @@ def main() -> None:
                 "相机预检失败：" + "；".join(camera_errors)
             )
         image_records = []
-        for name, display_name, image in captured_images:
+        native_dir = args.output_dir / "native"
+        for name, display_name, image, native_frame in captured_images:
             path = args.output_dir / f"{name}.jpg"
-            Image.fromarray(image, mode="RGB").save(path, quality=95)
-            image_records.append(
-                {
+            # Use the production HTTP backend's encoder and persist those exact
+            # bytes.  The archive can therefore be replayed as the actual wire
+            # payload instead of being an independently re-saved screenshot.
+            jpeg_payload = encode_rgb_jpeg(image)
+            path.write_bytes(jpeg_payload)
+            with Image.open(BytesIO(jpeg_payload)) as opened:
+                wire_rgb = np.asarray(opened.convert("RGB"), dtype=np.uint8)
+            wire_delta = np.abs(
+                wire_rgb.astype(np.int16) - image.astype(np.int16)
+            )
+            record = {
                     "name": name,
                     "path": str(path),
+                    "wire_filename": f"{name}.jpg",
+                    "wire_media_type": "image/jpeg",
+                    "wire_encoder": "g2_client.encode_rgb_jpeg_quality95",
+                    "wire_bytes": len(jpeg_payload),
+                    "wire_sha256": hashlib.sha256(jpeg_payload).hexdigest(),
                     "shape": list(image.shape),
                     "dtype": str(image.dtype),
                     "min": int(np.min(image)),
                     "max": int(np.max(image)),
+                    "wire_decode_mae_uint8": float(wire_delta.mean()),
+                    "wire_decode_max_abs_uint8": int(wire_delta.max()),
                 }
-            )
+            if native_frame is not None:
+                native_dir.mkdir(parents=True, exist_ok=True)
+                native_suffix = (
+                    ".jpg"
+                    if native_frame.media_type == "image/jpeg"
+                    else ".png"
+                )
+                native_relative = Path("native") / f"{name}{native_suffix}"
+                native_path = args.output_dir / native_relative
+                native_path.write_bytes(native_frame.data)
+                record.update(
+                    {
+                        "native_filename": native_relative.as_posix(),
+                        "native_media_type": native_frame.media_type,
+                        "native_width": native_frame.width,
+                        "native_height": native_frame.height,
+                        "native_bytes": len(native_frame.data),
+                        "native_sha256": hashlib.sha256(
+                            native_frame.data
+                        ).hexdigest(),
+                    }
+                )
+            else:
+                record["native_passthrough_available"] = False
+            image_records.append(record)
         report = {
             "generated_at_unix": time.time(),
             "read_only": True,
+            "image_archive_contract": (
+                "exact JPEG bytes produced by the production multipart HTTP "
+                "encoder from the captured RGB arrays; files are ordered "
+                "head, left_wrist, right_wrist"
+            ),
             "motion": {
                 "mode": int(getattr(motion, "mode", -1)),
                 "error_code": int(getattr(motion, "error_code", -1)),

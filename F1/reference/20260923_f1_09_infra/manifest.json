@@ -1,0 +1,116 @@
+{
+  "robot": "F1-09",
+  "captured_at": "2026-09-23T15:15:12.441887+08:00",
+  "files": [
+    {
+      "path": "/home/user/workspace/start_all.sh",
+      "resolved": "/home/user/workspace/start_all.sh",
+      "bytes": 2001,
+      "sha256": "64254d3005cfed067625cb4df39fe68472737cd1fdf3504b14263399521b1c75",
+      "snapshot_path": "files/home/user/workspace/start_all.sh",
+      "captured_at": "2026-09-23T15:15:12.441887+08:00",
+      "robot": "F1-09",
+      "transport": "SSH 22009 with pinned host key"
+    },
+    {
+      "path": "/home/user/workspace/start_ec_master.sh",
+      "resolved": "/home/user/workspace/start_ec_master.sh",
+      "bytes": 668,
+      "sha256": "005e847b70adb22098f7413d50371dc14f6a2dc3b7514903844f4f6e67d375c3",
+      "snapshot_path": "files/home/user/workspace/start_ec_master.sh",
+      "captured_at": "2026-09-23T15:15:12.441887+08:00",
+      "robot": "F1-09",
+      "transport": "SSH 22009 with pinned host key"
+    },
+    {
+      "path": "/home/user/lxl/start_all_pico1.sh",
+      "resolved": "/home/user/lxl/start_all_pico1.sh",
+      "bytes": 2439,
+      "sha256": "4b42a5a00590ba65a19c9e53f3438fa8657d21c15b531b3e1f00ff1d72e39d1c",
+      "snapshot_path": "files/home/user/lxl/start_all_pico1.sh",
+      "captured_at": "2026-09-23T15:15:12.441887+08:00",
+      "robot": "F1-09",
+      "transport": "SSH 22009 with pinned host key"
+    },
+    {
+      "path": "/home/user/lxl/start_all_pico2.sh",
+      "resolved": "/home/user/lxl/start_all_pico2.sh",
+      "bytes": 2590,
+      "sha256": "9ab1554774034057f17b21053e45d72ebb9dcf3a4b4c56b0fe84a45af4522c67",
+      "snapshot_path": "files/home/user/lxl/start_all_pico2.sh",
+      "captured_at": "2026-09-23T15:15:12.441887+08:00",
+      "robot": "F1-09",
+      "transport": "SSH 22009 with pinned host key"
+    },
+    {
+      "path": "/home/user/lxl/ip_config.py",
+      "resolved": "/home/user/lxl/ip_config.py",
+      "bytes": 340,
+      "sha256": "0a7626afc7f3e854720f767fb79f2d755c530d00cdfe0a8b0e29897fc8d4d78f",
+      "snapshot_path": "files/home/user/lxl/ip_config.py",
+      "captured_at": "2026-09-23T15:15:12.441887+08:00",
+      "robot": "F1-09",
+      "transport": "SSH 22009 with pinned host key"
+    },
+    {
+      "path": "/etc/nginx/sites-enabled/b_reverse_proxy",
+      "resolved": "/etc/nginx/sites-available/b_reverse_proxy",
+      "bytes": 3054,
+      "sha256": "df5fb64ed92ff409af9bbc1eb1fea33af5debc8238955835413fb32447150858",
+      "snapshot_path": "files/etc/nginx/sites-enabled/b_reverse_proxy",
+      "captured_at": "2026-09-23T15:15:12.441887+08:00",
+      "robot": "F1-09",
+      "transport": "SSH 22009 with pinned host key"
+    },
+    {
+      "path": "/etc/ros/cyclonedds/cyclonedds.xml",
+      "resolved": "/etc/ros/cyclonedds/cyclonedds.xml",
+      "bytes": 266,
+      "sha256": "a1abd1e03f2b4a5a153f9c16aca5bd609095e57ae4e24be55a5d3d0eedac37cb",
+      "snapshot_path": "files/etc/ros/cyclonedds/cyclonedds.xml",
+      "captured_at": "2026-09-23T15:15:12.441887+08:00",
+      "robot": "F1-09",
+      "transport": "SSH 22009 with pinned host key"
+    },
+    {
+      "path": "/home/user/workspace/whole_body_ctl/whole_body_ctl.py",
+      "resolved": "/home/user/workspace/whole_body_ctl/whole_body_ctl.py",
+      "bytes": 22998,
+      "sha256": "99d7cdeb5ed497e0038d8d4f963c09e558b0b9cebfb04b99c963ce6a6f5b5a20",
+      "snapshot_path": "files/home/user/workspace/whole_body_ctl/whole_body_ctl.py",
+      "captured_at": "2026-09-23T15:15:12.441887+08:00",
+      "robot": "F1-09",
+      "transport": "SSH 22009 with pinned host key"
+    },
+    {
+      "path": "/home/user/workspace/whole_body_ctl/whole_body_config.ini",
+      "resolved": "/home/user/workspace/whole_body_ctl/whole_body_config.ini",
+      "bytes": 1693,
+      "sha256": "5bd2a4cb8c6c91ce918b19f822bd5f55421f7716772dd74149f8c1390ed98cd1",
+      "snapshot_path": "files/home/user/workspace/whole_body_ctl/whole_body_config.ini",
+      "captured_at": "2026-09-23T15:15:12.441887+08:00",
+      "robot": "F1-09",
+      "transport": "SSH 22009 with pinned host key"
+    },
+    {
+      "path": "/home/user/workspace/f1/install/motor_ctl/share/motor_ctl/launch/motor_ctl.launch.xml",
+      "resolved": "/home/user/workspace/f1/install/motor_ctl/share/motor_ctl/launch/motor_ctl.launch.xml",
+      "bytes": 6345,
+      "sha256": "19c9c2ddf883b76b0e3e7910afc36f6151e29b213612adad588422ebad6ea872",
+      "snapshot_path": "files/home/user/workspace/f1/install/motor_ctl/share/motor_ctl/launch/motor_ctl.launch.xml",
+      "captured_at": "2026-09-23T15:15:12.441887+08:00",
+      "robot": "F1-09",
+      "transport": "SSH 22009 with pinned host key"
+    },
+    {
+      "path": "/home/user/workspace/f1/install/motor_ctl/share/motor_ctl/launch/kinematics.launch.xml",
+      "resolved": "/home/user/workspace/f1/install/motor_ctl/share/motor_ctl/launch/kinematics.launch.xml",
+      "bytes": 287,
+      "sha256": "ee6c42bb959c3b416e99e429d8993526c156d54ab767a90c77486793a0896f5a",
+      "snapshot_path": "files/home/user/workspace/f1/install/motor_ctl/share/motor_ctl/launch/kinematics.launch.xml",
+      "captured_at": "2026-09-23T15:15:12.441887+08:00",
+      "robot": "F1-09",
+      "transport": "SSH 22009 with pinned host key"
+    }
+  ]
+}

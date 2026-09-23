@@ -1,0 +1,14 @@
+{
+  "robot_ip": "192.168.31.29",
+  "hostname": "ms-thor",
+  "architecture": "aarch64",
+  "hardware_serial": "not verified",
+  "host_key_fingerprint": "SHA256:swfQ1UMRTLLoaqoMCPwhTcgqha0ZlOyj8gAQnzPg/o4",
+  "host_key_trust": "TOFU over user-established reverse tunnel; subsequently matched robot host public key over authenticated SSH; no independent out-of-band verification",
+  "deployment_path": "/home/user/Bruno/connect",
+  "old_deployment": "absent; /home/user/Bruno empty",
+  "linger_before": "no",
+  "linger_after": "yes",
+  "manual_tunnel_pid": 1274951,
+  "login_key": "existing 6000D id_ed25519_f1"
+}

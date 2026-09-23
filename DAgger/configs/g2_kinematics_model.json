@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "status": "candidate_requires_fk_validation",
+  "robot_variant": "G2_t2_crs",
+  "end_effector_variant": "o10_t2",
+  "model_location_policy": "reference_vendor_files_in_place_on_g2_do_not_export_by_default",
+  "sources": {
+    "arm_urdf": {
+      "path_on_g2": "/home/agi/app/share/genie_robot_description/urdf/G2_t2_crs/G2_t2_crs.urdf",
+      "sha256": "03a47cfd296ad5ab1b32c65b25ed9b235298d2568790a6cb14b35c0016450ec1"
+    },
+    "full_o10_mjcf": {
+      "path_on_g2": "/home/agi/app/share/genie_robot_description/mjcf/G2_t2_crs_o10_t2_flat.xml",
+      "sha256": "049561a02b7ffd5d65c773341c42d19abd5312f3f94bf6a2e85f00739b9a772b"
+    },
+    "o10_srdf": {
+      "path_on_g2": "/home/agi/app/share/genie_robot_description/srdf/G2_t2_crs/G2_t2_crs_o10_t2.srdf",
+      "sha256": "d8704e587a2781ee95af56c605878ba3bf8f11a3dbcf5a54a6d555387b032f28"
+    }
+  },
+  "observed_full_model": {
+    "pinocchio_version": "3.7.0",
+    "nq": 69,
+    "nv": 68,
+    "njoints": 64,
+    "nframes": 158
+  },
+  "controlled_arm_joints": {
+    "left": [
+      "idx21_arm_l_joint1", "idx22_arm_l_joint2", "idx23_arm_l_joint3",
+      "idx24_arm_l_joint4", "idx25_arm_l_joint5", "idx26_arm_l_joint6",
+      "idx27_arm_l_joint7"
+    ],
+    "right": [
+      "idx61_arm_r_joint1", "idx62_arm_r_joint2", "idx63_arm_r_joint3",
+      "idx64_arm_r_joint4", "idx65_arm_r_joint5", "idx66_arm_r_joint6",
+      "idx67_arm_r_joint7"
+    ]
+  },
+  "candidate_frames": {
+    "left_wrist": "arm_l_link7",
+    "right_wrist": "arm_r_link7",
+    "left_palm": "hand_l_base_link",
+    "right_palm": "hand_r_base_link",
+    "left_middle_tip": "hand_l_middle_tip",
+    "right_middle_tip": "hand_r_middle_tip",
+    "operational_left": null,
+    "operational_right": null
+  },
+  "model_caveats": [
+    "full MJCF contains arm_l_end_link but no symmetric arm_r_end_link",
+    "use symmetric arm_l_link7/arm_r_link7 for flange reference and hand base frames for palm reference",
+    "do not infer operational frame from asymmetric end-link names"
+  ],
+  "reduced_models": {
+    "strategy": "one_fixed-base_7dof_model_per_active_side",
+    "left_expected_nq_nv": [7, 7],
+    "right_expected_nq_nv": [7, 7],
+    "inactive_arm_policy": "strict_hold_at_takeover_measured_target"
+  },
+  "powered_allowed": false
+}

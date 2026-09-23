@@ -6,7 +6,7 @@
 set -Eeuo pipefail
 
 G2_APP_DIR="${G2_APP_DIR:-/home/agi/app}"
-G2_PROJECT_DIR="${G2_PROJECT_DIR:-/home/agi/DM0.5}"
+G2_PROJECT_DIR="${G2_PROJECT_DIR:-/home/agi/xza/DM0.5}"
 POLICY_ENDPOINT="${POLICY_ENDPOINT:-http://10.130.153.114:7892/process_frame}"
 G2_RUNTIME_PID_FILE="${G2_RUNTIME_PID_FILE:-/tmp/g2_dm05_runtime.pid}"
 G2_LOG_ROOT="${G2_LOG_ROOT:-$G2_PROJECT_DIR/logs}"
@@ -67,12 +67,23 @@ check_endpoint_405() {
   fi
 }
 
+check_policy_endpoint() {
+  if [[ "${POLICY_TRANSPORT:-http-multipart-json}" == "websocket-binary" ]]; then
+    section "检查DM0.5 WebSocket端口"
+    env -u LD_LIBRARY_PATH python3.12 -c \
+      'import sys; from websockets.sync.client import connect; c = connect(sys.argv[1], compression=None, open_timeout=3, close_timeout=1); c.close(); print("websocket handshake=ok")' \
+      "$POLICY_ENDPOINT"
+  else
+    check_endpoint_405
+  fi
+}
+
 assert_no_controller_process() {
   section "检查旧控制进程"
   local matches
   matches="$(
     pgrep -af \
-      'g2_sort\.deployment\.g2_sdk_client|operations\.recovery\.(reset_pose|hand_home)|operations\.diagnostics\.servo_hold|operations\.hardware_tests\.(thumb_servo_smoke|o10_move_ee_smoke)' \
+      'g2_sort\.deployment\.g2_sdk_client|operations\.recovery\.(reset_pose|hand_home)|operations\.diagnostics\.(servo_hold|rtc_process_isolation_preflight)|operations\.hardware_tests\.(thumb_servo_smoke|o10_move_ee_smoke|training_data_replay|single_side_17d_servo_probe|servo_layout_probe)' \
       || true
   )"
   if [[ -n "$matches" ]]; then

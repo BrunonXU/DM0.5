@@ -1,0 +1,11 @@
+[Unit]
+Description=F1 three-camera video browser with byte ranges
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /home/xza_100850113/projects/F1/foam_sort_whole_body/scripts/serve_videos.py --port 8876
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

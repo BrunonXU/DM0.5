@@ -1,0 +1,39 @@
+{
+  "schema": "f1_task_route_prior_v1",
+  "recorded_date": "2026-09-15",
+  "task": "foam_sort_whole_body",
+  "distance": {
+    "forward_backward_m": 0.5,
+    "lateral_m": 1.6,
+    "status": "user_confirmed_actual_task_route_distance",
+    "source": "用户答复：这是真实运动情况",
+    "per_episode_odometry_verified": false,
+    "instantaneous_velocity_measured": false,
+    "velocity_profile": "cubic_smoothstep_derivative_prior_pending_validation"
+  },
+  "task_boundary": {
+    "start_event": "gripper_closing_for_pick",
+    "start_event_is_navigation_anchor_not_automatic_crop": true,
+    "end_event": "return_lateral_motion_stopped_and_both_arms_and_grippers_restored",
+    "end_source": "用户答复：双臂收回并且夹爪也恢复",
+    "gripper_restore_and_arm_restore_may_occur_at_different_times": true,
+    "task_completion_is_not_training_mask_validity": true
+  },
+  "route_hypothesis": {
+    "observed_000057_motion_order": ["outbound_backward", "outbound_right", "outbound_forward", "return_backward", "return_left"],
+    "omitted_final_forward": "user_suggests_manual_preparation_after_this_recorded_cycle",
+    "manual_execution_proven_for_every_source": false,
+    "same_five_phase_order_proven_for_all_772": false,
+    "no_invented_final_forward": true
+  },
+  "minimal_change_policy": [
+    "Preserve original timestamps, observations, arm/gripper targets and raw recordings.",
+    "Use confirmed route distances only for corresponding motions actually supported in each recording.",
+    "Do not copy 000057 timing or five phases to all sources.",
+    "Keep meaningful approach before closing; do not crop automatically at first closed frame.",
+    "Do not insert the unrecorded/manual final forward step.",
+    "Keep existing reset/tail masks until missing arm command supervision is addressed separately."
+  ],
+  "human_phase_edits_received": false,
+  "training_approved": false
+}

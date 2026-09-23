@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Matches the new F1's actual motor_ctl process; project-local only. -->
+<CycloneDDS xmlns="https://cdds.io/config">
+  <Domain><General><Interfaces>
+    <NetworkInterface name="enP3p1s0f1"/>
+  </Interfaces></General></Domain>
+</CycloneDDS>

@@ -28,6 +28,7 @@ from g2_sort.deployment.g2_client.hand_command_store import (
     validate_hand_command_record,
 )
 from g2_sort.deployment.g2_client.joint_layout import (
+    POLICY_JOINT_LIMITS,
     POLICY_JOINT_NAMES,
 )
 from g2_sort.deployment.g2_client.keyboard import RuntimeCommandState
@@ -77,6 +78,7 @@ class _FakeRobot:
         self.calls = []
         self.servo_requests = []
         self.hand_calls = []
+        self.output_events = []
 
     def get_whole_body_status(self):
         return {
@@ -106,18 +108,27 @@ class _FakeRobot:
         }
 
     def get_end_state(self):
+        right_names = list(POLICY_JOINT_NAMES[24:])
+        right_names[4] += " "
         return {
             "left_end_state": {
                 "names": list(POLICY_JOINT_NAMES[14:24]),
-                "end_states": [{"position": 0.0}] * 10,
+                "end_states": [
+                    {"position": 0.0, "enable": True, "status": 0, "err_code": 0}
+                ] * 10,
             },
             "right_end_state": {
-                "names": list(POLICY_JOINT_NAMES[24:]),
-                "end_states": [{"position": 0.0}] * 10,
+                "names": right_names,
+                "end_states": [
+                    {"position": 0.0, "enable": True, "status": 0, "err_code": 0}
+                ] * 10,
             },
         }
 
     def joint_servo_control(self, request, enable_low_latency=False):
+        self.output_events.append(
+            ("arm", tuple(request.joint_positions))
+        )
         self.servo_requests.append(
             SimpleNamespace(
                 control_period=request.control_period,
@@ -136,8 +147,31 @@ class _FakeRobot:
         return 0
 
     def move_ee_pos(self, request):
+        self.output_events.append(
+            ("hand", tuple(state.position for state in request.states))
+        )
         self.hand_calls.append(request)
         return 0
+
+
+def test_powered_startup_fault_reports_sdk_details_without_sending():
+    from g2_sort.deployment.g2_client.contracts import RobotControlError
+
+    robot = _FakeRobot()
+    robot.get_motion_control_status = lambda: SimpleNamespace(
+        mode=5, error_code=2, error_msg="test controller stopped",
+        collision_pairs_1=["left_link"], collision_pairs_2=["right_link"],
+    )
+    with pytest.raises(RobotControlError) as caught:
+        G2RobotController(
+            powered=True, stabilization_seconds=0.0,
+            gdk_module=SimpleNamespace(), robot=robot,
+        )
+    message = str(caught.value)
+    assert "error_code=2" in message
+    assert "test controller stopped" in message
+    assert "left_link" in message and "right_link" in message
+    assert not robot.output_events
 
 
 def _controller(
@@ -147,7 +181,9 @@ def _controller(
     output_mode: str = "split",
     last_hand_command_path=None,
     hand_startup_delay_seconds: float = 0.0,
+    hand_stream_hz: float = 5.0,
     hand_smoothing_profile: str = "off",
+    split_hand_output_enabled: bool = True,
 ) -> tuple[G2RobotController, _FakeRobot]:
     robot = _FakeRobot()
     gdk = SimpleNamespace(
@@ -166,7 +202,9 @@ def _controller(
         last_hand_command_path=last_hand_command_path,
         hand_command_run_id="test-run",
         hand_startup_delay_seconds=hand_startup_delay_seconds,
+        hand_stream_hz=hand_stream_hz,
         hand_smoothing_profile=hand_smoothing_profile,
+        split_hand_output_enabled=split_hand_output_enabled,
         gdk_module=gdk,
         robot=robot,
     )
@@ -220,6 +258,74 @@ def test_arms_only_never_places_o10_names_in_servo_request():
     assert controller.control_stats()["request_layout"] == "arms-only"
 
 
+@pytest.mark.parametrize("reverse_hand_order", [False, True])
+def test_dual_side_17d_routes_two_dynamic_complete_servo_requests_per_tick(monkeypatch, reverse_hand_order):
+    original_get_end_state = _FakeRobot.get_end_state
+    def reordered_end_state(self):
+        payload = original_get_end_state(self)
+        if reverse_hand_order:
+            for side in ("left", "right"):
+                state = payload[f"{side}_end_state"]
+                state["names"] = state["names"][::-1]
+                state["end_states"] = state["end_states"][::-1]
+        return payload
+    monkeypatch.setattr(_FakeRobot, "get_end_state", reordered_end_state)
+    controller, robot = _controller(
+        "normal",
+        output_mode="dual-side-17d",
+        enforce_low_latency_step_limit=False,
+    )
+    # Distinct in-limit values detect even swaps between same-limit PIP axes.
+    target = POLICY_JOINT_LIMITS[:, 0] + np.linspace(0.3, 0.6, 34) * np.ptp(POLICY_JOINT_LIMITS, axis=1)
+    controller.send_action(target)
+    controller.close()
+    assert len(robot.calls) == 2
+    left_names, left_positions, left_low_latency = robot.calls[0]
+    right_names, right_positions, right_low_latency = robot.calls[1]
+    left_hand = POLICY_JOINT_NAMES[14:24]
+    right_hand = POLICY_JOINT_NAMES[24:34]
+    if reverse_hand_order:
+        left_hand, right_hand = left_hand[::-1], right_hand[::-1]
+    assert left_names == POLICY_JOINT_NAMES[:7] + left_hand
+    assert right_names == POLICY_JOINT_NAMES[7:14] + right_hand
+    by_name = dict(zip(POLICY_JOINT_NAMES, target, strict=True))
+    assert left_positions == pytest.approx(tuple(by_name[name] for name in left_names))
+    assert right_positions == pytest.approx(tuple(by_name[name] for name in right_names))
+    assert left_low_latency is False
+    assert right_low_latency is False
+    stats = controller.control_stats()
+    assert stats["request_layout"] == "dual-side-17d"
+    assert stats["servo_request_count"] == 2
+    assert stats["last_servo_joint_count"] == 17
+    assert stats["servo_requests_all_complete"] is True
+    assert stats["hand_stream_hz"] == 100.0
+    assert stats["hand_send_count"] == 1
+
+
+def test_arms_only_one_shot_o10_submits_exactly_one_request():
+    controller, robot = _controller("normal", output_mode="arms-only")
+    target = np.zeros(20)
+    controller.send_hands_once(target, source="test_one_shot")
+    time.sleep(0.03)
+    controller.close()
+    assert len(robot.hand_calls) == 1
+    request = robot.hand_calls[0]
+    assert request.group == "dual_tool"
+    assert request.target_type == "o10_t2"
+    assert request.nums == 20
+    assert [state.position for state in request.states] == pytest.approx(target)
+    assert controller.control_stats()["hand_send_count"] == 1
+
+
+def test_one_shot_o10_rejects_split_mode_with_background_worker():
+    controller, _ = _controller("normal", output_mode="split")
+    try:
+        with pytest.raises(Exception, match="requires arms-only mode"):
+            controller.send_hands_once(np.zeros(20))
+    finally:
+        controller.close()
+
+
 def test_split_routes_arms_to_servo_and_hands_to_dual_tool_move_ee():
     controller, robot = _controller(
         "low-latency",
@@ -256,6 +362,181 @@ def test_split_routes_arms_to_servo_and_hands_to_dual_tool_move_ee():
     assert stats["last_servo_position_count"] == 14
     assert stats["last_servo_velocity_count"] == 0
     assert stats["hand_send_count"] == 1
+
+
+def test_split_raw_hand_stream_does_not_resend_unchanged_point_target():
+    controller, robot = _controller(
+        "low-latency",
+        output_mode="split",
+        enforce_low_latency_step_limit=False,
+        hand_stream_hz=50.0,
+        hand_smoothing_profile="off",
+    )
+    target = np.zeros(34)
+    target[14] = -0.2
+    controller.send_action(target)
+    deadline = time.monotonic() + 1.0
+    while not robot.hand_calls and time.monotonic() < deadline:
+        time.sleep(0.01)
+    time.sleep(0.08)
+    controller.close()
+
+    assert len(robot.hand_calls) == 1
+    stats = controller.control_stats()
+    assert stats["hand_send_count"] == 1
+    assert stats["hand_unchanged_skip_count"] >= 1
+
+
+def test_split_raw_hand_stream_sends_next_changed_point_target():
+    controller, robot = _controller(
+        "low-latency",
+        output_mode="split",
+        enforce_low_latency_step_limit=False,
+        hand_stream_hz=50.0,
+        hand_smoothing_profile="off",
+    )
+    first = np.zeros(34)
+    first[14] = -0.2
+    controller.send_action(first)
+    deadline = time.monotonic() + 1.0
+    while len(robot.hand_calls) < 1 and time.monotonic() < deadline:
+        time.sleep(0.01)
+
+    second = first.copy()
+    second[14] = -0.3
+    controller.send_action(second)
+    deadline = time.monotonic() + 1.0
+    while len(robot.hand_calls) < 2 and time.monotonic() < deadline:
+        time.sleep(0.01)
+    controller.close()
+
+    assert len(robot.hand_calls) == 2
+    assert robot.hand_calls[0].states[0].position == pytest.approx(-0.2)
+    assert robot.hand_calls[1].states[0].position == pytest.approx(-0.3)
+
+
+def test_split_hand_stream_accepts_50hz_without_changing_other_modes():
+    controller, _ = _controller(
+        "low-latency",
+        output_mode="split",
+        enforce_low_latency_step_limit=False,
+        hand_stream_hz=50.0,
+        hand_smoothing_profile="v1",
+    )
+    try:
+        stats = controller.control_stats()
+        assert stats["hand_stream_hz"] == pytest.approx(50.0)
+        assert stats["servo_control_period_seconds"] == pytest.approx(0.01)
+        assert stats["hand_smoothing_profile"] == "v1"
+    finally:
+        controller.close()
+
+
+def test_split_hand_v11_uses_frozen_offline_candidate() -> None:
+    controller, _ = _controller(
+        "low-latency",
+        output_mode="split",
+        enforce_low_latency_step_limit=False,
+        hand_stream_hz=10.0,
+        hand_smoothing_profile="v1_1",
+    )
+    try:
+        tracker = controller._hand_tracker
+        assert tracker.max_delta_rad == pytest.approx(0.175)
+        assert tracker.max_velocity_rad_s == pytest.approx(1.75)
+        assert tracker.max_acceleration_rad_s2 == pytest.approx(7.5)
+        assert tracker.reversal_boundary_only is True
+    finally:
+        controller.close()
+
+
+def test_split_shared_preview_uses_frozen_candidate_and_real_future() -> None:
+    controller, _ = _controller(
+        "low-latency",
+        output_mode="split",
+        enforce_low_latency_step_limit=False,
+        hand_stream_hz=10.0,
+        hand_smoothing_profile="shared_preview_v1",
+        split_hand_output_enabled=False,
+    )
+    try:
+        planner = controller._hand_trajectory_planner
+        assert planner is not None
+        assert planner.config.strategy == "preview_qp"
+        assert planner.config.horizon_steps == 6
+        assert planner.config.max_velocity_rad_s == pytest.approx(1.75)
+        assert planner.config.max_acceleration_rad_s2 == pytest.approx(7.5)
+        assert planner.config.max_jerk_rad_s3 == pytest.approx(80.0)
+        assert planner.config.jerk_penalty == pytest.approx(5.0)
+        assert planner.config.preview_decay == pytest.approx(0.2)
+        assert planner.config.enforce_derivative_limits is False
+        assert planner.config.position_lower_rad is not None
+        assert planner.config.position_upper_rad is not None
+
+        actions = np.zeros((10, 34), dtype=np.float64)
+        actions[3:, 14:] = 0.6
+        started_at = time.monotonic()
+        controller.begin_hand_segment(
+            started_at=started_at,
+            reference_actions=actions,
+            start_index=0,
+            interval_count=9,
+            anchor=np.zeros(34),
+        )
+        reference = controller._sample_hand_reference_horizon(
+            now=started_at,
+            current_target=np.zeros(20),
+            segment_started_at=started_at,
+            actions=actions,
+            start_index=0,
+            interval_count=9,
+            anchor=np.zeros(20),
+            blend_seconds=0.0,
+            blend_profile="linear",
+        )
+        np.testing.assert_allclose(reference[0], 0.0)
+        np.testing.assert_allclose(reference[1], 0.6)
+        assert np.any(reference[1:] != reference[0])
+    finally:
+        controller.close()
+
+
+def test_split_hand_output_can_be_deferred_until_explicit_enable():
+    controller, robot = _controller(
+        "low-latency",
+        output_mode="split",
+        enforce_low_latency_step_limit=False,
+        split_hand_output_enabled=False,
+    )
+    target = np.zeros(34)
+    controller.send_action(target)
+    time.sleep(0.1)
+    assert robot.calls
+    assert robot.hand_calls == []
+
+    controller.enable_split_hand_output()
+    deadline = time.monotonic() + 1.0
+    while not robot.hand_calls and time.monotonic() < deadline:
+        time.sleep(0.01)
+    controller.close()
+
+    assert len(robot.hand_calls) == 1
+    assert [state.position for state in robot.hand_calls[0].states] == pytest.approx(
+        target[14:]
+    )
+
+
+def test_hand_startup_deadline_preserves_full_first_period():
+    assert G2RobotController._align_hand_start_deadline(
+        next_send=10.0,
+        now=10.106,
+        schedule_started=False,
+    ) == pytest.approx(10.106)
+    assert G2RobotController._align_hand_start_deadline(
+        next_send=10.2,
+        now=10.106,
+        schedule_started=True,
+    ) == pytest.approx(10.2)
 
 
 def test_split_persists_only_latest_successful_hand_command(tmp_path):
@@ -405,6 +686,17 @@ def test_cli_defaults_split_normal_and_supports_deprecated_channel_alias():
     assert hand_v1.hand_max_acceleration_rad_s2 == pytest.approx(10.0)
     assert hand_v1.hand_max_delta_radians == pytest.approx(0.4)
     assert hand_v1.hand_reversal_error_radians == pytest.approx(0.15)
+    hand_v11 = parse_args(
+        [
+            "--mode",
+            "powered-sync",
+            "--hand-smoothing-profile",
+            "v1_1",
+        ]
+    )
+    assert hand_v11.hand_max_velocity_rad_s == pytest.approx(1.75)
+    assert hand_v11.hand_max_acceleration_rad_s2 == pytest.approx(7.5)
+    assert hand_v11.hand_max_delta_radians == pytest.approx(0.175)
     with pytest.raises(SystemExit):
         parse_args(["--hand-smoothing-profile", "v1"])
     with pytest.raises(SystemExit):
@@ -414,6 +706,15 @@ def test_cli_defaults_split_normal_and_supports_deprecated_channel_alias():
                 "powered-async",
                 "--hand-smoothing-profile",
                 "v1",
+            ]
+        )
+    with pytest.raises(SystemExit):
+        parse_args(
+            [
+                "--mode",
+                "powered-async",
+                "--hand-smoothing-profile",
+                "v1_1",
             ]
         )
     assert (
@@ -444,6 +745,42 @@ def test_cli_defaults_split_normal_and_supports_deprecated_channel_alias():
                 "--split-control-profile",
                 "--servo-output-mode",
                 "unified-34",
+            ]
+        )
+    split_arms_only = parse_args(
+        [
+            "--mode",
+            "powered-sync",
+            "--split-control-profile",
+            "--servo-output-mode",
+            "arms-only",
+        ]
+    )
+    assert split_arms_only.servo_channel == "low-latency"
+    assert split_arms_only.servo_output_mode == "arms-only"
+    dual_side = parse_args(
+        [
+            "--mode",
+            "powered-sync",
+            "--split-control-profile",
+            "--servo-output-mode",
+            "dual-side-17d",
+            "--servo-channel",
+            "normal",
+        ]
+    )
+    assert dual_side.servo_channel == "normal"
+    assert dual_side.servo_output_mode == "dual-side-17d"
+    with pytest.raises(SystemExit):
+        parse_args(
+            [
+                "--mode",
+                "powered-sync",
+                "--split-control-profile",
+                "--servo-output-mode",
+                "dual-side-17d",
+                "--servo-channel",
+                "low-latency",
             ]
         )
     assert (
@@ -582,16 +919,18 @@ def test_approved_hand_home_matches_the_confirmed_command_nine():
     assert np.max(np.abs(np.asarray(home["positions"]) - np.asarray(h5))) < 0.008
 
 
+@pytest.mark.parametrize("same_target", [False, True])
 def test_hand_home_execute_reuses_split_arm_hold_and_hand_worker(
     tmp_path,
     monkeypatch,
+    same_target,
 ):
     latest_path = tmp_path / "latest.json"
     home_path = tmp_path / "home.json"
     start = np.zeros(20)
     start[0] = -0.20
     home_positions = start.copy()
-    home_positions[0] = -0.23
+    home_positions[0] = -0.20 if same_target else -0.23
     latest = build_hand_command_record(
         start,
         kind="last_success",
@@ -622,13 +961,13 @@ def test_hand_home_execute_reuses_split_arm_hold_and_hand_worker(
     monkeypatch.setitem(sys.modules, "agibot_gdk", fake_gdk)
     monkeypatch.setattr(
         hand_home_module,
-        "confirm_ok_and_countdown",
+        "confirm_enter_and_countdown",
         lambda *args, **kwargs: None,
     )
     monkeypatch.setattr(
         hand_home_module,
         "_h5_arm_median",
-        lambda: np.zeros(14),
+        lambda: np.full(14, 0.1),
     )
     monkeypatch.setattr(
         hand_home_module,
@@ -653,7 +992,17 @@ def test_hand_home_execute_reuses_split_arm_hold_and_hand_worker(
     assert robot.calls
     assert all(len(call[0]) == 14 for call in robot.calls)
     assert all(call[2] is True for call in robot.calls)
-    assert len(robot.hand_calls) >= 2
+    assert len(robot.hand_calls) >= (1 if same_target else 2)
+    first_hand_event = next(
+        index for index, event in enumerate(robot.output_events) if event[0] == "hand"
+    )
+    preceding_arm_targets = [
+        np.asarray(event[1])
+        for event in robot.output_events[:first_hand_event]
+        if event[0] == "arm"
+    ]
+    assert preceding_arm_targets
+    assert any(np.allclose(values, 0.1) for values in preceding_arm_targets)
     final = load_hand_command_record(latest_path)
     assert final["source"] == "hand_home_recovery_successful_move_ee_pos"
     assert final["positions"] == pytest.approx(home_positions)
@@ -712,3 +1061,68 @@ def test_operator_confirmation_rejects_everything_except_ok():
             supplied="yes",
             sleep_fn=lambda _seconds: None,
         )
+
+
+@pytest.mark.parametrize('warning_only', [False, True])
+def test_unified_send_overrun_records_or_stops(monkeypatch, warning_only):
+    from g2_sort.deployment.g2_client.contracts import RobotControlError
+    controller, robot = _controller('normal', output_mode='unified-34')
+    events = []
+    controller._max_send_seconds = .2
+    controller._timing_warning_callback = (lambda *args: events.append(args)) if warning_only else None
+    clock = [0.0]
+    original = robot.joint_servo_control
+    def slow_send(*args, **kwargs):
+        clock[0] += .24
+        return original(*args, **kwargs)
+    monkeypatch.setattr(robot, 'joint_servo_control', slow_send)
+    monkeypatch.setattr('g2_sort.deployment.g2_client.robot_control.time.monotonic', lambda: clock[0])
+    target = np.mean(POLICY_JOINT_LIMITS, axis=1)
+    if warning_only:
+        assert controller.send_action(target)
+        assert controller.send_action(target)
+        assert len(events) == 2
+        assert events[0][0] == 'servo_send_overrun'
+        assert events[0][1] == pytest.approx(.24)
+        assert controller.control_stats()['hand_send_count'] == 2
+        assert controller.control_stats()['hand_stream_hz'] == 100
+        monkeypatch.setattr(robot, 'joint_servo_control', lambda *a, **kw: 1)
+        with pytest.raises(RobotControlError):
+            controller.send_action(target)
+    else:
+        with pytest.raises(RobotControlError, match='watchdog'):
+            controller.send_action(target)
+    controller.close()
+
+
+@pytest.mark.parametrize('warning_only', [False, True])
+def test_tick_overrun_warning_continues_without_catchup(warning_only):
+    from g2_sort.deployment.g2_client.servo import ServoStreamer
+    clock = [0.0]
+    calls, events = [], []
+    def sender(target):
+        calls.append(clock[0])
+        clock[0] += .24
+        if len(calls) == 2:
+            servo._stop.set()
+        return True
+    servo = ServoStreamer(sender, np.zeros(34), max_tick_lateness_seconds=.2,
+        clock=lambda: clock[0], sleep=lambda dt: clock.__setitem__(0, clock[0]+dt),
+        timing_warning_callback=(lambda *a: events.append(a)) if warning_only else None)
+    servo._run()
+    assert len(calls) == (2 if warning_only else 1)
+    assert servo.has_fault() is (not warning_only)
+    if warning_only:
+        assert calls[1]-calls[0] >= .25
+        assert events[0][0] == 'servo_tick_overrun'
+
+
+def test_home_enter_confirmation_requires_empty_input():
+    from g2_sort.operations.operator_confirmation import confirm_enter_and_countdown
+    sleeps = []
+    confirm_enter_and_countdown('offline', input_fn=lambda _: '', sleep_fn=sleeps.append)
+    assert sleeps == [1.] * 5
+    for answer in ('ok', 'yes', ' '):
+        with pytest.raises(PermissionError):
+            confirm_enter_and_countdown('offline', input_fn=lambda _: answer,
+                                        sleep_fn=lambda _: None)

@@ -1,0 +1,8 @@
+ARG BASE_IMAGE=opendm:g2-34d-fa2
+FROM ${BASE_IMAGE}
+
+# The base inference image predates the binary WebSocket transport dependency.
+# Keep the candidate isolated instead of mutating the HTTP 7892/7893 image.
+RUN /bin/bash -lc "source /opt/conda/etc/profile.d/conda.sh && \
+    conda activate opendm && \
+    python -m pip install --no-cache-dir 'websockets>=12,<16'"

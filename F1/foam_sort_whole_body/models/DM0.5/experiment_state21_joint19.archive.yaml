@@ -1,0 +1,87 @@
+schema_version: 1
+status: design_only_not_connected_to_trainer
+design_decision: selected_by_user_dual_arm_gripper_base_2026_09_14
+plan: ../../docs/training_plan.md
+name: f1_foam_naive_e2e_19d_weak_base
+robot: F1
+backend_source_relative_to_this_directory: ../../../../DM0.5/opendm
+goal: joint_end_to_end_arm_gripper_base_control
+external_stage_switch: false
+external_navigation_takeover: false
+observations:
+  images: [head, left_wrist, right_wrist]
+  task_text: 将泡沫棉从取料位置抓起，移动到放置位置放下，再返回取料侧。
+  state_dim: 21
+  layout:
+    - {name: left_arm_feedback, start: 0, stop: 7}
+    - {name: right_arm_feedback, start: 7, stop: 14}
+    - {name: left_gripper_feedback, start: 14, stop: 15}
+    - {name: right_gripper_feedback, start: 15, stop: 16}
+    - {name: body_feedback, start: 16, stop: 21}
+  head_joint_state_included: false
+  estimated_base_pose_included: false
+  estimated_base_velocity_included: false
+  body_feedback_fields: [body_j1, body_j2, body_j3, body_j4, body_j5]
+  body_physical_mapping: torso_motor_channels_documented_individual_axes_unverified
+  note: Initial input avoids dependence on synthetic base state unavailable identically online.
+actions:
+  action_dim: 19
+  layout:
+    - {name: left_arm_target, start: 0, stop: 7, source: /lead/joint_states, encoding: absolute_recorded_units}
+    - {name: right_arm_target, start: 7, stop: 14, source: /lead/joint_states, encoding: absolute_recorded_units}
+    - {name: left_gripper_target, start: 14, stop: 15, source: /motion_ctl/gripper/left, encoding: raw_position_scale}
+    - {name: right_gripper_target, start: 15, stop: 16, source: /motion_ctl/gripper/right, encoding: raw_position_scale}
+    - {name: base_vx_vy_wz, start: 16, stop: 19, source: /move/State, encoding: estimated_velocity_weak_target}
+  body_mode: fixed_posture_not_in_first_action_head
+  head_mode: fixed_posture_not_in_action_head
+  right_arm_policy_enabled: true
+  right_gripper_policy_enabled: true
+  right_side_freeze: false
+  actual_base_command_recorded: false
+  weak_base_target_loss_weight: 1.0
+  weight_status: initial_unweighted_baseline_after_per_field_normalization_not_confidence_calibration
+  zero_angular_velocity_target: retain_dimension_and_handle_constant_normalization
+encoding:
+  subtract_whole_state_from_action: false
+  normalize_each_field_on_training_split_only: true
+  constant_dimension_handling: center_to_zero_and_scale_one
+  recorded_joint_units: raw_f1_scale_not_assumed_radians
+  documented_execution_joint_unit: degrees
+  lead_to_execution_mapping_verified: false
+  inspected_source_mapping_evidence: ../../../reference/20260914_action_mapping_followup/README.md
+  inspected_normal_teleop_mapping: hardware_degrees_left7_right7_shared_safe_cache
+  capture_version_and_effective_limits_verified: false
+  execution_unit_conversion: verify_f1_contract_before_deployment
+  reuse_g2_hand20_layout_or_statistics: false
+data:
+  source: /mnt/dm05_nvme/dm05/datasets/f1_foam_sort/raw
+  audit_results: ../../results/20260914
+  technical_candidate_packs: ../../results/cleaning_v1
+  cleaning_report: ../../docs/archive/first_alignment_run.md
+  processed_dataset_ready: false
+  include_all_four_source_batches: true
+  exclude_based_only_on_right_arm_motion: false
+  episode_unit: reviewed_task_cycle_with_original_recording_id
+  confirmed_wrong_base_labels: relabel_or_exclude_affected_base_supervision_windows
+  synchronization: per_camera_clock_and_startup_validation_then_common_time_grid
+  preserve_complete_cycles_where_valid: true
+  do_not_feed_future_phase_labels_or_episode_time_as_policy_input: true
+  no_action_chunks_crossing_invalid_intervals: true
+  reset_supervision: exclude_full_19d_reset_tail_calibrate_existing_conservative_boundary
+  reset_target_reconstruction_required_for_first_demo: false
+  feedback_overwrites_recorded_arm_targets: false
+  demonstration_event_order: return_complete_then_arm_reset
+  event_order_evidence: user_site_confirmation_per_episode_times_to_localize
+  return_completion: visually_verify_before_tail_boundary_partial_segments_not_complete_return
+  tail_padding: mask_unknown_future_targets_do_not_supervise_repeated_nonzero_velocity
+  split: frozen_episode_level_temporal_blocks_by_batch_before_normalization
+evaluation:
+  report_action_groups_separately: [arms, grippers, base_translation, base_yaw]
+  near_constant_groups: [right_gripper, base_yaw]
+  include_moving_frames_metrics: true
+  compare_simple_baselines: [zero_base_velocity, mean_route_template]
+  task_metrics: [grasp_success, carry_without_drop, release_at_destination, return_to_pick, whole_cycle_success]
+  whole_cycle_scope: grasp_carry_release_return_excludes_arm_reset_and_next_cycle_preparation
+  partial_segment_metrics: report_covered_stages_do_not_count_as_complete_return
+  offline_loss_is_not_hardware_success_rate: true
+  pretraining_data_replay: ../../docs/dataset_acceptance.md

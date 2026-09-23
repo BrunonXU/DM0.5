@@ -197,6 +197,49 @@ def apply_causal_delta_cap(
     return result
 
 
+def apply_causal_boundary_internal_cap(
+    targets: list[np.ndarray],
+    *,
+    boundary_max_delta_rad: float,
+    internal_max_delta_rad: float,
+    initial_commands: list[np.ndarray | None],
+) -> list[np.ndarray]:
+    """Limit the first command of each chunk more than internal commands."""
+    if not 0 < boundary_max_delta_rad <= internal_max_delta_rad:
+        raise ValueError("require 0 < boundary cap <= internal cap")
+    if len(initial_commands) != len(targets):
+        raise ValueError("initial_commands must align with target chunks")
+    result: list[np.ndarray] = []
+    previous: np.ndarray | None = None
+    previous_raw: np.ndarray | None = None
+    for target_chunk, initial in zip(targets, initial_commands, strict=True):
+        recorded_anchor = None if initial is None else np.asarray(initial).copy()
+        continuous_trace = (
+            previous_raw is not None
+            and recorded_anchor is not None
+            and np.allclose(recorded_anchor, previous_raw, atol=1e-9, rtol=0.0)
+        )
+        if not continuous_trace:
+            previous = recorded_anchor
+        commands = np.empty_like(target_chunk)
+        for index, target in enumerate(target_chunk):
+            if previous is None:
+                command = target.copy()
+            else:
+                limit = (
+                    boundary_max_delta_rad
+                    if index == 0
+                    else internal_max_delta_rad
+                )
+                command = previous + np.clip(target - previous, -limit, limit)
+            commands[index] = command
+            previous = command
+        result.append(commands)
+        if len(target_chunk):
+            previous_raw = target_chunk[-1].copy()
+    return result
+
+
 def apply_causal_hand_tracker(
     targets: list[np.ndarray],
     *,
@@ -447,6 +490,16 @@ def evaluate_recorded(
             max_delta_rad=cap,
             initial_commands=initials,
         )
+    for boundary_cap in (0.10, 0.15, 0.20):
+        for internal_cap in (0.25, 0.30):
+            candidates[
+                f"recorded_boundary_{boundary_cap:.2f}_internal_{internal_cap:.2f}"
+            ] = apply_causal_boundary_internal_cap(
+                actual,
+                boundary_max_delta_rad=boundary_cap,
+                internal_max_delta_rad=internal_cap,
+                initial_commands=initials,
+            )
     tracker, tracker_stats = apply_causal_hand_tracker(
         actual,
         initial_commands=initials,

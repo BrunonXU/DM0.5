@@ -1,0 +1,46 @@
+{
+  "checked_at": "2026-09-21T02:35:19.671054+00:00",
+  "hostname": "ms-thor",
+  "architecture": "aarch64",
+  "os_release": "PRETTY_NAME=\"Ubuntu 24.04.4 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.4 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+  "linger": "Linger=yes",
+  "existing_connect_files": [
+    "bootstrap_3f_jimu.ukCVUW",
+    "evidence",
+    "evidence/bootstrap_known_hosts.MBMXLw"
+  ],
+  "service": "LoadState=not-found\nActiveState=inactive\nFragmentPath=\n",
+  "bootstrap_processes": [
+    {
+      "pid": 2579946,
+      "argv": [
+        "ssh",
+        "-F",
+        "/dev/null",
+        "-NT",
+        "-o",
+        "PubkeyAuthentication=no",
+        "-o",
+        "UserKnownHostsFile=/home/user/Bruno/connect/evidence/bootstrap_known_hosts.MBMXLw",
+        "-o",
+        "GlobalKnownHostsFile=/dev/null",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "HostKeyAlgorithms=ssh-ed25519",
+        "-o",
+        "ConnectTimeout=10",
+        "-o",
+        "ExitOnForwardFailure=yes",
+        "-o",
+        "ServerAliveInterval=30",
+        "-o",
+        "ServerAliveCountMax=3",
+        "-R",
+        "127.0.0.1:22165:127.0.0.1:22",
+        "xza_100850113@10.130.153.114",
+        ""
+      ]
+    }
+  ]
+}

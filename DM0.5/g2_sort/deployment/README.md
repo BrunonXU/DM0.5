@@ -13,5 +13,8 @@ python3 -m g2_sort.deployment.g2_sdk_client --help
 一个实现`PolicyBackend`并返回固定`ActionChunk`的后端。第一版唯一启用的后端
 是DM0.5 multipart HTTP，客户端只配置endpoint，不配置checkpoint。
 
-完整合同、命令、时钟和失败矩阵见
-[`docs/12_G2_CLIENT_DM05_RUNTIME.md`](../../docs/12_G2_CLIENT_DM05_RUNTIME.md)。
+控制时序原理见
+[`docs/robot/RTC_AND_CONTROL_TIMING_FIRST_PRINCIPLES.md`](../../docs/robot/RTC_AND_CONTROL_TIMING_FIRST_PRINCIPLES.md)，
+目标进程边界见
+[`docs/robot/RTC_PROCESS_ISOLATION.md`](../../docs/robot/RTC_PROCESS_ISOLATION.md)。
+现场命令以 `g2_robot/docs/00_G2_OPERATOR_GUIDE.md` 为准。

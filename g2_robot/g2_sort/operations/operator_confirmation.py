@@ -29,3 +29,19 @@ def confirm_ok_and_countdown(
     for remaining in range(seconds, 0, -1):
         print(f"{remaining}...", flush=True)
         sleep_fn(1.0)
+
+
+def confirm_enter_and_countdown(
+    action: str,
+    *,
+    seconds: int = 5,
+    input_fn: Callable[[str], str] = input,
+    sleep_fn: Callable[[float], None] = time.sleep,
+) -> None:
+    """Home operator flow: a physical ENTER, never a supplied text bypass."""
+    answer = input_fn(f"即将执行真实动作：{action}。现场急停就绪后按 ENTER；Ctrl-C取消：")
+    if answer != "":
+        raise PermissionError("请只按ENTER；本次真实动作已取消")
+    for remaining in range(seconds, 0, -1):
+        print(f"{remaining}...", flush=True)
+        sleep_fn(1.0)

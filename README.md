@@ -11,7 +11,11 @@ DM0.5 是其中一套策略栈，不是整个仓库的边界，也不是项目�
 | `PI0.5/` | Physical Intelligence 官方 OpenPI 源码，以上游子模块管理 |
 | `RLinf/` | RLinf 官方源码，以上游子模块管理 |
 | `g2_robot/` | G2 相机、状态、安全、控制、运维和策略运行时 |
+| `G2Teleop/` | 冻结 F710 遥操源码、配置、测试和基线；HIL/录制已迁至 DAgger |
+| `DAgger/` | 人工接管、纠正数据采集、录制审计和 DAgger 集成 |
+| `third_party/` | 任务复用的第三方源码，例如 LeRobot |
 | `tasks/` | 任务级集成、配置、实验记录和评测 |
+| [`F1/foam_sort_whole_body/`](F1/foam_sort_whole_body/README.md) | 自研 F1 泡沫棉移动操作：最终数据审查、全身字段合同与 DM0.5 任务集成 |
 
 ## 当前 Demo
 
@@ -74,6 +78,9 @@ git submodule update --init --recursive
 ```
 
 OpenPI 自身还包含 ALOHA 和 LIBERO 子模块，递归初始化会一并获取。
+`third_party/lerobot/` 同样固定到上游提交，由上述命令初始化。
+6000D 上的 OpenPI 本地改动另外保存在
+[`third_party/patches/`](third_party/patches/README.md)，可按说明恢复。
 
 ## 当前 PI0.5 基础模型
 
@@ -90,4 +97,11 @@ PI0.5/checkpoints/pi05_base/
 ./tasks/g2_phone_packaging_pi05_rl/scripts/download_pi05_base.sh
 ```
 
-任务相关的集成代码应放在 `tasks/` 中，不要把 OpenPI 或 RLinf 源码复制进任务目录。
+新任务按 `机器人/任务/models/<模型>/` 与 `机器人/任务/results/` 组织；旧任务逐步迁移。通用 OpenPI、RLinf、DM0.5 源码继续集中复用。
+
+## 文件归位
+
+- G2/DM0.5 控制根因、待办和交接统一从 [DM0.5 机器人文档](DM0.5/docs/robot/README.md)进入；带日期的旧交接是历史快照。
+- F1 泡沫棉的结果统一放在 [任务 results](F1/foam_sort_whole_body/results/README.md)，包括 09-11 FTP 盘点和 09-14 数据审查。
+- 工作区根目录只放项目、共享组件和工作区说明；临时导出包、缓存和任务产物不另占顶层目录。
+- 原始数据、模型、实验日志和冻结基线按所属项目保留；历史部署包集中在 `DM0.5/artifacts/`。

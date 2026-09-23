@@ -1,0 +1,64 @@
+{
+  "schema": "g2teleop-f710-powered-baseline-v1",
+  "baseline_id": "f710-powered-v1-20260904",
+  "status": "powered-accepted",
+  "entrypoints": {
+    "g2": "bash scripts/12_g2_powered_f710.sh",
+    "windows": ["scripts\\windows_g2_tunnel.cmd", "scripts\\windows_f710_sender.cmd"]
+  },
+  "control_contract": {
+    "arms": "direct Pink reference, normal Servo, 100 Hz",
+    "hands": "O10 move_ee_pos, changed-only 5 Hz",
+    "relative_target_envelope": "rolling 0.20 m / 20 deg, same-tick continuous rebase",
+    "speed_low": "0.04 m/s, 10 deg/s",
+    "speed_high": "0.08 m/s, 20 deg/s",
+    "joint_speed_limit_rad_s": 0.35,
+    "network_watchdog_ms": 200,
+    "controls": "D-pad select then release; RB arm deadman; A speed toggle; RT hand toggle independent of RB; Y same-owner global Home"
+  },
+  "powered_acceptance": {
+    "main_log": "/home/agi/xza/DM0.5/logs/telemetry/powered/g2_powered_f710_20260904_132248.jsonl",
+    "main_log_sha256": "355d60291eabcff20bb7849f49478d393b17e44956955830a409e6a1695a2fd3",
+    "feedback_log": "/home/agi/xza/DM0.5/logs/telemetry/feedback/g2_powered_f710_20260904_132248.jsonl",
+    "feedback_log_sha256": "d2096451f3250fe20a332ad3f3e3c33a47081dedb250275e0b55da9edb5c18a2",
+    "runtime_profile": "pink_singularity_guard_v2_rolling_envelope_no_otg",
+    "dispatch_samples": 12687,
+    "enabled_samples": 11380,
+    "envelope_recenters": 18,
+    "translation_recenters": 6,
+    "rotation_recenters": 12,
+    "workspace_saturated_samples": 0,
+    "watchdogs": 0,
+    "ik_holds": 0,
+    "runtime_faults": 0,
+    "fresh_false_samples": 0,
+    "telemetry_drops": 0,
+    "dispatch_interval_p50_ms": 10.000092,
+    "dispatch_interval_p95_ms": 10.872094,
+    "dispatch_interval_max_ms": 17.686153,
+    "operator_result": "smooth; rolling-envelope disconnect feeling fixed"
+  },
+  "approved_external_config_sha256": {
+    "/home/agi/xza/DM0.5/g2_sort/config/hand_home_approved.json": "330cc7ce1775ca51f918f68e9c61e9098c282e7dbb7a18966e3baabb15caea05",
+    "/home/agi/xza/DM0.5/g2_sort/config/reset_poses.json": "02706fa84b767486fd58e027285371f8c45a62a17cf3de6b44108f78058505c4"
+  },
+  "workspace_file_sha256": {
+    "scripts/windows_g2_tunnel.cmd": "ec1384015e7a01293043b84d43f206f9a7cd96ea6d9cf8b56f1ce0735b39650e",
+    "scripts/windows_f710_sender.cmd": "90ffe70eaf9834d66c97ede08395a2a85df5c79a00d72dad82836ea3057f13cd",
+    "scripts/03_windows_shadow_sender.py": "6aa08fddb08f1b1acd56b0e93fd5e1ceb9bec20b8312c8284ae8b033d8e17015",
+    "scripts/12_g2_powered_f710.sh": "426333f0a243885a92212cdb446c118fbdd93c1a69da04a5ee62c7bf79158ffd",
+    "scripts/12_g2_powered_f710.py": "acb6cf23d612cda9b65f08fb8f31707a91ad591364b11c1337e520c9353ba838",
+    "src/g2teleop/async_transport.py": "57e3598074b8d2024af5af6c1c9c031aefc9762ac19dc13be5aabf1b9f081b19",
+    "src/g2teleop/gamepad_windows.py": "82fa0919017ef9c9476381fcece18db1721a77521bafa97e22c48274972550c7",
+    "src/g2teleop/f710_mapping.py": "e8e1561f1189a7eabefd8141d8556cc24803f37dc6f0347810a263f687876464",
+    "src/g2teleop/protocol.py": "2227976003c010dd26675d28ad1eba19d7a5838b0f1669f6b926493ad0b8e39d",
+    "src/g2teleop/powered_teleop.py": "ef63073d810a685393841cb987e15b24aaf72f7b54e7810092835c8acc2a4052",
+    "src/g2teleop/pink_ik.py": "1f0f17ced366f486d5e660645402cdfd7b23f650541f5f269ff29cd0121810b5",
+    "src/g2teleop/hand_synergy.py": "1db8360cc7e660aa601efd52eb4923eeb31664abd77338f1b5acccdcee077b2f",
+    "src/g2teleop/global_home.py": "eeaf4cc92fefbbc51d00a1e484cbc0c07ff6943827b631a17320a18c7f8ebb85",
+    "src/g2teleop/control_timing.py": "8678cb4941bd6d0d59ed624b8a76f122e304e6a567c42f51df0e6d0fbdfa8dca",
+    "configs/g2_kinematics_model.json": "5d2d59b325225011a98b850da632046cc4f553788a3d3f2f290f7fe4e85ac6a5",
+    "configs/hand_synergy_dm05_current_aid.json": "679d23b2a40cb982547f70ddf87da42671c895ae809b11d0887566187ac9aae4"
+  },
+  "change_policy": "Do not silently edit baseline files. Any control semantic or parameter change creates a new candidate and requires offline regression plus a new powered acceptance log before replacing this baseline."
+}

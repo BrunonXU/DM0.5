@@ -1,0 +1,19 @@
+# 正运动学求解服务
+# 输入关节角度，输出末端位姿矩阵和角度制XYZABC位姿
+
+# 手臂标识常量
+uint8 ARM_LEFT = 0
+uint8 ARM_RIGHT = 1
+
+# 请求
+uint8 target_arm              # 目标手臂：0-左臂(A), 1-右臂(B)
+float64[] joint_positions     # 7个关节角度(单位：度)
+bool compute_nsp              # 是否同时计算零空间投影矩阵(NSP)
+---
+# 响应
+bool success
+string message
+float64[] pose_matrix         # 4x4位姿矩阵，行优先展开为16个元素
+float64[] xyzabc              # 角度制位姿 [x, y, z, rx, ry, rz]，位置单位mm，姿态单位度
+float64[] nsp_matrix          # 3x3零空间投影矩阵，行优先展开为9个元素
+                              # 仅当 compute_nsp=true 时有效

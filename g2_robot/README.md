@@ -1,15 +1,15 @@
 # G2 × DM0.5 机器人现场项目
 
-这是G2 `/home/agi/DM0.5`在6000D上的开发副本。两台机器已接入公司内网，
+这是G2 `/home/agi/xza/DM0.5`在6000D上的开发副本。两台机器已接入公司内网，
 6000D修改后通过`scp`直接传对应文件到G2；真机命令仍由Bruno手动运行和验收。
 
 ## 从哪里开始
 
 1. [`docs/00_G2_OPERATOR_GUIDE.md`](docs/00_G2_OPERATOR_GUIDE.md)：上机必读。
-2. [`docs/Bruno.md`](docs/Bruno.md)：当前进度和下一步。
+2. [`../DM0.5/docs/CURRENT_STATUS.md`](../DM0.5/docs/CURRENT_STATUS.md)：跨服务器与真机的权威当前进度。
 3. [`docs/G2_ROBOT_STRUCTURE.md`](docs/G2_ROBOT_STRUCTURE.md)：目录职责。
-4. [`docs/12_G2_CLIENT_DM05_RUNTIME.md`](docs/12_G2_CLIENT_DM05_RUNTIME.md)：设计合同。
-5. [`docs/G2_TROUBLESHOOTING.md`](docs/G2_TROUBLESHOOTING.md)：历史故障。
+4. [`../DM0.5/docs/robot/RTC_PROCESS_ISOLATION.md`](../DM0.5/docs/robot/RTC_PROCESS_ISOLATION.md)：当前RTC目标架构。
+5. [`../DM0.5/docs/robot/incidents/README.md`](../DM0.5/docs/robot/incidents/README.md)：真机事故索引；本地Troubleshooting保留原始证据。
 6. [`docs/GDK_2.6.3_RELEVANT_API.md`](docs/GDK_2.6.3_RELEVANT_API.md)：官方接口摘要。
 
 ## 目录

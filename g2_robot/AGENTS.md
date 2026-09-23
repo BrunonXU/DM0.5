@@ -15,6 +15,6 @@
 - 6000D可以向G2直接`scp`代码文件，但不得通过SSH远程执行任何真机动作。所有
   GDK、Servo、复位和powered命令仍由Bruno在G2终端手动运行。
 - 修改后先运行无GDK纯逻辑测试和Shell语法检查；真机未验证的行为必须明确标记。
-- 每次同步G2快照后更新`docs/G2_ROBOT_STRUCTURE.md`；只在
-  `docs/Bruno.md`记录最新状态和下一步；已解决问题进入
-  `docs/G2_TROUBLESHOOTING.md`。
+- 每次同步G2快照后更新`docs/G2_ROBOT_STRUCTURE.md`。`docs/Bruno.md`只保留现场临时状态，
+  `docs/G2_TROUBLESHOOTING.md`只作为尚未完成迁移的原始记录；跨训练/服务器/真机的权威状态、
+  原理、实验和事故统一进入`../DM0.5/docs/`，并遵守`../DM0.5/docs/AGENTS.md`。

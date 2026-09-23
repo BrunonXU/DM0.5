@@ -1,0 +1,72 @@
+{
+  "at": "2026-09-22T07:21:23.590189+00:00",
+  "hostname": {
+    "exit_code": 0,
+    "stdout": "ms-thor\n",
+    "stderr": ""
+  },
+  "os_release": "PRETTY_NAME=\"Ubuntu 24.04.3 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.3 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+  "architecture": {
+    "exit_code": 0,
+    "stdout": "aarch64\n",
+    "stderr": ""
+  },
+  "linger": {
+    "exit_code": 0,
+    "stdout": "Linger=no\n",
+    "stderr": ""
+  },
+  "service": {
+    "exit_code": 0,
+    "stdout": "LoadState=not-found\nActiveState=inactive\nFragmentPath=\n",
+    "stderr": ""
+  },
+  "existing_files": [
+    "evidence",
+    "bootstrap_f1_09.sh",
+    "evidence/bootstrap_known_hosts.eolx3r"
+  ],
+  "route": {
+    "exit_code": 0,
+    "stdout": "10.130.153.114 via 192.168.31.1 dev wlan0 src 192.168.31.58 uid 1000 \n    cache \n",
+    "stderr": ""
+  },
+  "wifi_profile": {
+    "exit_code": 0,
+    "stdout": "connection.id:                          HQ-W2-D071\nconnection.uuid:                        65b8366a-f2da-4c8b-8445-5bf632c98f93\nconnection.autoconnect:                 yes\n802-11-wireless.ssid:                   HQ-W2-D071\n802-11-wireless.cloned-mac-address:     --\nipv4.method:                            auto\nipv4.addresses:                         --\nipv4.gateway:                           --\n",
+    "stderr": ""
+  },
+  "bootstrap_processes": [
+    {
+      "pid": 1287290,
+      "argv": [
+        "ssh",
+        "-F",
+        "/dev/null",
+        "-NT",
+        "-o",
+        "PubkeyAuthentication=no",
+        "-o",
+        "UserKnownHostsFile=/home/user/Bruno/connect/evidence/bootstrap_known_hosts.eolx3r",
+        "-o",
+        "GlobalKnownHostsFile=/dev/null",
+        "-o",
+        "StrictHostKeyChecking=yes",
+        "-o",
+        "HostKeyAlgorithms=ssh-ed25519",
+        "-o",
+        "ConnectTimeout=10",
+        "-o",
+        "ExitOnForwardFailure=yes",
+        "-o",
+        "ServerAliveInterval=30",
+        "-o",
+        "ServerAliveCountMax=3",
+        "-R",
+        "127.0.0.1:22009:127.0.0.1:22",
+        "xza_100850113@10.130.153.114",
+        ""
+      ]
+    }
+  ]
+}

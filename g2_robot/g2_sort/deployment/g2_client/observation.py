@@ -83,3 +83,23 @@ class ObservationSource:
     def read_state(self) -> np.ndarray:
         """Re-read strict measured state for the powered execution gate."""
         return self._state_source.read_state()
+
+
+class StateOnlyObservationSource:
+    """Expose control-process state without importing camera frames.
+
+    Process-isolated RTC performs capture and inference in its worker.  The
+    controller still needs a fresh local state for execution safety gates, but
+    must never pull camera arrays back into the 100 Hz process.
+    """
+
+    def __init__(self, state_source: StateSource) -> None:
+        self._state_source = state_source
+
+    def capture(self) -> Observation:
+        raise ObservationError(
+            "camera capture belongs to the process-isolated policy worker"
+        )
+
+    def read_state(self) -> np.ndarray:
+        return self._state_source.read_state()

@@ -914,6 +914,11 @@ class DM05ForConditionalGeneration(DMPreTrainedModel):
         diffusion_steps: int = 10,
         past_key_values: DynamicCache | None = None,
         action_mask: torch.BoolTensor | None = None,
+        rtc_prefix_actions: torch.FloatTensor | None = None,
+        rtc_inference_delay: int = 0,
+        rtc_overlap_steps: int = 0,
+        rtc_max_guidance_weight: float = 10.0,
+        rtc_guidance_mode: str = "exact_vjp",
         **kwargs,
     ) -> torch.Tensor:
         kv_cache = DynamicCache(config=self.model.language_model.config)
@@ -949,37 +954,63 @@ class DM05ForConditionalGeneration(DMPreTrainedModel):
             )
             if action_mask is not None:
                 x_t = x_t * action_mask
-            suffix_embeds = self.model.action_in_proj(x_t)
-            adarms_cond = self._build_adarms_cond(time_tensor, suffix_embeds.dtype)
-            suffix_len = int(suffix_embeds.shape[1])
-            suffix_attn_mask = make_suffix_attn_mask(
-                input_ids=input_ids,
-                prefix_len=prefix_len,
-                suffix_len=suffix_len,
-                batch_size=batch_size,
-                device=suffix_embeds.device,
-                dtype=suffix_embeds.dtype,
-                pad_token_id=self.model.vlm.model.language_model.padding_idx,
-            )
-            suffix_position_ids = self._build_suffix_position_ids(
-                prefix_len,
-                suffix_len,
-                device,
-                input_ids=input_ids,
-                pad_token_id=self.model.vlm.model.language_model.padding_idx,
-            )
+            def denoise_fn(action_latent: torch.Tensor) -> torch.Tensor:
+                suffix_embeds = self.model.action_in_proj(action_latent)
+                adarms_cond = self._build_adarms_cond(
+                    time_tensor, suffix_embeds.dtype
+                )
+                suffix_len = int(suffix_embeds.shape[1])
+                suffix_attn_mask = make_suffix_attn_mask(
+                    input_ids=input_ids,
+                    prefix_len=prefix_len,
+                    suffix_len=suffix_len,
+                    batch_size=batch_size,
+                    device=suffix_embeds.device,
+                    dtype=suffix_embeds.dtype,
+                    pad_token_id=self.model.vlm.model.language_model.padding_idx,
+                )
+                suffix_position_ids = self._build_suffix_position_ids(
+                    prefix_len,
+                    suffix_len,
+                    device,
+                    input_ids=input_ids,
+                    pad_token_id=self.model.vlm.model.language_model.padding_idx,
+                )
+                suffix_out = self._suffix_forward(
+                    suffix_embeds=suffix_embeds,
+                    attention_mask=suffix_attn_mask,
+                    position_ids=suffix_position_ids,
+                    past_key_values=kv_cache,
+                    adarms_cond=adarms_cond,
+                )
+                return self.model.action_out_proj(suffix_out)
 
-            suffix_out = self._suffix_forward(
-                suffix_embeds=suffix_embeds,
-                attention_mask=suffix_attn_mask,
-                position_ids=suffix_position_ids,
-                past_key_values=kv_cache,
-                adarms_cond=adarms_cond,
-            )
+            if rtc_prefix_actions is None:
+                v_t = denoise_fn(x_t)
+            else:
+                from .rtc import guided_velocity
 
-            v_t = self.model.action_out_proj(suffix_out)
+                v_t = guided_velocity(
+                    x_t=x_t,
+                    denoise_time=time_val,
+                    denoise_fn=denoise_fn,
+                    prefix=rtc_prefix_actions,
+                    inference_delay=rtc_inference_delay,
+                    overlap_steps=rtc_overlap_steps,
+                    max_guidance_weight=rtc_max_guidance_weight,
+                    guidance_mode=rtc_guidance_mode,
+                )
             x_t = x_t + v_t * dt
             time_val += dt
+        if rtc_prefix_actions is not None:
+            from .rtc import project_rtc_prefix
+
+            x_t = project_rtc_prefix(
+                x_t,
+                rtc_prefix_actions,
+                inference_delay=rtc_inference_delay,
+                overlap_steps=rtc_overlap_steps,
+            )
         return x_t
 
     def _extract_prefix_cache_tensors(

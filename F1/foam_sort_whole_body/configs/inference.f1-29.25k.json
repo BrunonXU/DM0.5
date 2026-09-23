@@ -1,0 +1,66 @@
+{
+  "contract": "f1_foam_inference_v1",
+  "policy_contract": "f1_state19_eef23_partial_base_v2",
+  "checkpoint": "/mnt/dm05_nvme/dm05/runs/F1_foam_772_eef23_4gpu_100k_20260917/checkpoints/checkpoint-25000",
+  "release": "../results/formal_training_20260917/release_pass_a.json",
+  "server": {
+    "host": "127.0.0.1",
+    "port": 7896,
+    "device": "cuda:0",
+    "diffusion_steps": 10,
+    "max_request_bytes": 16777216
+  },
+  "client": {
+    "endpoint": "http://127.0.0.1:7896",
+    "request_timeout_s": 10.0,
+    "max_observation_age_s": 2.0,
+    "camera_max_age_s": 0.2,
+    "camera_max_spread_s": 0.1,
+    "feedback_wait_s": 10.0,
+    "frequency_hz": 30,
+    "execute_steps": 20,
+    "inter_chunk_policy": "stop_and_observe",
+    "runtime_profile": "replay.f1-29.json",
+    "body_reference": "/home/user/Bruno/F1/foam_sort_whole_body/runtime/body_reference/4F-F1.json",
+    "profile_overrides": {
+      "arm_limit_policy": "reject",
+      "command_ownership_policy": "observed_idle_v1",
+      "command_monitor_binary": "/home/user/Bruno/F1/foam_sort_whole_body/runtime/command_monitors/20260918-f1-29-v1/build/libf1_command_monitor_shared.so",
+      "command_monitor_sha256": "8884d333668c3511c302b8ea5aedb0cb209e1fbf7802e8bfa67d2449edfce8dd",
+      "inference_gripper_range_policy": "saturate_0_100",
+      "inference_gripper_start_policy": "target_position",
+      "base_speed_limits": {
+        "vx": 0.65,
+        "vy": 0.65,
+        "wz": 0.8
+      },
+      "base_speed_limits_source": "F1 .29 live parameters 20260918; 0.65m/s task ceiling retained; not a hardware safety rating",
+      "base_controller_expected_parameters": {
+        "max_speed.angular": 0.8,
+        "max_acceleration.angular": 0.25,
+        "max_deceleration.angular": 0.4,
+        "max_speed.linear": 0.8,
+        "max_acceleration.linear": 0.13,
+        "max_deceleration.linear": 0.5
+      },
+      "inference_first_arm_max_delta_deg": 5.0,
+      "diagnostic_record_topics": [
+        "/controller/odom",
+        "/driver/State",
+        "/driver/motor/Data",
+        "/driver/shaft/motor/Data",
+        "/driver/stm32/Data",
+        "/state/left_arm/joint_force",
+        "/state/right_arm/joint_force"
+      ]
+    },
+    "camera_topics": {
+      "head": "/camera/head/color/image_raw/compressed",
+      "left": "/camera/left_wrist/color/image_raw/compressed",
+      "right": "/camera/right_wrist/color/image_raw/compressed"
+    },
+    "camera_wait_s": 1.0,
+    "max_consecutive_expired": 3,
+    "first_arm_retry_limit": 3
+  }
+}

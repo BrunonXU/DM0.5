@@ -52,6 +52,7 @@ dependencies = [
     "flask",
     "httpx",
     "requests",
+    "websockets>=12,<16",
     "pydantic==2.13.4",
 
     # UI and visualization

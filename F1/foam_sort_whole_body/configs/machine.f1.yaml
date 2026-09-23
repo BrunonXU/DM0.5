@@ -1,0 +1,20 @@
+# F1端对应任务的部署路径。current选择静态版本，切换它不启动机器人。
+schema_version: 1
+machine: f1_d070
+task: foam_sort_whole_body
+architecture: aarch64
+role: robot_client_and_onsite_replay
+paths:
+  deployment_root: /home/user/Bruno/F1/foam_sort_whole_body
+  task_root: /home/user/Bruno/F1/foam_sort_whole_body/current
+  runtime_directory: /home/user/Bruno/F1/foam_sort_whole_body/runtime
+  task_model_directory: /home/user/Bruno/F1/foam_sort_whole_body/current/models/DM0.5
+  raw_dataset: null
+  shared_model_source: null
+model:
+  family: DM0.5
+  inference_placement: 6000d_service
+  service_endpoint: null
+  checkpoint: null
+  normalization: null
+  status: not_deployed

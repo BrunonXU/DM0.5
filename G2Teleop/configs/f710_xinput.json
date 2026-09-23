@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "device": {
+    "vendor_product": "046d:c21f",
+    "name": "Logitech Gamepad F710",
+    "mode": "XInput",
+    "preferred_path": "/dev/input/by-id/usb-Logitech_Wireless_Gamepad_F710_1BF994E3-joystick",
+    "fallback_path": "/dev/input/js0"
+  },
+  "mapping_status": "expected_unverified",
+  "expected_linux_js_mapping": {
+    "axes": {
+      "left_x": 0,
+      "left_y": 1,
+      "left_trigger": 2,
+      "right_x": 3,
+      "right_y": 4,
+      "right_trigger": 5,
+      "dpad_x": 6,
+      "dpad_y": 7
+    },
+    "buttons": {
+      "a": 0,
+      "b": 1,
+      "x": 2,
+      "y": 3,
+      "lb": 4,
+      "rb_deadman": 5,
+      "back": 6,
+      "start": 7,
+      "guide": 8,
+      "left_stick": 9,
+      "right_stick": 10
+    }
+  },
+  "logical_mapping": {
+    "select_left": "dpad_left_while_deadman_released",
+    "select_right": "dpad_right_while_deadman_released",
+    "translation_mode": "dpad_up_while_deadman_released",
+    "rotation_mode": "dpad_down_while_deadman_released",
+    "deadman": "rb",
+    "grip_velocity": "right_trigger_minus_left_trigger",
+    "thumb_clearance": "lb_held"
+  },
+  "axis_signs": {
+    "left_x": null,
+    "left_y": null,
+    "right_x": null,
+    "right_y": null,
+    "left_trigger": null,
+    "right_trigger": null,
+    "dpad_x": null,
+    "dpad_y": null
+  },
+  "safety": {
+    "axis_deadband": 0.12,
+    "powered_allowed": false,
+    "requires_read_only_axis_verification": true,
+    "wireless_controller_is_not_physical_estop": true
+  }
+}
+

@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "status": "offline_shadow_only",
+  "pin_version": "3.7.0",
+  "pink_package": "pin-pink==4.3.0",
+  "qpsolvers_version": "4.13.0",
+  "qp_solver": "proxqp",
+  "proxsuite_version": "0.7.3",
+  "abi_pins": {
+    "cmeel-urdfdom": "4.0.1",
+    "cmeel-tinyxml2": "10.0.0"
+  },
+  "controlled_frame_candidate": "hand_{side}_base_link",
+  "twist_frame": "g2_base",
+  "limits": {
+    "max_dt_s": 0.05,
+    "max_linear_speed_m_s": 0.02,
+    "max_angular_speed_deg_s": 10.0,
+    "max_relative_translation_m": 0.05,
+    "max_relative_rotation_deg": 20.0,
+    "max_joint_speed_rad_s": 0.35,
+    "max_joint_step_rad": 0.01
+  },
+  "operational_policy": "initialize target from measured FK at takeover; integrate relative increments only",
+  "gdk_imported": false,
+  "hardware_output": false,
+  "powered_allowed": false
+}

@@ -1,0 +1,25 @@
+{
+  "schema": "f1_pose_setup_config_v1",
+  "profile": "/home/user/Bruno/F1/foam_sort_whole_body/releases/20260918-4F-F1-v4/workspace/F1/foam_sort_whole_body/configs/pose.f1-29.json",
+  "bundle": "/home/user/Bruno/F1/foam_sort_whole_body/releases/20260918-pose-192-4f-v1/workspace/F1/foam_sort_whole_body/results/demo_training_release_20260917_v1/replay_192/bundle",
+  "bundle_sha256": "09bc685a46e9f9da6721b51d459d8eb9b300a4b0f6927cb6f0ce546a487f378d",
+  "start_pose_policy": "recorded_hal",
+  "motion_policy": {
+    "arm_rate_deg_s": 3.0,
+    "body_rate_deg_s": 1.5,
+    "gripper_rate_s": 10.0,
+    "arm_tracking_tolerance_deg": 5.0,
+    "body_tracking_tolerance_deg": 2.0,
+    "gripper_tracking_tolerance": 15.0,
+    "settle_timeout_s": 8.0,
+    "settle_stable_s": 1.0,
+    "sample_hz": 200,
+    "auxiliary_hz": 25,
+    "sampling_policy": "body_only_interleaved_v1",
+    "body_acceleration_deg_s2": 1.0,
+    "body_jerk_deg_s3": 2.0
+  },
+  "note": "User explicitly selected episode192 motor-angle start; no body geometry equivalence claimed; head and base position unchanged. Onsite Enter only; physical vibration acceptance pending.",
+  "align_yaw_on_return": true,
+  "restore_arms_only": true
+}

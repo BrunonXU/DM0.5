@@ -1,0 +1,82 @@
+{
+  "episode": "sorting_20260409161901",
+  "row_index": 450,
+  "seed": 20260814,
+  "cameras": {
+    "images_head": {
+      "frame_idx": 451,
+      "samples": [
+        {
+          "variant": 1,
+          "summary": "Crop+Rotate"
+        },
+        {
+          "variant": 2,
+          "summary": "base only"
+        },
+        {
+          "variant": 3,
+          "summary": "base only"
+        },
+        {
+          "variant": 4,
+          "summary": "Color"
+        },
+        {
+          "variant": 5,
+          "summary": "Crop"
+        }
+      ]
+    },
+    "images_left_wrist": {
+      "frame_idx": 450,
+      "samples": [
+        {
+          "variant": 1,
+          "summary": "Crop"
+        },
+        {
+          "variant": 2,
+          "summary": "Crop"
+        },
+        {
+          "variant": 3,
+          "summary": "Rotate+Color"
+        },
+        {
+          "variant": 4,
+          "summary": "Color"
+        },
+        {
+          "variant": 5,
+          "summary": "Color"
+        }
+      ]
+    },
+    "images_right_wrist": {
+      "frame_idx": 451,
+      "samples": [
+        {
+          "variant": 1,
+          "summary": "Crop+Rotate+Color"
+        },
+        {
+          "variant": 2,
+          "summary": "Rotate+Color"
+        },
+        {
+          "variant": 3,
+          "summary": "Crop+Rotate"
+        },
+        {
+          "variant": 4,
+          "summary": "Crop+Rotate+Color"
+        },
+        {
+          "variant": 5,
+          "summary": "Crop"
+        }
+      ]
+    }
+  }
+}

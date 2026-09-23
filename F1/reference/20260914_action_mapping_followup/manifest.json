@@ -1,0 +1,70 @@
+{
+  "source_host": "ms-thor",
+  "snapshot_kind": "selected_action_mapping_dependency_evidence",
+  "remote_mutations": false,
+  "scope_limit_files": 6,
+  "scope_limit_bytes_per_file": 1000000,
+  "secret_screening": "Heuristic private-key and literal-credential scan before transfer; not security certification.",
+  "files": [
+    {
+      "source_host": "ms-thor",
+      "source_path": "/home/user/meaxiao/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/common/base_teleop_controller_ros2_mixin.py",
+      "resolved_path": "/home/user/meaxiao/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/common/base_teleop_controller_ros2_mixin.py",
+      "source_is_symlink": false,
+      "captured_at_utc": "2026-09-14T09:12:06.532041+00:00",
+      "bytes": 39745,
+      "sha256": "2768fd0014b15b20f457c45601805713eb826e7f67d9e304fb4f3492042a6a7f",
+      "git": {
+        "available": false
+      },
+      "local_path": "files/home/user/meaxiao/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/common/base_teleop_controller_ros2_mixin.py",
+      "local_sha256": "2768fd0014b15b20f457c45601805713eb826e7f67d9e304fb4f3492042a6a7f",
+      "local_sha256_verified": true
+    },
+    {
+      "source_host": "ms-thor",
+      "source_path": "/home/user/meaxiao/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/common/send2real_robot_f1_udp.py",
+      "resolved_path": "/home/user/meaxiao/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/common/send2real_robot_f1_udp.py",
+      "source_is_symlink": false,
+      "captured_at_utc": "2026-09-14T09:12:06.533905+00:00",
+      "bytes": 6586,
+      "sha256": "6e9334b8fff090f5d09bba8d2ecf1f3488d0efddef25f5f1dbb2a2169c19be96",
+      "git": {
+        "available": false
+      },
+      "local_path": "files/home/user/meaxiao/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/common/send2real_robot_f1_udp.py",
+      "local_sha256": "6e9334b8fff090f5d09bba8d2ecf1f3488d0efddef25f5f1dbb2a2169c19be96",
+      "local_sha256_verified": true
+    },
+    {
+      "source_host": "ms-thor",
+      "source_path": "/home/user/meaxiao/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/simulation/placo_teleop_controller.py",
+      "resolved_path": "/home/user/meaxiao/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/simulation/placo_teleop_controller.py",
+      "source_is_symlink": false,
+      "captured_at_utc": "2026-09-14T09:12:06.535704+00:00",
+      "bytes": 4212,
+      "sha256": "867036ee78b35c4e3679991de7b91d3fd07e9dc3c46f5bfe0c1a42ca0dc54291",
+      "git": {
+        "available": false
+      },
+      "local_path": "files/home/user/meaxiao/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/simulation/placo_teleop_controller.py",
+      "local_sha256": "867036ee78b35c4e3679991de7b91d3fd07e9dc3c46f5bfe0c1a42ca0dc54291",
+      "local_sha256_verified": true
+    },
+    {
+      "source_host": "ms-thor",
+      "source_path": "/home/user/meaxiao/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/common/base_teleop_controller_ik_mixin.py",
+      "resolved_path": "/home/user/meaxiao/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/common/base_teleop_controller_ik_mixin.py",
+      "source_is_symlink": false,
+      "captured_at_utc": "2026-09-14T09:12:28.551399+00:00",
+      "bytes": 28213,
+      "sha256": "a59c0fb184a8f614efb871f9c318486961fa4596b02ad8f93261498f7891ecb9",
+      "git": {
+        "available": false
+      },
+      "local_path": "files/home/user/meaxiao/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/common/base_teleop_controller_ik_mixin.py",
+      "local_sha256": "a59c0fb184a8f614efb871f9c318486961fa4596b02ad8f93261498f7891ecb9",
+      "local_sha256_verified": true
+    }
+  ]
+}

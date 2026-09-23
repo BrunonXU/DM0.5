@@ -8,7 +8,11 @@
 
 from __future__ import annotations
 
+from io import BytesIO
+
 import numpy as np
+
+from .image_transport import EncodedImage
 
 
 class MockCameraRig:
@@ -48,6 +52,23 @@ class MockCameraRig:
 
     def capture(self) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         return tuple(image.copy() for image in self._images)  # type: ignore[return-value]
+
+    def capture_encoded(self) -> tuple[EncodedImage, EncodedImage, EncodedImage]:
+        from PIL import Image
+
+        frames = []
+        for image in self._images:
+            output = BytesIO()
+            Image.fromarray(image, mode="RGB").save(output, format="JPEG", quality=95)
+            frames.append(
+                EncodedImage(
+                    output.getvalue(),
+                    "image/jpeg",
+                    int(image.shape[1]),
+                    int(image.shape[0]),
+                )
+            )
+        return tuple(frames)  # type: ignore[return-value]
 
     def close(self) -> None:
         return None

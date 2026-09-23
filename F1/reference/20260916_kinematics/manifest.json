@@ -1,0 +1,35 @@
+{
+  "captured_at_utc": "2026-09-16T04:38:15.229415+00:00",
+  "host": "ms-thor",
+  "files": [
+    {
+      "path": "/home/user/workspace/f1/install/tj_sdk/include/FxRobot.h",
+      "sha256": "3925a1f19e4ed7ce4fa8ae97321b4e308e8338930785fecb35d83df59724aa0d"
+    },
+    {
+      "path": "/home/user/workspace/f1/install/tj_sdk/include/FXKineCommon.h",
+      "sha256": "878fa05411b6279ee47c3ed29023008bdf78490955f87a01ac1a562bababc1fc"
+    },
+    {
+      "path": "/home/user/workspace/f1/install/motor_ctl/include/motor_ctl/kinematics_core.hpp",
+      "sha256": "0cf71fbcfff274dd6ade2b3c0b3ec1478353249c12f503a6261217641240cfb3"
+    },
+    {
+      "path": "/home/user/workspace/f1/install/motor_ctl/share/motor_ctl/ccs_m6_40.MvKDCfg",
+      "sha256": "ce20b1a80974c3ed58cdac4973152625096c8ad93a779e5fd4108c26ce19bd52"
+    },
+    {
+      "path": "/home/user/workspace/f1/install/motor_ctl/share/motor_ctl/launch/kinematics.launch.xml",
+      "sha256": "ee6c42bb959c3b416e99e429d8993526c156d54ab767a90c77486793a0896f5a"
+    },
+    {
+      "path": "/home/user/workspace/f1/install/f1_msgs/share/f1_msgs/srv/ForwardKinematics.srv",
+      "sha256": "5f35edb1e3959f6078975fd8b78f66ed3a7a11e896aaf7e1ec459f64597d94d7"
+    },
+    {
+      "path": "/home/user/workspace/f1/install/f1_msgs/share/f1_msgs/srv/InverseKinematics.srv",
+      "sha256": "28522afbb581ef3b0f9d38e8c5142320fa8e7707188736fe004241b201114d72"
+    }
+  ],
+  "read_only": true
+}

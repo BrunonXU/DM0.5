@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "status": "uncalibrated",
+  "powered_allowed": false,
+  "control_dimensions_per_hand": ["grip_g", "thumb_clearance_c"],
+  "left": {
+    "historical_grip_curve": null,
+    "thumb_clearance_residual": null
+  },
+  "right": {
+    "historical_grip_curve": null,
+    "thumb_clearance_residual": null
+  },
+  "notes": [
+    "Do not invent or mirror numeric values between hands.",
+    "Calibrate from DM0.5 bottle-sort data and validate on hardware in stages.",
+    "Expand to the frozen ten O10 joints per hand before recording or dispatch."
+  ]
+}
+

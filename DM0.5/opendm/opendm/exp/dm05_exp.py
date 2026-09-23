@@ -3,6 +3,7 @@ import json
 import os
 import pathlib
 import sys
+import threading
 import time
 from dataclasses import dataclass, field
 from enum import Enum
@@ -31,6 +32,7 @@ from opendm.data.transforms import (
     LoadImages,
     Normalize,
     PadAction,
+    PadModelInput,
     Pipeline,
     PixelTransform,
     ToDevice,
@@ -411,11 +413,26 @@ class DM05DataConfig(Config):
 @dataclass
 class DM05InferenceConfig(Config):
     port: int = field(default=7891)
+    transport: Literal["http-multipart-json", "websocket-binary"] = field(
+        default="http-multipart-json"
+    )
     diffusion_steps: int = field(default=10)
     output_action_dim: int = field(default=14)
     image_keys: list[str] = field(
         default_factory=lambda: ["images_1", "images_2", "images_3"]
     )
+    rtc_enabled: bool = field(default=False)
+    rtc_max_guidance_weight: float = field(default=10.0)
+    rtc_guidance_mode: Literal["exact_vjp", "approx_identity"] = field(
+        default="exact_vjp"
+    )
+    compile_action_expert: bool = field(default=False)
+    compile_mode: Literal[
+        "default",
+        "reduce-overhead",
+        "max-autotune",
+        "max-autotune-no-cudagraphs",
+    ] = field(default="reduce-overhead")
 
     def _initialize(
         self,
@@ -443,12 +460,32 @@ class DM05InferenceConfig(Config):
         model.to(self.device)
         model.eval()
         self.model = model
+        self._inference_lock = threading.Lock()
+        if self.compile_action_expert:
+            dm05_model = unwrap_dm05_model(self.model)
+            dm05_model.model.action_expert = torch.compile(
+                dm05_model.model.action_expert,
+                mode=self.compile_mode,
+                dynamic=False,
+                fullgraph=False,
+            )
+            logger.info(
+                "Enabled torch.compile for action expert: mode={}",
+                self.compile_mode,
+            )
 
         self.processor = AutoProcessor.from_pretrained(
             model_name_or_path,
             trust_remote_code=True,
         )
         logger.info("Model loaded successfully")
+
+        if self.compile_action_expert and (
+            model_max_length is None or model_max_length <= 0
+        ):
+            raise ValueError(
+                "torch.compile requires a positive fixed model_max_length"
+            )
 
         self.input_transform = Pipeline(
             [
@@ -469,6 +506,16 @@ class DM05InferenceConfig(Config):
                     add_state=add_state,
                     enable_logging=False,
                 ),
+                *(
+                    [
+                        PadModelInput(
+                            max_length=model_max_length,
+                            pad_token_id=self.processor.tokenizer.pad_token_id,
+                        )
+                    ]
+                    if self.compile_action_expert
+                    else []
+                ),
                 ToDevice(device=self.device),
             ]
         )
@@ -483,7 +530,12 @@ class DM05InferenceConfig(Config):
             ]
         )
 
-    def _prepare_input(self) -> dict:
+    def _prepare_input(
+        self,
+        timing_seconds: dict[str, float] | None = None,
+    ) -> dict:
+        timing = timing_seconds if timing_seconds is not None else {}
+        parse_started = time.monotonic()
         images = request.files.getlist("image", None)
         states = request.form.get("states", None)
         text = request.form.get("text", "")
@@ -492,6 +544,7 @@ class DM05InferenceConfig(Config):
         # deployment contract intentionally omits optional robot metadata.
         speed = request.form.get("speed", "0.5")
         control_mode = request.form.get("control_mode")
+        timing["server_request_parse_seconds"] = time.monotonic() - parse_started
 
         state_desc = None
         if robot_type is not None:
@@ -503,10 +556,12 @@ class DM05InferenceConfig(Config):
                 )
             state_desc = ROBOT_STATE_DESCS[robot_type_enum]
 
+        decode_started = time.monotonic()
         pil_images = {
             self.image_keys[i]: Image.open(img).convert("RGB")
             for i, img in enumerate(images)
         }
+        timing["server_image_decode_seconds"] = time.monotonic() - decode_started
         state = np.array(json.loads(states), dtype=np.float32)
 
         return {
@@ -527,11 +582,21 @@ class DM05InferenceConfig(Config):
         timing_seconds: dict[str, float] | None = None,
     ) -> np.ndarray:
         timing = timing_seconds if timing_seconds is not None else {}
-        state = data["state"]
+        # Keep the physical robot-space state separate from the input pipeline.
+        # Normalize mutates ``data["state"]`` in place, while RTC committed
+        # prefixes arrive in absolute robot coordinates and must be re-anchored
+        # against the pre-normalization state.
+        absolute_state = np.asarray(data["state"], dtype=np.float32).copy()
         transform_started = time.monotonic()
         model_input = self.input_transform(data)
         timing["server_input_transform_seconds"] = (
             time.monotonic() - transform_started
+        )
+        timing["server_model_prefix_tokens"] = float(
+            model_input["input_ids"].shape[1]
+        )
+        timing["server_model_valid_prefix_tokens"] = float(
+            model_input["attention_mask"].sum().item()
         )
         model_started = time.monotonic()
         dm05_model = unwrap_dm05_model(self.model)
@@ -544,6 +609,12 @@ class DM05InferenceConfig(Config):
             dtype=dm05_model.model.action_in_proj.weight.dtype,
         )
         action_mask[..., : self.output_action_dim] = 1.0
+        rtc_started = time.monotonic()
+        rtc_model_kwargs = self._prepare_rtc_model_kwargs(
+            data,
+            absolute_state=absolute_state,
+        )
+        timing["server_rtc_prepare_seconds"] = time.monotonic() - rtc_started
         actions = self.model.inference_action(
             input_ids=model_input["input_ids"],
             attention_mask=model_input["attention_mask"],
@@ -551,6 +622,7 @@ class DM05InferenceConfig(Config):
             token_type_ids=model_input["token_type_ids"],
             diffusion_steps=self.diffusion_steps,
             action_mask=action_mask,
+            **rtc_model_kwargs,
         )
 
         raw_actions = (
@@ -567,7 +639,7 @@ class DM05InferenceConfig(Config):
 
         outputs = {
             "action": raw_actions,
-            "state": state,
+            "state": absolute_state,
             "meta_data": data["meta_data"],
         }
         output_started = time.monotonic()
@@ -578,11 +650,25 @@ class DM05InferenceConfig(Config):
 
         return outputs["action"]
 
+    def _prepare_rtc_model_kwargs(
+        self,
+        data: dict,
+        *,
+        absolute_state: np.ndarray,
+    ) -> dict:
+        """Policy-specific hook for converting an RTC prefix to model space."""
+        if data.get("rtc") is not None:
+            raise ValueError(
+                "RTC input was supplied, but this inference recipe does not "
+                "define its action-space conversion"
+            )
+        return {}
+
     def _process_frame(self):
         t0 = time.monotonic()
         timing_seconds: dict[str, float] = {}
         prepare_started = time.monotonic()
-        data = self._prepare_input()
+        data = self._prepare_input(timing_seconds=timing_seconds)
         timing_seconds["server_prepare_input_seconds"] = (
             time.monotonic() - prepare_started
         )
@@ -594,6 +680,32 @@ class DM05InferenceConfig(Config):
         )
         timing_seconds["server_total_before_jsonify_seconds"] = (
             time.monotonic() - t0
+        )
+        atomic_keys = (
+            "server_multipart_form_access_seconds",
+            "server_state_json_parse_seconds",
+            "server_image_decode_seconds",
+            "server_rtc_form_parse_seconds",
+            "server_input_transform_seconds",
+            "server_rtc_prepare_seconds",
+            "server_model_and_device_to_cpu_seconds",
+            "server_output_transform_seconds",
+            "server_response_list_seconds",
+        )
+        accounted = sum(
+            float(timing_seconds.get(key, 0.0)) for key in atomic_keys
+        )
+        model_seconds = float(
+            timing_seconds.get("server_model_and_device_to_cpu_seconds", 0.0)
+        )
+        timing_seconds["server_pre_jsonify_accounted_seconds"] = accounted
+        timing_seconds["server_pre_jsonify_residual_seconds"] = max(
+            0.0,
+            timing_seconds["server_total_before_jsonify_seconds"] - accounted,
+        )
+        timing_seconds["server_non_model_before_jsonify_seconds"] = max(
+            0.0,
+            timing_seconds["server_total_before_jsonify_seconds"] - model_seconds,
         )
         response = jsonify(
             {
@@ -613,6 +725,73 @@ class DM05InferenceConfig(Config):
             timing_seconds["server_output_transform_seconds"],
         )
         return response
+
+    def _process_binary_message(self, payload: bytes) -> bytes:
+        """Handle one versioned WebSocket request without JSON action lists."""
+        from g2_sort.transport.dm05_binary import (
+            BinaryProtocolError,
+            decode_request,
+            encode_error,
+            encode_response,
+        )
+
+        t0 = time.monotonic()
+        request_id = 0
+        try:
+            parse_started = time.monotonic()
+            binary = decode_request(payload)
+            request_id = int(binary.request_id)
+            timing_seconds = {
+                "server_binary_request_parse_seconds": time.monotonic()
+                - parse_started,
+                "server_multipart_form_access_seconds": 0.0,
+                "server_state_json_parse_seconds": 0.0,
+                "server_rtc_form_parse_seconds": 0.0,
+            }
+            prepare_started = time.monotonic()
+            prepare_binary = getattr(self, "_prepare_binary_input", None)
+            if not callable(prepare_binary):
+                raise BinaryProtocolError(
+                    "this inference recipe has no binary input contract"
+                )
+            data = prepare_binary(binary, timing_seconds=timing_seconds)
+            timing_seconds["server_prepare_input_seconds"] = (
+                time.monotonic() - prepare_started
+            )
+            with self._inference_lock:
+                actions = self._predict(data, timing_seconds=timing_seconds)
+
+            response_started = time.monotonic()
+            actions64 = np.asarray(actions, dtype=np.float64)
+            actions32 = np.asarray(actions, dtype=np.float32)
+            timing_seconds["server_action_float32_quantization_max_abs"] = float(
+                np.max(np.abs(actions64 - actions32.astype(np.float64)))
+            )
+            timing_seconds["server_response_binary_prepare_seconds"] = (
+                time.monotonic() - response_started
+            )
+            model_seconds = float(
+                timing_seconds.get("server_model_and_device_to_cpu_seconds", 0.0)
+            )
+            timing_seconds["server_total_before_response_encode_seconds"] = (
+                time.monotonic() - t0
+            )
+            timing_seconds["server_non_model_before_response_encode_seconds"] = max(
+                0.0,
+                timing_seconds["server_total_before_response_encode_seconds"]
+                - model_seconds,
+            )
+            # The final frame encoding is a small unavoidable tail.  Its exact
+            # cost is measured client-side inside the WebSocket round trip;
+            # naming the boundary prevents it being falsely attributed.
+            timing_seconds["server_handler_seconds"] = time.monotonic() - t0
+            timing_seconds["server_non_model_handler_seconds"] = max(
+                0.0, timing_seconds["server_handler_seconds"] - model_seconds
+            )
+            return encode_response(request_id, actions32, timing_seconds)
+        except Exception as exc:
+            logger.exception("Binary inference request failed")
+            return encode_error(request_id, str(exc))
 
 
 @dataclass
@@ -752,6 +931,40 @@ class DM05Exp(Config):
 
     def inference(self) -> None:
         self._initialize_inference_runtime()
+        if self.inference_config.transport == "websocket-binary":
+            try:
+                from websockets.sync.server import serve
+            except ImportError as exc:
+                raise RuntimeError(
+                    "websockets>=12 is required for websocket-binary transport"
+                ) from exc
+
+            def websocket_handler(connection) -> None:
+                for message in connection:
+                    if not isinstance(message, bytes):
+                        connection.send(
+                            self.inference_config._process_binary_message(b"")
+                        )
+                        continue
+                    connection.send(
+                        self.inference_config._process_binary_message(message)
+                    )
+
+            logger.info(
+                "Starting binary WebSocket inference on 0.0.0.0:{}; compression=off",
+                self.inference_config.port,
+            )
+            with serve(
+                websocket_handler,
+                "0.0.0.0",
+                self.inference_config.port,
+                compression=None,
+                max_size=32 * 1024 * 1024,
+                ping_interval=20,
+                ping_timeout=20,
+            ) as server:
+                server.serve_forever()
+            return
         app = Flask(__name__)
         app.add_url_rule(
             "/process_frame",

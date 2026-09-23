@@ -3,24 +3,25 @@
 Purpose
 -------
 Provide a recovery path that never treats reboot-time O10 feedback as a hand
-command. It is intended for a clean workflow: fully exit VLA, restore the hands,
-reset arms/body from the tablet, then start a new VLA run.
+command. It is intended for a clean workflow: fully exit VLA, restore the arms,
+restore the hands, reset body from the tablet if needed, then start a new VLA run.
 
 Inputs / outputs
 ----------------
 Input is the approved 20D Home JSON and, for execution, a recent last-successful
 Split hand command. Preview prints all joints and sends nothing. Execute reuses
-the production Split dispatcher: O10 hands move to Home in at most eight 5 Hz
-steps, then measured arms move to the H5 frame-0 14D median at 100 Hz.
+the production Split dispatcher: measured arms first move to the H5 frame-0 14D
+median at 100 Hz while the hand output gate remains closed; only after arm
+completion do O10 hands move to Home in at most eight 5 Hz steps.
 
 Method
 ------
 Validate the frozen order and GDK limits, compare Home with official open-zero
 and the H5 frame-0 median, then fail closed unless the record is approved, the
-last-command anchor is fresh, O10/motion health is good, and the operator gives
-explicit authorization. Hold measured arm positions through the proven
-``joint_servo_control`` path, restore hands first, then linearly restore arms
-while holding the approved hand Home.
+last-command anchor is valid, O10/motion health is good, and the operator gives
+explicit authorization. Linearly restore arms through the proven
+``joint_servo_control`` path with Split hand output explicitly disabled, then
+open the hand gate, re-anchor at the last successful command, and restore hands.
 """
 
 from __future__ import annotations
@@ -44,7 +45,7 @@ from g2_sort.deployment.g2_client.hand_command_store import (
 from g2_sort.deployment.g2_client.joint_layout import POLICY_JOINT_NAMES
 from g2_sort.deployment.g2_client.robot_control import G2RobotController
 from g2_sort.deployment.g2_client.servo import ServoStreamer
-from g2_sort.operations.operator_confirmation import confirm_ok_and_countdown
+from g2_sort.operations.operator_confirmation import confirm_enter_and_countdown
 
 LOGGER = logging.getLogger(__name__)
 DEFAULT_APPROVED_HOME = Path("g2_sort/config/hand_home_approved.json")
@@ -73,6 +74,10 @@ def build_bounded_hand_trajectory(
         raise ValueError("max_step_radians must be positive")
     if max_intervals is not None and max_intervals < 1:
         raise ValueError("max_intervals must be positive when provided")
+    # Still submit the anchor once, but never wait for an identical second
+    # target: the production changed-only worker intentionally skips it.
+    if np.array_equal(start_values, target_values):
+        return start_values[None, :].copy()
     maximum = float(np.max(np.abs(target_values - start_values)))
     intervals = max(1, int(math.ceil(maximum / max_step_radians)))
     if max_intervals is not None:
@@ -221,7 +226,7 @@ def build_parser() -> argparse.ArgumentParser:
         default=DEFAULT_LAST_COMMAND,
     )
     parser.add_argument("--execute", action="store_true")
-    parser.add_argument("--confirm", default="")
+    parser.add_argument("--confirm", default="", help="旧参数仅兼容解析；执行仍必须现场按ENTER")
     parser.add_argument("--max-step-radians", type=float, default=0.03)
     parser.add_argument("--hand-recovery-steps", type=int, default=8)
     parser.add_argument("--arm-recovery-seconds", type=float, default=5.0)
@@ -299,6 +304,7 @@ def run(argv: Sequence[str] | None = None) -> int:
             last_hand_command_path=args.last_command_json,
             hand_command_run_id=f"hand-home-{int(time.time())}",
             hand_startup_delay_seconds=0.08,
+            split_hand_output_enabled=False,
             gdk_module=gdk,
         )
         measured = np.asarray(controller.read_state(), dtype=np.float64)
@@ -319,13 +325,12 @@ def run(argv: Sequence[str] | None = None) -> int:
                 f"双臂复位行程{max_arm_travel:.6f}rad超过门限"
                 f"{args.max_arm_travel_radians:.6f}rad，未发送动作"
             )
-        confirm_ok_and_countdown(
-            "Split先复位双手，再将双臂恢复到H5初始姿态",
-            supplied=args.confirm,
+        confirm_enter_and_countdown(
+            "Split先将双臂恢复到H5初始姿态，再复位双手",
         )
         print(
-            "【Split已就绪】先保持双臂并复位双手；随后双手保持Home，"
-            "双臂以100Hz回H5初始姿态。",
+            "【Split已就绪】手部输出闸门保持关闭；先让双臂以100Hz回H5"
+            "初始姿态，确认完成后再打开闸门复位双手。",
             flush=True,
         )
         servo = ServoStreamer(
@@ -335,10 +340,37 @@ def run(argv: Sequence[str] | None = None) -> int:
             smoothstep_blend=False,
         )
         servo.start()
+        arm_trajectory = build_arm_recovery_trajectory(
+            arm_hold,
+            arm_home,
+            start,
+            duration_seconds=args.arm_recovery_seconds,
+        )
+        print("【双臂复位开始】手部输出闸门关闭，不发送O10命令。", flush=True)
+        playback_id = servo.play(
+            arm_trajectory,
+            start_index=0,
+            interval_count=len(arm_trajectory) - 1,
+            blend_seconds=0.0,
+            anchor=np.concatenate((arm_hold, start)),
+        )
+        while servo.is_playing(playback_id):
+            if servo.has_fault():
+                raise RuntimeError(
+                    f"双臂复位Servo故障：{servo.fault_message() or 'unknown'}"
+                )
+            time.sleep(0.01)
+        servo.hold(np.concatenate((arm_home, start)))
+        if servo.has_fault():
+            raise RuntimeError(
+                f"双臂最终Home保持故障：{servo.fault_message() or 'unknown'}"
+            )
+        print("【双臂复位完成】现在打开手部输出闸门。", flush=True)
+        controller.enable_split_hand_output()
         for step, positions in enumerate(trajectory):
             phase = "最后成功命令锚点" if step == 0 else f"复位第{step}步"
             before = int(controller.control_stats()["hand_send_count"])
-            servo.hold(np.concatenate((arm_hold, positions)))
+            servo.hold(np.concatenate((arm_home, positions)))
             _wait_for_split_hand_target(
                 controller,
                 servo,
@@ -351,25 +383,6 @@ def run(argv: Sequence[str] | None = None) -> int:
                 f"max_from_start={np.max(np.abs(positions-start)):.6f}rad",
                 flush=True,
             )
-        arm_trajectory = build_arm_recovery_trajectory(
-            arm_hold,
-            arm_home,
-            target,
-            duration_seconds=args.arm_recovery_seconds,
-        )
-        print("【双臂复位开始】双手保持Home。", flush=True)
-        playback_id = servo.play(
-            arm_trajectory,
-            start_index=0,
-            interval_count=len(arm_trajectory) - 1,
-            blend_seconds=0.0,
-        )
-        while servo.is_playing(playback_id):
-            if servo.has_fault():
-                raise RuntimeError(
-                    f"双臂复位Servo故障：{servo.fault_message() or 'unknown'}"
-                )
-            time.sleep(0.01)
         final_target = np.concatenate((arm_home, target))
         servo.hold(final_target)
         time.sleep(0.25)
@@ -379,6 +392,13 @@ def run(argv: Sequence[str] | None = None) -> int:
             )
         servo.stop(timeout=5.0)
         servo = None
+        reported = np.asarray(controller.read_state(), dtype=np.float64)[14:]
+        print("【复位后原始反馈对照】以下为reported位置，不是接触力或认证到位反馈：", flush=True)
+        for side, offset in (("left", 0), ("right", 10)):
+            values = reported[offset:offset + 10]
+            expected = target[offset:offset + 10]
+            print(f"{side} target={expected.tolist()} reported={values.tolist()} "
+                  f"max_error_rad={float(np.max(np.abs(values - expected))):.6f}", flush=True)
         controller.close()
         controller = None
         saved = build_hand_command_record(
@@ -393,7 +413,7 @@ def run(argv: Sequence[str] | None = None) -> int:
             saved,
             overwrite=True,
         )
-        print("【复位完成】双手到达批准Home；双臂到达H5第0帧14D初始姿态。")
+        print("【复位命令完成】SDK已确认批准Home目标；请核对双手实际打开及上方反馈。SDK确认不等于物理到位。")
         return 0
     except Exception:
         LOGGER.exception("灵巧手Home复位失败；必要时使用物理急停")

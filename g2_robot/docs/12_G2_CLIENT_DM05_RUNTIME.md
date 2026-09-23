@@ -1,5 +1,10 @@
 # G2 Client → DM0.5 真机运行时
 
+> **文档边界（2026-08-24）：** 本文是G2现场实现快照，不再承担跨仓库架构权威。
+> 当前“Control唯一拥有Robot、Policy唯一拥有Camera”的目标架构见
+> [`../../DM0.5/docs/robot/RTC_PROCESS_ISOLATION.md`](../../DM0.5/docs/robot/RTC_PROCESS_ISOLATION.md)；
+> 30/100Hz与RTC第一性原理见DM0.5 principles。本文若与两者冲突，以DM0.5为准。
+
 > 本文保留最初的架构与时钟约定，不是现场操作手册。当前上机命令、安全按键和
 > normal/low-latency选择以`00_G2_OPERATOR_GUIDE.md`为准。
 
@@ -49,7 +54,8 @@ GPU 推理服务器
 笔记本只是运维入口。正式运行的 client 进程应在 G2 域控制器上，因为相机、
 关节状态和硬件控制都是机器人本地资源。client 不访问 checkpoint 文件，
 也不需要挂载服务器的`server/`目录；它只配置
-`http://10.130.153.114:7892/process_frame`。
+正式Sync使用`ws://10.130.153.114:7892/process_frame`的native-image binary WebSocket；
+7892 HTTP只保留为首测回退。
 
 ## 3. 代码边界
 
@@ -64,12 +70,14 @@ GPU 推理服务器
 | `cameras.py` | 三路GDK图像解码为RGB，不补黑图 |
 | `robot_state.py` | 按名字读取完整34D measured state，不补0 |
 | `joint_layout.py` | 34D G2关节名和物理位置限位 |
-| `robot_control.py` | 默认Split：14D双臂100Hz Servo、20D双手5Hz move_ee_pos |
+| `robot_control.py` | Split：14D双臂100Hz Servo、20D双手可配置频率move_ee_pos |
 | `hand_command_store.py` | 原子保存最后成功的20D O10命令，供退出后Home复位 |
 | `interpolation.py` | 30Hz waypoint的连续时间线性采样 |
 | `servo.py` | 独立100Hz streamer、hold和chunk播放 |
 | `prefetch.py` | 最多一个异步请求在途 |
-| `control_loop.py` | shadow、powered-sync、powered-async状态机 |
+| `control_loop.py` | shadow、rtc-shadow、powered-sync、powered-rtc、powered-async状态机 |
+| `rtc.py` | RTC的`d/s/H`约束、承诺前缀和真实延迟步数合同 |
+| `process_pipeline.py` | spawn策略worker、独立GDK/Camera/JPEG/HTTP和有界IPC合同 |
 | `telemetry.py` | request/RTT、原始动作、hold原因和实际双臂/双手下发汇总 |
 | `cli.py`、`app.py` | CLI、初始化、信号和清理 |
 | `mock.py`、`keyboard.py`、`cleanup.py` | 显式mock、软件急停和有界清理 |
@@ -119,7 +127,7 @@ http://10.130.153.114:7892/process_frame
 |---|---:|---|
 | 模型 waypoint | 30Hz | 训练数据中相邻 action 的时间语义 |
 | G2双臂Servo | 100Hz | 14D双臂`joint_servo_control`的本地周期 |
-| G2 O10双手 | 5Hz | 20D双手`move_ee_pos`采样模型手部目标的周期 |
+| G2 O10双手 | 正式Sync raw 5Hz changed-only；其他模式独立配置 | 20D双手`move_ee_pos`只提交变化目标；模型30Hz轨迹与34D合同不变 |
 | 推理请求 | 非固定 | 由服务器RTT、sync前缀或async lookahead决定 |
 
 一个`50×34`chunk表示50个连续的`1/30s`控制区间，总覆盖时间
@@ -157,7 +165,7 @@ target(t) = (1-alpha) × action[i] + alpha × action[i+1]
 
 | 模式 | 双臂 | O10双手 | 用途 |
 |---|---|---|---|
-| `split` | 14D、100Hz Servo | 20D、5Hz `move_ee_pos` | **正式默认** |
+| `split` | 14D、100Hz Servo | 20D、正式Sync raw 5Hz changed-only `move_ee_pos` | **正式默认；先运行五秒确认** |
 | `arms-only` | 14D、100Hz Servo | 完全不发送 | 隔离O10解析与抖动 |
 | `unified-34` | 100Hz Servo | 拼进同一个Servo请求 | 历史故障诊断，不用于日常 |
 
@@ -200,8 +208,7 @@ shadow不会创建`ServoStreamer`，也不会把servo callback交给状态机；
 chunk通过合同、限位、首跳和动力学门后，才以当时重新读取的34D state为
 接入锚点启动100Hz播放。此后模型在服务器推理时，本地streamer才按100Hz
 发送最后已验证的安全目标。`04_powered_guarded_smoke.sh`只执行6个区间用于短动作
-门禁；正式`05_powered_sync.sh`默认每个chunk执行49个区间（约1.633秒），然后
-重新采集并请求下一chunk。
+门禁；正式`05_powered_sync.sh`默认每个chunk只执行前20步（约0.667秒），然后重新采集并请求下一chunk。
 
 ### 6.3 Powered-async：显式启用
 
@@ -310,8 +317,7 @@ lookahead_steps / 30 > 正常P95 + 观测/编码/接入裕量
 推理、网络和服务排队，再基于实测提高lookahead。lookahead最大仍受50步chunk
 限制，且响应接入时必须保留至少12步新鲜动作。
 
-推理请求没有固定30Hz或50Hz：当前正式sync大约每“1.633s动作播放+RTT”请求
-一次；async由chunk消耗和lookahead触发。实测async没有明显改善动作效果，因此仍
+推理请求没有固定30Hz或50Hz：当前正式sync大约每“0.667s动作播放+RTT”请求一次；async由chunk消耗和lookahead触发。实测async没有明显改善动作效果，因此仍
 是实验路径。100Hz只属于本地双臂Servo，HTTP线程从不承担100Hz实时职责。
 
 ## 10. 当前75K checkpoint到真机

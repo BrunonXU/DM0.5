@@ -1,0 +1,26 @@
+{
+  "version": "demo_778_v2",
+  "decision": "User requested excluding the one newly identified base-label source and all nine head-clock cluster sources; raw files remain unchanged.",
+  "parent_directory": "results/demo_788_check",
+  "parent_candidates_sha256": "68be5862dc46e133d4083982c96ad6d9b035454d2346da75fd70256f22a8edaa",
+  "expected_parent_count": 788,
+  "expected_candidates": 778,
+  "additional_exclusions": {
+    "all_data_2_derived/episode_000256": "user_selected_exclusion; strong_visual_base_phase_mismatch_evidence",
+    "all_data_1_derived/episode_000000": "user_selected_conservative_exclusion; head_clock_cluster_unresolved_not_proven_physical_delay",
+    "all_data_1_derived/episode_000001": "user_selected_conservative_exclusion; head_clock_cluster_unresolved_not_proven_physical_delay",
+    "all_data_1_derived/episode_000002": "user_selected_conservative_exclusion; head_clock_cluster_unresolved_not_proven_physical_delay",
+    "all_data_1_derived/episode_000003": "user_selected_conservative_exclusion; head_clock_cluster_unresolved_not_proven_physical_delay",
+    "all_data_1_derived/episode_000004": "user_selected_conservative_exclusion; head_clock_cluster_unresolved_not_proven_physical_delay",
+    "all_data_1_derived/episode_000005": "user_selected_conservative_exclusion; head_clock_cluster_unresolved_not_proven_physical_delay",
+    "all_data_1_derived/episode_000006": "user_selected_conservative_exclusion; head_clock_cluster_unresolved_not_proven_physical_delay",
+    "all_data_1_derived/episode_000007": "user_selected_conservative_exclusion; head_clock_cluster_unresolved_not_proven_physical_delay",
+    "all_data_1_derived/episode_000008": "user_selected_conservative_exclusion; head_clock_cluster_unresolved_not_proven_physical_delay"
+  },
+  "evidence_sha256": {
+    "results/demo_788_check/visual/base_phase_mismatch_evidence.json": "68d181060d790291dac379a32f58ef5cbe229bffd332a301815581a4d6602f88",
+    "results/demo_788_check/clocks/summary.json": "11c16abaa0343199713955290cefd150c2f3c2be24c358503ff3cfe8fba48cf4"
+  },
+  "tail_handling": "separate analysis; do not uniformly cut 3.8 seconds or treat feedback as recorded command",
+  "training_approved": false
+}

@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "device": {
+    "family": "HEBI",
+    "name": "mobileIO",
+    "platform": "ipad_arkit",
+    "camera_offset_m": null,
+    "camera_offset_status": "unverified"
+  },
+  "mapping": {
+    "deadman": "b1",
+    "select_left": "b2",
+    "select_right": "b3",
+    "grip_velocity": "a3",
+    "thumb_clearance": "b4",
+    "grip_deadband": 0.1
+  },
+  "safety": {
+    "selection_change_requires_deadman_released": true,
+    "simultaneous_side_selection_is_fault": true,
+    "missing_side_blocks_enable": true,
+    "wireless_controls_are_not_physical_estop": true,
+    "powered_allowed": false
+  }
+}
+

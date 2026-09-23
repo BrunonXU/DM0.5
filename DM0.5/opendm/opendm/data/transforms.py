@@ -597,6 +597,51 @@ class ChatTokenization:
         }
 
 
+class PadModelInput:
+    """Right-pad tokenized model inputs to one fixed prefix length.
+
+    This mirrors the training collator without truncating inference requests.
+    It preserves every valid token and pixel while giving ``torch.compile`` a
+    stable prefix/KV-cache shape across changing discretized robot states.
+    """
+
+    def __init__(self, max_length: int, pad_token_id: int):
+        if max_length <= 0:
+            raise ValueError("max_length must be positive")
+        self.max_length = int(max_length)
+        self.pad_token_id = int(pad_token_id)
+
+    def __call__(self, data, **kw):
+        keys = ("input_ids", "attention_mask", "token_type_ids")
+        tensors = [data[key] for key in keys]
+        if any(tensor.ndim != 2 for tensor in tensors):
+            raise ValueError("tokenized model inputs must all be rank-2")
+        shapes = {tuple(tensor.shape) for tensor in tensors}
+        if len(shapes) != 1:
+            raise ValueError("tokenized model input shapes must match")
+
+        seq_len = tensors[0].shape[1]
+        if seq_len > self.max_length:
+            raise ValueError(
+                "inference input exceeds fixed compile prefix length: "
+                f"{seq_len} > {self.max_length}"
+            )
+        pad_len = self.max_length - seq_len
+        if pad_len == 0:
+            return data
+
+        data["input_ids"] = torch.nn.functional.pad(
+            data["input_ids"], (0, pad_len), value=self.pad_token_id
+        )
+        data["attention_mask"] = torch.nn.functional.pad(
+            data["attention_mask"], (0, pad_len), value=0
+        )
+        data["token_type_ids"] = torch.nn.functional.pad(
+            data["token_type_ids"], (0, pad_len), value=0
+        )
+        return data
+
+
 class PadAction:
     """Pad or truncate the last action dimension to a shared size.
 

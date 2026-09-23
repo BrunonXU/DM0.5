@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<launch>
+  <node pkg="motor_ctl" exec="kinematics_node" name="kinematics" output="screen">
+    <!-- 运动学配置文件路径（.MvKDCfg 文件） -->
+    <param name="kinematics_config" value="$(find-pkg-share motor_ctl)/ccs_m6_40.MvKDCfg"/>
+  </node>
+</launch>

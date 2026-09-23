@@ -1,0 +1,59 @@
+# 仅供填写的发布记录模板，不是部署命令或已验证的发布版本。
+# 复制为实际发布清单，补齐字段并由后续打包/校验工具核验后使用。
+schema_version: 1
+status: template_not_deployable
+robot: F1_D070
+task: foam_sort_whole_body
+release_id: null
+created_at: null
+
+source:
+  development_root: /home/xza_100850113/projects/F1/foam_sort_whole_body
+  git_commit: null
+  working_tree_dirty: null
+  # 保存选定文件的实际内容和校验值；commit不能代替未提交修改。
+  files: []  # 每项填写relative_path、size_bytes、sha256
+
+target:
+  host_key_alias: f1-d070
+  host: ms-thor
+  user: user
+  architecture: aarch64
+  task_root: /home/user/Bruno/F1/foam_sort_whole_body
+  release_directory: null
+
+dependencies:
+  expected_ros_distribution: jazzy
+  python_version: null
+  environment_reference: null
+  build_reference: null
+
+task_contract:
+  # 当前任务设计；必须在实际发布前核实字段映射并绑定对应合同文件的哈希。
+  state_dim: 21
+  action_dim: 19
+  contract_sha256: null
+  machine_config_sha256: null
+  model_reference: null  # 示教回放可记录不涉及模型
+  normalization_reference: null
+
+backup:
+  previous_release_id: null
+  existing_target_found: null
+  local_backup_directory: null
+  manifest_sha256: null
+  verified: false
+
+validation:
+  offline_report: null
+  remote_files_verified: false
+  remote_dependency_check: not_run
+  onsite_replay: not_run
+  rollback_check: not_run
+
+deployment:
+  uploaded_at: null
+  activated_at: null
+  previous_current_target: null
+  runtime_directory: null
+  report_path: null

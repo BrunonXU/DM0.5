@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 用途：在6000D递归拉取G2上本地尚不存在的日志，保留logs相对目录结构。
-# 输入：固定只读来源agi@10.130.86.13:/home/agi/DM0.5/logs/；可选
+# 输入：固定只读来源agi@10.130.86.13:/home/agi/xza/DM0.5/logs/；可选
 # --include-gdk-native用于底层故障排查。
 # 输出：当前仓库logs/下新增文件；默认跳过大体积GDK native日志，同名文件不覆盖。
 # 方法：优先rsync --ignore-existing；任一端无rsync时退回ssh find +逐文件scp。
@@ -10,7 +10,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 LOCAL_LOG_ROOT="$REPO_ROOT/logs"
 G2_HOST="agi@10.130.86.13"
-G2_LOG_ROOT="/home/agi/DM0.5/logs"
+G2_LOG_ROOT="/home/agi/xza/DM0.5/logs"
 include_gdk_native=false
 
 case "${1:-}" in
@@ -38,11 +38,13 @@ if command -v rsync >/dev/null 2>&1 \
   echo "使用rsync只拉取本地未见过的G2日志；已有文件不会覆盖。"
   if [[ "$include_gdk_native" == true ]]; then
     rsync -rtv --ignore-existing \
+      --exclude '*.partial' \
       "$G2_HOST:$G2_LOG_ROOT/" \
       "$LOCAL_LOG_ROOT/"
   else
     echo "默认跳过logs/gdk_native；底层故障时使用--include-gdk-native。"
     rsync -rtv --ignore-existing --exclude '/gdk_native/' \
+      --exclude '*.partial' \
       "$G2_HOST:$G2_LOG_ROOT/" \
       "$LOCAL_LOG_ROOT/"
   fi
@@ -53,6 +55,7 @@ echo "任一端没有rsync，使用ssh只读列举 + scp逐文件回退。"
 added=0
 skipped=0
 while IFS= read -r remote_path; do
+  [[ "$remote_path" == *.partial ]] && continue
   case "$remote_path" in
     "$G2_LOG_ROOT"/*) ;;
     *)

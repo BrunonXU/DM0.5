@@ -1,4 +1,6 @@
-# Evaluation
+# 真机评测
 
-Define stage-level and end-to-end success metrics before training. Evaluation
-must separate grasp, handover, insertion, lid alignment, and closure failures.
+`frozen_scenarios_v1.yaml` 是第一版固定真机评测模板。正式训练前填写实际位姿区间、
+冻结版本，并保持每个 checkpoint 的场景、次数与成功判据一致。
+
+评测必须同时记录完整成功率以及抓手机、换手、手机入盒、抓盒盖、闭合五个阶段的结果。

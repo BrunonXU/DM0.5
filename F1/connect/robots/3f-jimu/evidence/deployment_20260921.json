@@ -1,0 +1,25 @@
+{
+  "hostname": "ms-thor",
+  "host_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG0o79/0P736Gx38Uvg1bdsOL8o12fvvdroGOp8/sgsT root@ms-thor",
+  "service": "MainPID=2838824\nNRestarts=1\nActiveState=active\nSubState=running\nUnitFileState=enabled\n",
+  "linger": "Linger=yes",
+  "hashes": {
+    "ssh_config": "031fde5ca02ea7be67cee3d7a6b600ba4bd44b6f7cfb3367d4f8d43f0cab9289",
+    "known_hosts": "7d5cb392b82204f1ded4b11cd572afbb93e9474ce8d3a591972e5e8bd4655cb2",
+    "systemd/f1-6000d-tunnel.service": "79f5363986e746c6eb35f0e5f9d79c176132df45932d3a525595049798141373"
+  },
+  "key_mode": "0o600",
+  "retired_port_test": {
+    "returncode": 255,
+    "stderr": "Error: remote port forwarding failed for listen port 22166\n"
+  },
+  "checked_at": "2026-09-21T02:38:23.787257+00:00",
+  "local_remote_hashes_match": true,
+  "previous_authorizations_preserved": true,
+  "authorized_keys_backup": "/home/xza_100850113/.ssh/authorized_keys.before_3f_jimu_20260921T023610Z",
+  "limitations": [
+    "No full robot reboot test",
+    "No physical Wi-Fi disconnection test",
+    "No long-duration or throughput test"
+  ]
+}

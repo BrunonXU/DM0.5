@@ -145,7 +145,7 @@ def split_policy_action_for_gdk_servo(
 
     This helper is not the production Split path. Production dispatches the
     first 14 arm values through 100 Hz Servo and the last 20 O10 values through
-    5 Hz ``move_ee_pos``; it never rebuilds two 17D arm-plus-hand requests.
+    rate-configured ``move_ee_pos``; it never rebuilds two 17D arm-plus-hand requests.
     """
     array = np.asarray(action, dtype=np.float64)
     if array.shape != (ACTION_DIM,):

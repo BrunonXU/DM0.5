@@ -1,0 +1,102 @@
+schema_version: 2
+recipe_id: F1_foam_dm05_lora_eef_relative_rot6d_v1
+status: implementation_pending_formal_data_and_model_validation
+recipe: ../../docs/training/dm05_eef_delta_recipe.md
+ik_recipe_version: f1_ikfk_demo_v1
+source_contract: state21_action19
+policy_contract: f1_state19_eef23_partial_base_v2
+observations:
+  state_dim: 19
+  missing_base_state: explicit_unknown_tokens_with_state_mask
+  layout: [left_arm7, right_arm7, grippers2, current_base_velocity3]
+  images: [head, left_wrist, right_wrist]
+  task_text: 将泡沫棉从取料位置抓起，移动到放置位置放下，再返回取料侧。
+actions:
+  physical_dim: 23
+  unknown_base_supervision: mask_only_base_dimensions_preserve_valid_upper_body_windows
+  layout: [left_xyz3, left_rotation_rows6, right_xyz3, right_rotation_rows6, grippers2, base_velocity3]
+  anchor: fixed_current_observation_per_arm_fk
+  frequency_hz: 30
+  execute_steps: 20
+model:
+  action_dim: 32
+  chunk_size: 50
+  bf16: true
+  llm_attn_implementation: sdpa
+  vision_attn_implementation: flash_attention_2
+  action_attn_implementation: sdpa
+  freeze_vlm_embedding: true
+  vlm_gradient_checkpointing: true
+  ae_gradient_checkpointing: true
+lora:
+  r: 32
+  lora_alpha: 16
+  lora_dropout: 0.0
+  bias: none
+  target_modules: all-linear
+  modules_to_save: [action_in_proj, action_out_proj, time_mlp_in, time_mlp_out, dm05_time_modulators]
+optimizer:
+  optim: adamw
+  base_lr: 0.0005
+  weight_decay: 1.0e-10
+  warmup_steps: 1000
+  adam_beta1: 0.9
+  adam_beta2: 0.95
+  adam_epsilon: 1.0e-8
+trainer:
+  fsdp1: false
+  num_train_steps: 100000
+  per_device_train_batch_size: 4
+  gradient_accumulation_steps: 2
+  save_strategy: steps
+  save_steps: 5000
+  save_total_limit: 20
+  save_only_model: false
+  model_max_length: 1024
+  bf16: true
+  tf32: true
+  lr_scheduler_type: cosine_with_min_lr
+  lr_scheduler_kwargs: {min_lr_rate: 0.1}
+  dataloader_num_workers: 4
+  dataloader_persistent_workers: true
+  dataloader_prefetch_factor: 2
+  wandb_project: F1_foam_DM05
+reproducibility:
+  seed: 42
+  world_size: 4
+  global_batch: 32
+  augmentation_rng: seed_epoch_global_draw_camera
+  resume: explicit_matching_release_recipe_and_code
+sampling: uniform_recording_then_uniform_valid_start
+normalization: frozen_train_only_fieldwise_reader_statistics
+loss: unchanged_per_sample_valid_element_mean_then_batch_mean
+ema: false
+state_noise: 0.0
+state_dropout: 0.0
+evaluation:
+  every_steps: 5000
+  diffusion_steps: 10
+  execute_prefix: 20
+  horizon: 50
+  source: explicit_frozen_validation_manifest
+  automatic_best_checkpoint: false
+  selection_protocol: two_pass_primary_fallback_user_confirmed_20260917
+  pass_a:
+    generation_windows_per_episode: 4
+    generation_seeds: [20260818, 21260818]
+    flow_windows_per_episode: 16
+    flow_seeds: [20260817, 21260817, 22260817]
+  pass_b:
+    candidate_count: [2, 3]
+    generation_windows_per_episode: 16
+    generation_seeds: [20260820, 21260820, 22260820, 23260820, 24260820]
+    flow_windows_per_episode: 16
+    flow_seeds: [20260817, 21260817, 22260817]
+  bootstrap_repeats: 20000
+  bootstrap_seed: 20260821
+  checkpoint_weighting_status: user_confirmed_20260917
+  checkpoint_ranking:
+    horizon: 20
+    group_weights: {arms: 0.8, grippers: 0.1, base: 0.1}
+    method: frozen_pool_fractional_midrank
+    automatic_selection: false

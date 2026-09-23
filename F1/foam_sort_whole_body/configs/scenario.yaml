@@ -1,0 +1,43 @@
+schema_version: 1
+task: foam_sort_whole_body
+robot:
+  name: F1
+  origin: user_developed
+  relationship_to_g2: similar_structure_not_interface_equivalence
+  identity_source: user_confirmation_2026_09_14
+model_backend: DM0.5
+experiment_goal: naive_end_to_end_joint_mobile_manipulation
+organization: robot_task_model_results
+stages:
+  - approach_and_grasp_foam
+  - carry_to_drop_location
+  - release_foam
+  - return_to_pick_location
+data_source:
+  raw_root: /mnt/dm05_nvme/dm05/datasets/f1_foam_sort/raw
+  transfer_status: /mnt/dm05_nvme/dm05/datasets/f1_foam_sort/transfer/status.json
+  transfer_service_state: stopped_and_disabled_by_user
+  transfer_status_phase: complete
+  transfer_status_mode: stopped_by_user
+  base_recording: absent_in_original_collection
+  base_supervision: posthoc_estimated_weak_label
+  route: nominally_fixed
+scope:
+  audit_final_recorded_data: true
+  require_generation_script: false
+  launch_training: false
+  command_robot: false
+current_experiment:
+  definition: ../models/DM0.5/experiment.yaml
+  current_plan: ../docs/training_plan.md
+  decision: user_selected_dual_arm_gripper_base
+  state_dim: 21
+  action_dim: 19
+  right_side_freeze: false
+  policy: one_model_joint_arm_gripper_base_action_chunks
+  rule_based_grasp_move_switch: false
+  navigation_policy_takeover: false
+  base_weak_labels: included_in_experimental_action_loss
+  body_mode: observed_fixed_posture_first_experiment
+  validation: per_action_group_and_whole_cycle_outcomes
+  status: preprocessing_and_model_adapter_not_yet_implemented

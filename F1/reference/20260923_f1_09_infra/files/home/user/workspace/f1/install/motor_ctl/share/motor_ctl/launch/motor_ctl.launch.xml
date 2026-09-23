@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<launch>
+  <node pkg="motor_ctl" exec="motor_ctl_node" name="motor_ctl" output="screen">
+    <!-- ==================== 关节配置 ==================== -->
+    <param name="joint_names" value="['arm_l_j1','arm_l_j2','arm_l_j3','arm_l_j4','arm_l_j5','arm_l_j6','arm_l_j7',
+             'arm_r_j1','arm_r_j2','arm_r_j3','arm_r_j4','arm_r_j5','arm_r_j6','arm_r_j7',
+             'head_j1','head_j2','head_j3',
+             'body_j1','body_j2','body_j3','body_j4','body_j5']" />
+
+    <!-- ==================== 左臂关节限位（度） ==================== -->
+    <param name="arm_l_j1_min" value="-178.0" />
+    <param name="arm_l_j1_max" value="178.0" />
+    <param name="arm_l_j2_min" value="-94.0" />
+    <param name="arm_l_j2_max" value="120.0" />
+    <param name="arm_l_j3_min" value="-178.0" />
+    <param name="arm_l_j3_max" value="178.0" />
+    <param name="arm_l_j4_min" value="-145.0" />
+    <param name="arm_l_j4_max" value="60.0" />
+    <param name="arm_l_j5_min" value="-178.0" />
+    <param name="arm_l_j5_max" value="178.0" />
+    <param name="arm_l_j6_min" value="-60.0" />
+    <param name="arm_l_j6_max" value="60.0" />
+    <param name="arm_l_j7_min" value="-90.0" />
+    <param name="arm_l_j7_max" value="90.0" />
+
+    <!-- ==================== 右臂关节限位（度） ==================== -->
+    <param name="arm_r_j1_min" value="-178.0" />
+    <param name="arm_r_j1_max" value="178.0" />
+    <param name="arm_r_j2_min" value="-94.0" />
+    <param name="arm_r_j2_max" value="120.0" />
+    <param name="arm_r_j3_min" value="-178.0" />
+    <param name="arm_r_j3_max" value="178.0" />
+    <param name="arm_r_j4_min" value="-145.0" />
+    <param name="arm_r_j4_max" value="60.0" />
+    <param name="arm_r_j5_min" value="-178.0" />
+    <param name="arm_r_j5_max" value="178.0" />
+    <param name="arm_r_j6_min" value="-60.0" />
+    <param name="arm_r_j6_max" value="60.0" />
+    <param name="arm_r_j7_min" value="-90.0" />
+    <param name="arm_r_j7_max" value="90.0" />
+
+    <!-- ==================== 头部关节限位（度） ==================== -->
+    <param name="head_j1_min" value="-40.0" />
+    <param name="head_j1_max" value="40.0" />
+    <param name="head_j2_min" value="-25.0" />
+    <param name="head_j2_max" value="25.0" />
+    <param name="head_j3_min" value="-15.0" />
+    <param name="head_j3_max" value="15.0" />
+
+    <!-- ==================== 身体关节限位（度） ==================== -->
+    <param name="body_j1_min" value="-130.0" />
+    <param name="body_j1_max" value="130.0" />
+    <param name="body_j2_min" value="-10.0" />
+    <param name="body_j2_max" value="10.0" />
+    <param name="body_j3_min" value="-70.0" />
+    <param name="body_j3_max" value="0.0" />
+    <param name="body_j4_min" value="-95.0" />
+    <param name="body_j4_max" value="0.0" />
+    <param name="body_j5_min" value="-40.0" />
+    <param name="body_j5_max" value="0.0" />
+    <!-- ==================== 关节状态发布周期 ==================== -->
+    <param name="joint_state_publish_period_ms" value="20" />
+
+    <!-- ==================== 天机臂配置 ==================== -->
+    <param name="tj_ip1" value="192" />
+    <param name="tj_ip2" value="168" />
+    <param name="tj_ip3" value="1" />
+    <param name="tj_ip4" value="190" />
+
+    <param name="joint_vel_ratio" value="100" />
+    <param name="joint_acc_ratio" value="100" />
+
+    <!-- ==================== 关节阻抗参数配置 ==================== -->
+    <!-- 左臂刚度参数 (K) 7个关节 -->
+    <param name="left_arm_k" value="[4.0, 4.0, 3.0, 2.5, 2.0, 2.0, 2.0]" />
+    <!-- 左臂阻尼参数 (D) 7个关节 -->
+    <param name="left_arm_d" value="[0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4]" />
+
+    <!-- 右臂刚度参数 (K) 7个关节 -->
+    <param name="right_arm_k" value="[4.0, 4.0, 3.0, 2.5, 2.0, 2.0, 2.0]" />
+    <!-- 右臂阻尼参数 (D) 7个关节 -->
+    <param name="right_arm_d" value="[0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4]" />
+
+    <!-- 手臂控制模式配置 -->
+    <!-- control_mode: 1=位置模式, 3=力矩模式 -->
+    <param name="arm_control_mode" value="3" />
+    <!-- impedance_type: 1=关节阻抗, 2=坐标阻抗, 3=力控 (力矩模式下有效) -->
+    <param name="arm_impedance_type" value="1" />
+
+    <!-- 末端参数设置开关 -->
+    <!-- 动力学参数为智元夹爪，未设置运动学参数，正逆解默认臂末端 -->
+    <param name="enable_end_tool_params" value="true" />
+    <param name="end_tool_kine_a" value="[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]" />
+    <param name="end_tool_dyn_a" value="[0.622, 24.499, -6.016, 62.723, 0.008, 0.000, 0.000, 0.006, 0.000, 0.002]" />
+    <param name="end_tool_kine_b" value="[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]" />
+    <param name="end_tool_dyn_b" value="[0.587, 17.013, -3.680, 73.898, 0.004, 0.000, 0.000, 0.007, 0.000, 0.003]" />
+
+    <!-- ==================== 订阅者队列大小 ==================== -->
+    <param name="joint_cmd_queue_size" value="500" />
+    <param name="gripper_queue_size" value="500" />
+
+    <!-- ==================== 夹爪配置 ==================== -->
+    <!-- 夹爪类型：damiao（默认）或 omnipicker 或者zhixing -->
+    <param name="left_gripper_type" value="omnipicker" />
+    <param name="right_gripper_type" value="omnipicker" />
+
+    <!-- OmniPicker 专用参数 -->
+    <param name="left_gripper_can" value="can0" />
+    <param name="right_gripper_can" value="can1" />
+
+    <!-- 智行夹爪专用参数 -->
+    <param name="left_zhixing_node_id" value="1" />
+    <param name="right_zhixing_node_id" value="1" />
+    <param name="left_gripper_can" value="can0" />
+    <param name="right_gripper_can" value="can1" />
+
+    <!-- ==================== 灵巧手配置 ==================== -->
+    <param name="enable_left_hand" value="true" />
+    <param name="enable_right_hand" value="true" />
+    <param name="left_hand_can" value="can0" />
+    <param name="right_hand_can" value="can1" />
+    <param name="left_hand_id" value="17" />
+    <param name="right_hand_id" value="33" />
+
+    <!-- ==================== UDP电机配置 ==================== -->
+    <param name="enable_udp_motors" value="true" />
+    <param name="udp_motor_host" value="127.0.0.1" />
+    <param name="udp_motor_send_port" value="50001" />
+    <param name="udp_motor_recv_port" value="50002" />
+  </node>
+</launch>

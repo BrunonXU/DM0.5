@@ -42,6 +42,11 @@ EVENT_LABELS = {
     "operator_pause_requested": "收到暂停指令",
     "operator_resume_requested": "收到恢复指令",
     "async_prefetch_started": "异步预取已开始",
+    "rtc_shadow_result": "RTC Shadow结果",
+    "rtc_request_started": "RTC请求已开始",
+    "rtc_response_buffered": "RTC提前响应已缓存",
+    "rtc_switch": "RTC无停顿切换",
+    "rtc_schedule_missed": "RTC续接窗口超时",
     "dispatch_summary": "实际下发汇总",
     "first_hand_command": "首条O10硬件命令",
 }
@@ -151,6 +156,19 @@ class Telemetry:
         summary = _console_summary(event, fields)
         log_method = logger.warning if event in WARNING_EVENTS else logger.info
         log_method("【%s】请求=%s | %s", label, request_id, summary)
+        self._append_record(record)
+
+    def emit_quiet(self, event: str, **fields: Any) -> None:
+        """Write high-rate evidence to JSONL without spamming the console."""
+        self._append_record(
+            {
+                "event": event,
+                "wall_time": time.time(),
+                **fields,
+            }
+        )
+
+    def _append_record(self, record: dict[str, Any]) -> None:
         if self._path is not None:
             with self._lock:
                 with self._path.open("a", encoding="utf-8") as handle:
@@ -303,14 +321,20 @@ class _DispatchSegment:
     previous_hand_time: float | None
     arm_commands: list[np.ndarray] = field(default_factory=list)
     arm_times: list[float] = field(default_factory=list)
+    arm_send_durations: list[float] = field(default_factory=list)
     hand_commands: list[np.ndarray] = field(default_factory=list)
     hand_times: list[float] = field(default_factory=list)
     hand_raw_commands: list[np.ndarray] = field(default_factory=list)
     hand_boundary_active: list[bool] = field(default_factory=list)
     hand_velocity_limit_hits: int = 0
     hand_acceleration_limit_hits: int = 0
+    hand_jerk_limit_hits: int = 0
     hand_direction_reversal_holds: int = 0
     hand_emergency_cap_hits: int = 0
+    hand_planner_steps: int = 0
+    hand_planner_nonconverged_steps: int = 0
+    hand_planner_iteration_max: int = 0
+    hand_unchanged_skip_count: int = 0
 
 
 class DispatchTelemetry:
@@ -325,14 +349,25 @@ class DispatchTelemetry:
     ARM_DIM = 14
     HAND_DIM = 20
 
-    def __init__(self, telemetry: Telemetry) -> None:
+    def __init__(
+        self,
+        telemetry: Telemetry,
+        *,
+        hand_nominal_hz: float = 5.0,
+    ) -> None:
+        if not np.isfinite(hand_nominal_hz) or hand_nominal_hz <= 0:
+            raise ValueError("hand_nominal_hz must be finite and positive")
         self._telemetry = telemetry
+        self._hand_nominal_hz = float(hand_nominal_hz)
         self._lock = threading.Lock()
         self._active: _DispatchSegment | None = None
         self._last_arm: np.ndarray | None = None
         self._last_arm_time: float | None = None
         self._last_hand: np.ndarray | None = None
         self._last_hand_time: float | None = None
+        self._last_finished_mode: str | None = None
+        self._last_finished_request_id: int | None = None
+        self._last_finished_at: float | None = None
         self._first_hand_emitted = False
 
     def begin_segment(
@@ -372,15 +407,25 @@ class DispatchTelemetry:
         positions: np.ndarray,
         *,
         sent_at: float | None = None,
+        send_duration_seconds: float | None = None,
     ) -> None:
         values = self._validated(positions, self.ARM_DIM, "arm")
         now = time.monotonic() if sent_at is None else float(sent_at)
+        duration = (
+            None
+            if send_duration_seconds is None
+            else float(send_duration_seconds)
+        )
+        if duration is not None and (not np.isfinite(duration) or duration < 0):
+            raise ValueError("arm send duration must be finite and non-negative")
         with self._lock:
             self._last_arm = values.copy()
             self._last_arm_time = now
             if self._active is not None:
                 self._active.arm_commands.append(values.copy())
                 self._active.arm_times.append(now)
+                if duration is not None:
+                    self._active.arm_send_durations.append(duration)
 
     def record_hand_command(
         self,
@@ -391,8 +436,11 @@ class DispatchTelemetry:
         boundary_active: bool = False,
         velocity_limit_hits: int = 0,
         acceleration_limit_hits: int = 0,
+        jerk_limit_hits: int = 0,
         direction_reversal_holds: int = 0,
         emergency_cap_hits: int = 0,
+        planner_converged: bool | None = None,
+        planner_iterations: int | None = None,
         sent_at: float | None = None,
     ) -> None:
         values = self._validated(positions, self.HAND_DIM, "hand")
@@ -403,6 +451,7 @@ class DispatchTelemetry:
         )
         now = time.monotonic() if sent_at is None else float(sent_at)
         first_fields: dict[str, Any] | None = None
+        wait_fields: dict[str, Any] | None = None
         with self._lock:
             active = self._active
             previous = None if self._last_hand is None else self._last_hand.copy()
@@ -417,10 +466,51 @@ class DispatchTelemetry:
                 active.hand_acceleration_limit_hits += int(
                     acceleration_limit_hits
                 )
+                active.hand_jerk_limit_hits += int(jerk_limit_hits)
                 active.hand_direction_reversal_holds += int(
                     direction_reversal_holds
                 )
                 active.hand_emergency_cap_hits += int(emergency_cap_hits)
+                if planner_converged is not None:
+                    active.hand_planner_steps += 1
+                    active.hand_planner_nonconverged_steps += int(
+                        not planner_converged
+                    )
+                if planner_iterations is not None:
+                    active.hand_planner_iteration_max = max(
+                        active.hand_planner_iteration_max,
+                        int(planner_iterations),
+                    )
+            elif self._last_finished_request_id is not None:
+                wait_fields = {
+                    "mode": self._last_finished_mode,
+                    "request_id": self._last_finished_request_id,
+                    "phase": "wait",
+                    "source": source,
+                    "sent_after_segment_seconds": (
+                        None
+                        if self._last_finished_at is None
+                        else max(0.0, now - self._last_finished_at)
+                    ),
+                    "positions_rad": values.tolist(),
+                    "raw_target_rad": raw.tolist(),
+                    "delta_from_previous_rad": self._boundary_delta(
+                        previous, values
+                    ),
+                    "tracking_error_rad": float(
+                        np.max(np.abs(raw - values))
+                    ),
+                    "boundary_active": bool(boundary_active),
+                    "velocity_limit_hits": int(velocity_limit_hits),
+                    "acceleration_limit_hits": int(acceleration_limit_hits),
+                    "jerk_limit_hits": int(jerk_limit_hits),
+                    "direction_reversal_holds": int(
+                        direction_reversal_holds
+                    ),
+                    "emergency_cap_hits": int(emergency_cap_hits),
+                    "planner_converged": planner_converged,
+                    "planner_iterations": planner_iterations,
+                }
             if not self._first_hand_emitted:
                 self._first_hand_emitted = True
                 first_fields = {
@@ -439,11 +529,50 @@ class DispatchTelemetry:
                 }
         if first_fields is not None:
             self._telemetry.emit("first_hand_command", **first_fields)
+        if wait_fields is not None:
+            self._telemetry.emit_quiet("hand_wait_command", **wait_fields)
+
+    def record_hand_unchanged_skip(
+        self,
+        positions: np.ndarray,
+        *,
+        last_acknowledged: np.ndarray,
+        source: str = "split_move_ee_pos_raw_5hz_changed_only",
+    ) -> None:
+        """Record a sampled point target that was intentionally not resubmitted."""
+        values = self._validated(positions, self.HAND_DIM, "hand skip")
+        previous = self._validated(
+            last_acknowledged,
+            self.HAND_DIM,
+            "last acknowledged hand",
+        )
+        with self._lock:
+            active = self._active
+            if active is not None:
+                active.hand_unchanged_skip_count += 1
+                mode = active.mode
+                request_id = active.request_id
+            else:
+                mode = self._last_finished_mode
+                request_id = self._last_finished_request_id
+        self._telemetry.emit_quiet(
+            "hand_command_skipped",
+            mode=mode,
+            request_id=request_id,
+            source=source,
+            reason="unchanged_from_last_acknowledged_move_ee_pos",
+            max_delta_rad=float(np.max(np.abs(values - previous))),
+            command_rad=values.tolist(),
+        )
 
     def finish_segment(self, *, reason: str) -> None:
         with self._lock:
             segment = self._active
             self._active = None
+            if segment is not None:
+                self._last_finished_mode = segment.mode
+                self._last_finished_request_id = segment.request_id
+                self._last_finished_at = time.monotonic()
         if segment is None:
             return
         fields = self._summarize(segment)
@@ -454,6 +583,13 @@ class DispatchTelemetry:
             completion_reason=reason,
             **fields,
         )
+
+    def active_identity(self) -> tuple[str | None, int | None]:
+        """Return a lock-consistent identity for optional feedback samples."""
+        with self._lock:
+            if self._active is None:
+                return self._last_finished_mode, self._last_finished_request_id
+            return self._active.mode, self._active.request_id
 
     @staticmethod
     def _validated(values: np.ndarray, size: int, label: str) -> np.ndarray:
@@ -515,6 +651,12 @@ class DispatchTelemetry:
                 "nominal_max_velocity_rad_s": None,
                 "nominal_max_acceleration_rad_s2": None,
                 "nominal_max_jerk_rad_s3": None,
+                "actual_max_velocity_rad_s": None,
+                "actual_max_velocity_joint": None,
+                "actual_max_acceleration_rad_s2": None,
+                "actual_max_acceleration_joint": None,
+                "actual_max_jerk_rad_s3": None,
+                "actual_max_jerk_joint": None,
                 "send_interval_p50_seconds": None,
                 "send_interval_p95_seconds": None,
                 "send_interval_max_seconds": None,
@@ -572,6 +714,21 @@ class DispatchTelemetry:
             if not derivative.size:
                 return None
             return float(np.max(np.abs(derivative))) * (nominal_hz**order)
+
+        actual_array = array
+        actual_times = np.asarray(times, dtype=np.float64)
+        if (
+            previous is not None
+            and previous_time is not None
+            and len(actual_times)
+            and previous_time < actual_times[0]
+        ):
+            actual_array = np.vstack([previous, actual_array])
+            actual_times = np.concatenate([[previous_time], actual_times])
+        actual_dynamics = {
+            order: actual_derivative_max(actual_array, actual_times, order)
+            for order in (1, 2, 3)
+        }
 
         blend_max: float | None = None
         blend_count = 0
@@ -635,6 +792,12 @@ class DispatchTelemetry:
             "nominal_max_velocity_rad_s": derivative_max(1),
             "nominal_max_acceleration_rad_s2": derivative_max(2),
             "nominal_max_jerk_rad_s3": derivative_max(3),
+            "actual_max_velocity_rad_s": actual_dynamics[1][0],
+            "actual_max_velocity_joint": actual_dynamics[1][1],
+            "actual_max_acceleration_rad_s2": actual_dynamics[2][0],
+            "actual_max_acceleration_joint": actual_dynamics[2][1],
+            "actual_max_jerk_rad_s3": actual_dynamics[3][0],
+            "actual_max_jerk_joint": actual_dynamics[3][1],
             "send_interval_p50_seconds": cls._percentile(intervals, 50),
             "send_interval_p95_seconds": cls._percentile(intervals, 95),
             "send_interval_max_seconds": (
@@ -688,7 +851,7 @@ class DispatchTelemetry:
             segment.hand_times,
             previous=segment.previous_hand,
             previous_time=segment.previous_hand_time,
-            nominal_hz=5.0,
+            nominal_hz=self._hand_nominal_hz,
             joint_names=POLICY_JOINT_NAMES[self.ARM_DIM :],
         )
         arm_p95 = arm["delta_p95_rad"]
@@ -704,10 +867,49 @@ class DispatchTelemetry:
             if segment.hand_commands
             else np.empty(0, dtype=np.float64)
         )
+        arm_send_durations = np.asarray(
+            segment.arm_send_durations,
+            dtype=np.float64,
+        )
         return {
             "blend_seconds": segment.blend_seconds,
+            "segment_started_at_monotonic": segment.started_at,
             **{f"arm_{name}": value for name, value in arm.items()},
             **{f"hand_{name}": value for name, value in hand.items()},
+            "arm_previous_command_rad": (
+                None
+                if segment.previous_arm is None
+                else segment.previous_arm.tolist()
+            ),
+            "arm_commands_rad": (
+                [command.tolist() for command in segment.arm_commands]
+                if segment.mode in {"powered-sync", "powered-rtc"}
+                else []
+            ),
+            "arm_command_time_offsets_seconds": (
+                [
+                    float(sent_at - segment.started_at)
+                    for sent_at in segment.arm_times
+                ]
+                if segment.mode in {"powered-sync", "powered-rtc"}
+                else []
+            ),
+            "arm_send_duration_p50_seconds": self._percentile(
+                arm_send_durations, 50
+            ),
+            "arm_send_duration_p95_seconds": self._percentile(
+                arm_send_durations, 95
+            ),
+            "arm_send_duration_max_seconds": (
+                None
+                if not arm_send_durations.size
+                else float(np.max(arm_send_durations))
+            ),
+            "arm_send_durations_seconds": (
+                arm_send_durations.tolist()
+                if segment.mode in {"powered-sync", "powered-rtc"}
+                else []
+            ),
             "hand_previous_command_rad": (
                 None
                 if segment.previous_hand is None
@@ -740,10 +942,17 @@ class DispatchTelemetry:
             "hand_acceleration_limit_hit_count": (
                 segment.hand_acceleration_limit_hits
             ),
+            "hand_jerk_limit_hit_count": segment.hand_jerk_limit_hits,
             "hand_direction_reversal_hold_count": (
                 segment.hand_direction_reversal_holds
             ),
             "hand_emergency_cap_hit_count": segment.hand_emergency_cap_hits,
+            "hand_planner_step_count": segment.hand_planner_steps,
+            "hand_planner_nonconverged_step_count": (
+                segment.hand_planner_nonconverged_steps
+            ),
+            "hand_planner_iteration_max": segment.hand_planner_iteration_max,
+            "hand_unchanged_skip_count": segment.hand_unchanged_skip_count,
             "summary": (
                 f"双臂发送={arm['send_count']}次 "
                 f"步进P95={arm_p95 if arm_p95 is not None else '无'} "

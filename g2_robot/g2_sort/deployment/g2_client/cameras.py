@@ -14,6 +14,7 @@ from typing import Any
 import numpy as np
 
 from .contracts import ObservationError
+from .image_transport import EncodedImage
 
 
 class G2CameraRig:
@@ -53,6 +54,56 @@ class G2CameraRig:
 
     def capture_channel(self, name: str) -> np.ndarray:
         """Read one named channel for diagnostics while preserving strict decode."""
+        message = self._read_message(name)
+        return self._decode_rgb(message, name)
+
+    def capture_encoded(self) -> tuple[EncodedImage, EncodedImage, EncodedImage]:
+        """Return native JPEG/PNG bytes without decoding compressed GDK frames."""
+        frames = [self.capture_encoded_channel(name) for name, _ in self._channels]
+        return tuple(frames)  # type: ignore[return-value]
+
+    def capture_encoded_channel(self, name: str) -> EncodedImage:
+        message = self._read_message(name)
+        return self._encoded_from_message(message, name)
+
+    def capture_transport_pair(
+        self, name: str
+    ) -> tuple[np.ndarray, EncodedImage | None]:
+        """Decode one message for HTTP and retain its native compressed bytes.
+
+        Returning both views from one GDK message makes transport A/B archives
+        synchronized.  Uncompressed messages remain valid for HTTP and return
+        ``None`` for the compressed-passthrough candidate.
+        """
+        message = self._read_message(name)
+        rgb = self._decode_rgb(message, name)
+        if message.encoding == self._gdk.Encoding.UNCOMPRESSED:
+            return rgb, None
+        return rgb, self._encoded_from_message(message, name)
+
+    def _encoded_from_message(self, message: Any, name: str) -> EncodedImage:
+        encoding = message.encoding
+        if encoding == self._gdk.Encoding.JPEG:
+            media_type = "image/jpeg"
+        elif encoding == self._gdk.Encoding.PNG:
+            media_type = "image/png"
+        else:
+            raise ObservationError(
+                f"camera {name} encoding {encoding} cannot use compressed passthrough"
+            )
+        try:
+            return EncodedImage(
+                data=bytes(message.data),
+                media_type=media_type,
+                width=int(message.width),
+                height=int(message.height),
+            )
+        except Exception as exc:
+            raise ObservationError(
+                f"camera {name} compressed frame validation failed: {exc}"
+            ) from exc
+
+    def _read_message(self, name: str) -> Any:
         camera_types = dict(self._channels)
         if name not in camera_types:
             raise ObservationError(f"unknown camera channel {name!r}")
@@ -64,7 +115,7 @@ class G2CameraRig:
             raise ObservationError(f"camera {name} read failed: {exc}") from exc
         if message is None:
             raise ObservationError(f"camera {name} returned no frame")
-        return self._decode_rgb(message, name)
+        return message
 
     def _decode_rgb(self, message: Any, name: str) -> np.ndarray:
         try:

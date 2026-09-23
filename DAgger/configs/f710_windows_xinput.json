@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "platform": "Windows",
+  "backend": "pygame_sdl2",
+  "device_name_contains": ["F710", "Logitech"],
+  "mapping_status": "read_only_verified",
+  "verification": {
+    "date": "2026-08-27",
+    "device_reported_name": "Controller (Wireless Gamepad F710)",
+    "platform": "Windows / Python 3.12.10 / pygame",
+    "neutral_observed": {
+      "left_x": 0.004,
+      "left_y": -0.004,
+      "right_x": 0.004,
+      "right_y": -0.004,
+      "left_trigger": 0.0,
+      "right_trigger": 0.0
+    },
+    "ranges_verified": "both sticks -1..1; both triggers 0..1",
+    "dpad_verified": "left=(-1,0), right=(1,0), up=(0,1), down=(0,-1)",
+    "buttons_verified": "LB=button4, RB=button5"
+  },
+  "expected_mapping": {
+    "axes": {
+      "left_x": 0,
+      "left_y": 1,
+      "right_x": 2,
+      "right_y": 3,
+      "left_trigger": 4,
+      "right_trigger": 5
+    },
+    "buttons": {
+      "lb": 4,
+      "rb_deadman": 5
+    },
+    "hat": 0
+  },
+  "normalization": {
+    "stick_deadband": 0.12,
+    "neutral_threshold": 0.18,
+    "triggers_rest_at_minus_one": true
+  },
+  "observed_axis_signs": {
+    "left_x": "left_negative_right_positive",
+    "left_y": "up_negative_down_positive",
+    "right_x": "left_negative_right_positive",
+    "right_y": "up_negative_down_positive"
+  },
+  "safety": {
+    "powered_allowed": false,
+    "requires_read_only_axis_verification": true,
+    "requires_neutral_before_arming": true,
+    "requires_new_deadman_rising_edge_after_reconnect": true
+  }
+}

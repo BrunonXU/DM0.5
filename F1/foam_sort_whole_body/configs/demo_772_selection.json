@@ -1,0 +1,23 @@
+{
+  "version": "demo_772_v4",
+  "decision": "Exclude three further sources after direct raw-image review and raw base/head/body message re-read confirmed background movement while weak base labels remain zero, before the existing tail masks. Keep automatic screen flags as review candidates, not confirmed exclusions.",
+  "parent_directory": "results/demo_775_selection",
+  "parent_candidates_sha256": "667348f54c70c8770a79b02a654f35834e6e232fdea08cac2a66951c7d17ac02",
+  "expected_parent_count": 775,
+  "expected_candidates": 772,
+  "additional_exclusions": {
+    "all_data_1_derived/episode_000009": "visual_base_phase_conflict_raw_rechecked; exclude_joint_training_and_full_replay; preserve_raw",
+    "all_data_2_derived/episode_000000": "visual_base_phase_conflict_raw_rechecked; exclude_joint_training_and_full_replay; preserve_raw",
+    "all_data_derived/episode_000000": "visual_base_phase_conflict_raw_rechecked; exclude_joint_training_and_full_replay; preserve_raw"
+  },
+  "evidence_sha256": {
+    "results/demo_775_phase_review/manual_review/confirmed_findings.json": "f0f1fc771b63409f5510def0b1f1e4ae55b4e21363af0c3f194a5f44002b19d1",
+    "results/demo_775_phase_review/manual_review/raw_evidence/all_data_1_derived/episode_000009/evidence.json": "7c2e91a2169b3e0b676417fa11e9003ee5e8e69a7ca2cab74afd4151f0e4f2e7",
+    "results/demo_775_phase_review/manual_review/raw_evidence/all_data_2_derived/episode_000000/evidence.json": "433614d646faa1cfefc5e915a9e504d59b09a721af39bc5c6f225dfedd54b3ec",
+    "results/demo_775_phase_review/manual_review/raw_evidence/all_data_derived/episode_000000/evidence.json": "971f755c63c46bc751728b751bd6b9f7c937b4c499274cd1576db3b20fdd456c",
+    "results/demo_775_phase_review/manual_review/raw_evidence/all_data_1_derived/episode_000009/head_sheet.jpg": "51319291b724d38906759aaa47f46ff00a888f69e302266d5ee2d327b7c53966",
+    "results/demo_775_phase_review/manual_review/raw_evidence/all_data_2_derived/episode_000000/head_sheet.jpg": "a70e10b061d90a4beda6f9e3095c2483a74819e3abef360cfb1d46d7bcb95f8d",
+    "results/demo_775_phase_review/manual_review/raw_evidence/all_data_derived/episode_000000/head_sheet.jpg": "4337316f505255efe1a28cf9c499b15933e78d0116dc84d612b2de7c3fdbb6d4"
+  },
+  "training_approved": false
+}

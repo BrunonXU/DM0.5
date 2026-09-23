@@ -1,0 +1,32 @@
+[project]
+name = "pico-f1-teleop"
+version = "1.4.4"
+description = "Independent smooth F1 PICO teleoperation with direct LeRobot v3 recording"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "coal==3.0.2",
+  "mcap==1.4.0",
+  "meshcat==0.3.2",
+  "mujoco==3.11.0",
+  "numpy>=2.3,<2.4",
+  "placo==0.9.20",
+  "psutil==7.2.2",
+  "pyarrow==20.0.0",
+  "pyyaml==6.0.3",
+  "ruckig==0.19.4",
+  "tyro==1.0.15",
+  "u-msgpack-python==2.8.0",
+]
+
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.uv]
+package = true

@@ -1,0 +1,101 @@
+schema_version: 1
+status: draft_not_training_ready
+interface_review_status: selected_normal_teleop_source_reviewed_capture_version_and_runtime_constraints_unverified
+interface_sources: [../../F1系统接口清单.md, ../../通用机器人软件接口文档.md]
+acceptance_and_replay_plan: ../docs/dataset_acceptance.md
+robot: F1
+training_enabled: false
+experiment_definition: ../models/DM0.5/experiment.yaml
+current_plan: ../docs/training_plan.md
+proposed_state_dim: 21
+proposed_action_dim: 19
+right_side_freeze: false
+timestamps:
+  provisional_audit_axis: mcap_log_time
+  camera_header_axis: requires_clock_offset_and_startup_checks
+  warning: receipt_time_is_not_proven_capture_time
+observations:
+  cameras:
+    head: /camera/head/color/image_raw/compressed
+    left_wrist: /camera/left_wrist/color/image_raw/compressed
+    right_wrist: /camera/right_wrist/color/image_raw/compressed
+  joint_feedback:
+    topic: /hal/joint_states
+    select_by_joint_name: true
+    candidate_groups:
+      arms: [arm_l_j1, arm_l_j2, arm_l_j3, arm_l_j4, arm_l_j5, arm_l_j6, arm_l_j7, arm_r_j1, arm_r_j2, arm_r_j3, arm_r_j4, arm_r_j5, arm_r_j6, arm_r_j7]
+      head: [head_j1, head_j2, head_j3]
+      body: [body_j1, body_j2, body_j3, body_j4, body_j5]
+    units: numeric_values_suggest_degrees_controller_contract_unverified
+    documented_angle_interface_unit: degrees
+    body_channel_kind: torso_motor_angle_feedback_not_base3_plus_waist2
+    body_udp_motor_ids: {body_j1: 3, body_j2: 4, body_j3: 5, body_j4: 6, body_j5: 7}
+    body_individual_axis_mapping: unverified
+    hand_fields: do_not_confuse_with_separate_gripper_state_topics
+  grippers:
+    topics: [/motion_ctl/gripper/left/state, /motion_ctl/gripper/right/state]
+    units: raw_0_open_100_closed_scale_physical_calibration_unverified
+    documented_position_scale: {fully_open: 0.0, closed: 100.0}
+    physical_opening_mm_calibration: unverified
+  estimated_base:
+    topic: /move/State
+    provenance: synthetic_estimate_not_measured_odometry
+    use_as_measured_state: false
+    orientation:
+      recorded_encoding: yaw_radians_in_orientation_w
+      protocol_status: matches_vendor_move_state_document_not_a_standard_quaternion
+      zero_yaw_is_not_an_integrity_failure: true
+      parse_as_standard_quaternion: false
+      export_strategy: explicit_yaw_scalar_or_explicitly_reencoded_unit_quaternion
+    coordinates:
+      nominal_axes: x_forward_y_left
+      global_vs_body_frame: requires_explicit_contract
+actions:
+  arms:
+    candidate_topic: /lead/joint_states
+    dimensions: 14
+    semantics: safe_hardware_targets_in_inspected_source_not_execution_ack
+    documented_command_topic: /motion_ctl/joint_ctl
+    documented_command_type: sensor_msgs/msg/JointState
+    documented_command_unit: degrees
+    complete_seven_joints_per_arm_required: true
+    leader_to_command_transform: rename_only_in_inspected_normal_teleop_chain_capture_version_unverified
+    mapping_evidence: ../../reference/20260914_action_mapping_followup/README.md
+    inspected_source_units: degrees
+    apply_placo_angle_map_to_recorded_lead: false
+    lead_udp_sample_pairing: asynchronous_shared_safe_cache_not_per_message_ack
+    effective_joint_limit_behavior: unverified
+    documented_limit_review: ../results/interface_review_20260914/documented_range_audit.json
+    units: degrees_in_inspected_normal_teleop_path_capture_version_unverified
+  grippers:
+    topics: [/motion_ctl/gripper/left, /motion_ctl/gripper/right]
+    dimensions: 2
+    message_type: control_msgs/msg/GripperCommand
+    documented_position_scale: {fully_open: 0.0, closed: 100.0}
+    max_effort: verify_deployed_configuration_not_assumed_from_example
+  body:
+    measured_fields_exist: true
+    command_topic: unverified_not_in_current_topic_set
+    enable_policy_output: false
+  base:
+    desired_future_interface: [vx_m_per_s, vy_m_per_s, wz_rad_per_s]
+    documented_command_topic: /move/ManualMoveCmd
+    documented_command_type: geometry_msgs/msg/TwistStamped
+    documented_command_fields: [twist.linear.x, twist.linear.y, twist.angular.z]
+    documented_frame_example: base_link
+    documented_command_mode: soft_manual
+    control_mode_service: /move/SetControlMode
+    control_mode_request_values: {automatic: 0, manual: 1}
+    actual_axis_signs_rate_limits_and_watchdog: unverified
+    documented_command_example_hz: 20
+    documented_move_state_feedback_hz: 200
+    example_rates_are_execution_requirements: false
+    measured_command_topic: absent_from_current_topic_set
+    use_estimated_speed_as_ground_truth: false
+    experimental_supervision: included_with_nonzero_loss_in_current_end_to_end_experiment
+encoding:
+  subtract_entire_state_vector_from_action: false
+  reason: base_pose_and_velocity_are_different_physical_quantities
+  per_field_encoder_required: true
+  normalization: recompute_on_this_tasks_training_split_only
+  reuse_g2_34d_contract: false

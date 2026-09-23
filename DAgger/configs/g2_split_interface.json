@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "logical_action": {
+    "dimension": 34,
+    "layout": ["left_arm_7", "right_arm_7", "left_o10_10", "right_o10_10"],
+    "units": "radian",
+    "semantics": "absolute_joint_position_at_hardware_boundary"
+  },
+  "hardware_dispatch": {
+    "mode": "split",
+    "arms": {
+      "dimension": 14,
+      "api": "joint_servo_control",
+      "rate_hz": 100,
+      "channel": "normal"
+    },
+    "hands": {
+      "dimension": 20,
+      "api": "move_ee_pos",
+      "group": "dual_tool",
+      "target_type": "o10_t2",
+      "rate_hz": 10
+    }
+  },
+  "forbidden_defaults": ["unified_34_joint_servo", "low_latency_servo"],
+  "implementation_status": "reference_only_no_gdk_adapter_in_g2teleop"
+}
+

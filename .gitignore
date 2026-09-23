@@ -58,3 +58,28 @@
 **/*.partial
 **/*.tmp
 **/*~
+
+# Robot/task organization
+/F1/**/data/
+/F1/**/datasets/
+/F1/**/logs/
+/DAgger/data/
+/DAgger/logs/
+
+# Keep the task's result index, while excluding generated contents
+!/F1/foam_sort_whole_body/results/
+/F1/foam_sort_whole_body/results/*
+!/F1/foam_sort_whole_body/results/README.md
+
+# Workspace runtime output and local environments
+/DM0.5/logs/
+**/.venv*/
+**/.cache/
+
+# Keep deployment layout documentation beneath a directory named runs
+!/DM0.5/infra/layout/nvme/runs/
+/DM0.5/infra/layout/nvme/runs/*
+!/DM0.5/infra/layout/nvme/runs/README.md
+!/DM0.5/infra/layout/nvme/runs/data_transfer/
+/DM0.5/infra/layout/nvme/runs/data_transfer/*
+!/DM0.5/infra/layout/nvme/runs/data_transfer/README.md

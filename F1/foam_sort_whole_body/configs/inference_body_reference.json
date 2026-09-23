@@ -1,0 +1,22 @@
+{
+  "schema": "f1_inference_body_reference_v1",
+  "source_bundle": "results/demo_training_release_20260917_v1/replay_192/bundle",
+  "manifest_sha256": "09bc685a46e9f9da6721b51d459d8eb9b300a4b0f6927cb6f0ce546a487f378d",
+  "source_episode": "all_data_derived/episode_000192",
+  "source_frame": 0,
+  "body_joint_names": [
+    "body_j1",
+    "body_j2",
+    "body_j3",
+    "body_j4",
+    "body_j5"
+  ],
+  "body_positions_deg": [
+    0.001373291015625,
+    0.006866455078125,
+    -42.06871032714844,
+    -52.73643493652344,
+    -24.585342407226562
+  ],
+  "scope": "192 demonstrated starting body pose; not proof of all training postures or collision clearance"
+}

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#172b2b">
+  <meta name="referrer" content="same-origin">
+  <title>F1 · 具身研发工作台</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="主导航">
+      <a class="brand" href="#overview" aria-label="F1 工作台首页"><span class="brand-mark">F1<span>·</span></span><span>具身研发工作台<small>EMBODIED LAB / 4242</small></span></a>
+      <div class="sidebar-label">WORKSPACE</div>
+      <nav id="navigation"></nav>
+      <div class="sidebar-bottom"><span class="small-dot" id="sidebar-dot"></span><span id="sidebar-status">正在连接本地服务</span><small>F1-09 · 独立研发入口</small></div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <div class="breadcrumb">具身研发 <span>/</span> <strong id="breadcrumb-title">总览</strong></div>
+        <div class="topbar-actions"><span class="pill neutral" id="connection-pill"><span class="small-dot"></span>正在连接</span><span id="robot-label" class="robot-label">F1-09</span><button id="stop-button" class="button stop-button" type="button" title="只停止本工作台拥有的动作，不代替硬件急停">停止当前动作</button></div>
+      </header>
+      <div id="global-alert" class="global-alert" role="status" hidden></div>
+      <main id="main" tabindex="-1"></main>
+      <footer class="workspace-footer"><span>状态来自机器人实时反馈；空白值表示尚未收到。</span><span id="updated-at">尚未同步</span></footer>
+    </div>
+  </div>
+  <div id="toast-region" class="toast-region" role="status" aria-live="polite"></div>
+  <dialog id="execute-dialog" class="execute-dialog"><form method="dialog"><div class="dialog-kicker">执行目标预览</div><h2>执行这组姿态</h2><p id="execute-description"></p><div id="execute-targets" class="target-preview"></div><p class="muted">请在机器人旁确认当前工作空间。此操作由本机执行服务检查反馈、控制权与配置。</p><div class="dialog-actions"><button class="button" value="cancel">返回编辑</button><button class="button primary" id="confirm-execute" value="execute">执行目标</button></div></form></dialog>
+  <input type="file" id="preset-file" accept="application/json,.json" hidden>
+</body>
+</html>

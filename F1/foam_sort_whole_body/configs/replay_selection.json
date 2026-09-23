@@ -1,0 +1,5 @@
+{
+  "schema_version": 1,
+  "bundle": null,
+  "note": "清洗完成后换成所选便携数据包目录；相对路径以本配置所在目录为起点。F1数据包放在/home/user/Bruno/F1/foam_sort_whole_body/runtime/replay_bundles/<版本>/。"
+}

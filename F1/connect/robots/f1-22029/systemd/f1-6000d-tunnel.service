@@ -1,0 +1,17 @@
+[Unit]
+Description=F1 Wi-Fi 192.168.31.29 reverse SSH tunnel to 6000D (loopback 22029)
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/ssh -F /home/user/Bruno/connect/ssh_config -NT -R 127.0.0.1:22029:127.0.0.1:22 6000d-f1-tunnel
+Restart=always
+RestartSec=10s
+TimeoutStopSec=15s
+UMask=0077
+NoNewPrivileges=yes
+StandardOutput=append:/home/user/Bruno/connect/tunnel.log
+StandardError=inherit
+
+[Install]
+WantedBy=default.target

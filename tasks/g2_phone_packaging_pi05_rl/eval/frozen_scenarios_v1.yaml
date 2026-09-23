@@ -1,0 +1,49 @@
+evaluation_version: phone_box_eval_v1
+frozen: false
+trials_per_scenario: 10
+
+metrics:
+  - full_task_success
+  - grasp_phone_success
+  - handover_success
+  - place_phone_success
+  - grasp_lid_success
+  - close_box_success
+  - completion_time_s
+  - drop_count
+  - collision_count
+  - intervention_count
+  - failure_stage
+
+scenarios:
+  - id: E1
+    description: 标准位置
+    phone_bin: center
+    box_bin: center
+    lid_bin: center
+  - id: E2
+    description: 手机左右偏移
+    phone_bin: lateral_offset
+    box_bin: center
+    lid_bin: center
+  - id: E3
+    description: 盒体左右偏移
+    phone_bin: center
+    box_bin: lateral_offset
+    lid_bin: center
+  - id: E4
+    description: 手机与盒体轻微 yaw 扰动
+    phone_bin: yaw_offset
+    box_bin: yaw_offset
+    lid_bin: center
+  - id: E5
+    description: 正常工作域内综合扰动
+    phone_bin: combined
+    box_bin: combined
+    lid_bin: combined
+
+freeze_requirements:
+  - fill_numeric_pose_ranges
+  - define_stage_success_criteria
+  - record_physical_setup_and_calibration_ids
+  - keep_scenarios_out_of_training

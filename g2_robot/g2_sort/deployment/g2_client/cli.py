@@ -1,6 +1,6 @@
 """DM0.5 G2运行时的命令行合同。
 
-用途：定义shadow、powered-sync、powered-async及通用GDK/日志参数。
+用途：定义shadow、rtc-shadow、powered-rtc、powered-sync、powered-async及通用参数。
 输入：命令行字符串列表，或默认读取当前进程的argv。
 输出：完成范围校验的``argparse.Namespace``。
 方法：冻结DM0.5的34D、50步、30Hz和100Hz，不暴露prompt、horizon或checkpoint。
@@ -14,6 +14,11 @@ from pathlib import Path
 from typing import Sequence
 
 from g2_sort.config.dm05_contract import POWERED_SAFETY_DEFAULTS
+from .trajectory_smoothing import (
+    HAND_V11_MAX_ACCELERATION_RAD_S2,
+    HAND_V11_MAX_DELTA_RAD,
+    HAND_V11_MAX_VELOCITY_RAD_S,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -24,7 +29,13 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--mode",
-        choices=("shadow", "powered-sync", "powered-async"),
+        choices=(
+            "shadow",
+            "rtc-shadow",
+            "powered-rtc",
+            "powered-sync",
+            "powered-async",
+        ),
         default="shadow",
         help="shadow never sends servo commands; async must be selected explicitly",
     )
@@ -41,6 +52,12 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--policy-endpoint",
         default="http://10.130.153.114:7892/process_frame",
+    )
+    parser.add_argument(
+        "--policy-transport",
+        choices=("http-multipart-json", "websocket-binary"),
+        default="http-multipart-json",
+        help="frozen HTTP baseline or persistent binary WebSocket candidate",
     )
     parser.add_argument(
         "--request-timeout-seconds",
@@ -66,10 +83,39 @@ def build_parser() -> argparse.ArgumentParser:
         help="reject async chunks with fewer fresh 30 Hz intervals",
     )
     parser.add_argument(
+        "--rtc-predicted-delay-steps",
+        type=int,
+        default=20,
+        help="RTC safe end-to-end delay estimate in 30 Hz steps",
+    )
+    parser.add_argument(
+        "--rtc-execution-horizon",
+        type=int,
+        default=25,
+        help="RTC logical request horizon s; requires d <= s <= 50-d",
+    )
+    parser.add_argument(
+        "--rtc-process-isolation",
+        action="store_true",
+        help=(
+            "run powered RTC or sync camera/decode/JPEG/HTTP/JSON in a "
+            "spawned GDK worker so the 100 Hz control process never handles images"
+        ),
+    )
+    parser.add_argument(
         "--max-start-jump-radians",
         type=float,
         default=0.05,
         help="reject execution if any joint differs this much from measured state",
+    )
+    parser.add_argument(
+        "--max-hand-start-jump-radians",
+        type=float,
+        default=0.35,
+        help=(
+            "powered hard-gate limit for the executed 20D hand target; "
+            "the arm limit remains --max-start-jump-radians"
+        ),
     )
     parser.add_argument(
         "--boundary-blend-seconds",
@@ -95,6 +141,30 @@ def build_parser() -> argparse.ArgumentParser:
             "experimental fixed-endpoint smoothing for the first 14 arm axes; "
             "0 disables it and the first powered candidate is 10"
         ),
+    )
+    parser.add_argument(
+        "--arm-interpolation-profile",
+        choices=("linear", "cubic_hermite", "cubic_spline"),
+        default="linear",
+        help=(
+            "30 Hz to 100 Hz arm interpolation; cubic profiles preserve "
+            "continuous velocity and are RTC smoothing candidates"
+        ),
+    )
+    parser.add_argument(
+        "--arm-micro-motion-profile",
+        choices=("off", "stationary_minjerk_v1"),
+        default="off",
+        help=(
+            "post-C2 near-stationary arm projection; off preserves the "
+            "frozen baseline"
+        ),
+    )
+    parser.add_argument(
+        "--arm-micro-motion-threshold-rad",
+        type=float,
+        default=0.0035,
+        help="maximum arm motion range eligible for near-stationary projection",
     )
     parser.add_argument(
         "--max-requests",
@@ -134,12 +204,13 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--servo-output-mode",
-        choices=("unified-34", "arms-only", "split"),
+        choices=("unified-34", "arms-only", "split", "dual-side-17d"),
         default="split",
         help=(
-            "split is the validated default: 14D arms use joint_servo_control "
-            "and O10 hands use move_ee_pos at 5 Hz; unified-34 and arms-only "
-            "are explicit diagnostics"
+            "split is the current default: 14D arms use joint_servo_control "
+            "and O10 hands use rate-configured move_ee_pos; dual-side-17d is the "
+            "two per-side continuous Servo candidate; unified-34 and arms-only "
+            "remain explicit diagnostics"
         ),
     )
     parser.add_argument(
@@ -200,6 +271,7 @@ def build_parser() -> argparse.ArgumentParser:
         type=float,
         default=POWERED_SAFETY_DEFAULTS["max_jerk_rad_s3"],
     )
+    parser.add_argument("--servo-timing-warning-only", action="store_true")
     parser.add_argument(
         "--max-servo-send-seconds",
         type=float,
@@ -222,16 +294,41 @@ def build_parser() -> argparse.ArgumentParser:
         help="latest successfully acknowledged Split O10 command",
     )
     parser.add_argument(
+        "--joint-feedback-probe-json",
+        type=Path,
+        default=Path("logs/diagnostics/joint_feedback_probe_latest.json"),
+        help="read-only probe result; missing/failed result keeps command-only mode",
+    )
+    parser.add_argument(
+        "--disable-joint-feedback",
+        action="store_true",
+        help="force command-only telemetry even when a probe passed",
+    )
+    parser.add_argument(
+        "--hand-stream-hz",
+        type=float,
+        choices=(5.0, 10.0, 20.0, 30.0, 50.0),
+        default=5.0,
+        help=(
+            "Split O10 command sampling rate; formal powered-sync and powered-rtc "
+            "entry scripts explicitly select the validated 10 Hz setting"
+        ),
+    )
+    parser.add_argument(
         "--hand-startup-delay-seconds",
         type=float,
         default=0.08,
-        help="delay first 5 Hz O10 send until the 60 ms boundary blend has finished",
+        help="delay the first O10 send until the arm boundary blend has started",
     )
     parser.add_argument(
         "--hand-smoothing-profile",
-        choices=("off", "v1"),
+        choices=("off", "v1", "v1_1", "rtc_cap_v2", "shared_preview_v1"),
         default="off",
-        help="causal 5 Hz O10 smoothing; v1 is enabled only by formal sync",
+        help=(
+            "rate-aware causal O10 smoothing; v1/v1_1 are sync-only and "
+            "rtc_cap_v2 uses separate RTC boundary/internal delta caps; "
+            "shared_preview_v1 is the one Sync/RTC-shared q/v/a preview planner"
+        ),
     )
     parser.add_argument(
         "--hand-boundary-blend-seconds",
@@ -252,6 +349,12 @@ def build_parser() -> argparse.ArgumentParser:
         "--hand-max-delta-radians",
         type=float,
         default=0.4,
+    )
+    parser.add_argument(
+        "--hand-boundary-max-delta-radians",
+        type=float,
+        default=0.15,
+        help="rtc_cap_v2 first 5 Hz command delta cap",
     )
     parser.add_argument(
         "--hand-reversal-error-radians",
@@ -301,52 +404,115 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
             )
         args.servo_channel = "low-latency"
     if args.split_control_profile:
-        if args.mode == "shadow":
+        if args.mode in {"shadow", "rtc-shadow"}:
             parser.error(
                 "--split-control-profile requires a powered mode"
             )
-        if any(
+        channel_explicit = any(
             value == "--servo-channel"
             or value.startswith("--servo-channel=")
             for value in raw_args
-        ) and args.servo_channel != "low-latency":
+        )
+        output_mode_explicit = any(
+            value == "--servo-output-mode"
+            or value.startswith("--servo-output-mode=")
+            for value in raw_args
+        )
+        if (
+            channel_explicit
+            and args.servo_channel != "low-latency"
+            and args.servo_output_mode not in {"dual-side-17d", "unified-34"}
+        ):
             parser.error(
                 "--split-control-profile conflicts with "
                 "--servo-channel normal"
             )
-        if any(
-            value == "--servo-output-mode"
-            or value.startswith("--servo-output-mode=")
-            for value in raw_args
-        ) and args.servo_output_mode != "split":
-            parser.error(
-                "--split-control-profile conflicts with a non-split "
-                "--servo-output-mode"
-            )
-        args.servo_channel = "low-latency"
-        args.servo_output_mode = "split"
+        if args.servo_output_mode == "unified-34" and not channel_explicit:
+            parser.error("unified-34 control profile requires explicit --servo-channel normal")
+        if args.servo_output_mode in {"dual-side-17d", "unified-34"} and output_mode_explicit:
+            if args.servo_channel != "normal":
+                parser.error(
+                    "continuous hand Servo profile requires normal Servo"
+                )
+        else:
+            args.servo_channel = "low-latency"
+        if not output_mode_explicit:
+            args.servo_output_mode = "split"
+    if args.servo_timing_warning_only and (args.servo_output_mode != "unified-34" or args.servo_channel != "normal" or args.mode != "powered-sync"):
+        parser.error("--servo-timing-warning-only requires powered-sync unified-34 normal")
     if args.interactive_keys and args.no_interactive_keys:
         parser.error("--interactive-keys conflicts with --no-interactive-keys")
-    if args.hand_smoothing_profile == "v1" and (
+    if args.hand_smoothing_profile in {"v1", "v1_1"} and (
         args.mode != "powered-sync" or args.servo_output_mode != "split"
     ):
         parser.error(
-            "--hand-smoothing-profile v1 requires powered-sync split output"
+            "--hand-smoothing-profile v1/v1_1 requires powered-sync split output"
         )
+    if args.hand_smoothing_profile == "v1_1":
+        args.hand_max_velocity_rad_s = HAND_V11_MAX_VELOCITY_RAD_S
+        args.hand_max_acceleration_rad_s2 = HAND_V11_MAX_ACCELERATION_RAD_S2
+        args.hand_max_delta_radians = HAND_V11_MAX_DELTA_RAD
+    if args.hand_smoothing_profile == "rtc_cap_v2" and (
+        args.mode != "powered-rtc" or args.servo_output_mode != "split"
+    ):
+        parser.error(
+            "--hand-smoothing-profile rtc_cap_v2 requires powered-rtc split output"
+        )
+    if args.hand_smoothing_profile == "shared_preview_v1" and (
+        args.mode not in {"powered-sync", "powered-rtc"}
+        or args.servo_output_mode != "split"
+        or abs(args.hand_stream_hz - 10.0) > 1e-9
+    ):
+        parser.error(
+            "--hand-smoothing-profile shared_preview_v1 requires "
+            "10 Hz powered-sync/powered-rtc split output"
+        )
+    if args.rtc_process_isolation and args.mode not in {
+        "shadow",
+        "powered-rtc",
+        "powered-sync",
+        "rtc-shadow",
+    }:
+        parser.error(
+            "--rtc-process-isolation requires powered-rtc, powered-sync, or rtc-shadow"
+        )
+    if args.policy_transport == "websocket-binary":
+        if not args.rtc_process_isolation:
+            parser.error("websocket-binary currently requires --rtc-process-isolation")
+        if not args.policy_endpoint.startswith(("ws://", "wss://")):
+            parser.error("websocket-binary endpoint must start with ws:// or wss://")
+    elif not args.policy_endpoint.startswith(("http://", "https://")):
+        parser.error("HTTP policy endpoint must start with http:// or https://")
     if args.request_timeout_seconds <= 0:
         parser.error("--request-timeout-seconds must be positive")
     if abs(args.servo_control_period - 0.01) > 1e-9:
         parser.error("DM0.5 G2 runtime freezes --servo-control-period at 0.01 (100 Hz)")
     if args.gdk_stabilization_seconds < 0:
         parser.error("--gdk-stabilization-seconds cannot be negative")
+    if not (
+        0 < args.hand_boundary_max_delta_radians
+        <= args.hand_max_delta_radians
+    ):
+        parser.error(
+            "hand delta caps require 0 < boundary <= internal max delta"
+        )
     if not 1 <= args.execute_prefix_steps < 50:
         parser.error("--execute-prefix-steps must be in [1, 49]")
     if not 1 <= args.chunk_prefetch_lookahead < 50:
         parser.error("--chunk-prefetch-lookahead must be in [1, 49]")
     if not 1 <= args.async_min_fresh_steps <= 50:
         parser.error("--async-min-fresh-steps must be in [1, 50]")
+    if not (
+        0
+        <= args.rtc_predicted_delay_steps
+        <= args.rtc_execution_horizon
+        <= 50 - args.rtc_predicted_delay_steps
+    ):
+        parser.error("RTC requires d <= s <= 50-d")
     if args.max_start_jump_radians <= 0:
         parser.error("--max-start-jump-radians must be positive")
+    if args.max_hand_start_jump_radians <= 0:
+        parser.error("--max-hand-start-jump-radians must be positive")
     if args.boundary_blend_seconds < 0:
         parser.error("--boundary-blend-seconds cannot be negative")
     if not 0.0 <= args.arm_internal_jerk_weight <= 100.0:

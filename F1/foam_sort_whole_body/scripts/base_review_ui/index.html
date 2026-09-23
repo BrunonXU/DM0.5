@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>底盘审核 · F1 泡沫分拣</title><link rel="stylesheet" href="styles.css"><script src="phase_editor.js" defer></script><script src="app.js" defer></script></head>
+<body>
+<header class="topbar"><a class="back" href="../index.html">← 审阅入口</a><span class="brand">F1 / 泡沫分拣</span><span class="page-label">底盘审核</span></header>
+<main class="workspace">
+  <aside class="sidebar" aria-label="选择录制">
+    <div class="sidebar-heading"><h1>底盘审核</h1><span id="episode-count" class="count">—</span></div>
+    <p class="subtle">先看画面，再标记实际启停。</p>
+    <nav id="episode-list" aria-label="待审核录制"><p class="subtle">正在加载录制列表…</p></nav>
+    <details class="reading-guide"><summary>这次要看什么</summary><p>观察固定柜体、地缝等背景，判断底盘是否移动。夹爪与手臂动作可帮助定位抓取、放置，不能单独证明底盘启停。</p><p>自动疑点不等于已确认错误；未命中疑点也不等于验收通过。</p><p>“已从候选排除”指暂不用于训练，原数据仍保留；不是已经修复。标记只是人工候选，不会自动恢复训练资格。</p></details>
+  </aside>
+  <section class="main-content" aria-label="视频及同步数据">
+    <div id="global-error" class="error hidden" role="alert"></div>
+    <div class="episode-heading"><div><p id="episode-category" class="eyebrow">审核样本</p><h2 id="episode-title">选择一份录制</h2><p id="episode-path" class="subtle"></p></div><span id="source-status" class="badge">待加载</span></div>
+    <p id="sample-notice" class="notice">这里展示代表性样本，用于确认现象和选择重建锚点。</p>
+    <div class="video-shell"><video id="review-video" controls preload="none" playsinline aria-label="完整三路同步视频：头部、左腕、右腕"></video><div id="video-error" class="video-error hidden" role="alert"></div></div>
+    <div class="playbar"><div class="transport"><button type="button" id="back-one" title="后退一秒（←）">−1秒</button><button type="button" id="play-pause">播放</button><button type="button" id="forward-one" title="前进一秒（→）">+1秒</button><span class="clock"><strong id="current-time">0.000</strong> / <span id="total-time">—</span> 秒</span></div><div class="playbar-secondary"><label for="playback-speed" class="sr-only">播放速度</label><select id="playback-speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select><a id="download-video" download>下载视频</a></div></div>
+    <p id="play-status" class="subtle status-line" role="status">视频停留待播放；所有时间均为原录制起点后的秒数。</p>
+    <div id="focus-buttons" class="focus-buttons" aria-label="重点查看区间"></div>
+    <div class="review-grid">
+      <div class="signals">
+        <div class="signal-heading"><h3>画面与标签对照</h3><label class="compact-label" for="chart-window">横轴<select id="chart-window"><option value="full">完整录制</option><option value="near">当前 ±6 秒</option></select></label></div>
+        <p class="subtle chart-help">点击曲线定位。灰蓝底为原后补移动时段，橙底为自动疑点。</p>
+        <div class="readouts"><span>vx <b id="vx-value">—</b> m/s</span><span>vy <b id="vy-value">—</b> m/s</span><span>wz <b id="wz-value">—</b> rad/s</span><span id="motion-status">背景：—</span></div>
+        <svg id="base-chart" class="chart base-chart" viewBox="0 0 860 270" role="img" aria-label="底盘后补速度与背景像素运动，分轨显示单位"></svg>
+        <p class="legend"><span class="vx">━━ vx</span><span class="vy">━━ vy</span><span class="wz">━━ wz</span><span class="motion">━━ 背景像素速度</span><span>灰短条：不确定</span><span>像素速度不等于底盘实测速度</span></p>
+        <p id="candidate-legend" class="subtle hidden">虚线：新建议 vx（粉）/ vy（黄）/ wz（橙）；待确认，空白为未知</p>
+        <p id="candidate-readout" class="subtle"></p>
+        <details class="auxiliary" open><summary>抓取与放置锚点参考</summary><div class="joint-controls"><label for="signal-mode">查看<select id="signal-mode"><option value="joint">双臂关节</option><option value="gripper">夹爪</option></select></label><label for="joint-select" id="joint-label">关节<select id="joint-select"></select></label><span id="joint-readout" class="subtle">—</span></div><svg id="arm-chart" class="chart arm-chart" viewBox="0 0 860 170" role="img" aria-label="关节位置或夹爪命令和反馈"></svg><p id="arm-legend" class="legend"></p><p class="subtle">关节角不是手的末端 XYZ；当前仅查看 HAL，不重建复位动作。</p></details>
+      </div>
+      <section class="annotation-panel" id="markers-panel" aria-label="人工阶段标记">
+        <div class="signal-heading"><h3>标记任务锚点</h3><span id="draft-status" class="subtle" role="status">本地草稿</span></div>
+        <p class="phase-summary">去程从取料侧首次后退算起；返程从放料侧首次后退算起。后续移动和停顿按实际画面记录，不强制凑齐六段。</p>
+        <details class="phase-definitions"><summary>去返程边界与实际移动段怎么标</summary><p><strong>去程：</strong>取料侧首次离开动作开始，到放料位置最终停稳；本场景首次动作通常为后退。</p><p><strong>返程：</strong>放料侧首次离开动作开始，到实际返回位置最终停稳；某条没有末段前进时不要补造。前后左右按机器人方向，不按画面方向。</p><p>下方是<strong>6 个任务锚点</strong>；原底盘模板的 <strong>6 个移动段</strong>是去返程各自的后退、横移、前进，两者不同。模板不是每条录制的事实；下方逐段编辑器可以记录实际段数。用“添加转折点”分别记各段启停；有停顿则记录停止与再次启动，无停顿的转折可在同一时刻记录。</p><p>底盘可能与抓取、放置动作重叠，按实际画面分别标记，不强制六个锚点顺序。手部动作不能替代底盘启停证据；看不清就留空并备注。</p></details>
+        <p class="subtle">在画面中找到时刻，点“此刻”填入；不确定可留空。单位：原录制秒。</p>
+        <div id="anchor-fields"></div>
+        <div id="custom-events"></div><button type="button" id="add-custom" class="text-button">＋ 添加转折点 / 自定义事件</button>
+        <label class="notes-label" for="review-notes">备注<textarea id="review-notes" rows="3" placeholder="例如：看不清是否停止；手臂先动、底盘随后才动。"></textarea></label>
+        <div class="export-actions"><button type="button" id="copy-feedback" class="primary">复制反馈</button><button type="button" id="download-feedback">下载 JSON</button></div>
+        <p id="export-status" class="subtle" role="status"></p>
+        <p class="subtle annotation-footnote">草稿仅保存在当前浏览器 / 端口；完成后复制或下载。不会修改数据、生成训练标签或执行机器人动作。</p>
+        <details id="copy-fallback" class="hidden"><summary>手动复制反馈</summary><textarea id="feedback-output" readonly rows="6" aria-label="可复制的反馈 JSON"></textarea></details>
+      </section>
+    </div>
+    <p><a href="../task_boundary_review/index.html">本次任务首尾复核：返回、收臂和末段移动</a></p>
+    <section id="phase-editor" aria-label="逐段底盘修复"></section>
+    <footer id="load-status" class="subtle" role="status">正在加载审核数据…</footer>
+  </section>
+</main>
+<noscript><p class="error">此页面需要 JavaScript 来同步视频、曲线和标记。</p></noscript>
+</body></html>

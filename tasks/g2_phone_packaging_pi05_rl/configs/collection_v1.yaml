@@ -1,0 +1,64 @@
+schema_version: 1
+dataset_version: phone_box_v1
+status: pilot_only
+task: phone_box
+instruction: "把手机抓起来，完成换手后放进手机盒，并盖上盒盖。"
+
+recording:
+  target_fps: 30
+  clock: monotonic
+  cameras:
+    - scene
+    - left_wrist
+    - right_wrist
+  save_raw_pico_command: true
+  save_executed_target_action: true
+  save_rich_proprio: true
+  save_controller_owner: true
+  detect_dropped_frames: true
+
+model_contract:
+  env_action_dim: 16
+  model_action_dim: 32
+  observation_state_dim: 16
+  action_horizon: 50
+
+action_contract:
+  representation: absolute_joint_target
+  fields:
+    - {name: left_arm_target_q, indices: [0, 6], size: 7, unit: rad}
+    - {name: left_gripper_command, indices: [7, 7], size: 1, range: [0.0, 1.0], zero: open, one: closed}
+    - {name: right_arm_target_q, indices: [8, 14], size: 7, unit: rad}
+    - {name: right_gripper_command, indices: [15, 15], size: 1, range: [0.0, 1.0], zero: open, one: closed}
+  training_label: executed_target_action_after_safety_mapping
+
+observation_contract:
+  state_representation: measured_joint_and_gripper_state
+  state_order_matches_action_order: true
+  rich_proprio_is_raw_only: true
+
+episode_labels:
+  outcome: [success, failure, aborted]
+  data_validity: [valid, invalid]
+  behavior_type: [clean, recovery]
+  splits: [train, validation, excluded]
+
+physical_setup:
+  phone: dummy_phone
+  phone_support: undecided_before_formal_collection
+  preferred_support: shallow_fixture_5_to_15_deg
+  fixed_support_geometry_within_dataset_version: true
+
+collection_gate:
+  pilot_episode_count: [10, 20]
+  formal_collection_enabled: false
+  required_before_formal_collection:
+    - verify_camera_order_timestamps_and_drop_detection
+    - verify_16d_state_action_order_units_and_ranges
+    - verify_pico_ik_to_executed_joint_target_mapping
+    - verify_gripper_direction_and_calibration
+    - verify_episode_boundaries_and_abnormal_stop
+    - verify_lerobot_openpi_conversion_and_round_trip
+    - freeze_phone_support_geometry
+    - freeze_train_validation_split_rule
+    - freeze_realworld_evaluation_scenarios

@@ -1,0 +1,19 @@
+{
+  "version": "demo_775_v3",
+  "decision": "Hold out three numeric replay candidates after direct head-camera review found zero weak base labels during continued fixed-background motion; preserve raw data and historical candidate packs.",
+  "parent_directory": "results/demo_778_tail",
+  "parent_candidates_sha256": "96fd293549e4da4d5e6913440d12094bc449386011e69f3ee5eb436979149f5f",
+  "expected_parent_count": 778,
+  "expected_candidates": 775,
+  "additional_exclusions": {
+    "all_data_3_derived/episode_000002": "visual_base_stop_timing_conflict; held_out_from_joint_training_and_robot_replay; raw_preserved",
+    "all_data_3_derived/episode_000066": "visual_base_stop_timing_conflict; held_out_from_joint_training_and_robot_replay; raw_preserved",
+    "all_data_3_derived/episode_000083": "visual_base_stop_timing_conflict; held_out_from_joint_training_and_robot_replay; raw_preserved"
+  },
+  "evidence_sha256": {
+    "results/20260914/videos/replay_000083/timing_review/findings.json": "3dc9cfaa9233911c74a73147d34dd64b68e3af76d591c1d96f789ac0d90fd6eb",
+    "results/demo_778_tail/replay_candidate_review/000066/review_raw.json": "c8a5919d00046a0d5dbed4a8b99e4c1d3b4b1003489d6fbe6957c4f5beccce81",
+    "results/demo_778_tail/replay_candidate_review/000002/evidence.json": "a1d1d274f8f4c214d136e3e262986c9cee103e5d747fa6994bee56fc49da46d7"
+  },
+  "training_approved": false
+}

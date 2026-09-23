@@ -1,0 +1,12 @@
+{
+  "method": "SIGTERM only main process of f1-6000d-tunnel.service, then SSH to 22029",
+  "before_pid": 3491881,
+  "after_pid": 3544280,
+  "observed_seconds": 12.2,
+  "service": {
+    "MainPID": "3544280",
+    "NRestarts": "1",
+    "ActiveState": "active"
+  },
+  "result": "passed"
+}

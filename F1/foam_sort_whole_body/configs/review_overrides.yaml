@@ -1,0 +1,19 @@
+schema_version: 1
+description: Evidence-backed review overrides; preserve raw files and original audit findings.
+episodes:
+  all_data_2_derived/episode_000055:
+    priority: P0_quarantine_affected_windows
+    reasons: [multi_cycle_base_label_phase_mismatch]
+    observed_transport_cycles: 2
+    cycle_boundaries_finalized: false
+    estimated_base_label_status: requires_per_cycle_relabel_before_supervision
+    evidence: results/20260914/cycle_review/findings.md
+    note: Two transport cycles with human replenishment; existing one-outbound/one-return labels cross cycles and misidentify phases. Approximate visual boundaries are not training cuts.
+  all_data_derived/episode_000079:
+    priority: P0_quarantine_affected_windows
+    reasons: [multi_cycle_base_label_missing_phases]
+    observed_transport_cycles: 2
+    cycle_boundaries_finalized: false
+    estimated_base_label_status: requires_per_cycle_relabel_before_supervision
+    evidence: results/cleaning_v1/cycle_review/findings.md
+    note: Two visible transports with human replenishment around 87-94s; one outbound label at 18.005-23.744s and one return label at 153.903-158.405s omit first return and second outbound. Approximate visual boundaries are not training cuts.

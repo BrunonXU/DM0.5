@@ -1,0 +1,49 @@
+{
+  "_usage": "Copy cycle_example into an existing source annotation cycles array; replace intervals and evidence after continuous review. This example is not a real reviewed cycle.",
+  "_time_reference": "Integer nanoseconds elapsed from source_start_ns, half-open [start, stop); use source_catalog.jsonl for source bounds and frozen identity.",
+  "cycle_example": {
+    "cycle_id": "cycle_001",
+    "interval_ns": [0, 30000000000],
+    "status": "proposed",
+    "task_outcome": "unknown",
+    "human_intervention": "unknown",
+    "base_label_status": "unreviewed_weak",
+    "reviews": {
+      "boundary": {"status": "pending", "evidence_refs": []},
+      "task": {"status": "pending", "evidence_refs": []},
+      "human": {"status": "pending", "evidence_refs": []},
+      "base": {"status": "pending", "evidence_refs": []},
+      "interface": {"status": "pending", "evidence_refs": []},
+      "time": {"status": "pending", "evidence_refs": []}
+    },
+    "rejection_reason": "",
+    "notes": "Illustrative interval only, not a 30-second fixed split rule."
+  },
+  "exclusion_example": {
+    "exclusion_id": "human_reset_001",
+    "interval_ns": [15000000000, 17000000000],
+    "status": "proposed",
+    "kind": "human_reset",
+    "evidence_refs": [],
+    "notes": "Replace with actual reviewed interval; ordinary waiting is not automatically excluded."
+  },
+  "visual_evidence_example": {
+    "evidence_id": "continuous_review_001",
+    "kind": "continuous_three_camera_review",
+    "path": "evidence/REPLACE_WITH_REVIEW_REPORT.md",
+    "sha256": "REPLACE_WITH_ACTUAL_FILE_SHA256",
+    "reviewer": "REPLACE_WITH_ACTUAL_REVIEWER",
+    "reviewed_at": "REPLACE_WITH_ISO8601_TIMESTAMP_AND_TIMEZONE",
+    "episode": "REPLACE_WITH_PARENT_EPISODE",
+    "interval_ns": [0, 30000000000],
+    "cameras": ["head", "left", "right"]
+  },
+  "interface_or_clock_evidence_example": {
+    "evidence_id": "interface_review_001",
+    "kind": "interface_mapping_review",
+    "path": "evidence/REPLACE_WITH_REVIEW_REPORT.md",
+    "sha256": "REPLACE_WITH_ACTUAL_FILE_SHA256",
+    "reviewer": "REPLACE_WITH_ACTUAL_REVIEWER",
+    "reviewed_at": "REPLACE_WITH_ISO8601_TIMESTAMP_AND_TIMEZONE"
+  }
+}

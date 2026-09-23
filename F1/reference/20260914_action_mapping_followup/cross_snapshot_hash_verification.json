@@ -1,0 +1,54 @@
+{
+  "source_host": "ms-thor",
+  "checked_at_utc": "2026-09-14T09:13:27.789203+00:00",
+  "files": [
+    {
+      "source_path": "/home/user/meaxiao/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/common/base_teleop_controller.py",
+      "sha256": "21d7b020bdbbf67bcdd1a40570b16a949b2b03c52bf057d5d394d38c7075b006",
+      "expected_sha256": "21d7b020bdbbf67bcdd1a40570b16a949b2b03c52bf057d5d394d38c7075b006",
+      "matches_saved_snapshot": true
+    },
+    {
+      "source_path": "/home/user/meaxiao/pico/vendor/f1_bridge/send2real_robot_f1_udp2topic.py",
+      "sha256": "6557972dcc1e66772f66eae01b2644988fdd54b37bc6aeba6c87ad5151bf5aad",
+      "expected_sha256": "6557972dcc1e66772f66eae01b2644988fdd54b37bc6aeba6c87ad5151bf5aad",
+      "matches_saved_snapshot": true
+    },
+    {
+      "source_path": "/home/user/workspace/f1/install/motor_ctl/share/motor_ctl/launch/motor_ctl.launch.xml",
+      "sha256": "19c9c2ddf883b76b0e3e7910afc36f6151e29b213612adad588422ebad6ea872",
+      "expected_sha256": "19c9c2ddf883b76b0e3e7910afc36f6151e29b213612adad588422ebad6ea872",
+      "matches_saved_snapshot": true
+    },
+    {
+      "source_path": "/home/user/zxl/src/arm_replay/src/arm_replay_node.cpp",
+      "sha256": "c026887ca194406a754198633e5f2137785900286a4dc4e51758d68c6d5bcc5c",
+      "expected_sha256": "c026887ca194406a754198633e5f2137785900286a4dc4e51758d68c6d5bcc5c",
+      "matches_saved_snapshot": true
+    },
+    {
+      "source_path": "/home/user/meaxiao/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/common/base_teleop_controller_ros2_mixin.py",
+      "sha256": "2768fd0014b15b20f457c45601805713eb826e7f67d9e304fb4f3492042a6a7f",
+      "expected_sha256": "2768fd0014b15b20f457c45601805713eb826e7f67d9e304fb4f3492042a6a7f",
+      "matches_saved_snapshot": true
+    },
+    {
+      "source_path": "/home/user/meaxiao/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/common/send2real_robot_f1_udp.py",
+      "sha256": "6e9334b8fff090f5d09bba8d2ecf1f3488d0efddef25f5f1dbb2a2169c19be96",
+      "expected_sha256": "6e9334b8fff090f5d09bba8d2ecf1f3488d0efddef25f5f1dbb2a2169c19be96",
+      "matches_saved_snapshot": true
+    },
+    {
+      "source_path": "/home/user/meaxiao/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/simulation/placo_teleop_controller.py",
+      "sha256": "867036ee78b35c4e3679991de7b91d3fd07e9dc3c46f5bfe0c1a42ca0dc54291",
+      "expected_sha256": "867036ee78b35c4e3679991de7b91d3fd07e9dc3c46f5bfe0c1a42ca0dc54291",
+      "matches_saved_snapshot": true
+    },
+    {
+      "source_path": "/home/user/meaxiao/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/common/base_teleop_controller_ik_mixin.py",
+      "sha256": "a59c0fb184a8f614efb871f9c318486961fa4596b02ad8f93261498f7891ecb9",
+      "expected_sha256": "a59c0fb184a8f614efb871f9c318486961fa4596b02ad8f93261498f7891ecb9",
+      "matches_saved_snapshot": true
+    }
+  ]
+}

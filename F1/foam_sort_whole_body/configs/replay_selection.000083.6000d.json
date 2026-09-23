@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "bundle": "../results/demo_778_tail/replay_bundles/all_data_3_derived_episode_000083",
+  "note": "DIAGNOSTIC ONLY: withdrawn from joint robot replay after head-camera evidence of premature zero base labels. Numeric bundle [2,773), 771 frames, 25.7 seconds remains immutable candidate.",
+  "execution_eligible": false
+}

@@ -1,0 +1,15 @@
+{
+  "purpose": "isolated Windows sender for zero-output HIL on port 7906",
+  "files_sha256": {
+    "scripts/03_windows_shadow_sender.py": "a7617524f416ac57e04fdbbadcd581ed8eb3ed2bef9b266c52041eb476094d28",
+    "scripts/windows_hil_shadow_sender.cmd": "63e20ca1d03ca0b567caa3226ae5e328af9d44337de6914a4e65105161449d18",
+    "scripts/windows_hil_shadow_tunnel.cmd": "67def5257ea99b11606cdc12d659ad3aa56a0d2b8ed586a2b43f8e5ec4f7a691",
+    "src/g2teleop/__init__.py": "329573e5328e040480c1537ff0d5e2d20d85b1a39b8692f406441794d373f8ed",
+    "src/g2teleop/contracts.py": "233d612cd207553b28ea0fc2b62dcde53c664803dbc4b704fd975052bac73079",
+    "src/g2teleop/input_mapping.py": "f7b08175b963cfeaa58334922aa3f8c964b9e7c650583d01615a732edbcaa7aa",
+    "src/g2teleop/f710_mapping.py": "6f5ce6da23f568ea493e5846f3073e11a41db22d6bfc6445f09237ab68fcaffc",
+    "src/g2teleop/gamepad_windows.py": "950bcf7768d26f881b99a39948adeb17120e575c22ffafa2d5caaf88c5ad3e30",
+    "src/g2teleop/async_transport.py": "57e3598074b8d2024af5af6c1c9c031aefc9762ac19dc13be5aabf1b9f081b19",
+    "src/g2teleop/protocol.py": "1cd549a862baa6b3ac0a6dbce1c5db9ef38f22a482ad314b62b1409ea104cc92"
+  }
+}

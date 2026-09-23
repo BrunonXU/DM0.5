@@ -27,6 +27,7 @@ from .contracts import (
     Observation,
     PolicyError,
 )
+from .rtc import RTCRequest
 
 ImageEncoder = Callable[[np.ndarray], bytes]
 
@@ -101,7 +102,11 @@ class DM05HTTPBackend:
         self._image_encoder = image_encoder
         self._inflight_lock = threading.Lock()
 
-    def infer(self, observation: Observation) -> ActionChunk:
+    def infer(
+        self,
+        observation: Observation,
+        rtc_request: RTCRequest | None = None,
+    ) -> ActionChunk:
         if not self._inflight_lock.acquire(blocking=False):
             raise PolicyError("DM0.5 backend already has a request in flight")
         try:
@@ -131,6 +136,21 @@ class DM05HTTPBackend:
                     ),
                     "text": observation.prompt,
                 }
+                if rtc_request is not None:
+                    data.update(
+                        {
+                            "rtc_prefix_actions": json.dumps(
+                                rtc_request.prefix_actions_absolute.tolist(),
+                                separators=(",", ":"),
+                            ),
+                            "rtc_inference_delay_steps": str(
+                                rtc_request.parameters.predicted_delay_steps
+                            ),
+                            "rtc_execution_horizon": str(
+                                rtc_request.parameters.execution_horizon
+                            ),
+                        }
+                    )
                 payload_finished = self._timer()
                 http_started = self._timer()
                 response = self._session.post(
@@ -190,6 +210,11 @@ class DM05HTTPBackend:
                     - observation_capture,
                 )
                 self._add_server_timing(timing, payload, response)
+                self._add_latency_ledger(
+                    timing,
+                    observation_at=observation.captured_at,
+                    response_received_at=response_received_at,
+                )
                 return ActionChunk(
                     request_id=observation.request_id,
                     observation_at=observation.captured_at,
@@ -238,6 +263,55 @@ class DM05HTTPBackend:
                 0.0,
                 timing["client_http_post_seconds"] - server_total,
             )
+
+    @staticmethod
+    def _add_latency_ledger(
+        timing: dict[str, float],
+        *,
+        observation_at: float,
+        response_received_at: float,
+    ) -> None:
+        """Reconcile worker E2E into model and mutually exclusive non-model buckets."""
+        worker_e2e = max(0.0, response_received_at - observation_at)
+        model = timing.get("server_model_and_device_to_cpu_seconds", 0.0)
+        timing["client_e2e_to_worker_seconds"] = worker_e2e
+        timing["client_non_model_to_worker_seconds"] = max(0.0, worker_e2e - model)
+
+        handler = timing.get("server_handler_seconds")
+        before_jsonify = timing.get("server_total_before_jsonify_seconds")
+        if handler is not None and before_jsonify is not None:
+            timing["server_jsonify_and_framework_seconds"] = max(
+                0.0, handler - before_jsonify
+            )
+        if handler is None:
+            # Without the response header, upload/download and server work
+            # cannot be separated honestly. Keep the E2E totals but do not
+            # manufacture a precise component ledger.
+            return
+
+        server_non_model = max(0.0, handler - model)
+        timing["server_non_model_handler_seconds"] = server_non_model
+        transport = timing.get("client_http_unattributed_seconds", 0.0)
+        accounted_non_model = sum(
+            timing.get(key, 0.0)
+            for key in (
+                "client_observation_to_backend_seconds",
+                "client_jpeg_encode_seconds",
+                "client_request_payload_seconds",
+                "client_http_unattributed_seconds",
+                "server_non_model_handler_seconds",
+                "client_response_json_seconds",
+                "client_response_validation_seconds",
+            )
+        )
+        timing["client_transport_wire_residual_seconds"] = transport
+        timing["client_non_model_accounted_worker_seconds"] = (
+            accounted_non_model
+        )
+        timing["client_non_model_residual_worker_seconds"] = max(
+            0.0,
+            timing["client_non_model_to_worker_seconds"] - accounted_non_model,
+        )
 
     def close(self) -> None:
         close = getattr(self._session, "close", None)

@@ -1,0 +1,29 @@
+{
+  "hostname": "ms-thor",
+  "host_public_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN0f90Budx5qe7OaXep6zssl3dk3LG4GIckJbaRvhWV/ root@ms-thor",
+  "service": "MainPID=1417096\nNRestarts=1\nActiveState=active\nSubState=running\nUnitFileState=enabled\n",
+  "linger": "Linger=yes",
+  "route_to_6000d": "10.130.153.114 via 192.168.31.1 dev wlan0 src 192.168.31.58 uid 1000 \n    cache \n",
+  "wired_maintenance_carrier": "0",
+  "hashes": {
+    "ssh_config": "7c213af4cdae88f5046e1ae31666d7131f2f70f2bf4fbb031ba9605396e41fb3",
+    "known_hosts": "7d5cb392b82204f1ded4b11cd572afbb93e9474ce8d3a591972e5e8bd4655cb2",
+    "systemd/f1-6000d-tunnel.service": "76f1c7ca95bb40c6f37f7140e46bfbeb1f5f0b611a119a20eb0dc6315d08bbe3"
+  },
+  "key_mode": "0o600",
+  "retired_port_test": {
+    "returncode": 255,
+    "stderr": "Error: remote port forwarding failed for listen port 22010\n"
+  },
+  "checked_at": "2026-09-22T07:24:51.881490+00:00",
+  "local_remote_hashes_match": true,
+  "previous_authorizations_preserved": true,
+  "authorized_keys_backup": "/home/xza_100850113/.ssh/authorized_keys.before_f1_09_20260922T072218Z",
+  "host_trust": "First use through user-established temporary tunnel; authenticated remote public key and user-provided Wi-Fi MAC/IP match. No independent out-of-band host fingerprint comparison.",
+  "limitations": [
+    "No full reboot test",
+    "No physical Wi-Fi disconnection test",
+    "No long-duration or throughput test",
+    "Wi-Fi address is DHCP; reservation not configured"
+  ]
+}

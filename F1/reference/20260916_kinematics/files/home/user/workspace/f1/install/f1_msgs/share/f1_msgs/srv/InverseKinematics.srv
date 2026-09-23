@@ -1,0 +1,31 @@
+# 逆运动学求解服务
+# 输入目标位姿矩阵或角度制XYZABC位姿和参考关节角度，输出求解的关节角度
+# 支持可选的零空间(NSP)优化
+
+# 手臂标识常量
+uint8 ARM_LEFT = 0
+uint8 ARM_RIGHT = 1
+
+# 请求
+uint8 target_arm              # 目标手臂：0-左臂(A), 1-右臂(B)
+float64[] target_pose         # 目标4x4位姿矩阵，行优先展开为16个元素；target_xyzabc为空时使用
+float64[] target_xyzabc       # 角度制目标位姿 [x, y, z, rx, ry, rz]，位置单位mm，姿态单位度；长度为6时优先使用
+float64[] ref_joints          # 参考关节角度(度)，7个元素
+
+# 零空间优化参数（可选）
+bool use_nsp                  # 是否使用零空间优化
+uint8 nsp_type                # 零空间类型: 0-近参考(NEAR_REF), 1-近方向(NEAR_DIR)
+float64[] nsp_params          # 零空间方向参数(3个元素)，nsp_type=1时需要
+float64 nsp_angle             # 零空间角度调整(度)，用于臂角优化
+---
+# 响应
+bool success
+string message
+float64[] joint_positions     # 逆解关节角度(度)，7个元素
+bool is_out_range             # 当前位姿是否超出位置可达空间
+bool[] is_singular            # 各关节是否发生奇异(7个元素)
+bool is_joint_exceeded        # 是否有关节超出位置正负限制
+bool[] joint_exceeded_tags    # 各关节是否超出位置限制(7个元素)
+float64[] joint_limit_pos     # 各关节正限制(度)，7个元素
+float64[] joint_limit_neg     # 各关节负限制(度)，7个元素
+int32 result_num              # 逆解结果数量

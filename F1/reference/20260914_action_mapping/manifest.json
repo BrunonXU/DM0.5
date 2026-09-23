@@ -1,0 +1,74 @@
+{
+  "source_host": "ms-thor",
+  "files": [
+    {
+      "source_host": "ms-thor",
+      "source_path": "/home/user/meaxiao/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/common/base_teleop_controller.py",
+      "resolved_path": "/home/user/meaxiao/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/common/base_teleop_controller.py",
+      "source_is_symlink": false,
+      "captured_at_utc": "2026-09-14T08:59:47.191272+00:00",
+      "status": "captured",
+      "bytes": 66391,
+      "sha256": "21d7b020bdbbf67bcdd1a40570b16a949b2b03c52bf057d5d394d38c7075b006",
+      "git": {
+        "available": false
+      },
+      "local_path": "files/home/user/meaxiao/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/common/base_teleop_controller.py",
+      "local_sha256_verified": true
+    },
+    {
+      "source_host": "ms-thor",
+      "source_path": "/home/user/meaxiao/pico/vendor/f1_bridge/send2real_robot_f1_udp2topic.py",
+      "resolved_path": "/home/user/meaxiao/pico/vendor/f1_bridge/send2real_robot_f1_udp2topic.py",
+      "source_is_symlink": false,
+      "captured_at_utc": "2026-09-14T08:59:47.198236+00:00",
+      "status": "captured",
+      "bytes": 11984,
+      "sha256": "6557972dcc1e66772f66eae01b2644988fdd54b37bc6aeba6c87ad5151bf5aad",
+      "git": {
+        "available": false
+      },
+      "local_path": "files/home/user/meaxiao/pico/vendor/f1_bridge/send2real_robot_f1_udp2topic.py",
+      "local_sha256_verified": true
+    },
+    {
+      "source_host": "ms-thor",
+      "source_path": "/home/user/workspace/f1/install/motor_ctl/share/motor_ctl/launch/motor_ctl.launch.xml",
+      "resolved_path": "/home/user/workspace/f1/install/motor_ctl/share/motor_ctl/launch/motor_ctl.launch.xml",
+      "source_is_symlink": false,
+      "captured_at_utc": "2026-09-14T08:59:47.200761+00:00",
+      "status": "captured",
+      "bytes": 6345,
+      "sha256": "19c9c2ddf883b76b0e3e7910afc36f6151e29b213612adad588422ebad6ea872",
+      "git": {
+        "available": false
+      },
+      "local_path": "files/home/user/workspace/f1/install/motor_ctl/share/motor_ctl/launch/motor_ctl.launch.xml",
+      "local_sha256_verified": true
+    },
+    {
+      "source_host": "ms-thor",
+      "source_path": "/home/user/zxl/src/arm_replay/src/arm_replay_node.cpp",
+      "resolved_path": "/home/user/zxl/src/arm_replay/src/arm_replay_node.cpp",
+      "source_is_symlink": false,
+      "captured_at_utc": "2026-09-14T08:59:47.202645+00:00",
+      "status": "captured",
+      "bytes": 64975,
+      "sha256": "c026887ca194406a754198633e5f2137785900286a4dc4e51758d68c6d5bcc5c",
+      "git": {
+        "available": true,
+        "worktree_root": "/home/user/zxl",
+        "commit": "3f903739bc26fb49d0a5addf41c5cd91929b4f6b",
+        "tracked_worktree_dirty": true,
+        "file_dirty": false,
+        "untracked_other_files": "not_scanned"
+      },
+      "local_path": "files/home/user/zxl/src/arm_replay/src/arm_replay_node.cpp",
+      "local_sha256_verified": true
+    }
+  ],
+  "snapshot_kind": "selected_source_evidence_not_project_backup",
+  "scope_limit_bytes_per_file": 1000000,
+  "remote_mutations": false,
+  "secret_screening": "Heuristic literal credential/private-key scan before transfer; suspected files omitted, not a security certification."
+}

@@ -1,0 +1,1061 @@
+--- upstream/config/control.json
++++ adapted/config/control.json
+@@ -1,5 +1,5 @@
+ {
+-  "profile": "precision_dual_chassis_torso_lerobot_v1.4.4",
++  "profile": "f1_09_upper_precision_v1.4.4-bruno.1",
+   "command_hz": 50.0,
+   "collision_check_hz": 50.0,
+   "cartesian_scale": 1.0,
+@@ -33,7 +33,7 @@
+   "max_raw_target_step_deg": 3.0,
+   "gripper_max_effort": 15.0,
+   "chassis": {
+-    "enabled": true,
++    "enabled": false,
+     "input_source": "auto",
+     "body_follow_mode": "velocity",
+     "neutral_stop_mode": "zero_target",
+@@ -72,7 +72,7 @@
+     "input_timeout_s": 0.25,
+     "feedback_timeout_s": 0.3,
+     "ab_chord_window_s": 0.18,
+-    "joystick_enabled": true,
++    "joystick_enabled": false,
+     "joystick_deadzone": 0.12,
+     "joystick_max_forward_speed_m_s": 0.35,
+     "joystick_max_lateral_speed_m_s": 0.3,
+@@ -85,7 +85,7 @@
+     "joystick_input_timeout_s": 0.25
+   },
+   "torso_pitch": {
+-    "enabled": true,
++    "enabled": false,
+     "joint_name": "body_j3",
+     "joint_index": 19,
+     "command_topic": "/motion_ctl/joint_ctl",
+@@ -108,7 +108,7 @@
+     "output_deadband_deg": 0.001
+   },
+   "recording": {
+-    "enabled": true,
++    "enabled": false,
+     "output_dir": "mocap_data",
+     "fps": 30.0,
+     "double_click_s": 0.35,
+--- upstream/src/pico_f1/config.py
++++ adapted/src/pico_f1/config.py
+@@ -64,6 +64,8 @@
+     missing = sorted(required.difference(config))
+     if missing:
+         raise ValueError(f"control config missing keys: {', '.join(missing)}")
++    from pico_upper.contract import validate_profile
++    validate_profile(config)
+     arm_output_limits(config)
+     from pico_f1.precision import precision_settings
+     if 'precision' in config and config['precision'] is None:
+--- upstream/vendor/f1_safety/src/python/_f1_control_urdf_utils.py
++++ adapted/vendor/f1_safety/src/python/_f1_control_urdf_utils.py
+@@ -79,7 +79,7 @@
+     repo_root = urdf_path.parents[2]
+     # 使用当前脚本目录下的固定子目录，避免每次生成新的临时文件
+     _script_dir = Path(__file__).parent.resolve()
+-    temp_dir       = _script_dir / "f1_mujoco_cache"
++    temp_dir = Path(os.environ["PICO_UPPER_RUNTIME"]) / "model_cache" / os.environ["PICO_UPPER_RELEASE_HASH"]
+     sanitized_urdf = temp_dir / urdf_path.name
+     final_mjcf     = temp_dir / f"{urdf_path.stem}_visual.xml"
+ 
+--- upstream/vendor/xrobotoolkit/xrobotoolkit_teleop/common/base_teleop_controller.py
++++ adapted/vendor/xrobotoolkit/xrobotoolkit_teleop/common/base_teleop_controller.py
+@@ -50,36 +50,13 @@
+ # ==================== 新增：ROS2 导入 ====================
+ import rclpy
+ from rclpy.node import Node
++from pico_upper.ros_guard import GuardedNode
+ from rclpy.qos import DurabilityPolicy, HistoryPolicy, QoSProfile, ReliabilityPolicy
+ from sensor_msgs.msg import JointState
+ from std_msgs.msg import Bool, String
+ from control_msgs.msg import GripperCommand
+ from geometry_msgs.msg import TwistStamped
+-from move.msg import State as MoveState
+ # ==================== 新增结束 ====================
+-
+-
+-
+-
+-# 导入渊博安全监测算法模块
+-# 先导入依赖模块，将其注册到 sys.modules，这样主模块内部的 import 会直接从缓存获取
+-try:
+-    import F1_safe_control_real_with_com
+-except ImportError as e:
+-    # 如果导入失败，可能是该模块本身还有问题，但我们仍可尝试继续
+-    # 可以打印警告，但为了健壮性，使用 importlib 再次尝试加载
+-    import importlib.util
+-    dep_path = os.path.join(module_dir, 'F1_safe_control_real_with_com.py')
+-    if os.path.isfile(dep_path):
+-        spec = importlib.util.spec_from_file_location("F1_safe_control_real_with_com", dep_path)
+-        if spec:
+-            dep_mod = importlib.util.module_from_spec(spec)
+-            sys.modules["F1_safe_control_real_with_com"] = dep_mod
+-            spec.loader.exec_module(dep_mod)
+-        else:
+-            raise
+-    else:
+-        raise
+ 
+ 
+ 
+@@ -355,7 +332,7 @@
+                 rclpy.init(args=None)
+             else:
+                 raise
+-        self._ros_node = rclpy.create_node('teleop_joint_state_publisher')
++        self._ros_node = GuardedNode('pico_upper_teleop')
+         self._joint_state_pub = self._ros_node.create_publisher(
+             JointState, '/lead/joint_states', 10
+         )
+@@ -371,72 +348,11 @@
+         self._gripper_right_pub = self._ros_node.create_publisher(
+             GripperCommand, '/motion_ctl/gripper/right', 10
+         )
+-        # Velocity commands are latest-state, not a FIFO of past motion.
+-        chassis_qos = QoSProfile(depth=1, reliability=ReliabilityPolicy.RELIABLE,
+-                                 history=HistoryPolicy.KEEP_LAST)
+-        self._chassis_cmd_pub = self._ros_node.create_publisher(
+-            TwistStamped, self._chassis_config["command_topic"], chassis_qos
+-        )
+-        self._chassis_diagnostics_pub = self._ros_node.create_publisher(
+-            String, '/pico/chassis_diagnostics', 1
+-        )
+-        self._chassis_enabled_pub = self._ros_node.create_publisher(
+-            Bool, '/pico/chassis_enabled', 10
+-        )
+-        torso_qos = QoSProfile(
+-            depth=1,
+-            reliability=ReliabilityPolicy.RELIABLE,
+-            history=HistoryPolicy.KEEP_LAST,
+-        )
+-        self._torso_joint_pub = self._ros_node.create_publisher(
+-            JointState, self._torso_config["command_topic"], torso_qos
+-        )
+-        self._chassis_feedback_sub = self._ros_node.create_subscription(
+-            MoveState,
+-            self._chassis_config["feedback_topic"],
+-            self._chassis_feedback_callback,
+-            chassis_qos,
+-        )
+-        recording_status_qos = QoSProfile(
+-            depth=1,
+-            reliability=ReliabilityPolicy.RELIABLE,
+-            durability=DurabilityPolicy.TRANSIENT_LOCAL,
+-        )
+-        self._recording_status_sub = self._ros_node.create_subscription(
+-            String,
+-            "/pico/recording_status",
+-            self._recording_status_callback,
+-            recording_status_qos,
+-        )
+-        #新增节后主臂pico数据，并进行遥操控制接口，ros2 topic
+-        # 订阅目标位姿 topic（与发布的 topic 一致）
+-        self._left_pose_sub = self._ros_node.create_subscription(
+-            JointState,
+-            '/lead/left_tcp_control',
+-            # '/lead/left_tcp',
+-            self._external_left_pose_callback,
+-            10
+-        )
+-        self._right_pose_sub = self._ros_node.create_subscription(
+-            JointState,
+-            '/lead/right_tcp_control',
+-            # '/lead/right_tcp',
+-            self._external_right_pose_callback,
+-            10
+-        )
+-
+-        self._replay_mode_sub = self._ros_node.create_subscription(
+-            Bool,
+-            '/lead_tcp/replay_mode',          
+-            self._replay_mode_callback,
+-            10
+-        )
+-
+-
+-
++        # Upper-only: no chassis/torso/recording/external-replay endpoints.
+ 
+         self.hal_full_body_joint_states = np.zeros(34)
+         self._hal_joint_position_by_name = {}
++        self._hal_joint_seen = {}
+         self._hal_joint_states_lock = threading.Lock()
+         self._hal_joint_states_received = False
+         self._hal_joint_states_last_monotonic = 0.0
+@@ -460,6 +376,8 @@
+ 
+         # ==================== 碰撞检测初始化（最终修复版） ====================
+         self._safety = SafetyProtector(use_com_guard=False)
++        if self._safety._collision_guard is None:
++            raise RuntimeError("COLLISION_GUARD_UNAVAILABLE: refusing arm output")
+         self._safety.init_safe_cmd(
+             np.deg2rad(self.hal_full_body_joint_states[:24])
+         )
+@@ -529,24 +447,8 @@
+         self._raw_arm_joints = None   # 用于碰撞检测的原始期望位置
+ 
+         self._start_collision_detection_thread()
+-        self._torso_output_thread = threading.Thread(
+-            target=self._torso_output_loop,
+-            daemon=True,
+-            name="TorsoOutput1000Hz",
+-        )
+-        self._torso_output_thread.start()
+-        print(
+-            f"[TORSO] approved waypoint resampler started at "
+-            f"{float(self._torso_config['output_hz']):g}Hz"
+-        )
+-        # ==================== 初始化结束 ====================
+-
++        # Upper-only: no torso/base workers, including no shutdown zero writes.
+         self._pub_thread_stop = threading.Event()
+-        self._chassis_worker_stop = threading.Event()
+-        self._chassis_worker_thread = threading.Thread(
+-            target=self._chassis_publish_loop, daemon=True, name="ChassisOutput50Hz"
+-        )
+-        self._chassis_worker_thread.start()
+         self._pub_thread = threading.Thread(target=self._publish_loop, daemon=True)
+         self._pub_thread.start()
+         print(
+@@ -1231,116 +1133,9 @@
+ 
+ 
+     def _start_collection_thread(self):
+-        """Poll all PICO gestures through one deterministic state machine."""
+-        def collection_loop():
+-            while not self._stop_event.is_set():
+-                now = time.monotonic()
+-                a_pressed = self.xr_client.get_button_state_by_name("A")
+-                b_pressed = self.xr_client.get_button_state_by_name("B")
+-                x_pressed = self.xr_client.get_button_state_by_name("X")
+-                y_pressed = self.xr_client.get_button_state_by_name("Y")
+-                xy_decision = self._xy_recording_arbiter.update(
+-                    x_pressed, y_pressed, now
+-                )
+-                if xy_decision.reset_requested:
+-                    if not self._reset_request.is_set() and not self._reset_in_progress.is_set():
+-                        self._reset_request.set()
+-                        print(
+-                            "RESET_REQUEST_IMMEDIATE X+Y; recording state preserved="
+-                            f"{self._recording_state}"
+-                        )
+-                    else:
+-                        print("RESET_REQUEST_DUPLICATE_IGNORED")
+-
+-                if xy_decision.start_recording:
+-                    if self._recording_state == "idle":
+-                        self.real_arm_command_sender.send_start_video_signal([1])
+-                        self._recording_state = "recording"
+-                        self.is_collecting = True
+-                        print("LEROBOT_RECORD_REQUEST_START (X double-click)")
+-                    else:
+-                        print(
+-                            "LEROBOT_RECORD_START_IGNORED state="
+-                            f"{self._recording_state}"
+-                        )
+-                if xy_decision.stop_recording:
+-                    if self._recording_state == "recording":
+-                        self.real_arm_command_sender.send_start_video_signal([0])
+-                        self._recording_state = "review"
+-                        self.is_collecting = False
+-                        self._review_button_arbiter.reset()
+-                        print(
+-                            "LEROBOT_RECORD_REQUEST_STOP (Y double-click); "
+-                            "B single=save, B double=discard"
+-                        )
+-                    else:
+-                        print(
+-                            "LEROBOT_RECORD_STOP_IGNORED state="
+-                            f"{self._recording_state}"
+-                        )
+-
+-                if self._recording_state == "review":
+-                    review = self._review_button_arbiter.update(b_pressed, now)
+-                    if review.save:
+-                        self.real_arm_command_sender.send_start_video_signal([2])
+-                        self._recording_state = "idle"
+-                        print("LEROBOT_REVIEW_SAVE_REQUEST (B single-click)")
+-                    elif review.discard:
+-                        self.real_arm_command_sender.send_start_video_signal([3])
+-                        self._recording_state = "idle"
+-                        print("LEROBOT_REVIEW_DISCARD_REQUEST (B double-click)")
+-
+-                # During the review prompt B belongs only to save/discard. At
+-                # all other times A+B remains the chassis deadman chord.
+-                motion_b = (
+-                    b_pressed
+-                    if self._recording_state not in {"finalizing", "review"}
+-                    else False
+-                )
+-                decision = self._ab_arbiter.update(
+-                    a_pressed, motion_b, now
+-                )
+-                with self._chassis_lock:
+-                    was_enabled = self._chassis_enabled
+-                    torso_was_enabled = self._torso_enabled
+-                    self._chassis_enabled = decision.chassis_enabled
+-                    self._torso_enabled = decision.torso_enabled
+-                if decision.chassis_enabled and not was_enabled:
+-                    print("CHASSIS_AB_ENABLED body pelvis velocity follow active")
+-                elif was_enabled and not decision.chassis_enabled:
+-                    print("CHASSIS_AB_RELEASED immediate deadman zero")
+-                if decision.torso_enabled and not torso_was_enabled:
+-                    print("TORSO_A_HOLD_ENABLED body_j3 relative pitch follow active")
+-                elif torso_was_enabled and not decision.torso_enabled:
+-                    print("TORSO_A_HOLD_RELEASED body_j3 target hold")
+-
+-                try:
+-                    local_frame_pressed = bool(
+-                        self.xr_client.get_button_state_by_name("left_menu_button")
+-                    )
+-                    self._local_frame_button_fault_reported = False
+-                except Exception as exc:
+-                    local_frame_pressed = False
+-                    if not self._local_frame_button_fault_reported:
+-                        print(f"[LOCAL FRAME] button read failed: {exc}")
+-                        self._local_frame_button_fault_reported = True
+-                if local_frame_pressed and not self._local_frame_button_pressed:
+-                    with self._local_frame_lock:
+-                        self._local_frame_generation += 1
+-                        generation = self._local_frame_generation
+-                    print(
+-                        f"LOCAL_FRAME_RECENTER_REQUEST generation={generation} "
+-                        "(left three-bar menu button)"
+-                    )
+-                self._local_frame_button_pressed = local_frame_pressed
+-
+-                self._stop_event.wait(0.005)
+-        self.collect_thread = threading.Thread(target=collection_loop, daemon=True)
+-        self.collect_thread.start()
+-
+-    # ==================== 删除：_collect_data_if_active 函数已移除 ====================
+-    # 功能由 ROS2 pub 线程替代
+-    # ==================== 删除结束 ====================
++        """Only the menu button changes the local reference; ABXY are disabled."""
++        from pico_upper.controls import start_menu_worker
++        self.collect_thread = start_menu_worker(self)
+ 
+     def _process_xr_pose(self, xr_pose, src_name):
+         """Process the current XR controller pose."""
+--- upstream/vendor/xrobotoolkit/xrobotoolkit_teleop/common/base_teleop_controller_ik_mixin.py
++++ adapted/vendor/xrobotoolkit/xrobotoolkit_teleop/common/base_teleop_controller_ik_mixin.py
+@@ -95,43 +95,8 @@
+         print(f"LOCAL_FRAME_RECENTER_ARMS_OK generation={generation}")
+ 
+     def _handle_xy_home_reset(self):
+-        """Consume an edge-triggered X+Y request and rebase teleoperation.
+-
+-        Gesture detection runs at 50 Hz in the button thread and sets the event
+-        on the first frame where X and Y are both pressed. Episode recording is
+-        deliberately not touched: the reset motion is part of the episode.
+-        """
+-        if self._reset_request.is_set():
+-            if not hasattr(self, '_trajectory'):
+-                print("[RESET WAIT] controller initialization is not complete")
+-                return True
+-            self._reset_request.clear()
+-            print("🔄 X+Y 按下 → 立即开始复位双臂与 body_j3（录制状态不变）")
+-            self._begin_motion_reset()
+-            if not self.real_arm_command_sender.home_position():
+-                print('[RESET BLOCKED] bridge did not confirm reset completion; retry X+Y')
+-                return True
+-            target = np.asarray(self.left_q_reset + self.right_q_reset, dtype=float)
+-            target_torso = float(self._session_pose["joints"]["body_j3"])
+-            measured = self._wait_for_reset_target(
+-                target, target_torso, timeout_s=60.0
+-            )
+-            if measured is not None:
+-                self.sync_placo_to_real(True)
+-                # The bridge's last command is exactly target. Feedback may
+-                # have small servo tracking bias; replacing the command with
+-                # that bias on the next Grip would itself be a position step.
+-                self._finish_motion_reset(target)
+-                # The first later Grip frame establishes the joint-offset
+-                # mapping at reset pose; controller pose refs are already
+-                # cleared by sync_placo_to_real().
+-                self.xy_pressed_flag_once = True
+-            return True
+-
+-        if self._reset_in_progress.is_set():
+-            # A reset whose feedback did not settle is fail-closed.  Releasing
+-            # and pressing X+Y again retries; Grip cannot revive an old target.
+-            return True
++        """XY whole-body reset is unavailable in the upper-only trial."""
++        self._reset_request.clear()
+         return False
+ 
+     def _update_ik_lxl(self):
+--- upstream/vendor/xrobotoolkit/xrobotoolkit_teleop/common/base_teleop_controller_ros2_mixin.py
++++ adapted/vendor/xrobotoolkit/xrobotoolkit_teleop/common/base_teleop_controller_ros2_mixin.py
+@@ -72,12 +72,15 @@
+             for name, value in zip(msg.name, msg.position):
+                 if np.isfinite(value):
+                     self._hal_joint_position_by_name[name] = float(value)
+-            complete = all(name in self._hal_joint_position_by_name for name in ALL_JOINT_NAMES)
++                    self._hal_joint_seen[name] = time.monotonic()
++            now = time.monotonic()
++            complete = all(name in self._hal_joint_position_by_name and now - self._hal_joint_seen.get(name, 0.0) <= float(self._control_config["feedback_timeout_s"]) for name in ALL_JOINT_NAMES)
+             if complete:
+                 ordered = [self._hal_joint_position_by_name[name] for name in ALL_JOINT_NAMES]
+                 self.hal_full_body_joint_states[:22] = ordered
+                 self._hal_joint_states_received = True
+-            self._hal_joint_states_last_monotonic = time.monotonic()
++            if complete:
++                self._hal_joint_states_last_monotonic = time.monotonic()
+         if first_sample and complete:
+             print(
+                 f"[INFO] /hal/joint_states named safety feedback active "
+@@ -105,250 +108,21 @@
+             self._chassis_feedback_pose = pose
+             self._chassis_feedback_monotonic = time.monotonic()
+ 
+-    def _publish_chassis_command(self):
+-        # Reset may run on the button thread. No arm/IK/collision lock is taken
+-        # by this worker, and only this worker evolves chassis trajectories.
+-        with getattr(self, "_chassis_planner_lock", nullcontext()):
+-            Ros2TeleopMixin._publish_chassis_command_unlocked(self)
+-
+-    def _publish_chassis_command_unlocked(self):
+-        """Publish A+B body-follow or joystick control through one smooth mux."""
+-        now = time.monotonic()
+-        with self._chassis_lock:
+-            body_follow_enabled = bool(self._chassis_enabled)
+-        body_follow_enabled = body_follow_enabled and bool(
+-            self._chassis_config["enabled"]
+-        )
+-        joystick_enabled = bool(self._chassis_config["enabled"]) and bool(
+-            self._chassis_config["joystick_enabled"]
+-        )
+-        command = None
+-        fault = None
+-        raw_sticks = None
+-        with self._chassis_feedback_lock:
+-            feedback_age = now - self._chassis_feedback_monotonic
+-        if getattr(self, "_chassis_schedule_stale", False):
+-            fault = "chassis scheduler gap exceeded 100ms; no trajectory catch-up"
+-        elif feedback_age > float(self._chassis_config["feedback_timeout_s"]):
+-            fault = "F1 chassis feedback stale"
+-        dt = getattr(self, "_chassis_tick_dt", None)
+-        if dt is not None and fault is None:
+-            self._joystick_chassis.trajectory.set_period(dt)
+-            self._chassis_follow.trajectory.set_period(dt)
+-
+-        if fault is not None:
+-            pass  # Common fail-closed branch below resets both planners.
+-        elif body_follow_enabled:
+-            if self._chassis_command_mode != "body_follow":
+-                self._joystick_chassis.emergency_stop()
+-                self._chassis_follow.emergency_stop()
+-                self._chassis_command_mode = "body_follow"
+-                print("CHASSIS_CONTROL_MODE body_follow (A+B priority)")
+-            try:
+-                with self._chassis_feedback_lock:
+-                    feedback_age = now - self._chassis_feedback_monotonic
+-                    feedback_pose = list(self._chassis_feedback_pose)
+-                    feedback_speed = list(self._chassis_feedback_speed)
+-                if feedback_age > float(self._chassis_config["feedback_timeout_s"]):
+-                    fault = "F1 chassis feedback stale"
+-                else:
+-                    self._chassis_follow.set_robot_odometry(
+-                        feedback_pose, feedback_speed, now
+-                    )
+-                    with self._local_frame_lock:
+-                        generation = self._local_frame_generation
+-                    if generation != self._chassis_local_frame_generation_seen:
+-                        command = self._chassis_follow.recenter()
+-                        self._chassis_local_frame_generation_seen = generation
+-                        print(
+-                            f"LOCAL_FRAME_RECENTER_CHASSIS_OK generation={generation}"
+-                        )
+-                    source_mode = self._chassis_config["input_source"]
+-                    body = (
+-                        self.xr_client.get_body_tracking_data()
+-                        if source_mode in {"auto", "body_pelvis"}
+-                        else None
+-                    )
+-                    body_fresh = False
+-                    if body is not None:
+-                        timestamp = int(body.get("body_timestamp", 0))
+-                        if timestamp > 0 and timestamp != self._chassis_last_body_timestamp:
+-                            self._chassis_last_body_timestamp = timestamp
+-                            self._chassis_last_body_fresh_monotonic = now
+-                        body_fresh = now - self._chassis_last_body_fresh_monotonic <= float(
+-                            self._chassis_config["input_timeout_s"]
+-                        )
+-
+-                    if body is not None and body_fresh:
+-                        source = "body_pelvis"
+-                        index = int(self._chassis_config["body_joint_index"])
+-                        poses = np.asarray(body["poses"], dtype=float)
+-                        velocities = np.asarray(body["velocities"], dtype=float)
+-                        if source != self._chassis_active_source:
+-                            self._chassis_follow.emergency_stop()
+-                            self._chassis_active_source = source
+-                            print("CHASSIS_INPUT_SOURCE body_pelvis")
+-                        command = self._chassis_follow.update(
+-                            poses[index], velocities[index], True, timestamp
+-                        )
+-                    elif source_mode in {"auto", "headset"}:
+-                        source = "headset"
+-                        pose = np.asarray(
+-                            self.xr_client.get_pose_by_name("headset"), dtype=float
+-                        )
+-                        timestamp = int(self.xr_client.get_timestamp_ns())
+-                        if timestamp > 0 and timestamp != self._chassis_last_head_timestamp:
+-                            self._chassis_last_head_timestamp = timestamp
+-                            self._chassis_last_head_fresh_monotonic = now
+-                        if now - self._chassis_last_head_fresh_monotonic > float(
+-                            self._chassis_config["input_timeout_s"]
+-                        ):
+-                            fault = "PICO headset tracking stale"
+-                        else:
+-                            if source != self._chassis_active_source:
+-                                self._chassis_follow.emergency_stop()
+-                                self._chassis_active_source = source
+-                                print("CHASSIS_INPUT_SOURCE headset (Body unavailable)")
+-                            command = self._chassis_follow.update_pose(
+-                                pose, timestamp, True
+-                            )
+-                    else:
+-                        fault = "PICO body tracking unavailable or stale"
+-            except Exception as exc:
+-                fault = f"invalid PICO body sample: {exc}"
+-        elif joystick_enabled:
+-            command = self._chassis_follow.emergency_stop()
+-            self._chassis_active_source = None
+-            if self._chassis_command_mode != "joystick":
+-                self._joystick_chassis.emergency_stop()
+-                self._chassis_command_mode = "joystick"
+-                print("CHASSIS_CONTROL_MODE joystick")
+-            try:
+-                timestamp = int(self.xr_client.get_timestamp_ns())
+-                if timestamp > 0 and timestamp != self._joystick_last_timestamp:
+-                    self._joystick_last_timestamp = timestamp
+-                    self._joystick_last_fresh_monotonic = now
+-                if now - self._joystick_last_fresh_monotonic > float(
+-                    self._chassis_config["joystick_input_timeout_s"]
+-                ):
+-                    fault = "PICO joystick stream stale"
+-                else:
+-                    left = self.xr_client.get_joystick_state("left")
+-                    right = self.xr_client.get_joystick_state("right")
+-                    raw_sticks = [float(v) for v in (*left, *right)]
+-                    if not np.all(np.isfinite(raw_sticks)):
+-                        raw_sticks = None
+-                    command = self._joystick_chassis.update(left, right)
+-            except Exception as exc:
+-                fault = f"invalid PICO joystick sample: {exc}"
+-        else:
+-            command = self._chassis_follow.emergency_stop()
+-            self._joystick_chassis.emergency_stop()
+-            self._chassis_active_source = None
+-            self._chassis_command_mode = "idle"
+-
+-        stop_event = getattr(self, "_chassis_worker_stop", None)
+-        if stop_event is not None and stop_event.is_set():
+-            fault = "chassis worker stopping"
+-        if fault is not None:
+-            command = self._chassis_follow.emergency_stop()
+-            self._joystick_chassis.emergency_stop()
+-            if not self._chassis_fault_reported:
+-                print(f"[CHASSIS SAFETY] {fault}; publishing zero")
+-                self._chassis_fault_reported = True
+-        elif self._chassis_fault_reported:
+-            print("[CHASSIS] PICO input recovered")
+-            self._chassis_fault_reported = False
+-
+-        msg = TwistStamped()
+-        msg.header.stamp = self._ros_node.get_clock().now().to_msg()
+-        msg.header.frame_id = self._chassis_config["frame_id"]
+-        msg.twist.linear.x = float(command.linear_x)
+-        msg.twist.linear.y = float(command.linear_y)
+-        msg.twist.angular.z = float(command.angular_z)
+-        self._chassis_cmd_pub.publish(msg)
+-
+-        enabled_msg = Bool()
+-        enabled_msg.data = fault is None and (
+-            body_follow_enabled or self._joystick_chassis.active
+-        )
+-        self._chassis_enabled_pub.publish(enabled_msg)
+-
+-        # Inspect input -> shaped command -> physical feedback on the SAME
+-        # host clock. This is diagnostic data, never a control subscription.
+-        if hasattr(self, "_chassis_diagnostics_pub"):
+-            with self._chassis_feedback_lock:
+-                # A feedback callback can run after the control tick began.
+-                # Timestamp this snapshot under the same lock, rather than
+-                # subtracting its arrival time from the older tick timestamp.
+-                feedback_snapshot = time.monotonic()
+-                feedback = list(self._chassis_feedback_speed)
+-                age = feedback_snapshot - self._chassis_feedback_monotonic
+-            planner = (self._chassis_follow if body_follow_enabled
+-                       else self._joystick_chassis).trajectory
+-            diagnostic = String()
+-            diagnostic.data = json.dumps({
+-                "monotonic_s": now, "mode": self._chassis_command_mode,
+-                "tick_dt_s": dt, "raw_sticks": raw_sticks,
+-                "target": planner.filtered_target,
+-                "command": list(command.as_tuple()), "feedback": feedback,
+-                "feedback_snapshot_monotonic_s": feedback_snapshot,
+-                "feedback_age_s": age, "fault": fault,
+-            }, allow_nan=False)
+-            self._chassis_diagnostics_pub.publish(diagnostic)
+-
+-    def _chassis_publish_loop(self):
+-        """Independent monotonic worker: no arm locks, no burst replay."""
+-        period = 1.0 / float(self._control_config["command_hz"])
+-        last_tick = None
+-        next_tick = time.monotonic()
+-        report_start = next_tick
+-        count = 0
+-        max_gap = 0.0
+-        print("CHASSIS_WORKER_READY independent=true clock=monotonic "
+-              "elapsed_dt=true qos=RELIABLE_KEEP_LAST_1")
+-        try:
+-            while not self._chassis_worker_stop.is_set() and rclpy.ok():
+-                now = time.monotonic()
+-                gap = period if last_tick is None else now - last_tick
+-                last_tick = now
+-                self._chassis_schedule_stale = gap > 0.1 or gap <= 0.0
+-                self._chassis_tick_dt = min(max(gap, 1e-6), 0.1)
+-                self._publish_chassis_command()
+-                count += 1
+-                max_gap = max(max_gap, gap)
+-                finished = time.monotonic()
+-                if finished - report_start >= 5.0:
+-                    print(f"CHASSIS_TIMING hz={count / (finished - report_start):.1f} "
+-                          f"max_gap_ms={max_gap * 1000:.1f} "
+-                          "trace=/pico/chassis_diagnostics")
+-                    report_start, count, max_gap = finished, 0, 0.0
+-                next_tick += period
+-                if next_tick <= finished:
+-                    # Do not send a burst of past motion after an overrun.
+-                    next_tick = finished + period
+-                self._chassis_worker_stop.wait(max(0.0, next_tick - time.monotonic()))
+-        except Exception as exc:
+-            print(f"[CHASSIS SAFETY] output worker failed: {exc}; publishing zero, restart required")
+-            self._stop_event.set()
+-        finally:
+-            self._publish_emergency_chassis_zero()
+-
+-    def _publish_emergency_chassis_zero(self, frames=5):
+-        """Publish repeated zeros before destroying the ROS node."""
+-        if not hasattr(self, "_chassis_cmd_pub") or not hasattr(self, "_ros_node"):
+-            return
+-        try:
+-            self._chassis_follow.emergency_stop()
+-            self._joystick_chassis.emergency_stop()
+-            for _ in range(frames):
+-                msg = TwistStamped()
+-                msg.header.stamp = self._ros_node.get_clock().now().to_msg()
+-                msg.header.frame_id = self._chassis_config["frame_id"]
+-                self._chassis_cmd_pub.publish(msg)
+-                time.sleep(0.02)
+-        except Exception:
+-            pass
++    def _publish_chassis_command(self, *args, **kwargs):
++        """Disabled in upper-only build; never create or publish a command."""
++        return None
++
++    def _publish_chassis_command_unlocked(self, *args, **kwargs):
++        """Disabled in upper-only build; never create or publish a command."""
++        return None
++
++    def _chassis_publish_loop(self, *args, **kwargs):
++        """Disabled in upper-only build; never create or publish a command."""
++        return None
++
++    def _publish_emergency_chassis_zero(self, *args, **kwargs):
++        """Disabled in upper-only build; never create or publish a command."""
++        return None
+ 
+     def _deactivate_torso_command(self, measured_pitch=None):
+         """Stop publishing body_j3 and discard every prior activation target."""
+@@ -374,136 +148,17 @@
+                     self._torso_output_trajectory.reset([pitch])
+                     self._torso_output_target = pitch
+ 
+-    def _update_torso_target(self):
+-        """Stage a relative headset-pitch target; CollisionGuard approves it later."""
+-        with self._chassis_lock:
+-            enabled = bool(self._torso_enabled)
+-        enabled = (
+-            enabled
+-            and bool(self._torso_config["enabled"])
+-            and not self._reset_in_progress.is_set()
+-        )
+-        torso_index = int(self._torso_config["joint_index"])
+-        with self._hal_joint_states_lock:
+-            measured_pitch = float(self.hal_full_body_joint_states[torso_index])
+-            feedback_age = time.monotonic() - self._hal_joint_states_last_monotonic
+-
+-        if not enabled:
+-            if self._torso_mapper.enabled or self._torso_command_active:
+-                self._deactivate_torso_command(
+-                    measured_pitch
+-                    if feedback_age <= float(self._torso_config["feedback_timeout_s"])
+-                    else None
+-                )
+-            return
+-
+-        fault = None
+-        try:
+-            if feedback_age > float(self._torso_config["feedback_timeout_s"]):
+-                raise ValueError(f"/hal/joint_states stale ({feedback_age:.3f}s)")
+-            with self._local_frame_lock:
+-                generation = self._local_frame_generation
+-            recentered = generation != self._torso_local_frame_generation_seen
+-            if recentered:
+-                self._deactivate_torso_command(measured_pitch)
+-                self._torso_local_frame_generation_seen = generation
+-            pose = self.xr_client.get_pose_by_name("headset")
+-            timestamp = int(self.xr_client.get_timestamp_ns())
+-            now = time.monotonic()
+-            if timestamp <= 0:
+-                raise ValueError("headset timestamp is invalid")
+-            if timestamp != self._torso_last_timestamp:
+-                self._torso_last_timestamp = timestamp
+-                self._torso_last_fresh_monotonic = now
+-            elif now - self._torso_last_fresh_monotonic > float(
+-                self._torso_config["input_timeout_s"]
+-            ):
+-                raise ValueError("PICO headset tracking stale")
+-            else:
+-                # The publish loop can run twice between adjacent XR frames.
+-                # Keep the already staged target without treating an identical
+-                # timestamp as a discontinuity.
+-                return
+-            was_active = bool(self._torso_command_active)
+-            raw_target = self._torso_mapper.update(
+-                pose, measured_pitch, True, timestamp
+-            )
+-            with self._trajectory_lock:
+-                if not was_active or recentered:
+-                    with self._safety_lock:
+-                        self._torso_trajectory.reset([measured_pitch])
+-                        self._last_safe_torso_pitch = measured_pitch
+-                with self._both_arm_grip_lock:
+-                    self._raw_torso_pitch = float(raw_target)
+-                    self._torso_command_active = True
+-        except Exception as exc:
+-            fault = str(exc)
+-            self._deactivate_torso_command(
+-                measured_pitch
+-                if feedback_age <= float(self._torso_config["feedback_timeout_s"])
+-                else None
+-            )
+-
+-        if fault is not None:
+-            if not self._torso_fault_reported:
+-                print(f"[TORSO SAFETY] {fault}; body_j3 command disabled")
+-                self._torso_fault_reported = True
+-        elif self._torso_fault_reported:
+-            print("[TORSO] headset/feedback input recovered")
+-            self._torso_fault_reported = False
+-
+-    def _publish_approved_torso_position(self, safe_pitch):
+-        """Hand a 50 Hz CollisionGuard-approved waypoint to the 1 kHz servo."""
+-        with self._both_arm_grip_lock:
+-            active = bool(self._torso_command_active)
+-        if not active or self._reset_in_progress.is_set():
+-            return
+-        with self._torso_output_lock:
+-            self._torso_output_target = float(safe_pitch)
+-            self._torso_output_active = True
+-
+-    def _torso_output_loop(self):
+-        """Resample safe body_j3 waypoints at the platform-native 1 ms cadence."""
+-        output_hz = float(self._torso_config["output_hz"])
+-        period = 1.0 / output_hz
+-        next_tick = time.perf_counter()
+-        published = 0
+-        report_start = next_tick
+-        while not self._torso_output_stop.is_set() and rclpy.ok():
+-            value = None
+-            if not self._reset_in_progress.is_set():
+-                with self._torso_output_lock:
+-                    if self._torso_output_active:
+-                        proposal = self._torso_output_trajectory.propose(
+-                            [self._torso_output_target]
+-                        )
+-                        self._torso_output_trajectory.commit(proposal)
+-                        value = float(proposal.position[0])
+-            if value is not None:
+-                msg = JointState()
+-                msg.header.stamp = self._ros_node.get_clock().now().to_msg()
+-                msg.header.frame_id = self._torso_config["frame_id"]
+-                msg.name = [self._torso_config["joint_name"]]
+-                msg.position = [value]
+-                self._torso_joint_pub.publish(msg)
+-                published += 1
+-
+-            now = time.perf_counter()
+-            if now - report_start >= 5.0:
+-                if published:
+-                    print(
+-                        f"TORSO_OUTPUT_RATE {published / (now - report_start):.1f}Hz "
+-                        "qos=RELIABLE_KEEP_LAST_1"
+-                    )
+-                published = 0
+-                report_start = now
+-            next_tick += period
+-            delay = next_tick - time.perf_counter()
+-            if delay > 0:
+-                time.sleep(delay)
+-            elif delay < -0.050:
+-                # Do not burst stale samples after scheduler starvation.
+-                next_tick = time.perf_counter()
++    def _update_torso_target(self, *args, **kwargs):
++        """Disabled in upper-only build; never create or publish a command."""
++        return None
++
++    def _publish_approved_torso_position(self, *args, **kwargs):
++        """Disabled in upper-only build; never create or publish a command."""
++        return None
++
++    def _torso_output_loop(self, *args, **kwargs):
++        """Disabled in upper-only build; never create or publish a command."""
++        return None
+ 
+     def _external_left_pose_callback(self,msg):
+         if not self.tcp_replay_mode:
+@@ -736,7 +391,8 @@
+                     l_grip_msg.max_effort = float(
+                         self._control_config["gripper_max_effort"]
+                     )
+-                    self._gripper_left_pub.publish(l_grip_msg)
++                    if self._raw_arm_enabled[0]:
++                        self._gripper_left_pub.publish(l_grip_msg)
+ 
+                     # 发布右夹爪 GripperCommand
+                     r_grip_msg = GripperCommand()
+@@ -744,7 +400,8 @@
+                     r_grip_msg.max_effort = float(
+                         self._control_config["gripper_max_effort"]
+                     )
+-                    self._gripper_right_pub.publish(r_grip_msg)
++                    if self._raw_arm_enabled[1]:
++                        self._gripper_right_pub.publish(r_grip_msg)
+ 
+ 
+             with self.pico_tcp_data_lock:
+--- upstream/vendor/xrobotoolkit/xrobotoolkit_teleop/common/send2real_robot_f1_udp.py
++++ adapted/vendor/xrobotoolkit/xrobotoolkit_teleop/common/send2real_robot_f1_udp.py
+@@ -1,208 +1,2 @@
+-#!/usr/bin/env python3
+-"""
+-real_arm_command_sender.py
+- 
+-职责单一的类：向真实机械臂发送关节位置指令 + 夹爪指令 + 控制模式切换 + 拖动示教模式
+-"""
+-
+-import rclpy
+-from rclpy.node import Node
+-from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
+-import time
+-from typing import List, Optional, Dict, Tuple
+-
+-# 标准消息类型
+-from sensor_msgs.msg import JointState
+-from control_msgs.msg import GripperCommand
+-
+-# 自定义服务
+-from f1_msgs.srv import SetControlMode, SetDragMode   # 新增 SetDragMode
+-import numpy as np
+-import socket
+-import importlib.util
+-import os
+-
+-IP_CONFIG_FILE_PATH = os.environ["PICO_F1_CONFIG"]
+-
+-
+-class RealArmCommandSender:
+-    """
+-    使用方式：
+-        sender = RealArmCommandSender()
+-        sender.change_control_mode(target_arm=1, mode=3)
+-        sender.change_drag_mode(target_arm=1, drag_type=1, duration_ms=0)
+-    """
+-
+-    def __init__(self):
+-        # self.TARGET_IP = "192.168.2.101"
+-            # 动态导入指定路径的 ip_config.py
+-        spec = importlib.util.spec_from_file_location("ip_config", IP_CONFIG_FILE_PATH)
+-        ip_config = importlib.util.module_from_spec(spec)
+-        spec.loader.exec_module(ip_config)
+-        
+-        self.TARGET_IP = ip_config.local_ip
+-        self.port_data = [ip_config.port1]
+-        self.port_singal_start_record_video = [ip_config.port2]
+-
+-        # self.port_data = [8888]
+-        # self.port_singal_start_record_video = [8899] 
+-
+-        # ---------------- 网络 ----------------
+-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+-        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 65536)  # 增大发送缓冲区
+-        self.sock.setblocking(False)  # 非阻塞模式，避免网络抖动卡住主线程
+-
+-    # qpos, np
+-    def send_upper_to_sim(self,qpos):
+-        """
+-        实时把上肢发给 MuJoCo
+-        """
+-        q = np.array(qpos)
+-        packet = q.astype(np.float64).tobytes()
+-        for port in self.port_data:  
+-            try:
+-                self.sock.sendto(packet, (self.TARGET_IP, port))
+-            except BlockingIOError:
+-                pass  # 发送缓冲区满，丢弃当前帧，不阻塞主线程       
+-
+-    def send_start_video_signal(self,qpos):
+-        """
+-        通知启停录制视频
+-            - qpos = 1: 开始录制
+-            - qpos = 0: 停止录制
+-        """
+-        q = np.array(qpos)
+-        packet = q.astype(np.float64).tobytes()
+-        for i in range(3):
+-            for port in self.port_singal_start_record_video:  # 同一帧发两次
+-                self.sock.sendto(packet, (self.TARGET_IP, port)) 
+-
+-
+-    def angle_map(self,left_joint_rad,right_joint_rad):
+-
+-        # 添加由于urdf不完全对称，导致的left初始逆解角度差异
+-        #left_joint_rad[0] += 0.026
+-        #left_joint_rad[1] -= 0.235
+-        #left_joint_rad[2] += 0.225
+-        #left_joint_rad[3] -= 0.002
+-        #left_joint_rad[4] -= 0.232
+-        #left_joint_rad[5] -= 0.024
+-        #left_joint_rad[6] -= 0.227
+-
+-        #test
+-        # left_joint_rad[4] -= 0.175
+- 
+-
+-        left_joint_deg = np.zeros(7, dtype=float)
+-        right_joint_deg = np.zeros(7, dtype=float)      
+-          
+-        left_joint_deg[0] =  np.rad2deg(left_joint_rad[0]) + 90
+-        left_joint_deg[1] =  -np.rad2deg(left_joint_rad[1]) - 90
+-        left_joint_deg[2] =  np.rad2deg(left_joint_rad[2]) - 90
+-        left_joint_deg[3] =  -np.rad2deg(left_joint_rad[3]) - 90
+-        left_joint_deg[4] =  np.rad2deg(left_joint_rad[4])       
+-        left_joint_deg[5] =  -np.rad2deg(left_joint_rad[5])
+-        left_joint_deg[6] =   np.rad2deg(left_joint_rad[6])
+-
+-        right_joint_deg[0] =  np.rad2deg(right_joint_rad[0]) - 90
+-        right_joint_deg[1] =  np.rad2deg(right_joint_rad[1]) - 90
+-        right_joint_deg[2] =  np.rad2deg(right_joint_rad[2]) + 90
+-        right_joint_deg[3] =  np.rad2deg(right_joint_rad[3]) - 90
+-        right_joint_deg[4] =  -np.rad2deg(right_joint_rad[4])       
+-        right_joint_deg[5] =  -np.rad2deg(right_joint_rad[5])
+-        right_joint_deg[6] =  np.rad2deg(right_joint_rad[6])
+-
+-        return left_joint_deg, right_joint_deg
+-
+-
+-            # target_left = [90, -90, -90, -90, 0, 0, 0]
+-            # target_right =  [-90, -90, 90, -90, 0, 0, 0]
+-
+-    def home_position(self):
+-        # Dedicated loopback socket: completion is for this request, not an
+-        # old status message. Do not retry automatically (could repeat motion).
+-        token = float(time.monotonic_ns() % (2**52))
+-        packet = np.asarray([1.0, token], dtype=np.float64).tobytes()
+-        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as reset_socket:
+-            reset_socket.settimeout(65.0)
+-            reset_socket.sendto(packet, (self.TARGET_IP, self.port_data[0]))
+-            try:
+-                reply, source = reset_socket.recvfrom(128)
+-                values = np.frombuffer(reply, dtype=np.float64)
+-                success = (source == (self.TARGET_IP, self.port_data[0])
+-                           and len(values) == 2 and values[0] == token and values[1] == 1)
+-                print(f'RESET_BRIDGE_COMPLETION success={bool(success)}')
+-                return bool(success)
+-            except (TimeoutError, ValueError) as exc:
+-                print(f'[RESET BLOCKED] completion timeout/invalid reply: {exc}')
+-                return False
+-
+-    #用来发送一些单独的功能，比如腰部升起降落等
+-    def fun_send(self,int_data):
+-        self.send_upper_to_sim(int_data)
+-
+-    def __del__(self):
+-        node = getattr(self, "_node", None)
+-        if node is not None:
+-            try:
+-                node.destroy_node()
+-            except:
+-                pass
+-        if rclpy.ok():
+-            try:
+-                rclpy.shutdown()
+-            except:
+-                pass
+-
+-
+-# ====================== 测试代码 ======================
+-def main():
+-    send = RealArmCommandSender()
+-    print(f"🚀 开始以 20Hz 向 {send.TARGET_IP} 的端口 {send.port_data} 发送 7DOF 机械臂数据...")
+-    print("数据格式: [qpos(7) + qvel(7)]，共14个 float64")
+-    print("按 Ctrl+C 停止发送\n")
+-
+-    count = 0
+-    last_print_time = time.time()
+-    
+-
+-
+-    try:
+-        while True:
+-            loop_start = time.perf_counter()
+-
+-            # 随机生成 7自由度位置 + 7自由度速度 = 14个数据
+-            qpos = np.random.uniform(-np.pi, np.pi, 7).astype(np.float64)
+-            qvel = np.random.uniform(-2.0, 2.0, 7).astype(np.float64)
+-            q_grip = np.random.uniform(0.0, 100.0, 2).astype(np.float64)  # 夹爪开合度
+-            # 合并成14维数组
+-            data_14 = np.concatenate([qpos, qvel])
+-
+-            data_16 = np.concatenate([qpos, qvel, q_grip])  # 如果需要夹爪数据，可以使用这个16维数组
+-
+-            # 发送
+-            send.send_upper_to_sim(data_16)
+-
+-            count += 1
+-
+-            # 精确控制 20Hz
+-            elapsed = time.perf_counter() - loop_start
+-            sleep_time = max(0.0, 0.05 - elapsed)   # 50ms = 20Hz
+-            time.sleep(sleep_time)
+-
+-            # 每秒打印一次实际频率
+-            if time.time() - last_print_time >= 1.0:
+-                print(f"📡 已发送 {count} 帧 | 实际频率 ≈ {count} Hz")
+-                count = 0
+-                last_print_time = time.time()
+-
+-    except KeyboardInterrupt:
+-        print("\n\n⏹️ 程序已停止")
+-    finally:
+-        send.sock.close()
+-        print("Socket 已关闭")
+-
+-
+-# ================== 程序入口 ==================
+-if __name__ == "__main__":
+-    main()
++"""Upper-only adapter replacing upstream UDP control shortcuts. See UPSTREAM.json."""
++from pico_upper.transport import UpperSender as RealArmCommandSender

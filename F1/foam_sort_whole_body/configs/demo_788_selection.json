@@ -1,0 +1,24 @@
+{
+  "version": "demo_788_v1",
+  "decision": "User approved excluding all eight cycle-review candidates and five J6 outliers; inspect the remaining complete recordings for a demo baseline.",
+  "expected_original_recordings": 801,
+  "expected_candidates": 788,
+  "manual_cycle_trimming": false,
+  "inherit_v1_validity_masks": true,
+  "training_approved": false,
+  "exclusions": {
+    "all_data_2_derived/episode_000055": "cycle_review_set; confirmed_bad_base_labels_and_feedback_gap",
+    "all_data_derived/episode_000001": "cycle_review_set; conservative_demo_exclusion_not_confirmed_failure",
+    "all_data_derived/episode_000008": "cycle_review_set; conservative_demo_exclusion_not_confirmed_failure",
+    "all_data_derived/episode_000012": "cycle_review_set; human_intervention_uncertain",
+    "all_data_derived/episode_000042": "cycle_review_set; conservative_demo_exclusion_not_confirmed_failure",
+    "all_data_derived/episode_000062": "cycle_review_set; conservative_demo_exclusion_not_confirmed_failure",
+    "all_data_derived/episode_000079": "cycle_review_set; confirmed_bad_base_labels",
+    "all_data_derived/episode_000151": "cycle_review_set; conservative_demo_exclusion_not_confirmed_failure",
+    "all_data_3_derived/episode_000111": "left_J6_above_document_range_unresolved",
+    "all_data_3_derived/episode_000113": "left_J6_above_document_range_unresolved",
+    "all_data_3_derived/episode_000134": "left_J6_above_document_range_unresolved",
+    "all_data_3_derived/episode_000178": "left_J6_above_document_range_unresolved",
+    "all_data_derived/episode_000045": "left_J6_above_document_range_unresolved"
+  }
+}

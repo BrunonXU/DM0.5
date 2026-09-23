@@ -1,0 +1,16 @@
+{
+  "verified_at_utc": "2026-09-18T09:18:42.784528+00:00",
+  "final_status": "ms-thor\nRestart=always\nRestartUSec=10s\nMainPID=3568297\nActiveState=active\nSubState=running\nUnitFileState=enabled\nLinger=yes\ninactive\n600\n2724897c3a8caf5fab284b1f4a1b0e89f5046a832317f0a95f4a09f1a5d16f37  ssh_config\n7d5cb392b82204f1ded4b11cd572afbb93e9474ce8d3a591972e5e8bd4655cb2  known_hosts\naa2ead4accaf110f495e73c57a93f25e4fdd6e759e1358fabeb4ab54880e321c  systemd/f1-6000d-tunnel.service\n",
+  "port": 22029,
+  "temporary_22030_authorization_removed": true,
+  "manual_tunnel_replaced": 1274951,
+  "private_key_copied": false,
+  "global_sshd_modified": false,
+  "robot_motion_started": false,
+  "not_tested": [
+    "whole robot reboot",
+    "physical Wi-Fi disconnect",
+    "long duration stability",
+    "throughput"
+  ]
+}

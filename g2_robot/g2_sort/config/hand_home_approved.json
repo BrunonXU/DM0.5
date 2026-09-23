@@ -50,8 +50,18 @@
     0.023338,
     0.010888,
     0.019622,
-    0.000775,
+    0.0,
     0.011716
+  ],
+  "adjustments": [
+    {
+      "date": "2026-09-08",
+      "joint_name": "idx84_hand_r_pinky_abad_joint",
+      "previous_position": 0.000775,
+      "position": 0.0,
+      "basis": "Operator requested right pinky lateral spread correction; zero is within the GDK 2.6.3 O10 range and used in official open/close examples. Only this joint is adjusted.",
+      "physical_validation": "pending; 0.000775 rad is only 0.0444 degrees, so this change does not establish the cause of visible spread"
+    }
   ],
   "approval": {
     "basis": "G2 operator visually confirmed command 9 returned both hands to the normal initial pose; max delta from the 800-episode H5 frame-0 median was 0.007194 rad.",

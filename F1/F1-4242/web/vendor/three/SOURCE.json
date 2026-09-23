@@ -1,0 +1,41 @@
+{
+  "name": "three.js",
+  "version": "0.170.0",
+  "tag": "r170",
+  "license": "MIT",
+  "downloaded": "2026-09-23",
+  "files": [
+    {
+      "file": "three.module.min.js",
+      "url": "https://raw.githubusercontent.com/mrdoob/three.js/r170/build/three.module.min.js",
+      "upstream_sha256": "08fd7545d13d2c7fb65ab691530a802dafefd638596501854f267d0fb13c39e7",
+      "sha256": "08fd7545d13d2c7fb65ab691530a802dafefd638596501854f267d0fb13c39e7",
+      "bytes": 691648,
+      "change": null
+    },
+    {
+      "file": "OrbitControls.js",
+      "url": "https://raw.githubusercontent.com/mrdoob/three.js/r170/examples/jsm/controls/OrbitControls.js",
+      "upstream_sha256": "80efaadea4f8a636a65fb0bd08bfef62f3d93a0bb94e2e7500f23176c5c07f4e",
+      "sha256": "e9c4f26866d39a36c8c9e8215e7d2a90a8a0b50ea6d44a005906e3d1fc726b8f",
+      "bytes": 32150,
+      "change": "Import specifier rewritten to local module"
+    },
+    {
+      "file": "STLLoader.js",
+      "url": "https://raw.githubusercontent.com/mrdoob/three.js/r170/examples/jsm/loaders/STLLoader.js",
+      "upstream_sha256": "a0a83c88b269c94e25b690fae770d350c4728c81853195186976be7af0f8a3b3",
+      "sha256": "394f058b6c73db1eb7f9c692855c7b644e76b1eaceafd61861380dd339019e5b",
+      "bytes": 10059,
+      "change": "Import specifier rewritten to local module"
+    },
+    {
+      "file": "LICENSE",
+      "url": "https://raw.githubusercontent.com/mrdoob/three.js/r170/LICENSE",
+      "upstream_sha256": "4c40a1ef62450b857c3b2aaf294936304cd552d965fbcd9d32d4c5bcf4ba4454",
+      "sha256": "4c40a1ef62450b857c3b2aaf294936304cd552d965fbcd9d32d4c5bcf4ba4454",
+      "bytes": 1081,
+      "change": null
+    }
+  ]
+}

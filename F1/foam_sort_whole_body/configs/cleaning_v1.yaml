@@ -1,0 +1,44 @@
+schema_version: 1
+version: cleaning_v1
+source: /mnt/dm05_nvme/dm05/datasets/f1_foam_sort/raw
+source_audit: results/20260914
+output: results/cleaning_v1
+state_dim: 21
+action_dim: 19
+right_side_freeze: false
+grid:
+  frequency_hz: 30
+  reference: mcap_log_time
+  lookup: last_signal_sample_or_valid_camera_frame_at_or_before_grid_time
+  exposure_alignment_verified: false
+  max_signal_age_s: 0.1
+  max_camera_log_age_s: 0.1
+  threshold_role: conservative_data_freshness_filter_not_robot_limit
+camera:
+  header_offset_outlier_threshold_s: 0.25
+  note: Timestamp candidate filtering preserves raw timestamps; it is not exposure-time calibration.
+chunks:
+  horizon: 50
+  horizon_source: current_DM05ModelConfig_default
+  require_entire_horizon_signal_and_action_valid: true
+  camera_validity_required_at_observation_time: true
+  pad_unknown_future_actions: false
+split:
+  unit: original_recording
+  strategy: last_temporal_10_percent_within_each_batch_for_validation
+  validation_fraction: 0.1
+labels:
+  base: posthoc_weak_target
+  confirmed_bad_base: mask_all_base_targets_until_per_cycle_relabel
+  body: observation_only_physical_mapping_unverified
+  gripper_event_candidates_are_cycles: false
+gripper_review:
+  raw_value_threshold: 60
+  merge_gap_s: 0.5
+  ignore_start_before_s: 3
+  separated_event_span_s: 8
+  note: Review heuristic only; no grasp/release direction or cycle count is inferred automatically.
+approval:
+  automatic_training_approval: false
+  pending: [cycle_boundaries_and_outcomes, visual_action_alignment, base_label_review, f1_field_contract]
+raw_files_modified: false
