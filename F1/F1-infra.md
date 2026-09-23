@@ -14,7 +14,7 @@ status: console_deployed_onsite_arm_trial
 
 **用户已指定HTML首台目标为 F1-09（22009）。** 用户补充的现场Pico入口是`/home/user/lxl/start_all_pico1.sh`，将它作为F1-09优先核查对象。其他机器及后续独立Pico工程作为复用来源；09-23恢复连接后确认F1-09有`/home/user/lxl`、其IP配置为`.58`，而`/home/user/meaxiao`不存在。同日后续已将独立双臂适配版部署到`/home/user/Bruno/F1/pico_upper/`，不覆盖lxl；源码、部署和现场动作验收仍分开记录。
 
-本文整理跨项目复用、接口细节与前端讨论方案。系统事实统一入口仍是 [F1系统配置](F1系统配置.md)，各机差异看机器专属文档；模型选择与最新任务部署看 [任务当前方案](foam_sort_whole_body/docs/training_plan.md)。最新使用入口见[4242工作台](console/README.md)与[双臂Pico现场脚本](pico_upper/README.md)。
+本文整理跨项目复用、接口细节与前端讨论方案。系统事实统一入口仍是 [F1系统配置](F1系统配置.md)，各机差异看机器专属文档；模型选择与最新任务部署看 [任务当前方案](foam_sort_whole_body/docs/training_plan.md)。最新使用入口见[4242工作台](F1-4242/README.md)与[双臂Pico现场脚本](pico_upper/README.md)。
 
 ## 0. 现有功能总表与本轮部署（2026-09-23）
 
@@ -37,7 +37,7 @@ status: console_deployed_onsite_arm_trial
 | 实时URDF | 现有URDF/STL与可视化参考 | **待接入**：先核名称、零位、方向与闭链结构；当前页面不伪造3D反馈 |
 | 导航、Demo编排、回放与模型实验 | 供应商站、Hall、我方任务客户端 | **待插件接入与逐机验收**；首版只提供姿态与事件入口，不宣称已能执行任务序列 |
 
-F1当前服务为systemd用户临时单元`f1-console-4242`，当前发布`20260923-console-v3`；访客默认只读；双臂/夹爪已按用户确认启用，后续发布及能力开关以[工作台说明](console/README.md)为准。6000D后台`f1-console-web-sync`将前端同步到`/home/user/Bruno/F1/console/dev/web`，浏览器每2秒检查资源版本并刷新，保留本标签页导航/草稿，不自动重新取得控制权或重发动作。临时单元不等于已配置开机自启。
+F1当前服务为systemd用户临时单元`f1-console-4242`，当前发布`20260923-console-v3`；访客默认只读；双臂/夹爪已按用户确认启用，后续发布及能力开关以[工作台说明](F1-4242/README.md)为准。6000D后台`f1-console-web-sync`将前端同步到`/home/user/Bruno/F1/console/dev/web`，浏览器每2秒检查资源版本并刷新，保留本标签页导航/草稿，不自动重新取得控制权或重发动作。临时单元不等于已配置开机自启。
 
 端口42受浏览器限制，因此选择4242；依据[Fetch端口规则](https://fetch.spec.whatwg.org/#port-blocking)。完整边界见[一体化架构与验收](docs/embodied_console_integration.md)、[Hall源码审计](docs/hall_source_review_20260923.md)。
 
@@ -47,7 +47,7 @@ F1当前服务为systemd用户临时单元`f1-console-4242`，当前发布`20260
 
 6000D另有`f1-console-f1-tunnel`，将6000D本机4242转发至F1；VS Code连接6000D后转发4242即可在电脑打开`http://localhost:4242/`。原局域网入口仍为`.58:4242`。
 
-7条旧lxl录制均为**2026-09-16北京时间16:04–16:20**（bag时间，非mtime）。最大`episode_000004`为5,815,513,850字节，16:10:04–16:18:24，约8分20秒。[完整7条时间/大小表](console/results/data_preview_20260923/README.md)。已读取25%/50%/75%附近图像；50%处三路源时间戳最大差76.4ms，75%处左腕无邻近帧，不补旧图冒充同步。原MCAP未改、未回放，抽取8张原JPEG核验SHA。4242“数据”页提供[只读预览](http://localhost:4242/previews/20260916-000004/preview.html)。
+7条旧lxl录制均为**2026-09-16北京时间16:04–16:20**（bag时间，非mtime）。最大`episode_000004`为5,815,513,850字节，16:10:04–16:18:24，约8分20秒。[完整7条时间/大小表](F1-4242/results/data_preview_20260923/README.md)。已读取25%/50%/75%附近图像；50%处三路源时间戳最大差76.4ms，75%处左腕无邻近帧，不补旧图冒充同步。原MCAP未改、未回放，抽取8张原JPEG核验SHA。4242“数据”页提供[只读预览](http://localhost:4242/previews/20260916-000004/preview.html)。
 
 ## 新增：lxl / meaxiao 选型与基础设施引入
 

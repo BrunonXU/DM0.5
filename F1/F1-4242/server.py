@@ -161,7 +161,17 @@ class Handler(BaseHTTPRequestHandler):
                 self.send(429,{'ok':False,'error':str(exc),'retry_after_s':exc.retry_after});return
             except ValueError as exc:
                 self.send(409,{'ok':False,'error':str(exc)});return
+            except Exception:
+                self.send(500,{'ok':False,'error':'控制码验证暂不可用'});return
         if not self.session_data['authenticated']:self.send(401,{'ok':False,'error':'请先输入控制码取得控制权，或使用本机访问码登录'});return
+        if path=='/api/data/reviews':
+            try:
+                row=app.data.save_review(body.get('episode_id'),body.get('status'),body.get('notes',''),self.session_data.get('owner','已登录操作者'))
+                app.events.add('data_review_saved','已保存独立数据审核',episode_id=row['episode_id'],status=row['status'])
+                self.send(200,{'ok':True,'review':row})
+            except ValueError as exc:self.send(409,{'ok':False,'error':str(exc)})
+            except Exception as exc:self.send(500,{'ok':False,'error':str(exc)})
+            return
         try:
             with app.op_lock:
                 if path=='/api/logout':
@@ -182,9 +192,6 @@ class Handler(BaseHTTPRequestHandler):
                     if spec.get('kind')=='base_jog':spec={'kind':'base',**spec.get('targets',{}),'ttl_s':spec.get('ttl_s',.25)}
                     if spec.get('kind') not in ('joints','gripper','base'):raise ValueError('未知动作类型')
                     data={'action':app.actions.start(spec,self.sid)}
-                elif path=='/api/data/reviews':
-                    row=app.data.save_review(body.get('episode_id'),body.get('status'),body.get('notes',''),self.session_data.get('owner','已登录操作者'))
-                    app.events.add('data_review_saved','已保存独立数据审核',episode_id=row['episode_id'],status=row['status']);data={'review':row}
                 elif path=='/api/presets':
                     p=dict(body)
                     if p.get('capture'):
