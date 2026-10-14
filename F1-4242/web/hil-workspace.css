@@ -1,0 +1,109 @@
+/* HIL prioritizes live state and cameras; setup and reference stay on demand. */
+#hil-root{display:grid;gap:14px;min-width:0;font-size:14px}
+#hil-root .card{border:1px solid var(--line,#dfe4eb);border-radius:10px;padding:16px;box-shadow:none}
+#hil-root .section-note{font-size:12px;line-height:1.5;margin:0;color:var(--muted,#697586)}
+#hil-root .hil-route-breadcrumb{gap:12px;margin:0;min-height:30px;font-size:13px}
+#hil-root #hil-route-name{font-size:16px;font-weight:600}
+#hil-root .hil-route-breadcrumb a{color:#2467d1}
+#hil-root .hil-device-label{margin-left:auto;color:var(--muted,#697586);font-size:12px}
+#hil-root .hil-overview{margin:0;padding:14px 16px;background:var(--surface,#fff);border-left:3px solid var(--hil-tone,#858b95);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 20px}
+#hil-root .hil-title{justify-content:flex-start;gap:14px;flex-wrap:wrap;min-width:0}
+#hil-root .hil-overview h2{font-size:18px;line-height:1.4;font-weight:600;margin:0;white-space:normal}
+#hil-root .hil-overview h2>span{font-size:12px;vertical-align:2px}
+#hil-root .hil-mode{font-size:11px;letter-spacing:0;padding:3px 7px;background:#f6f8fa;color:#586477;border:1px solid #e4e8ee;border-radius:5px}
+#hil-root .hil-context{margin:0;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--muted,#697586);justify-content:flex-end;align-self:center}
+#hil-root .hil-limit{padding:2px 6px;font-size:11px}
+#hil-root .hil-health{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:10px 24px;margin:2px 0 0;padding:10px 0 0;border-top:1px solid var(--line,#dfe4eb)}
+#hil-root .hil-health>.hil-health-item{display:flex;gap:7px;margin:0;font-size:12px}
+#hil-root .health-dot{width:6px;height:6px}
+#hil-root .hil-health-item b{font-size:12px;font-weight:500;font-variant-numeric:tabular-nums}
+#hil-root .hil-next{grid-column:1/-1;font-size:12px;line-height:1.5;margin:0;color:var(--muted,#697586)}
+#hil-root .hil-intervention{grid-column:1/-1;margin:0;font-size:12px;color:var(--muted,#697586)}
+#hil-root .hil-overview>.notice{grid-column:1/-1;padding:10px 12px;margin:2px 0;font-size:12px;line-height:1.6}
+#hil-root .hil-overview>.notice p{line-height:1.6}
+#hil-root .hil-overview>.notice details{margin-top:6px;overflow-wrap:anywhere}
+#hil-root .camera-section{margin:0;background:var(--surface,#fff);border:1px solid var(--line,#dfe4eb);border-radius:10px;padding:14px}
+#hil-root .camera-section-heading{margin:0;min-height:22px;gap:12px}
+#hil-root .camera-section[open]>.camera-section-heading{margin-bottom:12px}
+#hil-root .camera-section-heading h2{font-size:14px;font-weight:600}
+#hil-root .live-label{font-size:11px;color:var(--muted,#697586)}
+#hil-root .camera-grid{gap:10px}
+#hil-root .camera-card{border-radius:6px;border-color:var(--line,#dfe4eb);background:#f8fafc}
+#hil-root .camera-placeholder{background:#edf1f5;color:#697586}
+#hil-root .camera-title{font-size:12px;padding:8px 10px;gap:6px;flex-wrap:wrap}
+#hil-root .camera-title span:last-child{font-size:10px;font-variant-numeric:tabular-nums}
+#hil-root .hil-session{padding:12px 16px;display:grid;gap:8px}
+#hil-root .hil-command-title{gap:12px;min-width:0}
+#hil-root .hil-command-title strong{font-size:14px;font-weight:600}
+#hil-root .button{font-size:12px;padding:7px 11px;min-height:32px;border-radius:6px}
+#hil-root .hil-session-footer{display:flex;align-items:flex-start;gap:16px;font-size:12px;color:var(--muted,#697586)}
+#hil-root .hil-session-footer>span{flex:none}
+#hil-root .hil-session-help{flex:1;min-width:0}
+#hil-root .hil-session-help>summary{cursor:pointer;color:#2467d1;font-size:12px}
+#hil-root .hil-session-help p{padding-top:8px;font-size:12px;line-height:1.6}
+#hil-root .hil-tools{display:grid;gap:8px}
+#hil-root .hil-tools>.card{margin:0;padding:13px 16px}
+#hil-root .hil-tools>.card>summary{display:flex;gap:12px;align-items:center;cursor:pointer;font-size:13px;font-weight:500;list-style:none;min-height:20px}
+#hil-root .hil-tools>.card>summary::-webkit-details-marker{display:none}
+#hil-root .hil-tools>.card>summary::before{content:'›';font-size:20px;line-height:1;width:10px;flex:none;color:#8793a3;transition:transform .15s}
+#hil-root .hil-tools>.card[open]>summary::before{transform:rotate(90deg)}
+#hil-root .hil-tools>.card>summary strong{font-size:13px;font-weight:500}
+#hil-root .hil-tools>.card>summary strong::before{content:none}
+#hil-root .hil-tools>.card>summary .section-note{margin-left:auto;font-size:11px}
+#hil-root .hil-step{padding:12px 0;border-color:var(--line,#dfe4eb)}
+#hil-root .hil-step:first-child{margin-top:12px}
+#hil-root .hil-step:last-child{padding-bottom:0}
+#hil-root .hil-step summary{font-size:13px;gap:9px}
+#hil-root .hil-step-number{width:22px;height:22px;font-size:11px;background:#edf3ff;color:#2467d1}
+#hil-root .hil-step-state{font-size:11px}
+#hil-root .hil-step-content{padding:6px 0 0 31px}
+#hil-root .hil-step-content pre{font-size:12px;line-height:1.6;margin:6px 0 10px;background:#f5f7fa;border-color:#e4e8ee;padding:12px;border-radius:6px}
+#hil-root .hil-step-content .section-note{margin-top:8px}
+#hil-root .hil-teaching-grid{margin-top:16px;gap:20px}
+#hil-root .hil-lesson-copy{min-height:100px}
+#hil-root .hil-lesson-copy h3{font-size:17px;margin:5px 0}
+#hil-root .hil-lesson-copy p{font-size:12px;line-height:1.6}
+#hil-root .hil-teaching-stage{border-radius:6px}
+#hil-root #hil-events{max-height:260px;overflow:auto;overscroll-behavior:contain;margin:12px 0}
+#hil-root #hil-events p{overflow-wrap:anywhere}
+#hil-root .hil-event{font-size:12px;padding:8px 0;gap:12px}
+#hil-root .hil-event span{min-width:0;overflow-wrap:anywhere}
+#hil-root #hil-clips{max-height:320px;overflow:auto;overscroll-behavior:contain;margin-top:12px}
+#hil-root #hil-diagnostic{max-height:320px;overflow:auto;font-size:11px}
+#hil-root .hil-route-menu{gap:14px;margin:0;grid-template-columns:repeat(3,minmax(0,1fr))}
+#hil-root .hil-route-card{min-height:180px;padding:20px;text-decoration:none;position:relative;display:flex;flex-direction:column;align-items:flex-start}
+#hil-root .hil-route-card:hover{border-color:#7ca8ed;transform:none;background:#fafdff}
+#hil-root .hil-route-number{font-size:11px;font-variant-numeric:tabular-nums;color:#8995a5}
+#hil-root .hil-route-card h3{font-size:19px;line-height:1.4;margin:14px 0 6px}
+#hil-root .hil-route-card p{font-size:13px;color:var(--muted,#697586);line-height:1.6;margin-bottom:20px}
+#hil-root .hil-route-tag{font-size:12px;line-height:1.5;margin-top:auto;color:#2467d1;overflow-wrap:anywhere}
+@media(max-width:900px){
+ #hil-root .hil-overview{grid-template-columns:minmax(0,1fr)}
+ #hil-root .hil-context{justify-content:flex-start}
+ #hil-root .hil-route-menu{grid-template-columns:1fr}
+ #hil-root .hil-route-card{min-height:0;padding:16px}
+ #hil-root .hil-route-card h3{margin-top:6px;font-size:17px}
+ #hil-root .hil-route-card p{margin-bottom:12px}
+ #hil-root .hil-teaching-grid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+ #hil-root{gap:10px}
+ #hil-root .hil-route-breadcrumb{gap:8px}
+ #hil-root #hil-route-readiness{order:4;width:100%}
+ #hil-root #hil-route-readiness:empty{display:none}
+ #hil-root .hil-overview{padding:12px;gap:7px}
+ #hil-root .hil-title{gap:7px}
+ #hil-root .hil-title .hil-mode{margin-left:0}
+ #hil-root .hil-overview h2{font-size:16px}
+ #hil-root .hil-health{gap:8px 14px}
+ #hil-root .camera-section{padding:12px}
+ #hil-root .camera-section-heading{align-items:flex-start}
+ #hil-root .camera-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #hil-root .live-label{font-size:10px}
+ #hil-root .hil-tools>.card{padding:12px}
+ #hil-root .hil-tools>.card>summary{flex-direction:row;align-items:center;gap:8px}
+ #hil-root .hil-tools>.card>summary .section-note{display:none}
+ #hil-root .hil-step-content{padding-left:0}
+ #hil-root .hil-session-footer{gap:10px;flex-wrap:wrap}
+ #hil-root .hil-session-help{min-width:100px}
+}

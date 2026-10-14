@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "robot": "F1-09",
+  "source": {
+    "local_path": "/home/xza_100850113/projects/F1/reference/20260923_f1_09_infra/files/home/user/workspace/start_all.sh",
+    "robot_path": "/home/user/workspace/start_all.sh",
+    "sha256": "64254d3005cfed067625cb4df39fe68472737cd1fdf3504b14263399521b1c75"
+  },
+  "destination": "/home/user/Bruno/DAgger/releases/20261008-f1-hgdagger-v11/DAgger/startup/start_all.sh",
+  "camera_wrapper": "/home/user/Bruno/DAgger/releases/20261008-f1-hgdagger-v11/DAgger/scripts/60_f1_camera_internal.sh",
+  "original_working_directory": "/home/user/workspace",
+  "robot_log_directory": "/home/user/Bruno/DAgger-runtime/base-start-logs",
+  "camera_replacements": [
+    {
+      "camera": "head",
+      "before": "ros2 launch orbbec_camera head_gemini330.launch.py > \"$LOG_DIR/head_camera.log\" 2>&1 &",
+      "after": "bash /home/user/Bruno/DAgger/releases/20261008-f1-hgdagger-v11/DAgger/scripts/60_f1_camera_internal.sh start head > \"$LOG_DIR/head_camera.log\" 2>&1 &"
+    },
+    {
+      "camera": "right",
+      "before": "ros2 launch realsense2_camera rs_launch_right_wrist_d405.py > \"$LOG_DIR/right_wrist.log\" 2>&1 &",
+      "after": "bash /home/user/Bruno/DAgger/releases/20261008-f1-hgdagger-v11/DAgger/scripts/60_f1_camera_internal.sh start right > \"$LOG_DIR/right_wrist.log\" 2>&1 &"
+    },
+    {
+      "camera": "left",
+      "before": "ros2 launch realsense2_camera rs_launch_left_wrist_d405.py > \"$LOG_DIR/left_wrist.log\" 2>&1 &",
+      "after": "bash /home/user/Bruno/DAgger/releases/20261008-f1-hgdagger-v11/DAgger/scripts/60_f1_camera_internal.sh start left > \"$LOG_DIR/left_wrist.log\" 2>&1 &"
+    }
+  ],
+  "files": {
+    "start_all.sh": {
+      "sha256": "b0597bf816f5a24f765d20baea3af11197ca99d897d0016f12128ff6fde5454a",
+      "bytes": 2175
+    },
+    "profile_patch.json": {
+      "sha256": "46662cddd3d4ed236ef7a1a51c6e53b5b0704b84f9c4c897ebb07de822072ca3",
+      "bytes": 207
+    },
+    "start_all.diff": {
+      "sha256": "d0cf7162b77956c4c9b0be7c6f2fa701b24fadd5437ac8cd6d8533dc72394b6a",
+      "bytes": 1404
+    }
+  },
+  "generated_only": true,
+  "deployed": false,
+  "profile_applied": false,
+  "processes_started_or_restarted": false,
+  "live_source_recheck_required_before_installation": true,
+  "activation": "Next explicit normal onsite base startup only; never restart the active base-start service to apply this copy.",
+  "dependencies": "Deploy the selected immutable camera wrapper and its FastDDS XML with their release hashes before applying profile_patch.json."
+}

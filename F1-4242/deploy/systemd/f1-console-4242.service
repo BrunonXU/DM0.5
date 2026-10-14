@@ -1,0 +1,18 @@
+# Reference unit. deploy/install_service.py generates paths from --home/--profile.
+[Unit]
+Description=F1-infra workbench (no automatic motion or recording)
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+WorkingDirectory=%h/Bruno/F1-infra/current
+ExecStart=%h/Bruno/F1-infra/current/run.sh
+Restart=always
+RestartSec=5
+TimeoutStopSec=20
+CPUAccounting=yes
+MemoryAccounting=yes
+IOAccounting=yes
+
+[Install]
+WantedBy=default.target

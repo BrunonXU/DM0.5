@@ -1,0 +1,360 @@
+{
+  "scope": "offline native-model vs URDF parameter identifiability; not physical calibration",
+  "native_rows": 16,
+  "urdf_sha256": "bc21c6f36446aa2741d6ba20c2190836be967b1f3043dfa39eaae0983c95d5c0",
+  "sides": {
+    "left": {
+      "pose_count": 8,
+      "base_rotation_source": "fixed angular-axis fit from independent DH audit; not estimated from translations",
+      "fixed_base_tool_only": {
+        "rank": 6,
+        "position_rms_mm": 18.90448842757366,
+        "max_error_mm": 26.83350726794257
+      },
+      "restricted_three_origin_hypothesis": {
+        "parameters": [
+          "arm_L_joint4.x",
+          "arm_L_joint5.x",
+          "arm_L_joint5.y"
+        ],
+        "corrections_mm": [
+          17.999738876395348,
+          17.99948892011502,
+          -3.0009434054034045
+        ],
+        "base_translation_mm": [
+          -9.172082179546992,
+          43.50115611511252,
+          350.2708437102132
+        ],
+        "tool_translation_mm": [
+          -0.0009593231475015784,
+          0.0005968252925354633,
+          -95.00052693488647
+        ],
+        "projected_rank": 3,
+        "singular_values": [
+          2.9346599791737615,
+          2.1358605802124777,
+          1.2808925342773245
+        ],
+        "position_rms_mm": 0.0025501858046595087,
+        "max_error_mm": 0.0044395913533844,
+        "leave_one_pose_out": [
+          {
+            "held_out": 0,
+            "corrections_mm": [
+              17.99967223434723,
+              18.000292623041638,
+              -3.001130406967434
+            ],
+            "error_mm": 0.006213070459980445
+          },
+          {
+            "held_out": 1,
+            "corrections_mm": [
+              17.99979426783395,
+              17.999649273509938,
+              -3.0006509014226594
+            ],
+            "error_mm": 0.0018309638187734803
+          },
+          {
+            "held_out": 2,
+            "corrections_mm": [
+              17.99922887475377,
+              17.999348116568,
+              -3.0015585949617005
+            ],
+            "error_mm": 0.004506542781590915
+          },
+          {
+            "held_out": 3,
+            "corrections_mm": [
+              17.999959047236764,
+              17.999250121418115,
+              -3.000666385431213
+            ],
+            "error_mm": 0.0022892968813254134
+          },
+          {
+            "held_out": 4,
+            "corrections_mm": [
+              17.99970573108794,
+              18.000083535263304,
+              -3.001720820618594
+            ],
+            "error_mm": 0.00391290872890531
+          },
+          {
+            "held_out": 5,
+            "corrections_mm": [
+              18.000404189284993,
+              17.99872884501186,
+              -2.9998087672713574
+            ],
+            "error_mm": 0.007166165880308126
+          },
+          {
+            "held_out": 6,
+            "corrections_mm": [
+              17.999728049743013,
+              17.999439043667124,
+              -3.0014367909725266
+            ],
+            "error_mm": 0.0028304702827884093
+          },
+          {
+            "held_out": 7,
+            "corrections_mm": [
+              17.999680009433533,
+              17.99941601892568,
+              -3.000859761647412
+            ],
+            "error_mm": 0.0009910324184596155
+          }
+        ]
+      },
+      "all_21_origin_components": {
+        "projected_rank": 11,
+        "nullity": 10,
+        "singular_values": [
+          4.341107319103486,
+          3.9873842426708013,
+          3.5616045698224985,
+          3.0129424891531813,
+          2.4719601877611312,
+          2.090926930670549,
+          1.7328279614544444,
+          1.3700484784273799,
+          1.1409786278965155,
+          0.7891010343252806,
+          0.6109661789646287,
+          1.8874486621064342e-05,
+          4.386802263598317e-15,
+          4.146347450851287e-15,
+          9.188095412331915e-16,
+          5.054505835311393e-16,
+          3.9369223333635017e-16,
+          2.6961664241751763e-16,
+          2.354930339906072e-16,
+          2.1784854099629967e-16,
+          1.1447731327171625e-16
+        ],
+        "candidate_nullspace_row_norms": [
+          5.646247008069144e-06,
+          5.640616440283425e-06,
+          0.7071067811847437
+        ],
+        "position_rms_mm": 0.0015337723741208065,
+        "max_error_mm": 0.002395215917631711
+      },
+      "alternative_sparse_origin_hypothesis": {
+        "parameters": [
+          "arm_L_joint4.x",
+          "arm_L_joint5.x",
+          "arm_L_joint6.z"
+        ],
+        "corrections_mm": [
+          17.999740851704352,
+          17.99946649859516,
+          3.000936643368199
+        ],
+        "position_rms_mm": 0.0025505137299351452,
+        "max_error_mm": 0.004441158884160094,
+        "caveat": "The longitudinal 3 mm can be allocated at joint 5 or joint 6 with equivalent downstream kinematics but different link-5 mesh placement."
+      },
+      "rotation_axis_invariants": {
+        "native": {
+          "J3_J4_shortest_axis_distance_mm": 18.0,
+          "J4_J5_shortest_axis_distance_mm": 18.0,
+          "along_J3_between_J2_and_J4_common_normals_mm": 286.99999999999994,
+          "along_J5_between_J4_and_J6_common_normals_mm": 314.00000000000006
+        },
+        "urdf": {
+          "J3_J4_shortest_axis_distance_mm": 0.0,
+          "J4_J5_shortest_axis_distance_mm": 0.002284733574266468,
+          "along_J3_between_J2_and_J4_common_normals_mm": 287.00000000193603,
+          "along_J5_between_J4_and_J6_common_normals_mm": 310.9999999937057
+        }
+      }
+    },
+    "right": {
+      "pose_count": 8,
+      "base_rotation_source": "fixed angular-axis fit from independent DH audit; not estimated from translations",
+      "fixed_base_tool_only": {
+        "rank": 6,
+        "position_rms_mm": 1.926630427684299,
+        "max_error_mm": 2.284861536973393
+      },
+      "restricted_three_origin_hypothesis": {
+        "parameters": [
+          "arm_R_joint4.x",
+          "arm_R_joint5.x",
+          "arm_R_joint5.y"
+        ],
+        "corrections_mm": [
+          -0.00122341831937689,
+          -0.0013119918553243792,
+          -2.999444249766718
+        ],
+        "base_translation_mm": [
+          -9.173270770793314,
+          -43.50123288250499,
+          350.26900689153945
+        ],
+        "tool_translation_mm": [
+          3.1122089367841e-05,
+          -0.0009493969131888491,
+          -95.00205708658835
+        ],
+        "projected_rank": 3,
+        "singular_values": [
+          3.1246405673681523,
+          1.770859778354815,
+          0.9402013549128684
+        ],
+        "position_rms_mm": 0.002288717783519619,
+        "max_error_mm": 0.0041103728761496825,
+        "leave_one_pose_out": [
+          {
+            "held_out": 0,
+            "corrections_mm": [
+              -0.0015866387546950023,
+              -0.0010103715370446409,
+              -2.999661364141822
+            ],
+            "error_mm": 0.003317556205337658
+          },
+          {
+            "held_out": 1,
+            "corrections_mm": [
+              -0.0012350988922378292,
+              -0.0017787690737769424,
+              -2.999762481276214
+            ],
+            "error_mm": 0.002476998243061772
+          },
+          {
+            "held_out": 2,
+            "corrections_mm": [
+              0.0005442710488878788,
+              0.0006415373710417782,
+              -2.9987086652675075
+            ],
+            "error_mm": 0.003925987391689484
+          },
+          {
+            "held_out": 3,
+            "corrections_mm": [
+              -0.0012770284737584348,
+              -0.001369895426595491,
+              -2.998772930673546
+            ],
+            "error_mm": 0.0038390815207275716
+          },
+          {
+            "held_out": 4,
+            "corrections_mm": [
+              -0.0012993211048311082,
+              -0.0013869916649857927,
+              -2.9996208886146505
+            ],
+            "error_mm": 0.0018327828893635824
+          },
+          {
+            "held_out": 5,
+            "corrections_mm": [
+              -0.0005595669979499007,
+              -0.0008450730339752965,
+              -2.998708699871173
+            ],
+            "error_mm": 0.003683491604527578
+          },
+          {
+            "held_out": 6,
+            "corrections_mm": [
+              -0.0019559840560248176,
+              -0.0012134069645597378,
+              -2.999460364028529
+            ],
+            "error_mm": 0.006037732892287929
+          },
+          {
+            "held_out": 7,
+            "corrections_mm": [
+              -0.001388439345099357,
+              -0.0025066997660267987,
+              -3.0005830185860844
+            ],
+            "error_mm": 0.006502310716695673
+          }
+        ]
+      },
+      "all_21_origin_components": {
+        "projected_rank": 11,
+        "nullity": 10,
+        "singular_values": [
+          4.430546797675712,
+          3.966948660392532,
+          3.187827331868272,
+          2.2110794108292633,
+          2.166835967000383,
+          1.729854166276387,
+          1.6423587087201081,
+          1.144424530899446,
+          0.9602181446448521,
+          0.6060311218489072,
+          0.47406383017387127,
+          7.337612696075887e-06,
+          3.926096783804722e-15,
+          2.5534080478583943e-15,
+          6.86949279553467e-16,
+          5.22018968931702e-16,
+          3.4396025931723564e-16,
+          2.917038795141898e-16,
+          2.6123435892249515e-16,
+          2.163410296433073e-16,
+          1.6521291284557964e-16
+        ],
+        "candidate_nullspace_row_norms": [
+          5.21747666298824e-06,
+          6.808993499381201e-06,
+          0.7071067811685036
+        ],
+        "position_rms_mm": 0.0009044215389204522,
+        "max_error_mm": 0.001119919738473675
+      },
+      "alternative_sparse_origin_hypothesis": {
+        "parameters": [
+          "arm_R_joint4.x",
+          "arm_R_joint5.x",
+          "arm_R_joint6.z"
+        ],
+        "corrections_mm": [
+          -0.0012274550862798606,
+          -0.0013427813080788553,
+          2.999453148959688
+        ],
+        "position_rms_mm": 0.0022866725354081267,
+        "max_error_mm": 0.0041096955012131665,
+        "caveat": "The longitudinal 3 mm can be allocated at joint 5 or joint 6 with equivalent downstream kinematics but different link-5 mesh placement."
+      },
+      "rotation_axis_invariants": {
+        "native": {
+          "J3_J4_shortest_axis_distance_mm": 18.0,
+          "J4_J5_shortest_axis_distance_mm": 18.0,
+          "along_J3_between_J2_and_J4_common_normals_mm": 286.99999999999994,
+          "along_J5_between_J4_and_J6_common_normals_mm": 314.00000000000006
+        },
+        "urdf": {
+          "J3_J4_shortest_axis_distance_mm": 17.999999999514273,
+          "J4_J5_shortest_axis_distance_mm": 17.997715265940005,
+          "along_J3_between_J2_and_J4_common_normals_mm": 287.0000000024218,
+          "along_J5_between_J4_and_J6_common_normals_mm": 311.00013222908944
+        }
+      }
+    }
+  },
+  "interpretation": "Base/tool-only residual proves pose-dependent geometry disagreement beyond a constant frame offset. Full-column nullspace and sparse alternatives determine whether a particular URDF origin location is uniquely identified. Even a unique restricted fit is not proof of physical calibration."
+}

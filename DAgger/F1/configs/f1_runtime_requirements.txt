@@ -1,0 +1,13 @@
+# Numerical stack validated locally on Python 3.10; robot Python must match its ROS distro.
+numpy==2.2.6
+Pillow==12.3.0
+PyYAML==6.0.3
+pin==3.7.0
+pin-pink==4.3.0
+qpsolvers==4.13.0
+proxsuite==0.7.3
+cmeel-urdfdom==4.0.1
+cmeel-tinyxml2==10.0.0
+ruckig==0.19.4
+# 3.14's enum comparisons break the selected legacy collision joint resolver.
+mujoco==3.3.7

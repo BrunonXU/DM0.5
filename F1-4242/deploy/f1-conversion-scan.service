@@ -1,0 +1,8 @@
+[Unit]
+Description=Index committed F1 captures into local conversion queue (no encoding or upload)
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/user/Bruno/F1/F1-4242/current
+ExecStart=/usr/bin/python3 -m recording.unified.jobs scan --runtime /home/user/Bruno/F1/F1-4242/runtime
+Nice=10

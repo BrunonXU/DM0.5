@@ -1,0 +1,883 @@
+--- before/upstream/lerobot_v3.py
++++ after/upstream/lerobot_v3.py
+@@ -3,6 +3,7 @@
+ from __future__ import annotations
+ 
+ import fcntl
++import hashlib
+ import json
+ import math
+ import os
+@@ -12,7 +13,7 @@
+ 
+ import numpy as np
+ 
+-from pico_f1.session_pose import JOINT_MOTOR_NAMES, GRIPPER_NAMES
++from recording.upstream.session_pose import ARM_JOINT_NAMES as JOINT_MOTOR_NAMES, GRIPPER_NAMES
+ 
+ 
+ CAMERA_KEYS = (
+@@ -25,7 +26,7 @@
+     CAMERA_KEYS[1]: "source",
+     CAMERA_KEYS[2]: "source",
+ }
+-CHASSIS_NAMES = ("base_vx_m_s", "base_vy_m_s", "base_yaw_rate_rad_s")
++CHASSIS_NAMES = ()  # Upper-body contract excludes head, body and base.
+ FEATURE_NAMES = tuple(JOINT_MOTOR_NAMES) + tuple(GRIPPER_NAMES) + CHASSIS_NAMES
+ FEATURE_SIZE = len(FEATURE_NAMES)
+ 
+@@ -137,9 +138,11 @@
+ class LeRobotV3Dataset:
+     """Append one operator-approved episode per Parquet/video file."""
+ 
+-    def __init__(self, root: Path, fps: float, task: str) -> None:
++    def __init__(self, root: Path, fps: float, task: str, max_source_gap_ns=55_000_000, source_basis="packet_gid") -> None:
+         self.root = Path(root).resolve()
+         self.fps = float(fps)
++        self.max_source_gap_ns = int(max_source_gap_ns)
++        self.source_basis = source_basis
+         self.task = str(task).strip()
+         if not math.isfinite(self.fps) or self.fps <= 0.0 or not self.task:
+             raise ValueError("dataset fps/task is invalid")
+@@ -153,6 +156,11 @@
+             [
+                 pa.field("observation.state", pa.list_(pa.float32(), FEATURE_SIZE)),
+                 pa.field("action", pa.list_(pa.float32(), FEATURE_SIZE)),
++                pa.field("source.action_timestamp_ns", pa.list_(pa.int64(), FEATURE_SIZE)),
++                pa.field("source.action_age_ns", pa.list_(pa.int64(), FEATURE_SIZE)),
++                pa.field("source.action_held", pa.list_(pa.bool_(), FEATURE_SIZE)),
++                pa.field("source.gripper_writer_gid", pa.list_(pa.string(), 2)),
++                pa.field("source.gripper_epoch", pa.list_(pa.int64(), 2)),
+                 pa.field("source.timestamp_ns", pa.int64()),
+                 pa.field("source.camera_timestamp_ns", pa.list_(pa.int64(), 3)),
+                 pa.field(
+@@ -192,7 +200,25 @@
+         action_age = np.asarray(arrays["action_max_age_ns"], dtype=np.int64)
+         length = len(timestamps)
+         if state.shape != (length, FEATURE_SIZE) or action.shape != (length, FEATURE_SIZE):
+-            raise ValueError("state/action shape does not match the 27D F1 contract")
++            raise ValueError("state/action shape does not match the 16D F1-4242 upper-body contract")
++        for key in ("action_source_timestamp_ns", "action_source_age_ns", "action_held"):
++            if np.asarray(arrays[key]).shape != (length, FEATURE_SIZE):
++                raise ValueError("per-dimension action provenance shape mismatch")
++        age = np.asarray(arrays["action_source_age_ns"])
++        stamp = np.asarray(arrays["action_source_timestamp_ns"])
++        held = np.asarray(arrays["action_held"])
++        if not np.all(np.isfinite(state)) or not np.all(np.isfinite(action)):
++            raise ValueError("state/action must be finite real observations")
++        if np.any(age < 0) or not np.array_equal(timestamps[:, None] - stamp, age):
++            raise ValueError("action receipt provenance is not causal")
++        if np.any(age[:, :14] > 50_000_000) or np.any(held[:, :14]):
++            raise ValueError("arm commands cannot be held or stale")
++        if np.any(held[:, 14:] != (age[:, 14:] > 50_000_000)):
++            raise ValueError("gripper held markers do not match actual source age")
++        if np.asarray(arrays["gripper_writer_gid"]).shape != (length, 2) or np.asarray(arrays["gripper_source_epoch"]).shape != (length, 2):
++            raise ValueError("gripper writer provenance shape mismatch")
++        if any(not value or not any(bytes.fromhex(value)) for value in np.asarray(arrays["gripper_writer_gid"]).reshape(-1)):
++            raise ValueError("gripper writer GID is missing")
+         if camera_timestamps.shape != (length, 3):
+             raise ValueError("camera timestamps must have shape [frames, 3]")
+         if camera_integrity_timestamps.shape != (length, 3):
+@@ -211,6 +237,11 @@
+             [
+                 _fixed_list(state, FEATURE_SIZE),
+                 _fixed_list(action, FEATURE_SIZE),
++                pa.array(np.asarray(arrays["action_source_timestamp_ns"], dtype=np.int64).tolist(), type=pa.list_(pa.int64(), FEATURE_SIZE)),
++                pa.array(np.asarray(arrays["action_source_age_ns"], dtype=np.int64).tolist(), type=pa.list_(pa.int64(), FEATURE_SIZE)),
++                pa.array(np.asarray(arrays["action_held"], dtype=np.bool_).tolist(), type=pa.list_(pa.bool_(), FEATURE_SIZE)),
++                pa.array(np.asarray(arrays["gripper_writer_gid"]).tolist(), type=pa.list_(pa.string(), 2)),
++                pa.array(np.asarray(arrays["gripper_source_epoch"], dtype=np.int64).tolist(), type=pa.list_(pa.int64(), 2)),
+                 pa.array(timestamps, type=pa.int64()),
+                 pa.FixedSizeListArray.from_arrays(
+                     pa.array(camera_timestamps.reshape(-1), type=pa.int64()), 3
+@@ -258,6 +289,12 @@
+                 "dtype": "int64", "shape": [1], "names": None
+             },
+         }
++        for key, dtype, size in (("source.action_timestamp_ns", "int64", FEATURE_SIZE),
++                                 ("source.action_age_ns", "int64", FEATURE_SIZE),
++                                 ("source.action_held", "bool", FEATURE_SIZE),
++                                 ("source.gripper_writer_gid", "string", 2),
++                                 ("source.gripper_epoch", "int64", 2)):
++            features[key] = {"dtype": dtype, "shape": [size], "names": list(FEATURE_NAMES) if size == FEATURE_SIZE else list(GRIPPER_NAMES)}
+         for key in CAMERA_KEYS:
+             info = camera_info[key]
+             width, height = int(info["width"]), int(info["height"])
+@@ -300,8 +337,38 @@
+         lock_path = self.root / ".dataset.lock"
+         with lock_path.open("a+") as lock:
+             fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
++            capture_id = staging.name
++            transactions = self.root / ".transactions"
++            transactions.mkdir(parents=True, exist_ok=True)
++            journal_path = transactions / (capture_id + ".json")
++            payload_hash = hashlib.sha256()
++            payload_hash.update(json.dumps({"task":self.task,"fps":self.fps,"contract":"f1_upper_16d_v1","max_source_gap_ns":self.max_source_gap_ns,"source_basis":self.source_basis},sort_keys=True).encode())
++            for key in sorted(arrays):
++                array = np.asarray(arrays[key])
++                payload_hash.update(json.dumps([key,str(array.dtype),list(array.shape)]).encode())
++                payload_hash.update(array.tobytes())
++            payload_hash.update(json.dumps(camera_info, sort_keys=True).encode())
++            signature = payload_hash.hexdigest()
++            journal = json.loads(journal_path.read_text()) if journal_path.exists() else None
++            if journal and journal["payload_sha256"] != signature:
++                raise ValueError("capture payload changed during commit retry")
++            if journal and journal.get("status") == "committed":
++                retained = self.root / "source" / f"episode-{int(journal['episode']):06d}"
++                retained.parent.mkdir(parents=True, exist_ok=True)
++                if staging.exists() and not retained.exists(): staging.rename(retained)
++                return int(journal["episode"]), self.root / journal["data_path"]
++            unfinished = [p for p in transactions.glob("*.json") if p != journal_path and json.loads(p.read_text()).get("status") != "committed"]
++            if unfinished:
++                raise ValueError("an earlier capture commit is unfinished; retry it before adding another")
+             prior = _read_episode_rows(self.root)
+-            episode = 0 if not prior else int(prior[-1]["episode_index"]) + 1
++            if journal:
++                episode = int(journal["episode"])
++                if any(int(row["episode_index"]) > episode for row in prior):
++                    raise ValueError("commit ordering changed during retry")
++                prior = [row for row in prior if int(row["episode_index"]) < episode]
++            else:
++                episode = 0 if not prior else int(prior[-1]["episode_index"]) + 1
++                journal = {"capture_id": capture_id, "payload_sha256": signature, "episode": episode, "status": "pending"}
+             global_index = sum(int(row["length"]) for row in prior)
+             chunk, file_index = divmod(episode, 1000)
+             table = self._table(arrays, episode, global_index)
+@@ -312,14 +379,24 @@
+                 old = json.loads(old_info_path.read_text(encoding="utf-8"))
+                 if old.get("codebase_version") != "v3.0" or float(old.get("fps", -1)) != self.fps:
+                     raise ValueError("existing dataset version/fps is incompatible")
++                tasks_path = self.root / "meta" / "tasks.parquet"
++                if tasks_path.exists() and [row["task"] for row in pq.read_table(tasks_path).to_pylist()] != [self.task]:
++                    raise ValueError("task text cannot change inside an existing dataset")
++                if old.get("source_identity_basis", "packet_gid") != self.source_basis:
++                    raise ValueError("source identity proof cannot change within one dataset")
+                 if old.get("features") != self._features(camera_info):
+                     raise ValueError("camera or F1 feature contract changed within the dataset")
+ 
++            alignment = staging / "alignment"
++            from recording.upstream.alignment_archive import read_extras, validate_coverage
++            extras = read_extras(alignment)
++            validate_coverage(arrays["camera_timestamp_ns"], extras, self.max_source_gap_ns)
++            for key in CAMERA_KEYS:
++                source = staging / f"{key}.mp4"
++                if not source.is_file() or source.stat().st_size <= 0:
++                    raise ValueError(f"missing staged video: {key}")
++            _atomic_json(journal_path, journal)
+             final_videos: dict[str, Path] = {}
+-            alignment = staging / "alignment"
+-            from pico_f1.alignment_archive import read_extras, validate_coverage
+-            extras = read_extras(alignment)
+-            validate_coverage(arrays["camera_timestamp_ns"], extras, 55_000_000)
+             if alignment.exists():
+                 target_alignment = self.root / "alignment" / f"episode-{episode:06d}"
+                 # A retry after an interrupted commit may already have copied
+@@ -376,7 +453,12 @@
+             total_frames = global_index + length
+             info = {
+                 "codebase_version": "v3.0",
+-                "robot_type": "f1_omnipicker",
++                "robot_type": "f1_09_upper16_omnipicker",
++                "f1_contract": "f1_upper_16d_v1",
++                "source_identity_basis": self.source_basis,
++                "action_source": "motion_ctl/joint_ctl + motion_ctl/gripper/{left,right}",
++                "action_fallback": "forbidden",
++                "training_accepted": False,
+                 "total_episodes": len(all_rows),
+                 "total_frames": total_frames,
+                 "total_tasks": 1,
+@@ -405,5 +487,10 @@
+             }
+             _atomic_json(self.root / "meta" / "stats.json", global_stats)
+             _atomic_json(self.root / "meta" / "info.json", info)
+-            shutil.rmtree(staging)
++            _atomic_json(journal_path, dict(journal, status="committed", data_path=str(data_path.relative_to(self.root))))
++            # Preserve the source journal/arrays for independent recovery and provenance.
++            retained = self.root / "source" / f"episode-{episode:06d}"
++            retained.parent.mkdir(parents=True, exist_ok=True)
++            if staging.exists() and not retained.exists():
++                staging.rename(retained)
+             return episode, data_path
+--- before/upstream/alignment_archive.py
++++ after/upstream/alignment_archive.py
+@@ -5,7 +5,7 @@
+ 
+ import numpy as np
+ 
+-from pico_f1.lerobot_v3 import CAMERA_KEYS
++from recording.upstream.lerobot_v3 import CAMERA_KEYS
+ 
+ 
+ def archive_frame(root, key, frame, reason):
+--- before/upstream/lerobot_recorder.py
++++ after/upstream/lerobot_recorder.py
+@@ -16,23 +16,24 @@
+ import threading
+ import time
+ 
++from project_paths import installation_environment
+ import numpy as np
+ import rclpy
+ from rclpy._rclpy_pybind11 import RCLError
+ from control_msgs.msg import GripperCommand
+-from geometry_msgs.msg import TwistStamped
+-from move.msg import State as MoveState
+ from rclpy.node import Node
+ from rclpy.executors import ExternalShutdownException
+ from rclpy.qos import DurabilityPolicy, QoSProfile, ReliabilityPolicy
+ from sensor_msgs.msg import CompressedImage, JointState
+ from std_msgs.msg import String
+ 
+-from pico_f1.config import load_control_config, project_root
+-from pico_f1.camera_sync import CameraFrameStamp, CameraSyncGate, align_frame_queues
+-from pico_f1.alignment_archive import archive_frame, read_extras, validate_coverage
+-from pico_f1.sample_history import SampleHistory
+-from pico_f1.lerobot_v3 import (
++
++from recording.upstream.camera_sync import CameraFrameStamp, CameraSyncGate, align_frame_queues
++from recording.upstream.alignment_archive import archive_frame, read_extras, validate_coverage
++from recording.upstream.sample_history import SampleHistory
++from recording.source_contract import GripperCommandHistory
++from recording.source_session import PicoSessionReader, PicoSourceEpoch
++from recording.upstream.lerobot_v3 import (
+     CAMERA_KEYS,
+     FEATURE_NAMES,
+     JOINT_MOTOR_NAMES,
+@@ -51,7 +52,7 @@
+ def _message_stamp_ns(message, fallback: int) -> int:
+     stamp = message.header.stamp
+     value = int(stamp.sec) * 1_000_000_000 + int(stamp.nanosec)
+-    return value if value > 0 else int(fallback)
++    return value  # Invalid source stamps are rejected; never substitute receipt time.
+ 
+ 
+ class EpisodeCapture:
+@@ -65,9 +66,18 @@
+         self.max_state_age_ns = int(float(config["state_max_age_s"]) * 1e9)
+         self.max_rate_error_ratio = float(config["max_rate_error_ratio"])
+         self.camera_info = {key: dict(camera_info[key]) for key in CAMERA_KEYS}
+-        self.processes = {
+-            key: self._open_encoder(key, config) for key in CAMERA_KEYS
+-        }
++        self.processes = {}
++        try:
++            for key in CAMERA_KEYS:
++                self.processes[key] = self._open_encoder(key, config)
++        except Exception:
++            for process in self.processes.values():
++                if process.stdin: process.stdin.close()
++                process.terminate()
++                try: process.wait(timeout=3)
++                except subprocess.TimeoutExpired: process.kill(); process.wait()
++                if process.stderr: process.stderr.close()
++            raise
+         self.state: list[np.ndarray] = []
+         self.action: list[np.ndarray] = []
+         self.timestamp_ns: list[int] = []
+@@ -77,12 +87,17 @@
+         self.camera_arrival_timestamp_ns: list[np.ndarray] = []
+         self.state_max_age_ns: list[int] = []
+         self.action_max_age_ns: list[int] = []
++        self.action_source_timestamp_ns = []
++        self.action_source_age_ns = []
++        self.action_held = []
++        self.gripper_writer_gid = []
++        self.gripper_source_epoch = []
+         self.dropped = 0
+         self.started_monotonic = time.monotonic()
+         self.alignment_extra_count = 0
+         self.source_gaps = []
+         self._samples_stream = (self.path / "samples.jsonl").open("a", encoding="utf-8")
+-        (self.path / "capture.json").write_text(json.dumps({"fps": self.fps, "cameras": self.camera_info}))
++        (self.path / "capture.json").write_text(json.dumps({"fps": self.fps, "cameras": self.camera_info, "contract": "f1_upper_16d_v1", "recording_session_id": config.get("recording_session_id"), "machine_id": config.get("machine_id"), "profile_sha256": config.get("profile_sha256"), "source_basis": config.get("source_basis"), "pico_session_identity": config.get("pico_session_identity"), "pico_source_epoch": config.get("pico_source_epoch"), "pico_source_proof": config.get("pico_source_proof"), "action_source": "actual DDS command only; gripper absolute command hold within writer epoch"}))
+         self._submitted_frames = 0
+         self._writer_error: Exception | None = None
+         self._writer_aborted = threading.Event()
+@@ -140,6 +155,11 @@
+                 ).copy(),
+                 "state_max_age_ns": int(timing["state_max_age_ns"]),
+                 "action_max_age_ns": int(timing["action_max_age_ns"]),
++                "action_source_timestamp_ns": list(timing["action_source_timestamp_ns"]),
++                "action_source_age_ns": list(timing["action_source_age_ns"]),
++                "action_held": list(timing["action_held"]),
++                "gripper_writer_gid": list(timing["gripper_writer_gid"]),
++                "gripper_source_epoch": list(timing["gripper_source_epoch"]),
+             },
+         )
+         try:
+@@ -186,6 +206,8 @@
+                     )
+                     self.state_max_age_ns.append(int(timing["state_max_age_ns"]))
+                     self.action_max_age_ns.append(int(timing["action_max_age_ns"]))
++                    for key in ("action_source_timestamp_ns", "action_source_age_ns", "action_held", "gripper_writer_gid", "gripper_source_epoch"):
++                        getattr(self, key).append(timing[key])
+                     self._samples_stream.write(json.dumps({
+                         "state": state.tolist(), "action": action.tolist(),
+                         "timestamp_ns": timestamp_ns,
+@@ -250,6 +272,11 @@
+             ),
+             "state_max_age_ns": np.asarray(self.state_max_age_ns, dtype=np.int64),
+             "action_max_age_ns": np.asarray(self.action_max_age_ns, dtype=np.int64),
++            "action_source_timestamp_ns": np.asarray(self.action_source_timestamp_ns, dtype=np.int64),
++            "action_source_age_ns": np.asarray(self.action_source_age_ns, dtype=np.int64),
++            "action_held": np.asarray(self.action_held, dtype=np.bool_),
++            "gripper_writer_gid": np.asarray(self.gripper_writer_gid, dtype=str),
++            "gripper_source_epoch": np.asarray(self.gripper_source_epoch, dtype=np.int64),
+         }
+         if len(arrays["timestamp_ns"]) < 2:
+             raise RuntimeError("episode has fewer than two synchronized frames")
+@@ -418,38 +445,46 @@
+ 
+ 
+ class LeRobotRecorderNode(Node):
+-    def __init__(self, enable_commands=True, publish_status=True) -> None:
+-        super().__init__("pico_lerobot_v3_recorder" if enable_commands else "pico_lerobot_v3_recorder_validation")
+-        control = load_control_config()
+-        self.config = control["recording"]
+-        from pico_f1.collection import effective_settings
+-        # The read-only stationary verifier substitutes an isolated temp root.
+-        # Never redirect its samples into the real scene dataset.
+-        if not enable_commands and not (project_root() / "config/collection.yaml").exists():
+-            collection = dict(source=str(project_root() / "mocap_data"), task=self.config["task"])
+-        else:
+-            collection = effective_settings(project_root())
+-        root = Path(collection["source"])
+-        self.config = dict(self.config, task=collection["task"])
+-        self.dataset = LeRobotV3Dataset(root, self.config["fps"], self.config["task"])
++    def __init__(self, root, config) -> None:
++        super().__init__("f1_4242_upper16_recorder")
++        self.config = dict(config)
++        dataset_factory = LeRobotV3Dataset
++        self.capture_factory = EpisodeCapture
++        if self.config.get('recording_format') == 'f1_capture_v2':
++            from recording.unified.pico import RawDataset, RawCapture
++            dataset_factory, self.capture_factory = RawDataset, RawCapture
++        self.dataset = dataset_factory(root, self.config["fps"], self.config["task"], int(float(self.config["camera_max_frame_gap_s"])*1e9), source_basis="verified_pico_session_and_graph")
++        self._pico_source = PicoSourceEpoch(PicoSessionReader(
++            str(Path(installation_environment()["PICO_UPPER_RUNTIME"])/"session.json"),
++            installation_environment()["F1_CONTROL_LOCK"],
++            installation_environment()["PICO_UPPER_ROOT"]))
++        self._pico_source_epoch = 0
+         self._cache_lock = threading.Lock()
+         self._mode_lock = threading.RLock()
+         self._joint_state: dict[str, float] = {}
++        self._full_joint_context = {}
+         self._joint_state_time: dict[str, float] = {}
+         self._gripper_state = [0.0, 0.0]
+         self._gripper_state_time = [0.0, 0.0]
+-        self._base_state = [0.0, 0.0, 0.0]
++        self._base_state = []
+         self._base_state_time = 0.0
+         self._joint_action: dict[str, float] = {}
+         self._joint_action_time: dict[str, float] = {}
++        self._latched_source_fault = None
++        self._last_arm_command_stamp = None
++        self._arm_writer_gid = None
++        self._arm_graph_clock_ns = None
++        self._gripper_sources = GripperCommandHistory()
++        self._last_graph_check_monotonic = 0.0
+         self._gripper_action: dict[int, float] = {}
+         self._gripper_action_time = [0.0, 0.0]
+-        self._base_action = [0.0, 0.0, 0.0]
++        self._base_action = []
+         self._base_action_time = 0.0
+         self._state_history = SampleHistory(FEATURE_NAMES)
+         self._action_history = SampleHistory(FEATURE_NAMES)
+         self._cameras: dict[str, tuple[bytes, int, int, int, int, int, int]] = {}
+         self._camera_queues = {key: deque() for key in CAMERA_KEYS}
++        self._observed_camera_stamps = {key: deque(maxlen=180) for key in CAMERA_KEYS}
+         self._camera_queue_limit = int(self.config.get("camera_queue_frames", 90))
+         self._alignment_pending = {key: [] for key in CAMERA_KEYS}
+         self._record_start_ros_ns = 0
+@@ -471,14 +506,7 @@
+         self._last_sync_fault = "waiting for first camera set"
+         self._udp_stop = threading.Event()
+ 
+-        status_qos = QoSProfile(
+-            depth=1,
+-            reliability=ReliabilityPolicy.RELIABLE,
+-            durability=DurabilityPolicy.TRANSIENT_LOCAL,
+-        )
+-        self._status_pub = self.create_publisher(
+-            String, "/pico/recording_status", status_qos
+-        ) if publish_status else None
++        self._status_pub = None  # State is written only to our runtime, no ROS publishers.
+ 
+         sensor_qos = rclpy.qos.qos_profile_sensor_data
+         camera_qos = QoSProfile(
+@@ -489,12 +517,9 @@
+         self.create_subscription(JointState, "/hal/joint_states", self._joint_cb, sensor_qos)
+         self.create_subscription(JointState, "/motion_ctl/gripper/left/state", lambda m: self._gripper_state_cb(0, m), sensor_qos)
+         self.create_subscription(JointState, "/motion_ctl/gripper/right/state", lambda m: self._gripper_state_cb(1, m), sensor_qos)
+-        self.create_subscription(MoveState, "/move/State", self._move_state_cb, 10)
+-        self.create_subscription(JointState, "/lead/joint_states", self._joint_action_cb, 10)
+         self.create_subscription(JointState, "/motion_ctl/joint_ctl", self._joint_action_cb, 10)
+-        self.create_subscription(GripperCommand, "/motion_ctl/gripper/left", lambda m: self._gripper_action_cb(0, m), 10)
+-        self.create_subscription(GripperCommand, "/motion_ctl/gripper/right", lambda m: self._gripper_action_cb(1, m), 10)
+-        self.create_subscription(TwistStamped, "/move/ManualMoveCmd", self._move_action_cb, 10)
++        self.create_subscription(GripperCommand, "/motion_ctl/gripper/left", lambda m, info: self._gripper_action_cb(0, m, info), 10)
++        self.create_subscription(GripperCommand, "/motion_ctl/gripper/right", lambda m, info: self._gripper_action_cb(1, m, info), 10)
+         for key, topic in CAMERA_TOPICS.items():
+             self.create_subscription(
+                 CompressedImage,
+@@ -503,17 +528,9 @@
+                 camera_qos,
+             )
+         self.create_timer(0.05, self._recording_watchdog)
+-
+-        self._udp_thread = None
+-        if enable_commands:
+-            self._udp_thread = threading.Thread(target=self._udp_loop, daemon=True, name="RecorderUDP")
+-            self._udp_thread.start()
+-        self.get_logger().info(
+-            f"LEROBOT_V3_RECORDER_READY root={root} fps={float(self.config['fps']):g} "
+-            f"features={len(FEATURE_NAMES)} cameras=3"
+-        )
+-        self.get_logger().info("CONTROL Xx2=start Yx2=stop Bx1=save Bx2=discard; X+Y reset does not stop recording")
+-        self._publish_status("idle")
++        self.create_timer(0.2, self._refresh_gripper_writers)
++
++        self.get_logger().info("F1_4242_UPPER16_RECORDER_READY idle; no UDP, no transfer, no motion")
+ 
+     def _publish_status(self, mode: str) -> None:
+         if self._status_pub is None or not rclpy.ok():
+@@ -523,11 +540,13 @@
+         self._status_pub.publish(message)
+ 
+     def _joint_cb(self, msg: JointState) -> None:
+-        if len(msg.name) != len(msg.position):
++        if len(msg.name) != len(msg.position) or len(set(msg.name)) != len(msg.name):
+             return
+         now = time.monotonic()
+         stamp = self.get_clock().now().nanoseconds
+         with self._cache_lock:
++            if self.config.get("recording_format") == "f1_capture_v2":
++                self._full_joint_context = {name: dict(position=float(value), received_ros_ns=stamp) for name,value in zip(msg.name,msg.position) if np.isfinite(value)}
+             for name, value in zip(msg.name, msg.position):
+                 if name in JOINT_MOTOR_NAMES and np.isfinite(value):
+                     self._joint_state[name] = float(value)
+@@ -535,29 +554,69 @@
+                     self._state_history.add(name, stamp, value)
+ 
+     def _gripper_state_cb(self, index: int, msg: JointState) -> None:
+-        if not msg.position or not np.isfinite(msg.position[0]):
++        expected = ("left_gripper_position", "right_gripper_position")[index]
++        if len(msg.name) != len(msg.position) or list(msg.name).count(expected) != 1:
++            return
++        value = msg.position[list(msg.name).index(expected)]
++        if not np.isfinite(value) or not 0 <= value <= 100:
+             return
+         with self._cache_lock:
+-            self._gripper_state[index] = float(msg.position[0])
++            self._gripper_state[index] = float(value)
+             self._gripper_state_time[index] = time.monotonic()
+-            self._state_history.add(FEATURE_NAMES[22 + index], self.get_clock().now().nanoseconds, msg.position[0])
+-
+-    def _move_state_cb(self, msg: MoveState) -> None:
+-        values = [float(msg.speed.linear.x), float(msg.speed.linear.y), float(msg.speed.angular.z)]
+-        if not np.all(np.isfinite(values)):
+-            return
+-        with self._cache_lock:
+-            self._base_state = values
+-            self._base_state_time = time.monotonic()
+-            stamp = self.get_clock().now().nanoseconds
+-            for name, value in zip(FEATURE_NAMES[24:], values):
+-                self._state_history.add(name, stamp, value)
+-
+-    def _joint_action_cb(self, msg: JointState) -> None:
+-        if len(msg.name) != len(msg.position):
++            self._state_history.add(FEATURE_NAMES[len(JOINT_MOTOR_NAMES) + index], self.get_clock().now().nanoseconds, value)
++
++    def _refresh_gripper_writers(self):
++        now = self.get_clock().now().nanoseconds
++        prior_epochs = dict(self._gripper_sources.epochs)
++        prior_arm = self._arm_writer_gid
++        prior_source = self._pico_source.epoch
++        backwards = self._arm_graph_clock_ns is not None and now < self._arm_graph_clock_ns
++        graph = {}
++        for kind, topic in (("arms", "/motion_ctl/joint_ctl"), ("left", "/motion_ctl/gripper/left"), ("right", "/motion_ctl/gripper/right")):
++            graph[kind] = [{"name": entry.node_name, "gid": bytes(entry.endpoint_gid)} for entry in self.get_publishers_info_by_topic(topic)]
++        valid = self._pico_source.update(graph, now, time.monotonic())
++        arm_gid = self._pico_source.gids.get("arms") if valid else None
++        if arm_gid != prior_arm or backwards or prior_source != self._pico_source.epoch:
++            with self._cache_lock:
++                self._joint_action.clear(); self._joint_action_time.clear()
++                self._action_history = SampleHistory(FEATURE_NAMES)
++                for side in ("left", "right"):
++                    self._gripper_sources.update_writers(side, [], now)
++        self._arm_writer_gid = arm_gid
++        self._arm_graph_clock_ns = now
++        for side in ("left", "right"):
++            gid = self._pico_source.gids.get(side) if valid else None
++            self._gripper_sources.update_writers(side, [gid] if gid else [], now)
++        self._last_graph_check_monotonic = time.monotonic()
++        if self._mode == "recording" and (prior_arm != arm_gid or backwards or prior_epochs != self._gripper_sources.epochs or prior_source != self._pico_source.epoch):
++            self._latched_source_fault = "verified Pico session/source epoch changed or became unavailable"
++
++    def _admit_command(self, kind, info):
++        now = self.get_clock().now().nanoseconds
++        return self._pico_source.admit(kind, info, now, time.monotonic())
++
++    def _joint_action_cb(self, msg: JointState, info) -> None:
++        try:
++            admitted = self._admit_command("arms", info)
++        except ValueError as exc:
++            if self._mode == "recording": self._latched_source_fault = str(exc)
++            return
++        gid = admitted["writer_gid"]
++        if not gid or not any(gid) or gid != self._arm_writer_gid:
++            if self._mode == "recording": self._latched_source_fault = "arm message writer conflicts with unique DDS source"
++            return
++        if len(msg.name) != len(msg.position) or len(set(msg.name)) != len(msg.name):
+             return
+         now = time.monotonic()
+-        stamp = self.get_clock().now().nanoseconds
++        stamp = admitted["stamp_ns"]
++        now -= max(0, self.get_clock().now().nanoseconds-stamp)/1e9
++        if self._last_arm_command_stamp is not None and stamp < self._last_arm_command_stamp:
++            self._joint_action.clear(); self._joint_action_time.clear()
++            self._action_history = SampleHistory(FEATURE_NAMES)
++            if self._mode == "recording": self._latched_source_fault = "arm command receipt clock moved backwards"
++            self._last_arm_command_stamp = stamp
++            return
++        self._last_arm_command_stamp = stamp
+         with self._cache_lock:
+             for name, value in zip(msg.name, msg.position):
+                 if name in JOINT_MOTOR_NAMES and np.isfinite(value):
+@@ -565,22 +624,18 @@
+                     self._joint_action_time[name] = now
+                     self._action_history.add(name, stamp, value)
+ 
+-    def _gripper_action_cb(self, index: int, msg: GripperCommand) -> None:
+-        if np.isfinite(msg.position):
+-            with self._cache_lock:
+-                self._gripper_action[index] = float(msg.position)
+-                self._gripper_action_time[index] = time.monotonic()
+-                self._action_history.add(FEATURE_NAMES[22 + index], self.get_clock().now().nanoseconds, msg.position)
+-
+-    def _move_action_cb(self, msg: TwistStamped) -> None:
+-        values = [float(msg.twist.linear.x), float(msg.twist.linear.y), float(msg.twist.angular.z)]
+-        if np.all(np.isfinite(values)):
+-            with self._cache_lock:
+-                self._base_action = values
+-                self._base_action_time = time.monotonic()
+-                stamp = self.get_clock().now().nanoseconds
+-                for name, value in zip(FEATURE_NAMES[24:], values):
+-                    self._action_history.add(name, stamp, value)
++    def _gripper_action_cb(self, index: int, msg: GripperCommand, info) -> None:
++        side = ("left", "right")[index]
++        try:
++            admitted = self._admit_command(side, info)
++            stamp = admitted["stamp_ns"]
++            self._gripper_sources.observe(side, msg.position, stamp, admitted["writer_gid"])
++        except ValueError as exc:
++            if self._mode == "recording": self._latched_source_fault = "gripper command source invalid: " + str(exc)
++            return
++        with self._cache_lock:
++            self._gripper_action[index] = float(msg.position)
++            self._gripper_action_time[index] = time.monotonic()
+ 
+     def _camera_cb(self, key: str, msg: CompressedImage) -> None:
+         arrival_ns = time.monotonic_ns()
+@@ -590,7 +645,17 @@
+         except ValueError as exc:
+             self.get_logger().error(f"CAMERA_REJECTED {key}: {exc}")
+             return
+-        stamp = _message_stamp_ns(msg, self.get_clock().now().nanoseconds)
++        receipt_ns = self.get_clock().now().nanoseconds
++        stamp = _message_stamp_ns(msg, receipt_ns)
++        original_stamp = stamp
++        if self.config.get('camera_time_basis') == 'host_receipt':
++            stamp = receipt_ns  # Separate receipt clock; original header retained below.
++        if stamp <= 0 or stamp > receipt_ns or receipt_ns - stamp > int(self.config["camera_max_age_s"] * 1e9):
++            if self._mode == "recording":
++                self._reject_active_episode("camera header is invalid, future, or outside ROS receipt clock window")
++            return
++        with self._cache_lock:
++            self._observed_camera_stamps[key].append((stamp, time.monotonic()))
+         overflow = False
+         with self._mode_lock:
+             with self._cache_lock:
+@@ -603,6 +668,7 @@
+                     height,
+                     self._camera_sequence[key],
+                     stamp,
++                    original_stamp,
+                 )
+                 self._cameras[key] = frame
+                 if self._mode == "recording" and stamp >= self._record_start_ros_ns:
+@@ -636,6 +702,12 @@
+         ros_now_ns = self.get_clock().now().nanoseconds
+         max_age = float(self.config["state_max_age_s"])
+         camera_age = float(self.config["camera_max_age_s"])
++        if hasattr(self, "_pico_source") and not self._pico_source.valid:
++            return None, self._pico_source.reason or "independent Pico source proof is missing", require_fresh_camera_set
++        if now - self._last_graph_check_monotonic > 0.5:
++            return None, "command DDS writer observation stale", require_fresh_camera_set
++        if self._arm_writer_gid is None:
++            return None, "arm command topic has no unique identifiable DDS writer", require_fresh_camera_set
+         with self._cache_lock:
+             if any(name not in self._joint_state for name in JOINT_MOTOR_NAMES):
+                 return None, "joint state incomplete", False
+@@ -646,8 +718,6 @@
+                 return None, "joint state stale", False
+             if not require_fresh_camera_set and any(now - value > max_age for value in self._gripper_state_time):
+                 return None, "OmniPicker state stale", False
+-            if not require_fresh_camera_set and now - self._base_state_time > max_age:
+-                return None, "base state stale", False
+             if require_fresh_camera_set:
+                 selected, extras = align_frame_queues(
+                     self._camera_queues, self._camera_sync.max_sync_skew_ns
+@@ -666,6 +736,16 @@
+                 if any(key not in self._cameras for key in CAMERA_KEYS):
+                     return None, "camera set incomplete", False
+                 selected = {key: self._cameras[key] for key in CAMERA_KEYS}
++            if not require_fresh_camera_set:
++                for key in CAMERA_KEYS:
++                    recent = [(stamp, arrival) for stamp, arrival in self._observed_camera_stamps[key] if now-arrival <= 2.0]
++                    if len(recent) < 2 or (recent[-1][0]-recent[0][0])/1e9 < 0.8:
++                        return None, "waiting for observed camera rate window: " + key, False
++                    stamps = [row[0] for row in recent]
++                    deltas = np.diff(stamps)
++                    rate = (len(stamps)-1)*1e9/(stamps[-1]-stamps[0])
++                    if np.any(deltas<=0) or np.max(deltas)>int(self.config["camera_max_frame_gap_s"]*1e9) or rate<float(self.config["fps"])*(1-float(self.config["max_rate_error_ratio"])):
++                        return None, "camera source rate/gap does not meet profile: " + key, False
+             arrivals = [selected[key][2] for key in CAMERA_KEYS]
+             if any(now_ns - value > int(camera_age * 1e9) for value in arrivals):
+                 return None, "camera frame stale", False
+@@ -676,7 +756,6 @@
+             )
+             state_times = [self._joint_state_time[name] for name in JOINT_MOTOR_NAMES]
+             state_times += list(self._gripper_state_time)
+-            state_times += [self._base_state_time] * 3
+             joint_action = []
+             action_times = []
+             for name in JOINT_MOTOR_NAMES:
+@@ -685,24 +764,19 @@
+                     joint_action.append(self._joint_action[name])
+                     action_times.append(action_time)
+                 else:
+-                    joint_action.append(self._joint_state[name])
+-                    action_times.append(self._joint_state_time[name])
++                    if not require_fresh_camera_set:
++                        return None, "missing or stale actual arm command: " + name, False
++                    joint_action.append(0.0)  # Never emitted: causal history below must succeed.
++                    action_times.append(now)
+             gripper_action = []
+-            for index in range(2):
+-                action_time = self._gripper_action_time[index]
+-                if index in self._gripper_action and now - action_time <= max_age:
+-                    gripper_action.append(self._gripper_action[index])
+-                    action_times.append(action_time)
+-                else:
+-                    gripper_action.append(self._gripper_state[index])
+-                    action_times.append(self._gripper_state_time[index])
+-            if now - self._base_action_time <= max_age:
+-                base_action = self._base_action
+-                action_times += [self._base_action_time] * 3
+-            else:
+-                base_action = self._base_state
+-                action_times += [self._base_state_time] * 3
+-            action = np.asarray(joint_action + gripper_action + list(base_action), dtype=np.float32)
++            for side in ("left", "right"):
++                try:
++                    command = self._gripper_sources.at(side, ros_now_ns)
++                except ValueError as exc:
++                    return None, str(exc), require_fresh_camera_set
++                gripper_action.append(command["value"])
++                action_times.append(now)  # Held age is stored per dimension below, not hidden in max fresh age.
++            action = np.asarray(joint_action + gripper_action, dtype=np.float32)
+             cameras = {key: (selected[key][0], selected[key][1]) for key in CAMERA_KEYS}
+             camera_info = {
+                 key: {"width": selected[key][3], "height": selected[key][4]}
+@@ -710,10 +784,13 @@
+             }
+             timing = {
+                 "capture_monotonic_ns": now_ns,
++                "body_head_context": dict(getattr(self,"_full_joint_context",{})),
+                 "camera_integrity_timestamp_ns": [
+                     selected[key][6] for key in CAMERA_KEYS
+                 ],
+                 "camera_arrival_timestamp_ns": arrivals,
++                "camera_frame_ids": [selected[key][5] for key in CAMERA_KEYS],
++                "camera_original_timestamp_ns": [selected[key][7] if len(selected[key])>7 else selected[key][6] for key in CAMERA_KEYS],
+                 "state_max_age_ns": int(max(now - value for value in state_times) * 1e9),
+                 "action_max_age_ns": int(max(now - value for value in action_times) * 1e9),
+             }
+@@ -728,15 +805,30 @@
+                 except ValueError as exc:
+                     return None, str(exc), False
+                 action_samples = []
+-                for name, fallback in zip(FEATURE_NAMES, state_samples):
++                action_details = []
++                for name in JOINT_MOTOR_NAMES:
+                     try:
+-                        action_samples.append(self._action_history.at(name, reference_ns, bound_ns))
+-                    except ValueError:
+-                        action_samples.append(fallback)
++                        sample = self._action_history.at(name, reference_ns, bound_ns)
++                    except ValueError as exc:
++                        return None, "missing causal actual arm command: " + str(exc), True
++                    action_samples.append(sample)
++                    action_details.append(dict(stamp_ns=reference_ns-sample[1], age_ns=sample[1], held=False))
++                for side in ("left", "right"):
++                    try:
++                        command = self._gripper_sources.at(side, reference_ns)
++                    except ValueError as exc:
++                        return None, str(exc), True
++                    action_samples.append((command["value"], command["age_ns"]))
++                    action_details.append(command)
++                timing["action_source_timestamp_ns"] = [d["stamp_ns"] for d in action_details]
++                timing["action_source_age_ns"] = [d["age_ns"] for d in action_details]
++                timing["action_held"] = [d["held"] for d in action_details]
++                timing["gripper_writer_gid"] = [d["writer_gid"] for d in action_details[-2:]]
++                timing["gripper_source_epoch"] = [d["epoch"] for d in action_details[-2:]]
+                 state = np.asarray([sample[0] for sample in state_samples], dtype=np.float32)
+                 action = np.asarray([sample[0] for sample in action_samples], dtype=np.float32)
+                 timing["state_max_age_ns"] = max(sample[1] for sample in state_samples)
+-                timing["action_max_age_ns"] = max(sample[1] for sample in action_samples)
++                timing["action_max_age_ns"] = max(sample[1] for sample in action_samples[:len(JOINT_MOTOR_NAMES)])
+                 decision = self._camera_sync.evaluate(
+                     {key: CameraFrameStamp(selected[key][5], selected[key][6], selected[key][1])
+                      for key in CAMERA_KEYS}, self._alignment_pending,
+@@ -762,6 +854,9 @@
+         with self._mode_lock:
+             if self._mode != "recording" or self._capture is None:
+                 return False
++            if self._latched_source_fault:
++                self._reject_active_episode(self._latched_source_fault)
++                return False
+             snapshot, fault, fatal = self._ready_snapshot(require_fresh_camera_set=True)
+             if fault is not None:
+                 self._last_sync_fault = str(fault)
+@@ -795,6 +890,10 @@
+             return True
+ 
+     def _recording_watchdog(self) -> None:
++        if self._mode == "recording" and self._latched_source_fault:
++            with self._mode_lock:
++                self._reject_active_episode(self._latched_source_fault)
++            return
+         while self._sample():
+             pass
+         with self._mode_lock:
+@@ -809,42 +908,11 @@
+                     f"synchronized camera stream stalled: {self._last_sync_fault}; queues={queues}"
+                 )
+ 
+-    def _udp_loop(self) -> None:
+-        config_path = os.environ["PICO_F1_CONFIG"]
+-        spec = importlib.util.spec_from_file_location("ip_config", config_path)
+-        module = importlib.util.module_from_spec(spec)
+-        assert spec.loader is not None
+-        spec.loader.exec_module(module)
+-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+-        sock.settimeout(0.2)
+-        sock.bind((module.local_ip, int(module.port2)))
+-        self.get_logger().info(f"RECORDER_COMMAND_LISTENING {module.local_ip}:{module.port2}")
+-        while not self._udp_stop.is_set():
+-            try:
+-                data, _ = sock.recvfrom(128)
+-            except TimeoutError:
+-                continue
+-            except OSError:
+-                break
+-            values = np.frombuffer(data, dtype=np.float64)
+-            if len(values) != 1 or not np.isfinite(values[0]):
+-                continue
+-            command = int(round(float(values[0])))
+-            if command == 1:
+-                self.start_recording()
+-            elif command == 0:
+-                self.stop_recording()
+-            elif command == 2:
+-                self.save_review()
+-            elif command == 3:
+-                self.discard_review()
+-        sock.close()
+-
+     def start_recording(self) -> None:
+         with self._mode_lock:
+             if self._mode != "idle":
+                 return
++            self._latched_source_fault = None
+             snapshot, fault, _ = self._ready_snapshot()
+             if fault is not None:
+                 self.get_logger().error(f"RECORD_START_REJECTED reason={fault}")
+@@ -857,7 +925,11 @@
+                 for pending in self._alignment_pending.values():
+                     pending.clear()
+                 self._camera_sync.arm(self._camera_stamps_locked())
+-            self._capture = EpisodeCapture(self.dataset.root, self.config, camera_info)
++            self.config["source_basis"] = "verified_pico_session_and_graph"
++            self.config["pico_session_identity"] = self._pico_source.signature
++            self.config["pico_source_epoch"] = self._pico_source.epoch
++            self.config["pico_source_proof"] = self._pico_source.proof
++            self._capture = self.capture_factory(self.dataset.root, self.config, camera_info)
+             self._record_start_ros_ns = self.get_clock().now().nanoseconds
+             self._mode = "recording"
+             self._publish_status("recording")
+@@ -896,10 +968,10 @@
+             self._review_timing_info = timing_info
+             self._mode = "review"
+             self._publish_status("review")
+-            if not timing_info["training_ready"]:
++            if not timing_info["training_ready"] and not timing_info.get("raw_save_allowed", False):
+                 self.get_logger().warn(
+-                    "REVIEW_RECOVERY_ONLY: source frames are missing; B single preserves the whole "
+-                    "observed task in recovery/, NOT the training dataset; B double discards."
++                    "REVIEW_RECOVERY_ONLY: source frames are missing; workbench Save preserves the whole "
++                    "observed task in recovery/, NOT the committed training dataset."
+                 )
+             frames = len(arrays["timestamp_ns"])
+             duration = frames / float(self.config["fps"])
+@@ -924,14 +996,14 @@
+                     f"fps={info['fps']:.1f} frames={info['frames']} codec={info['codec']}"
+                 )
+             self.get_logger().info("+------------------------------------------------------+")
+-            self.get_logger().info("| 数据待确认：PICO B 单击保存，B 双击丢弃并录下一条 |")
++            self.get_logger().info("| 数据待确认：在 4242 数据页检查并保存，Pico 按钮不控制录制 |")
+             self.get_logger().info("+------------------------------------------------------+")
+ 
+     def save_review(self) -> None:
+         with self._mode_lock:
+             if self._mode != "review" or self._capture is None or self._review_arrays is None:
+                 return
+-            if not self._review_timing_info.get("training_ready", True):
++            if not self._review_timing_info.get("training_ready", True) and not self._review_timing_info.get("raw_save_allowed", False):
+                 self._reject_active_episode(
+                     "operator saved complete observed task with source gaps: "
+                     + self._review_timing_info.get("coverage_fault", "")
+@@ -957,8 +1029,10 @@
+             staging = self._capture.path.resolve()
+             if (self.dataset.root / ".staging").resolve() not in staging.parents:
+                 raise RuntimeError("refusing to discard an out-of-tree path")
+-            shutil.rmtree(staging)
+-            self.get_logger().info("EPISODE_DISCARDED ready_for_next=true")
++            discarded = self.dataset.root / "discarded"
++            discarded.mkdir(parents=True, exist_ok=True)
++            staging.rename(discarded / staging.name)
++            self.get_logger().info("EPISODE_DISCARDED_PRESERVED ready_for_next=true")
+             self._clear_review("idle")
+ 
+     def _clear_review(self, mode: str) -> None:
+@@ -1006,18 +1080,3 @@
+         super().destroy_node()
+ 
+ 
+-def main(args=None) -> None:
+-    rclpy.init(args=args)
+-    node = LeRobotRecorderNode()
+-    try:
+-        rclpy.spin(node)
+-    except (KeyboardInterrupt, ExternalShutdownException, RCLError):
+-        pass
+-    finally:
+-        node.destroy_node()
+-        if rclpy.ok():
+-            rclpy.shutdown()
+-
+-
+-if __name__ == "__main__":
+-    main()

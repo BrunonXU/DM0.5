@@ -1,0 +1,12 @@
+[Unit]
+Description=F1 post-session intervention video worker (server only)
+After=network-online.target
+[Service]
+Type=simple
+WorkingDirectory=/srv/DAgger
+Environment=PYTHONPATH=/srv/DAgger/F1/src:/srv/DAgger/shared/src
+ExecStart=/srv/f1-video-venv/bin/python /srv/DAgger/F1/services/video_worker.py --config /etc/f1-hil-worker/f1-09.json
+Restart=on-failure
+RestartSec=10
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,214 @@
+# ============================================================
+# F1 轮式机器人安全控制配置文件（YAML 格式）
+# ============================================================
+# 本文件统一管理质心保护、碰撞检测、关节映射、可视化和网络等所有参数。
+# 修改参数后无需重新编译，重启程序即可生效。
+#
+# 参数分组：
+#   model          : 机器人 URDF 路径
+#   com_guard      : 质心保护（CoM Guard）相关参数
+#   collision_guard: 碰撞检测相关参数
+#   joint_map      : 真机关节名 → URDF 关节名映射
+#   joint_limits   : 关节软限位（度）
+#   network        : UDP 网络配置
+#   visualization  : MuJoCo 可视化参数
+# ============================================================
+
+# ─────────────────────────────────────────────────────────────
+# 机器人模型
+# ─────────────────────────────────────────────────────────────
+model:
+  # F1 机器人 URDF 文件路径
+  urdf_path: ${PICO_F1_ROOT}/vendor/f1_safety/urdf/f1_wheel/urdf/f1_wheel_0602_new.urdf
+
+
+# ─────────────────────────────────────────────────────────────
+# 质心保护模块（CoMGuard）
+# ─────────────────────────────────────────────────────────────
+com_guard:
+  # 支撑点类型：body / site / geom
+  support_point_type: body
+
+  # 支撑多边形顶点（四轮接地 body），顺序决定多边形连线方向
+  support_points:
+    - chassis_L_wheel_front_link2
+    - chassis_R_wheel_front_link2
+    - chassis_R_wheel_rear_link2
+    - chassis_L_wheel_rear_link2
+
+  # 质心到支撑多边形边界的最小安全距离（米）
+  # 值越大保护越严格；0.01 = 1cm 安全裕量
+  support_margin: 0.01
+
+
+# ─────────────────────────────────────────────────────────────
+# 碰撞检测模块（CollisionGuard）
+# ─────────────────────────────────────────────────────────────
+collision_guard:
+  # 碰撞净空阈值（米）
+  # 正值：要求碰撞代理间距必须大于该值
+  # 负值：允许轻微几何重叠（补偿代理球保守误差）
+  # 推荐值：-0.002（补偿 2mm 代理球误差）
+  collision_margin: -0.002
+
+  # 手臂末端加长量（米）
+  # URDF 中没有手/夹爪 link，arm_L_Link7 / arm_R_Link7 就是末端，
+  # 因此末端包络默认不覆盖手部。该值把 Link7 的圆柱代理沿【远端方向】
+  # 延长指定长度（近端端面不动，只往手的方向长），用于把手包进保护范围。
+  # 0.0 = 不加长；0.10 = 加长 10cm
+  arm_tip_extension: 0.10
+
+  # 手臂碰撞体直径膨胀量（米），作用于全部 arm_*_Link1~7
+  # 代理几何是从 STL 的 AABB 拟合出来的，不包含线缆、软包皮等外形，
+  # 用该值给整条臂的横截面统一加粗。表面外扩量 = 该值 / 2：
+  #   圆柱（Link1~5, Link7）: radius += 该值/2，长度不变
+  #   长方体（Link6）      : 三个半边长各 += 该值/2
+  # 0.0 = 不膨胀；0.02 = 直径 +2cm（即表面各外扩 1cm）
+  arm_diameter_inflation: 0.02
+
+  # 手臂碰撞组：以下前缀开头的 link 归入"手臂"侧
+  arm_link_prefixes:
+    - arm_L_
+    - arm_R_
+
+  # 机身碰撞组：以下前缀开头的 link 归入"机身"侧
+  body_link_prefixes:
+    - base_link
+    - body_Link
+    - chassis_
+    - head_Link
+
+  # 排除检测的 link 对（结构相邻或允许接近的部件）
+  # 每对包含 arm_link 和 body_link 两个字段
+  excluded_pairs:
+    - arm_link: arm_L_Link1
+      body_link: body_Link5
+    - arm_link: arm_L_Link2
+      body_link: body_Link5
+    - arm_link: arm_R_Link1
+      body_link: body_Link5
+    - arm_link: arm_R_Link2
+      body_link: body_Link5
+
+
+# ─────────────────────────────────────────────────────────────
+# 关节名映射：真机话题名 → URDF 关节名
+# ─────────────────────────────────────────────────────────────
+# 真机 ROS2 话题中使用小写 arm_l_j{N} / arm_r_j{N}（N=1..7）
+# URDF 中使用 arm_L_joint{N} / arm_R_joint{N}
+joint_map:
+  # 左臂
+  arm_l_j1: arm_L_joint1
+  arm_l_j2: arm_L_joint2
+  arm_l_j3: arm_L_joint3
+  arm_l_j4: arm_L_joint4
+  arm_l_j5: arm_L_joint5
+  arm_l_j6: arm_L_joint6
+  arm_l_j7: arm_L_joint7
+  # 右臂
+  arm_r_j1: arm_R_joint1
+  arm_r_j2: arm_R_joint2
+  arm_r_j3: arm_R_joint3
+  arm_r_j4: arm_R_joint4
+  arm_r_j5: arm_R_joint5
+  arm_r_j6: arm_R_joint6
+  arm_r_j7: arm_R_joint7
+
+  # 头部
+  head_j1: head_joint1
+  head_j2: head_joint2
+  head_j3: head_joint3
+
+  # 腰部
+  body_j1: body_joint5
+  body_j2: body_joint4
+  body_j3: body_joint3
+  body_j4: body_joint2
+  body_j5: body_joint1
+  # head_j3: head_joint3
+
+
+# ─────────────────────────────────────────────────────────────
+# 关节限位（真机硬件限位，单位：度）
+# ─────────────────────────────────────────────────────────────
+joint_limits:
+  # 限位裕量（度）：实际软限位 = [lower + delta_deg, upper - delta_deg]
+  delta_deg: 3.0
+
+  # 各关节硬件限位（度）
+  # name   : 真机关节名
+  # lower  : 硬件限位下界（度）
+  # upper  : 硬件限位上界（度）
+  limits:
+    # 左臂
+    - name: arm_l_j1
+      lower: -268.0
+      upper:  +88.0
+    - name: arm_l_j2
+      lower: -210.0
+      upper:  +30.0
+    - name: arm_l_j3
+      lower:  -88.0
+      upper: +268.0
+    - name: arm_l_j4
+      lower: -150.0
+      upper:  +55.0
+    - name: arm_l_j5
+      lower: -178.0
+      upper: +178.0
+    - name: arm_l_j6
+      lower:  -60.0
+      upper:  +60.0
+    - name: arm_l_j7
+      lower:  -90.0
+      upper:  +90.0
+    # 右臂
+    - name: arm_r_j1
+      lower:  -88.0
+      upper: +268.0
+    - name: arm_r_j2
+      lower:  -30.0
+      upper: +210.0
+    - name: arm_r_j3
+      lower: -268.0
+      upper:  +88.0
+    - name: arm_r_j4
+      lower: -150.0
+      upper:  +55.0
+    - name: arm_r_j5
+      lower: -178.0
+      upper: +178.0
+    - name: arm_r_j6
+      lower:  -60.0
+      upper:  +60.0
+    - name: arm_r_j7
+      lower:  -90.0
+      upper:  +90.0
+
+
+# ─────────────────────────────────────────────────────────────
+# 网络配置（UDP 桥接）
+# ─────────────────────────────────────────────────────────────
+network:
+  # 本机监听 IP（可被 ip_config.py 覆盖）
+  local_ip: 192.168.2.101
+  # UDP 监听端口
+  udp_port: 8888
+  # ip_config.py 路径（如文件存在则优先使用其中的 IP/Port）
+  ip_config_path: ${PICO_F1_CONFIG}
+
+
+# ─────────────────────────────────────────────────────────────
+# MuJoCo 可视化参数
+# ─────────────────────────────────────────────────────────────
+visualization:
+  # 支撑多边形边界线宽
+  support_line_width: 4.0
+  # 质心投影点显示半径（场景长度单位）
+  com_radius: 0.05
+  # 最近碰撞对连线线宽
+  collision_line_width: 5.0
+  # 碰撞端点标记球半径
+  collision_marker_radius: 0.04
+  # 状态打印间隔（秒）
+  print_interval_sec: 2.0

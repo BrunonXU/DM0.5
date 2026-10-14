@@ -11,10 +11,11 @@ DM0.5 是其中一套策略栈，不是整个仓库的边界，也不是项目�
 | `PI0.5/` | Physical Intelligence 官方 OpenPI 源码，以上游子模块管理 |
 | `RLinf/` | RLinf 官方源码，以上游子模块管理 |
 | `g2_robot/` | G2 相机、状态、安全、控制、运维和策略运行时 |
-| `G2Teleop/` | 冻结 F710 遥操源码、配置、测试和基线；HIL/录制已迁至 DAgger |
-| `DAgger/` | 人工接管、纠正数据采集、录制审计和 DAgger 集成 |
+| [DAgger](DAgger/README.md) | F1 / G2 遥操、人工接管、纠正采集与导出；独立 G2 遥操统一在 `DAgger/G2/teleop/` |
 | `third_party/` | 任务复用的第三方源码，例如 LeRobot |
 | `tasks/` | 任务级集成、配置、实验记录和评测 |
+| [F1-infra（F1-4242）](F1-4242/README.md) | 独立机器人工作台：相机、调姿、Pico、录制与数据审阅 |
+| [Whereweare](Whereweare/README.md) | 项目时间树：文档变化审阅、主次线与日报／周报 |
 | [`F1/foam_sort_whole_body/`](F1/foam_sort_whole_body/README.md) | 自研 F1 泡沫棉移动操作：最终数据审查、全身字段合同与 DM0.5 任务集成 |
 
 ## 当前 Demo
@@ -105,3 +106,12 @@ PI0.5/checkpoints/pi05_base/
 - F1 泡沫棉的结果统一放在 [任务 results](F1/foam_sort_whole_body/results/README.md)，包括 09-11 FTP 盘点和 09-14 数据审查。
 - 工作区根目录只放项目、共享组件和工作区说明；临时导出包、缓存和任务产物不另占顶层目录。
 - 原始数据、模型、实验日志和冻结基线按所属项目保留；历史部署包集中在 `DM0.5/artifacts/`。
+
+
+### 2026-10-14 源码快照与本地资产
+
+本仓库保存代码、文档、小型配置、测试与审阅记录；机器人STL网格、模型权重、采集数据、运行数据库、缓存与交付归档不进入新版本。文件仅从Git跟踪范围排除，本机原件保留，不重写已有提交历史。
+
+机器人网格的路径、大小与SHA256见 [LOCAL_ASSETS.json](LOCAL_ASSETS.json)。新克隆在运行3D显示、碰撞检查或相关测试前，须从原工作站或原机器人资产来源补齐对应文件，并核验清单；保留的URDF/manifest不能替代网格本体。小型网页依赖、提示音、文档配图仍随源码保存。
+
+PI0.5、RLinf、LeRobot沿用子模块引用，不在根仓库代替其提交或改远端；本地独立rea检出不加入根仓库。

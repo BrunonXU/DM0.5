@@ -1,0 +1,16 @@
+{
+  "schema": "f1_local_storage_v1",
+  "root": "/home/user/Bruno/data",
+  "archive": {
+    "enabled": false,
+    "idle_only": true,
+    "max_parallel": 1,
+    "bytes_per_second": 2097152,
+    "delete_local_after_upload": false
+  },
+  "legacy_roots": {
+    "pico": ["/home/user/lxl/pico_data"],
+    "demonstration": ["/home/user/lxl/dagger_data/demonstration"],
+    "policy_hil": ["/home/user/lxl/dagger_data/policy_hil"]
+  }
+}

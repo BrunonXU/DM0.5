@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "input_units": "hal_degrees",
+  "model_urdf_sha256": "bc21c6f36446aa2741d6ba20c2190836be967b1f3043dfa39eaae0983c95d5c0",
+  "joint_signs": {
+    "arm_l_j7": -1,
+    "arm_r_j5": -1,
+    "arm_r_j6": -1
+  },
+  "offset_deg": 0,
+  "scope": "Arm angular kinematics aligned with F1-09 native FK; geometry, body/head zeros and physical calibration are not accepted. Robot commands retain original HAL degrees.",
+  "verification": {
+    "date": "2026-09-28",
+    "native_fk_virtual_poses": 16,
+    "native_dh_sha256": "ce20b1a80974c3ed58cdac4973152625096c8ad93a779e5fd4108c26ce19bd52",
+    "fk_responses_sha256": "a6a6f4a24cd7717ae3963c40b8aa32e623408641bbef90b575352f9188563cfd"
+  }
+}

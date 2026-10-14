@@ -1,0 +1,17 @@
+# Python 3.12; install CPU torch==2.8.0 / torchvision==0.23.0 from the CPU wheel index first.
+# Then install the bound LeRobot source with --no-deps -e; do not replace the bound writer.
+numpy==2.2.6
+Pillow==12.3.0
+datasets==4.8.5
+pandas==2.3.3
+pyarrow==25.0.1
+av==15.1.0
+huggingface-hub==1.33.0
+draccus==0.11.6
+safetensors==0.8.0
+opencv-python-headless==5.0.0.93
+einops==0.8.2
+gymnasium==1.3.0
+packaging==26.3
+termcolor==3.3.0
+tqdm==4.70.1

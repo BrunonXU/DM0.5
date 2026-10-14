@@ -63,8 +63,8 @@
 /F1/**/data/
 /F1/**/datasets/
 /F1/**/logs/
-/DAgger/data/
-/DAgger/logs/
+/DAgger/artifacts/data/
+/DAgger/artifacts/logs/
 
 # Keep the task's result index, while excluding generated contents
 !/F1/foam_sort_whole_body/results/
@@ -83,3 +83,29 @@
 !/DM0.5/infra/layout/nvme/runs/data_transfer/
 /DM0.5/infra/layout/nvme/runs/data_transfer/*
 !/DM0.5/infra/layout/nvme/runs/data_transfer/README.md
+
+# Source-only workspace snapshots; local assets remain on disk
+**/*.stl
+**/*.STL
+**/*.mcap
+**/*.bag
+**/*.h5
+**/*.hdf5
+**/*.parquet
+**/*.npy
+**/*.npz
+**/*.onnx
+**/*.sqlite
+**/*.sqlite3
+**/*.sqlite3-*
+**/*.db
+**/*.db-*
+**/node_modules/
+**/runtime/
+**/.aws/
+**/.codex/
+**/.ssh/
+
+# Independent checkout and local connectivity probe (not root-repository sources)
+/rea/
+/h20-access-check-20261008/

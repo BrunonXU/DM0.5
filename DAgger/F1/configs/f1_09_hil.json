@@ -1,0 +1,65 @@
+{
+  "schema": "f1_hgdagger_v1",
+  "infra_manifest": "configs/f1_infra_binding.json",
+  "capture_hz": 30.0,
+  "camera_max_age_s": 0.2,
+  "camera_max_skew_s": 0.1,
+  "policy": {
+    "endpoint": "",
+    "model_id": "",
+    "chunk_steps": 50,
+    "frequency_hz": 30.0,
+    "timeout_s": 2.0,
+    "max_age_s": 2.0
+  },
+  "ik": {
+    "verified": false,
+    "verification_note": "Candidate only: inherited numerical guard thresholds require F1 offline and live shadow acceptance. This flag is not physical calibration.",
+    "safety": {
+      "max_dt_s": 0.05,
+      "max_linear_speed_m_s": 0.08,
+      "max_angular_speed_rad_s": 0.3490658503988659,
+      "max_target_translation_m": 0.2,
+      "max_target_rotation_rad": 0.3490658503988659,
+      "max_joint_speed_rad_s": 0.35,
+      "max_joint_step_rad": 0.01,
+      "singularity_hard_sigma": 0.035,
+      "singularity_soft_sigma": 0.08,
+      "singularity_min_speed_scale": 0.15,
+      "base_solver_damping": 1e-08,
+      "max_solver_damping": 0.0001
+    }
+  },
+  "f710_home": {
+    "schema": "f1_upper_home_v1",
+    "robot_id": "F1-09",
+    "name": "积木demo-V0",
+    "units": "degree",
+    "source_preset_id": "81bda04dd141438e8a1ae2a6df2d3fdb",
+    "source_preset_sha256": "292d589f83bb668bc7224aea5cc8e8c116c5dd16f004a9cae995b8e00fea0370",
+    "scope": "right_arm_only_preserve_left_grippers_head_body",
+    "joints": {
+      "arm_l_j1": 69.80035400390625,
+      "arm_l_j2": -90.89399719238281,
+      "arm_l_j3": -89.36174011230469,
+      "arm_l_j4": -85.25431060791016,
+      "arm_l_j5": 0.2968093752861023,
+      "arm_l_j6": -0.23917236924171448,
+      "arm_l_j7": -0.05494537204504013,
+      "arm_r_j1": -71.0736083984375,
+      "arm_r_j2": -88.95988464355469,
+      "arm_r_j3": 91.31665802001953,
+      "arm_r_j4": -85.14677429199219,
+      "arm_r_j5": -0.9444946050643921,
+      "arm_r_j6": 0.47875672578811646,
+      "arm_r_j7": -0.9856315851211548
+    },
+    "clearance": {
+      "schema": "f1_right_clearance_v2",
+      "frame": "base_link",
+      "lift_m": 0.06,
+      "right_m": 0.1,
+      "max_rotation_deg": 10.0
+    }
+  }
+}

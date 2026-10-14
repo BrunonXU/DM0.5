@@ -1,0 +1,6 @@
+interface:
+  display_name: "Whereweare"
+  short_description: "增量审阅本地项目文档，提炼当前进展、关键阻塞和下一步并更新时间树"
+  default_prompt: "用 $whereweare 更新目前的项目状态，突出最新变化、阻塞和下一步。"
+policy:
+  allow_implicit_invocation: true

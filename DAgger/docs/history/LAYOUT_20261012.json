@@ -1,0 +1,98 @@
+{
+  "date": "2026-10-12",
+  "scope": "local DAgger source and artifacts consolidation only",
+  "remote_robot_deployments_changed": false,
+  "mappings": [
+    {
+      "old": "DAgger/common/",
+      "new": "DAgger/shared/",
+      "disposition": "moved"
+    },
+    {
+      "old": "DAgger/F1/docs/",
+      "new": "DAgger/docs/F1/",
+      "disposition": "moved"
+    },
+    {
+      "old": "DAgger/G2/docs/",
+      "new": "DAgger/docs/G2/",
+      "disposition": "moved"
+    },
+    {
+      "old": "DAgger/G2/utilities/G2Teleop/",
+      "new": "DAgger/G2/teleop/",
+      "disposition": "moved"
+    },
+    {
+      "old": "G2Teleop/",
+      "new": "DAgger/G2/teleop/",
+      "disposition": "merged; per-file preservation evidence in artifacts/archive"
+    },
+    {
+      "old": "G2Teleop/doc/",
+      "new": "DAgger/docs/G2/teleop/",
+      "disposition": "consolidated; shared G2 articles canonical in docs/G2"
+    },
+    {
+      "old": "G2Teleop/logs/",
+      "new": "DAgger/artifacts/logs/g2_teleop/",
+      "disposition": "moved without rewriting data"
+    },
+    {
+      "old": "G2Teleop/data_staging/",
+      "new": "DAgger/artifacts/data/g2_teleop_staging/",
+      "disposition": "moved without rewriting data"
+    },
+    {
+      "old": "G2Teleop/hil_shadow_candidate/",
+      "new": "DAgger/artifacts/archive/g2_teleop_hil_shadow_candidate/",
+      "disposition": "frozen candidate preserved"
+    },
+    {
+      "old": "G2Teleop/.venv-server/",
+      "new": "DAgger/G2/teleop/.venv-server/",
+      "disposition": "moved; local path references repaired"
+    },
+    {
+      "old": "DAgger/data/",
+      "new": "DAgger/artifacts/data/",
+      "disposition": "renamed; raw contents unchanged"
+    },
+    {
+      "old": "DAgger/logs/",
+      "new": "DAgger/artifacts/logs/",
+      "disposition": "renamed; raw contents unchanged"
+    },
+    {
+      "old": "DAgger/results/",
+      "new": "DAgger/artifacts/results/",
+      "disposition": "renamed; raw contents unchanged"
+    },
+    {
+      "old": "DAgger/src/,scripts/,configs/,tests/,windows_client/,startup/,doc/",
+      "new": "DAgger/artifacts/archive/pre_consolidation_20261012.tar.gz",
+      "disposition": "frozen old root archived with per-file SHA verification; active source remains in F1/G2/shared"
+    },
+    {
+      "old": "DAgger/START_HERE.md",
+      "new": "DAgger/docs/G2/START_HERE.md",
+      "disposition": "duplicate root removed; G2 version moved"
+    },
+    {
+      "old": "DAgger/RECORDING_AND_PROGRESS.md",
+      "new": "DAgger/docs/G2/RECORDING_AND_PROGRESS.md",
+      "disposition": "duplicate root removed; G2 version moved"
+    },
+    {
+      "old": "DAgger/MIGRATION_MANIFEST.json",
+      "new": "DAgger/docs/history/MIGRATION_20260907.json",
+      "disposition": "historical content unchanged"
+    },
+    {
+      "old": "DAgger/G2/MIGRATION_MANIFEST.json",
+      "new": "DAgger/docs/history/G2_MIGRATION_20261009.json",
+      "disposition": "historical content unchanged"
+    }
+  ],
+  "legacy_archive_manifest": "../../artifacts/archive/pre_consolidation_20261012.manifest.json"
+}

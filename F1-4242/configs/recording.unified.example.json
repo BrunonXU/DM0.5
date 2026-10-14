@@ -1,0 +1,26 @@
+{
+  "enabled": true,
+  "output_dir": "mocap_data",
+  "fps": 30.0,
+  "double_click_s": 0.35,
+  "button_debounce_s": 0.04,
+  "camera_max_age_s": 2.0,
+  "camera_queue_frames": 90,
+  "camera_max_skew_s": 0.05,
+  "camera_max_frame_gap_s": 0.05,
+  "state_max_age_s": 0.05,
+  "max_rate_error_ratio": 0.05,
+  "encoder_queue_frames": 32,
+  "task": "F1 upper-body bimanual teleoperation",
+  "video_codec": "libx264",
+  "video_preset": "veryfast",
+  "video_crf": 23,
+  "camera_rate_contract": {
+    "output_fps": 30,
+    "minimum_observed_window_s": 0.8,
+    "source_gap_note": "Real callback identities and receipt times retained; gaps split training windows."
+  },
+  "recording_format": "f1_capture_v2",
+  "camera_time_basis": "host_receipt",
+  "raw_queue_frames": 90
+}

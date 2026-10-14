@@ -1,0 +1,872 @@
+{
+  "schema_version": 1,
+  "robot_id": "F1-09",
+  "scope": "configuration_consistency_not_physical_calibration_or_motion_acceptance",
+  "units": {
+    "feedback": "degrees",
+    "command": "degrees",
+    "urdf": "radians"
+  },
+  "binding": {
+    "expected_machine_id": "90429b8a96e04ef79dbc12175b538115",
+    "controller_binary_sha256": "898ef58fb7118ecbf416af134e01700ed38ffdd3480293cf06fe95da14bce0c8"
+  },
+  "topics": {
+    "joints": "/hal/joint_states",
+    "joint_command": "/motion_ctl/joint_ctl"
+  },
+  "model": {
+    "base": "web/models/f1_wheel",
+    "urdf": "urdf/f1_wheel_0602_new.urdf",
+    "urdf_sha256": "bc21c6f36446aa2741d6ba20c2190836be967b1f3043dfa39eaae0983c95d5c0",
+    "mapping": "configs/model_mapping.json",
+    "mapping_sha256": "21e1879e2b5e15dfe590a27b1cb3c256626364b161cb950e24c5dd08a86633d5",
+    "geometry": "robot/model_geometry.json",
+    "geometry_sha256": "1d6afbeefe594e92d6eb64916afb00cd45552505fc924b40182a56966198c5a2",
+    "asset_sha256": {
+      "meshes/arm_L_Link1.STL": "122f5da1eaa3c566290f45bc4a6e91a6e20fa559a2c136466cafd115609aa4ff",
+      "meshes/arm_L_Link2.STL": "351f3caa1d717377d8039c5d2d15d26dd239a802910bca0c3fd72dba4cd684f6",
+      "meshes/arm_L_Link3.STL": "1d889da26b0a281f74707aa727301cf36996344fb04c62bbe825706d93c18452",
+      "meshes/arm_L_Link4.STL": "cb70db2455c31437fff32afaa34898349087f9183d515c7607b2440bd67662c4",
+      "meshes/arm_L_Link5.STL": "48396c2ae5f6a5241d9e58e9a4b5a2ed374f440c28a446f20d490fc350282124",
+      "meshes/arm_L_Link6.STL": "15ba20e048bcab55f819a72dece27095f64872f0adcc848e6a03a5c6addba798",
+      "meshes/arm_L_Link7.STL": "9da4c0c7d3a6ce1b9329deff6edc31dc59151917621b54aba49c28b9c6b99f00",
+      "meshes/arm_R_Link1.STL": "b136b7bc9b565700d9089260c83c9191356cab0658dea5646b296a6ba2c50bc4",
+      "meshes/arm_R_Link2.STL": "4b18874520252e4209a6c15005c1636ebd472dcfb431d5c127d157cffe660f40",
+      "meshes/arm_R_Link3.STL": "094ac1bea27a907b6a95c5f3cabc661993b445fdde56a25f6fde47477efbcf03",
+      "meshes/arm_R_Link4.STL": "6bef3f3b02dc7f3e4678289eaa6e10f5ac2ca07258c6286d50e579c1ed6052ff",
+      "meshes/arm_R_Link5.STL": "7458754ad9675c44a68afd9d59f00494ebf6bf508b60417efeb3a660c8840087",
+      "meshes/arm_R_Link6.STL": "3bf5bbbdd3f2c22a1bcec8f410661f9815117fb75e276ca59ff8b4cf8545c85d",
+      "meshes/arm_R_Link7.STL": "64b17deaad40a8077de806963fc8bf6121d077312b2e0c4584936f3aaaba9493",
+      "meshes/base_link.STL": "a7cfb3eb6148433848b6e5416c195743f632ea0e291b5edd5f6494d9d754ff36",
+      "meshes/body_Link1.STL": "1a4340a16efbcd2b53eabcb67f73f0b1166fa8a65457495001fb45ece31df003",
+      "meshes/body_Link2.STL": "cc828252b579a02dc47bea7288aa7945254f791601cdfa9d1b3b22f70f71cd4c",
+      "meshes/body_Link3.STL": "87e58ec84a748d0d314e6b5852306355258a0dcbd6d626832cf7c460d0cb360c",
+      "meshes/body_Link4.STL": "2edbdcfaa7033529ae36a4db69e0f01100efec36b7b60b88df94ee9cc92480b3",
+      "meshes/body_Link5.STL": "ba78eb77fa40eab9d41aeb0eff0430043de37146952b6b5b219d35f2027865c7",
+      "meshes/chassis_L_wheel_front_link1.STL": "ea29ee75918bfd73dd027566221ff9676c004da08f4fe63317777c9cd7611f12",
+      "meshes/chassis_L_wheel_front_link2.STL": "dcbca673162ae826bc4bf254b33c70885526eed5e31f0aed358efd90db0a84a7",
+      "meshes/chassis_L_wheel_rear_link1.STL": "15a6c5ba884c99cf2eb24d8a05946e99d71c23d2c77be65d3b3b86028bf9bb72",
+      "meshes/chassis_L_wheel_rear_link2.STL": "2d27681b7ff213aba13a5dcaf163c769dfdb5744ecc5add88e25f82ff00f1409",
+      "meshes/chassis_R_wheel_front_link1.STL": "c18629756a9b234753c329278adcaa6687e136e251d9489259589d890253b4e1",
+      "meshes/chassis_R_wheel_front_link2.STL": "d3238fbf7ce6255951cec32f18a9babc27e916e7fc06565903aa4913a573d745",
+      "meshes/chassis_R_wheel_rear_link1.STL": "b2800d51f669353f0c37d30f4daadabafaea0d12cfa4ebb3c4f675fda9fef181",
+      "meshes/chassis_R_wheel_rear_link2.STL": "845047bf5f2d22c81af473d96172fe5b06e7e1770d2e3e264a4542521ccf32d1",
+      "meshes/head_Link1.STL": "28959ada6360baa21ddacf31131fb6bc0dcd6d59b5e537ed59bf1596b3ff50c2",
+      "meshes/head_Link2.STL": "a230bfbe0c27ccdb39eee354f2a75646d8908333ae7199f4a289cf092d1e4982",
+      "meshes/head_Link3.STL": "1aa95e188e974ecba212b1b74f512ab332a5f46b37778254453148127ebdc968",
+      "urdf/f1_wheel_0602_new.urdf": "bc21c6f36446aa2741d6ba20c2190836be967b1f3043dfa39eaae0983c95d5c0"
+    }
+  },
+  "sources": {
+    "driver_command_range": {
+      "kind": "audited_installed_motor_ctl_command_clamp",
+      "sha256": "898ef58fb7118ecbf416af134e01700ed38ffdd3480293cf06fe95da14bce0c8",
+      "note": "Command envelope only; not established physical hard limits. Historical formal interface snapshot did not include a complete numeric 22-axis limit table.",
+      "evidence": "historical results/reset_recovery_20260924/driver-evidence.json and results/model_audit_20260928/joint-ranges.json; private evidence is not packaged"
+    },
+    "pico_urdf": {
+      "kind": "authorized_preserved_meaxiao_model",
+      "version": "1.4.4",
+      "sha256": "bc21c6f36446aa2741d6ba20c2190836be967b1f3043dfa39eaae0983c95d5c0",
+      "note": "Original URDF limits, origins and mesh bytes are preserved even where different from current driver limits."
+    },
+    "native_fk_angular": {
+      "kind": "read_only_native_forward_kinematics_virtual_pose_comparison",
+      "verification": {
+        "date": "2026-09-28",
+        "native_fk_virtual_poses": 16,
+        "native_dh_sha256": "ce20b1a80974c3ed58cdac4973152625096c8ad93a779e5fd4108c26ce19bd52",
+        "fk_responses_sha256": "a6a6f4a24cd7717ae3963c40b8aa32e623408641bbef90b575352f9188563cfd"
+      },
+      "note": "Arm angular kinematics only; not hardware motion, Cartesian geometry or calibration acceptance."
+    },
+    "lxl_xy_reset": {
+      "kind": "historical_F1-09_file",
+      "path": "/home/user/lxl/ip_config.py",
+      "sha256": "0a7626afc7f3e854720f767fb79f2d755c530d00cdfe0a8b0e29897fc8d4d78f",
+      "fields": [
+        "reset_left",
+        "reset_right"
+      ],
+      "scope": "14 arm axes only; not startup targets, encoder zero or full-body zero"
+    },
+    "native_pose_2": {
+      "kind": "historical_F1-09_file",
+      "path": "/home/user/workspace/whole_body_ctl/whole_body_config.ini",
+      "sha256": "5bd2a4cb8c6c91ce918b19f822bd5f55421f7716772dd74149f8c1390ed98cd1",
+      "section": "pose_2",
+      "scope": "arms14 + body5 + head3; excludes gripper and base odometry",
+      "note": "Posture target only; not encoder zero, calibration or guaranteed collision-free home path"
+    }
+  },
+  "groups": {
+    "left_arm": [
+      "arm_l_j1",
+      "arm_l_j2",
+      "arm_l_j3",
+      "arm_l_j4",
+      "arm_l_j5",
+      "arm_l_j6",
+      "arm_l_j7"
+    ],
+    "right_arm": [
+      "arm_r_j1",
+      "arm_r_j2",
+      "arm_r_j3",
+      "arm_r_j4",
+      "arm_r_j5",
+      "arm_r_j6",
+      "arm_r_j7"
+    ],
+    "head": [
+      "head_j1",
+      "head_j2",
+      "head_j3"
+    ],
+    "body": [
+      "body_j1",
+      "body_j2",
+      "body_j3",
+      "body_j4",
+      "body_j5"
+    ]
+  },
+  "joints": [
+    {
+      "hal_name": "arm_l_j1",
+      "group": "left_arm",
+      "command_range_deg": [
+        -178,
+        178
+      ],
+      "command_source": "driver_command_range",
+      "urdf_name": "arm_L_joint1",
+      "urdf_range_rad": [
+        -6.106686069,
+        6.106686069
+      ],
+      "urdf_range_deg": [
+        -349.88733856503546,
+        349.88733856503546
+      ],
+      "urdf_source": "pico_urdf",
+      "model_sign": 1,
+      "model_offset_deg": 0,
+      "calibration": {
+        "angular_kinematics": "native_fk_verified",
+        "angular_source": "native_fk_angular",
+        "physical_zero": "unverified",
+        "physical_geometry": "unverified",
+        "physical_hard_limits": "unverified"
+      }
+    },
+    {
+      "hal_name": "arm_l_j2",
+      "group": "left_arm",
+      "command_range_deg": [
+        -94,
+        120
+      ],
+      "command_source": "driver_command_range",
+      "urdf_name": "arm_L_joint2",
+      "urdf_range_rad": [
+        -2.094395102,
+        2.094395102
+      ],
+      "urdf_range_deg": [
+        -119.99999997747156,
+        119.99999997747156
+      ],
+      "urdf_source": "pico_urdf",
+      "model_sign": 1,
+      "model_offset_deg": 0,
+      "calibration": {
+        "angular_kinematics": "native_fk_verified",
+        "angular_source": "native_fk_angular",
+        "physical_zero": "unverified",
+        "physical_geometry": "unverified",
+        "physical_hard_limits": "unverified"
+      }
+    },
+    {
+      "hal_name": "arm_l_j3",
+      "group": "left_arm",
+      "command_range_deg": [
+        -178,
+        178
+      ],
+      "command_source": "driver_command_range",
+      "urdf_name": "arm_L_joint3",
+      "urdf_range_rad": [
+        -3.106686069,
+        3.106686069
+      ],
+      "urdf_range_deg": [
+        -178.00000002578847,
+        178.00000002578847
+      ],
+      "urdf_source": "pico_urdf",
+      "model_sign": 1,
+      "model_offset_deg": 0,
+      "calibration": {
+        "angular_kinematics": "native_fk_verified",
+        "angular_source": "native_fk_angular",
+        "physical_zero": "unverified",
+        "physical_geometry": "unverified",
+        "physical_hard_limits": "unverified"
+      }
+    },
+    {
+      "hal_name": "arm_l_j4",
+      "group": "left_arm",
+      "command_range_deg": [
+        -145,
+        60
+      ],
+      "command_source": "driver_command_range",
+      "urdf_name": "arm_L_joint4",
+      "urdf_range_rad": [
+        -2.530727415,
+        2.530727415
+      ],
+      "urdf_range_deg": [
+        -144.9999999775528,
+        144.9999999775528
+      ],
+      "urdf_source": "pico_urdf",
+      "model_sign": 1,
+      "model_offset_deg": 0,
+      "calibration": {
+        "angular_kinematics": "native_fk_verified",
+        "angular_source": "native_fk_angular",
+        "physical_zero": "unverified",
+        "physical_geometry": "unverified",
+        "physical_hard_limits": "unverified"
+      }
+    },
+    {
+      "hal_name": "arm_l_j5",
+      "group": "left_arm",
+      "command_range_deg": [
+        -178,
+        178
+      ],
+      "command_source": "driver_command_range",
+      "urdf_name": "arm_L_joint5",
+      "urdf_range_rad": [
+        -3.106686069,
+        3.1067
+      ],
+      "urdf_range_deg": [
+        -178.00000002578847,
+        178.00079821329285
+      ],
+      "urdf_source": "pico_urdf",
+      "model_sign": 1,
+      "model_offset_deg": 0,
+      "calibration": {
+        "angular_kinematics": "native_fk_verified",
+        "angular_source": "native_fk_angular",
+        "physical_zero": "unverified",
+        "physical_geometry": "unverified",
+        "physical_hard_limits": "unverified"
+      }
+    },
+    {
+      "hal_name": "arm_l_j6",
+      "group": "left_arm",
+      "command_range_deg": [
+        -60,
+        60
+      ],
+      "command_source": "driver_command_range",
+      "urdf_name": "arm_L_joint6",
+      "urdf_range_rad": [
+        -1.570796327,
+        1.570796327
+      ],
+      "urdf_range_deg": [
+        -90.00000001175157,
+        90.00000001175157
+      ],
+      "urdf_source": "pico_urdf",
+      "model_sign": 1,
+      "model_offset_deg": 0,
+      "calibration": {
+        "angular_kinematics": "native_fk_verified",
+        "angular_source": "native_fk_angular",
+        "physical_zero": "unverified",
+        "physical_geometry": "unverified",
+        "physical_hard_limits": "unverified"
+      }
+    },
+    {
+      "hal_name": "arm_l_j7",
+      "group": "left_arm",
+      "command_range_deg": [
+        -90,
+        90
+      ],
+      "command_source": "driver_command_range",
+      "urdf_name": "arm_L_joint7",
+      "urdf_range_rad": [
+        -1.047197551,
+        1.047197551
+      ],
+      "urdf_range_deg": [
+        -59.99999998873578,
+        59.99999998873578
+      ],
+      "urdf_source": "pico_urdf",
+      "model_sign": -1,
+      "model_offset_deg": 0,
+      "calibration": {
+        "angular_kinematics": "native_fk_verified",
+        "angular_source": "native_fk_angular",
+        "physical_zero": "unverified",
+        "physical_geometry": "unverified",
+        "physical_hard_limits": "unverified"
+      }
+    },
+    {
+      "hal_name": "arm_r_j1",
+      "group": "right_arm",
+      "command_range_deg": [
+        -178,
+        178
+      ],
+      "command_source": "driver_command_range",
+      "urdf_name": "arm_R_joint1",
+      "urdf_range_rad": [
+        -6.106686069,
+        6.106686069
+      ],
+      "urdf_range_deg": [
+        -349.88733856503546,
+        349.88733856503546
+      ],
+      "urdf_source": "pico_urdf",
+      "model_sign": 1,
+      "model_offset_deg": 0,
+      "calibration": {
+        "angular_kinematics": "native_fk_verified",
+        "angular_source": "native_fk_angular",
+        "physical_zero": "unverified",
+        "physical_geometry": "unverified",
+        "physical_hard_limits": "unverified"
+      }
+    },
+    {
+      "hal_name": "arm_r_j2",
+      "group": "right_arm",
+      "command_range_deg": [
+        -94,
+        120
+      ],
+      "command_source": "driver_command_range",
+      "urdf_name": "arm_R_joint2",
+      "urdf_range_rad": [
+        -2.094395102,
+        2.094395102
+      ],
+      "urdf_range_deg": [
+        -119.99999997747156,
+        119.99999997747156
+      ],
+      "urdf_source": "pico_urdf",
+      "model_sign": 1,
+      "model_offset_deg": 0,
+      "calibration": {
+        "angular_kinematics": "native_fk_verified",
+        "angular_source": "native_fk_angular",
+        "physical_zero": "unverified",
+        "physical_geometry": "unverified",
+        "physical_hard_limits": "unverified"
+      }
+    },
+    {
+      "hal_name": "arm_r_j3",
+      "group": "right_arm",
+      "command_range_deg": [
+        -178,
+        178
+      ],
+      "command_source": "driver_command_range",
+      "urdf_name": "arm_R_joint3",
+      "urdf_range_rad": [
+        -3.106686069,
+        3.106686069
+      ],
+      "urdf_range_deg": [
+        -178.00000002578847,
+        178.00000002578847
+      ],
+      "urdf_source": "pico_urdf",
+      "model_sign": 1,
+      "model_offset_deg": 0,
+      "calibration": {
+        "angular_kinematics": "native_fk_verified",
+        "angular_source": "native_fk_angular",
+        "physical_zero": "unverified",
+        "physical_geometry": "unverified",
+        "physical_hard_limits": "unverified"
+      }
+    },
+    {
+      "hal_name": "arm_r_j4",
+      "group": "right_arm",
+      "command_range_deg": [
+        -145,
+        60
+      ],
+      "command_source": "driver_command_range",
+      "urdf_name": "arm_R_joint4",
+      "urdf_range_rad": [
+        -2.5307,
+        2.094395102
+      ],
+      "urdf_range_deg": [
+        -144.99842921375742,
+        119.99999997747156
+      ],
+      "urdf_source": "pico_urdf",
+      "model_sign": 1,
+      "model_offset_deg": 0,
+      "calibration": {
+        "angular_kinematics": "native_fk_verified",
+        "angular_source": "native_fk_angular",
+        "physical_zero": "unverified",
+        "physical_geometry": "unverified",
+        "physical_hard_limits": "unverified"
+      }
+    },
+    {
+      "hal_name": "arm_r_j5",
+      "group": "right_arm",
+      "command_range_deg": [
+        -178,
+        178
+      ],
+      "command_source": "driver_command_range",
+      "urdf_name": "arm_R_joint5",
+      "urdf_range_rad": [
+        -3.1067,
+        3.1067
+      ],
+      "urdf_range_deg": [
+        -178.00079821329285,
+        178.00079821329285
+      ],
+      "urdf_source": "pico_urdf",
+      "model_sign": -1,
+      "model_offset_deg": 0,
+      "calibration": {
+        "angular_kinematics": "native_fk_verified",
+        "angular_source": "native_fk_angular",
+        "physical_zero": "unverified",
+        "physical_geometry": "unverified",
+        "physical_hard_limits": "unverified"
+      }
+    },
+    {
+      "hal_name": "arm_r_j6",
+      "group": "right_arm",
+      "command_range_deg": [
+        -60,
+        60
+      ],
+      "command_source": "driver_command_range",
+      "urdf_name": "arm_R_joint6",
+      "urdf_range_rad": [
+        -1.570796327,
+        1.570796327
+      ],
+      "urdf_range_deg": [
+        -90.00000001175157,
+        90.00000001175157
+      ],
+      "urdf_source": "pico_urdf",
+      "model_sign": -1,
+      "model_offset_deg": 0,
+      "calibration": {
+        "angular_kinematics": "native_fk_verified",
+        "angular_source": "native_fk_angular",
+        "physical_zero": "unverified",
+        "physical_geometry": "unverified",
+        "physical_hard_limits": "unverified"
+      }
+    },
+    {
+      "hal_name": "arm_r_j7",
+      "group": "right_arm",
+      "command_range_deg": [
+        -90,
+        90
+      ],
+      "command_source": "driver_command_range",
+      "urdf_name": "arm_R_joint7",
+      "urdf_range_rad": [
+        -1.047197551,
+        1.047197551
+      ],
+      "urdf_range_deg": [
+        -59.99999998873578,
+        59.99999998873578
+      ],
+      "urdf_source": "pico_urdf",
+      "model_sign": 1,
+      "model_offset_deg": 0,
+      "calibration": {
+        "angular_kinematics": "native_fk_verified",
+        "angular_source": "native_fk_angular",
+        "physical_zero": "unverified",
+        "physical_geometry": "unverified",
+        "physical_hard_limits": "unverified"
+      }
+    },
+    {
+      "hal_name": "head_j1",
+      "group": "head",
+      "command_range_deg": [
+        -40,
+        40
+      ],
+      "command_source": "driver_command_range",
+      "urdf_name": "head_joint1",
+      "urdf_range_rad": [
+        -0.785398163,
+        0.785398163
+      ],
+      "urdf_range_deg": [
+        -44.99999997722789,
+        44.99999997722789
+      ],
+      "urdf_source": "pico_urdf",
+      "model_sign": 1,
+      "model_offset_deg": 0,
+      "calibration": {
+        "angular_kinematics": "unverified",
+        "angular_source": null,
+        "physical_zero": "unverified",
+        "physical_geometry": "unverified",
+        "physical_hard_limits": "unverified"
+      }
+    },
+    {
+      "hal_name": "head_j2",
+      "group": "head",
+      "command_range_deg": [
+        -25,
+        25
+      ],
+      "command_source": "driver_command_range",
+      "urdf_name": "head_joint2",
+      "urdf_range_rad": [
+        -0.488692191,
+        0.488692191
+      ],
+      "urdf_range_deg": [
+        -28.000000025301112,
+        28.000000025301112
+      ],
+      "urdf_source": "pico_urdf",
+      "model_sign": 1,
+      "model_offset_deg": 0,
+      "calibration": {
+        "angular_kinematics": "unverified",
+        "angular_source": null,
+        "physical_zero": "unverified",
+        "physical_geometry": "unverified",
+        "physical_hard_limits": "unverified"
+      }
+    },
+    {
+      "hal_name": "head_j3",
+      "group": "head",
+      "command_range_deg": [
+        -15,
+        15
+      ],
+      "command_source": "driver_command_range",
+      "urdf_name": "head_joint3",
+      "urdf_range_rad": [
+        -0.261799388,
+        0.261799388
+      ],
+      "urdf_range_deg": [
+        -15.000000011507892,
+        15.000000011507892
+      ],
+      "urdf_source": "pico_urdf",
+      "model_sign": 1,
+      "model_offset_deg": 0,
+      "calibration": {
+        "angular_kinematics": "unverified",
+        "angular_source": null,
+        "physical_zero": "unverified",
+        "physical_geometry": "unverified",
+        "physical_hard_limits": "unverified"
+      }
+    },
+    {
+      "hal_name": "body_j1",
+      "group": "body",
+      "command_range_deg": [
+        -130,
+        130
+      ],
+      "command_source": "driver_command_range",
+      "urdf_name": "body_joint5",
+      "urdf_range_rad": [
+        -2.879793266,
+        2.879793266
+      ],
+      "urdf_range_deg": [
+        -165.00000001199524,
+        165.00000001199524
+      ],
+      "urdf_source": "pico_urdf",
+      "model_sign": 1,
+      "model_offset_deg": 0,
+      "calibration": {
+        "angular_kinematics": "unverified",
+        "angular_source": null,
+        "physical_zero": "unverified",
+        "physical_geometry": "unverified",
+        "physical_hard_limits": "unverified"
+      }
+    },
+    {
+      "hal_name": "body_j2",
+      "group": "body",
+      "command_range_deg": [
+        -10,
+        10
+      ],
+      "command_source": "driver_command_range",
+      "urdf_name": "body_joint4",
+      "urdf_range_rad": [
+        -0.34906585,
+        0.34906585
+      ],
+      "urdf_range_deg": [
+        -19.99999997714667,
+        19.99999997714667
+      ],
+      "urdf_source": "pico_urdf",
+      "model_sign": 1,
+      "model_offset_deg": 0,
+      "calibration": {
+        "angular_kinematics": "unverified",
+        "angular_source": null,
+        "physical_zero": "unverified",
+        "physical_geometry": "unverified",
+        "physical_hard_limits": "unverified"
+      }
+    },
+    {
+      "hal_name": "body_j3",
+      "group": "body",
+      "command_range_deg": [
+        -70,
+        0
+      ],
+      "command_source": "driver_command_range",
+      "urdf_name": "body_joint3",
+      "urdf_range_rad": [
+        -0.087266463,
+        1.535889742
+      ],
+      "urdf_range_deg": [
+        -5.0000000229345565,
+        88.00000001403689
+      ],
+      "urdf_source": "pico_urdf",
+      "model_sign": 1,
+      "model_offset_deg": 0,
+      "calibration": {
+        "angular_kinematics": "unverified",
+        "angular_source": null,
+        "physical_zero": "unverified",
+        "physical_geometry": "unverified",
+        "physical_hard_limits": "unverified"
+      }
+    },
+    {
+      "hal_name": "body_j4",
+      "group": "body",
+      "command_range_deg": [
+        -95,
+        0
+      ],
+      "command_source": "driver_command_range",
+      "urdf_name": "body_joint2",
+      "urdf_range_rad": [
+        -1.640609497,
+        0.0
+      ],
+      "urdf_range_deg": [
+        -94.0000000071809,
+        0.0
+      ],
+      "urdf_source": "pico_urdf",
+      "model_sign": 1,
+      "model_offset_deg": 0,
+      "calibration": {
+        "angular_kinematics": "unverified",
+        "angular_source": null,
+        "physical_zero": "unverified",
+        "physical_geometry": "unverified",
+        "physical_hard_limits": "unverified"
+      }
+    },
+    {
+      "hal_name": "body_j5",
+      "group": "body",
+      "command_range_deg": [
+        -40,
+        0
+      ],
+      "command_source": "driver_command_range",
+      "urdf_name": "body_joint1",
+      "urdf_range_rad": [
+        -0.628319,
+        0.0
+      ],
+      "urdf_range_deg": [
+        -36.00002688788037,
+        0.0
+      ],
+      "urdf_source": "pico_urdf",
+      "model_sign": 1,
+      "model_offset_deg": 0,
+      "calibration": {
+        "angular_kinematics": "unverified",
+        "angular_source": null,
+        "physical_zero": "unverified",
+        "physical_geometry": "unverified",
+        "physical_hard_limits": "unverified"
+      }
+    }
+  ],
+  "default_presets": [
+    {
+      "key": "lxl-xy-reset-v1",
+      "source": "lxl_xy_reset",
+      "units": "degree",
+      "joints": {
+        "arm_l_j1": 110,
+        "arm_l_j2": -90,
+        "arm_l_j3": -90,
+        "arm_l_j4": -110,
+        "arm_l_j5": 0,
+        "arm_l_j6": 0,
+        "arm_l_j7": 0,
+        "arm_r_j1": -110,
+        "arm_r_j2": -90,
+        "arm_r_j3": 90,
+        "arm_r_j4": -110,
+        "arm_r_j5": 0,
+        "arm_r_j6": 0,
+        "arm_r_j7": 0
+      }
+    },
+    {
+      "key": "native-pose2-full-v1",
+      "source": "native_pose_2",
+      "units": "degree",
+      "joints": {
+        "arm_l_j1": 110.0,
+        "arm_l_j2": -90.0,
+        "arm_l_j3": -90.0,
+        "arm_l_j4": -110.0,
+        "arm_l_j5": 0.0,
+        "arm_l_j6": 0.0,
+        "arm_l_j7": 0.0,
+        "arm_r_j1": -110.0,
+        "arm_r_j2": -90.0,
+        "arm_r_j3": 90.0,
+        "arm_r_j4": -110.0,
+        "arm_r_j5": 0.0,
+        "arm_r_j6": 0.0,
+        "arm_r_j7": 0.0,
+        "body_j1": 0.0,
+        "body_j2": 0.0,
+        "body_j3": -5.0,
+        "body_j4": -10.0,
+        "body_j5": -5.0,
+        "head_j1": 0.0,
+        "head_j2": 0.0,
+        "head_j3": 0.0
+      }
+    }
+  ],
+  "full_home_source": {
+    "path": "/home/user/workspace/whole_body_ctl/whole_body_config.ini",
+    "sha256": "5bd2a4cb8c6c91ce918b19f822bd5f55421f7716772dd74149f8c1390ed98cd1",
+    "section": "pose_2",
+    "scope": "arms14 + body5 + head3; excludes gripper and base odometry"
+  },
+  "physical_calibration_verified": false,
+  "unaccepted": [
+    "head_and_body_axis_sign_zero_and_geometry",
+    "arm_cartesian_geometry_and_tool_frames",
+    "physical_joint_hard_limits",
+    "full_body_home_motion_and_path_acceptance"
+  ],
+  "non_hal_model_joints": [
+    {
+      "urdf_name": "chassis_L_wheel_front_joint1",
+      "type": "revolute",
+      "scope": "static_wheel_visual_only",
+      "hal_mapping": null
+    },
+    {
+      "urdf_name": "chassis_L_wheel_front_joint2",
+      "type": "revolute",
+      "scope": "static_wheel_visual_only",
+      "hal_mapping": null
+    },
+    {
+      "urdf_name": "chassis_L_wheel_rear_joint1",
+      "type": "revolute",
+      "scope": "static_wheel_visual_only",
+      "hal_mapping": null
+    },
+    {
+      "urdf_name": "chassis_L_wheel_rear_joint2",
+      "type": "revolute",
+      "scope": "static_wheel_visual_only",
+      "hal_mapping": null
+    },
+    {
+      "urdf_name": "chassis_R_wheel_front_joint1",
+      "type": "revolute",
+      "scope": "static_wheel_visual_only",
+      "hal_mapping": null
+    },
+    {
+      "urdf_name": "chassis_R_wheel_front_joint2",
+      "type": "revolute",
+      "scope": "static_wheel_visual_only",
+      "hal_mapping": null
+    },
+    {
+      "urdf_name": "chassis_R_wheel_rear_joint1",
+      "type": "revolute",
+      "scope": "static_wheel_visual_only",
+      "hal_mapping": null
+    },
+    {
+      "urdf_name": "chassis_R_wheel_rear_joint2",
+      "type": "revolute",
+      "scope": "static_wheel_visual_only",
+      "hal_mapping": null
+    }
+  ],
+  "excluded_controls": {
+    "grippers": "OmniPicker has independent feedback/command topics; this URDF has no articulated finger joints. Neither gripper is one of the 22 pose axes.",
+    "base_odometry": "Base movement/odometry is separate from local posture; the eight wheel joints remain static and have no HAL animation mapping."
+  }
+}

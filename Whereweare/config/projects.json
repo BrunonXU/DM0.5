@@ -1,0 +1,523 @@
+{
+  "schema_version": 1,
+  "projects": [
+    {
+      "id": "bottle-sort",
+      "name": "饮料瓶分拣优化",
+      "description": "DM0.5适配G2双臂灵巧手，完成抓瓶、左右手交接与托盘分拣。",
+      "kind": "delivery",
+      "status": "已关联控制依据",
+      "stage": "单34D基线；服务暂停记录待更新",
+      "priority": "P2",
+      "tags": [
+        "DM0.5",
+        "G2",
+        "分拣"
+      ],
+      "source_paths": [
+        "DM0.5/README.md",
+        "DM0.5/docs/CURRENT_STATUS.md",
+        "DM0.5/docs/robot/G2_SMOOTH_TELEOP_ROOT_CAUSE_AND_NEXT_STEPS.md",
+        "DAgger/docs/G2/RECORDING_AND_PROGRESS.md"
+      ],
+      "watch_paths": [
+        "DM0.5/docs"
+      ],
+      "evidence_date": "2026-09-17",
+      "warnings": [
+        "业务范围已有文档；本轮优化的成功率基线和验收条件待明确。",
+        "CURRENT_STATUS 首段有 2026-09-17 服务暂停更新，并注明下方保留 09-07 旧状态；单 34D 工作基线以控制根因第 0 节的 09-08 证据为准。",
+        "控制顺畅、服务部署和离线测试不能代替完整分拣任务验收；G2 维修状态另见 DAgger G2。"
+      ],
+      "milestones": [],
+      "platform": "G2",
+      "supports": [],
+      "activity_paths": [
+        "DM0.5"
+      ]
+    },
+    {
+      "id": "block-sort",
+      "name": "F1 · π0.5 积木分拣",
+      "description": "当前主线：F1复杂积木分拣。场景、姿态与采集支撑已有依据；专项训练与任务验收尚待确认。",
+      "kind": "delivery",
+      "status": "场景与采集支撑已关联",
+      "stage": "示教与数据审核",
+      "priority": "P2",
+      "tags": [
+        "F1",
+        "π0.5",
+        "积木分拣"
+      ],
+      "source_paths": [
+        "F1/docs/connect/3F-JIMU.md",
+        "F1-4242/docs/STATUS.md",
+        "DAgger/docs/F1/STATUS.md"
+      ],
+      "watch_paths": [
+        "F1/docs/connect/3F-JIMU.md"
+      ],
+      "evidence_date": "2026-10-12",
+      "warnings": [
+        "3F-JIMU连接与F1-09数采记录保留各自机器身份，不能推断为同一台。",
+        "积木姿态、通用示教和工具部署不代表积木专项数据集、π0.5训练或分拣闭环通过。",
+        "支撑事件归原项目，不重复计算业务成果。"
+      ],
+      "milestones": [],
+      "platform": "F1",
+      "supports": [],
+      "activity_paths": [
+        "F1/docs/connect/3F-JIMU.md"
+      ]
+    },
+    {
+      "id": "phone-packaging",
+      "name": "双臂手机装盒",
+      "description": "G2 双臂普通夹爪的抓取、换手、放入盒底与合盖任务；路线为 π0.5 SFT、固定评测和精细阶段后训练。",
+      "kind": "delivery",
+      "status": "已关联任务大纲",
+      "stage": "数采方案形成，仅允许pilot",
+      "priority": "P2",
+      "tags": [
+        "π0.5",
+        "RLinf",
+        "G2",
+        "双臂"
+      ],
+      "source_paths": [
+        "tasks/g2_phone_packaging_pi05_rl/README.md",
+        "tasks/g2_phone_packaging_pi05_rl/docs/G2_phone_box_VLA_data_pipeline_v2.md"
+      ],
+      "watch_paths": [
+        "tasks/g2_phone_packaging_pi05_rl/README.md",
+        "tasks/g2_phone_packaging_pi05_rl/docs"
+      ],
+      "evidence_date": null,
+      "warnings": [
+        "任务 README 未给出当前状态的证据日期，不用文件修改时间补造。",
+        "里程碑来自 README 的计划顺序，未标记完成；设计形成和允许 pilot 采集不等于正式数据或真机评测通过。"
+      ],
+      "milestones": [
+        {
+          "id": "pilot",
+          "title": "10–20 条 pilot 验证相机、状态、动作与时间同步",
+          "status": "planned",
+          "source_path": "tasks/g2_phone_packaging_pi05_rl/README.md"
+        },
+        {
+          "id": "freeze-contract",
+          "title": "冻结物理 setup、数据 schema、划分与评测场景",
+          "status": "planned",
+          "source_path": "tasks/g2_phone_packaging_pi05_rl/README.md"
+        },
+        {
+          "id": "demonstrations",
+          "title": "采集约 80–120 条有效人工示教",
+          "status": "planned",
+          "source_path": "tasks/g2_phone_packaging_pi05_rl/README.md"
+        },
+        {
+          "id": "sft-evaluation",
+          "title": "π0.5 SFT 与固定场景闭环真机评测",
+          "status": "planned",
+          "source_path": "tasks/g2_phone_packaging_pi05_rl/README.md"
+        },
+        {
+          "id": "targeted-improvement",
+          "title": "按分阶段失败率选择 targeted SFT 或精细阶段 RL",
+          "status": "planned",
+          "source_path": "tasks/g2_phone_packaging_pi05_rl/README.md"
+        }
+      ],
+      "platform": "G2",
+      "supports": [],
+      "activity_paths": [
+        "tasks/g2_phone_packaging_pi05_rl"
+      ]
+    },
+    {
+      "id": "foam-sort",
+      "name": "F1 泡沫棉移动操作",
+      "description": "单模型联合双臂、夹爪与底盘，完成泡沫棉抓取、移动、放置和返回。",
+      "kind": "delivery",
+      "status": "已关联唯一状态入口",
+      "stage": "以当前方案为准",
+      "priority": "P2",
+      "tags": [
+        "DM0.5",
+        "F1",
+        "全身 VLA",
+        "移动操作"
+      ],
+      "source_paths": [
+        "F1/foam_sort_whole_body/docs/training_plan.md",
+        "F1/foam_sort_whole_body/results/deployments/20260920-4F-ik-replan-v1/README.md",
+        "F1/foam_sort_whole_body/results/formal_training_20260917/matched_motion_probe_20260920/oracle_mask_70000/README.md"
+      ],
+      "watch_paths": [
+        "F1/foam_sort_whole_body/README.md",
+        "F1/foam_sort_whole_body/docs"
+      ],
+      "evidence_date": "2026-09-20",
+      "warnings": [
+        "当前方案保留大量按日期累积的历史段落；最新结论在顶部，较早的‘当前’和‘剩余交付物’不能自动当作今日任务。",
+        "09-20 的修复训练路线是诊断建议，文档明确没有由该轮诊断停止原 run、修改 recipe 或部署 oracle。",
+        "此日期是已记录的诊断与部署证据日期，不证明训练服务此刻运行或完整真机任务已验收。"
+      ],
+      "milestones": [],
+      "platform": "F1",
+      "supports": [],
+      "activity_paths": [
+        "F1/foam_sort_whole_body"
+      ]
+    },
+    {
+      "id": "f1-console",
+      "name": "F1 4242 工作台",
+      "description": "共享机器人工作台：相机与状态、调姿、遥操、录制、数据回看与审核。",
+      "kind": "tool",
+      "status": "已关联版本状态",
+      "stage": "以 STATUS 为准",
+      "priority": "P2",
+      "tags": [
+        "F1",
+        "4242",
+        "数据工具",
+        "共享能力"
+      ],
+      "source_paths": [
+        "F1-4242/docs/STATUS.md"
+      ],
+      "watch_paths": [
+        "F1-4242/docs"
+      ],
+      "evidence_date": "2026-10-12",
+      "warnings": [
+        "当前文档按阶段保留旧版本；10-12统一数采v29-r3部署记录覆盖此前v28-r5记录，不代表此刻现场状态。",
+        "部署、离线/ARM 测试、数据转换回读与现场动作验收必须分开；候选数据仍有 training_ready=false 边界。"
+      ],
+      "milestones": [
+        {
+          "id": "pico-recording-validation",
+          "title": "独立 Pico 现场短录制与真实 30Hz 验收",
+          "status": "planned",
+          "source_path": "F1-4242/docs/STATUS.md"
+        }
+      ],
+      "platform": "F1",
+      "supports": [
+        "block-sort"
+      ],
+      "activity_paths": [
+        "F1-4242"
+      ],
+      "review_code_paths": [
+        "F1-4242/dev/web",
+        "F1-4242/server"
+      ]
+    },
+    {
+      "id": "dagger-f1",
+      "name": "DAgger · F1",
+      "description": "F1 遥操、人工示教与策略 HIL 的共享采集和接管能力。",
+      "kind": "tool",
+      "status": "已关联唯一状态入口",
+      "stage": "以 F1 状态页为准",
+      "priority": "P2",
+      "tags": [
+        "F1",
+        "DAgger",
+        "HIL",
+        "共享能力"
+      ],
+      "source_paths": [
+        "DAgger/docs/F1/STATUS.md"
+      ],
+      "watch_paths": [
+        "DAgger/docs/F1"
+      ],
+      "evidence_date": "2026-10-12",
+      "warnings": [
+        "Y 目标配置发布与无输出轨迹验证不能代替现场按键及到位验收。",
+        "真实示教、保存与转换回读记录不表示完成 DAgger 训练闭环；候选训练状态仍需按来源核验。"
+      ],
+      "milestones": [
+        {
+          "id": "home-onsite-validation",
+          "title": "Y 双臂目标现场按键与到位验收",
+          "status": "planned",
+          "source_path": "DAgger/docs/F1/STATUS.md"
+        },
+        {
+          "id": "policy-loop-validation",
+          "title": "真实模型配置与完整闭环训练验收",
+          "status": "planned",
+          "source_path": "DAgger/docs/F1/STATUS.md"
+        }
+      ],
+      "platform": "F1",
+      "supports": [
+        "block-sort"
+      ],
+      "activity_paths": [
+        "DAgger/F1",
+        "DAgger/docs/F1"
+      ],
+      "review_code_paths": [
+        "DAgger/F1"
+      ]
+    },
+    {
+      "id": "dagger-g2",
+      "name": "DAgger · G2",
+      "description": "G2 策略执行、人工接管、纠正采集、恢复与训练数据审计。",
+      "kind": "tool",
+      "status": "已关联暂停交接",
+      "stage": "维修恢复证据待更新",
+      "priority": "P2",
+      "tags": [
+        "G2",
+        "DAgger",
+        "HIL",
+        "维修待核验"
+      ],
+      "source_paths": [
+        "DAgger/docs/G2/RECORDING_AND_PROGRESS.md"
+      ],
+      "watch_paths": [
+        "DAgger/docs/G2"
+      ],
+      "evidence_date": "2026-09-10",
+      "warnings": [
+        "状态页明确 2026-10-12 仅为文档整理日，最后现场记录仍为 2026-09-10 的右拇指故障送修；未核验维修或恢复。",
+        "下列路线均以维修后重新验收为前提，不应直接推荐今日真机抓瓶或 replay。",
+        "完整 DAgger 训练迭代尚无验收证据；training_ready=false。"
+      ],
+      "milestones": [
+        {
+          "id": "repair-validation",
+          "title": "记录维修标定，验收空载开闭、Home、反馈与独立抓瓶",
+          "status": "planned",
+          "source_path": "DAgger/docs/G2/RECORDING_AND_PROGRESS.md"
+        },
+        {
+          "id": "controlled-recheck",
+          "title": "维修后在一致场景复核数据集与双手交接",
+          "status": "planned",
+          "source_path": "DAgger/docs/G2/RECORDING_AND_PROGRESS.md"
+        },
+        {
+          "id": "resume-collection",
+          "title": "区分修前修后版本，再恢复 HIL 采集",
+          "status": "planned",
+          "source_path": "DAgger/docs/G2/RECORDING_AND_PROGRESS.md"
+        },
+        {
+          "id": "audit-and-train",
+          "title": "完成时间、反馈、标签与片段导出审计，再训练和比较成功率",
+          "status": "planned",
+          "source_path": "DAgger/docs/G2/RECORDING_AND_PROGRESS.md"
+        }
+      ],
+      "platform": "G2",
+      "supports": [
+        "bottle-sort"
+      ],
+      "activity_paths": [
+        "DAgger/G2",
+        "DAgger/docs/G2"
+      ]
+    },
+    {
+      "id": "g2-runtime",
+      "name": "G2 现场运行时",
+      "description": "G2相机、反馈、安全、控制与运维；共享DM0.5控制证据，不重复计算分拣成果。",
+      "kind": "tool",
+      "status": "已关联文档",
+      "stage": "共享控制与只读运维",
+      "priority": "P2",
+      "tags": [
+        "G2",
+        "运行时",
+        "共享能力"
+      ],
+      "source_paths": [
+        "g2_robot/README.md",
+        "g2_robot/docs/G2_ROBOT_STRUCTURE.md"
+      ],
+      "watch_paths": [
+        "g2_robot/README.md",
+        "g2_robot/docs"
+      ],
+      "evidence_date": "2026-09-08",
+      "warnings": [
+        "部署结构文档保留旧控制配置；当前控制基线以DM0.5根因文档09-08更正为准。",
+        "本地副本和历史部署记录不证明此刻设备状态。"
+      ],
+      "milestones": [],
+      "platform": "G2",
+      "supports": [
+        "bottle-sort",
+        "phone-packaging",
+        "g2-book"
+      ],
+      "activity_paths": [
+        "g2_robot"
+      ]
+    },
+    {
+      "id": "g2-book",
+      "name": "G2 Book Demo",
+      "description": "任务级数据、配置与评测入口；现有文档只说明原始记录拉取。",
+      "kind": "delivery",
+      "status": "已关联文档",
+      "stage": "数据入口已登记，任务目标待补",
+      "priority": "P2",
+      "tags": [
+        "G2",
+        "任务"
+      ],
+      "source_paths": [
+        "tasks/g2_book/README.md"
+      ],
+      "watch_paths": [
+        "tasks/g2_book/README.md"
+      ],
+      "evidence_date": null,
+      "warnings": [
+        "未记录可靠证据日期、任务验收目标或已完成采集；不读取原始录像。"
+      ],
+      "milestones": [],
+      "platform": "G2",
+      "supports": [],
+      "activity_paths": [
+        "tasks/g2_book"
+      ]
+    },
+    {
+      "id": "pi05-stack",
+      "name": "OpenPI / π0.5",
+      "description": "上游模型依赖；业务进展归属具体任务，不把上游发布历史当作本地完成。",
+      "kind": "tool",
+      "status": "已关联文档",
+      "stage": "上游依赖",
+      "priority": "P2",
+      "tags": [
+        "依赖",
+        "π0.5"
+      ],
+      "source_paths": [
+        "PI0.5/README.md"
+      ],
+      "watch_paths": [
+        "PI0.5/README.md"
+      ],
+      "evidence_date": null,
+      "warnings": [
+        "上游README只用于能力与仓库边界；不证明积木任务已有训练结果。"
+      ],
+      "milestones": [],
+      "platform": "shared",
+      "supports": [
+        "block-sort",
+        "phone-packaging"
+      ],
+      "activity_paths": [
+        "PI0.5"
+      ]
+    },
+    {
+      "id": "rlinf-stack",
+      "name": "RLinf",
+      "description": "上游强化学习基础设施；手机任务将其列为SFT和固定评测后的候选后训练路线。",
+      "kind": "tool",
+      "status": "已关联文档",
+      "stage": "上游依赖；业务接入待验证",
+      "priority": "P2",
+      "tags": [
+        "依赖",
+        "RLinf"
+      ],
+      "source_paths": [
+        "RLinf/README.md",
+        "tasks/g2_phone_packaging_pi05_rl/README.md"
+      ],
+      "watch_paths": [
+        "RLinf/README.md",
+        "tasks/g2_phone_packaging_pi05_rl/README.md"
+      ],
+      "evidence_date": null,
+      "warnings": [
+        "上游功能和发布新闻不计本地成果；任务尚无RL闭环验收证据。"
+      ],
+      "milestones": [],
+      "platform": "shared",
+      "supports": [
+        "phone-packaging"
+      ],
+      "activity_paths": [
+        "RLinf"
+      ]
+    },
+    {
+      "id": "workspace-deps",
+      "name": "共享依赖",
+      "description": "LeRobot等共享第三方组件及本地补丁记录，成果归属使用它的业务或工具。",
+      "kind": "tool",
+      "status": "已关联文档",
+      "stage": "依赖登记",
+      "priority": "P2",
+      "tags": [
+        "依赖",
+        "LeRobot"
+      ],
+      "source_paths": [
+        "third_party/patches/README.md"
+      ],
+      "watch_paths": [
+        "third_party/patches/README.md"
+      ],
+      "evidence_date": null,
+      "warnings": [
+        "只读登记入口，不扫描第三方源码或自动应用补丁。"
+      ],
+      "milestones": [],
+      "platform": "shared",
+      "supports": [],
+      "activity_paths": [
+        "third_party/patches"
+      ]
+    },
+    {
+      "id": "whereweare",
+      "name": "Whereweare",
+      "description": "基于项目文档的宏观时间线、状态提炼与日周复盘。",
+      "kind": "tool",
+      "status": "已关联文档",
+      "stage": "项目制度与状态基线建设",
+      "priority": "P2",
+      "tags": [
+        "中台",
+        "项目追踪"
+      ],
+      "source_paths": [
+        "Whereweare/README.md",
+        "Whereweare/docs/STATUS.md"
+      ],
+      "watch_paths": [
+        "Whereweare/README.md",
+        "Whereweare/docs/STATUS.md"
+      ],
+      "evidence_date": null,
+      "warnings": [
+        "Projects-Hub是兼容别名，不能重复登记为新项目。"
+      ],
+      "milestones": [],
+      "platform": "shared",
+      "supports": [],
+      "activity_paths": [
+        "Whereweare"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "lxl": {
+    "cwd": "${F1_LXL_ROOT}",
+    "start": "${F1_LXL_ROOT}/start_all_pico1.sh",
+    "original_stop": "${F1_LXL_ROOT}/stop_all_pico.sh",
+    "start_sha256": "4b42a5a00590ba65a19c9e53f3438fa8657d21c15b531b3e1f00ff1d72e39d1c"
+  },
+  "upper": {
+    "cwd": "${PICO_UPPER_ROOT}",
+    "start": "${PICO_UPPER_ROOT}/start.sh",
+    "original_stop": "${PICO_UPPER_ROOT}/stop.sh",
+    "start_sha256": "333bba9a4003d7a59d6bcbc4bb46c782de1c2c2c0476e8fddca464a6ddf31e8a"
+  }
+}

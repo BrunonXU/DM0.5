@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "g2dagger"
+version = "0.2.0"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24", "dagger-core==0.2.0"]
+
+[project.optional-dependencies]
+windows = ["pygame>=2.5,<3"]
+test = ["pytest>=7"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "../shared/src", "../F1/tests", "../G2/tests", "../F1/src", "../G2/src"]
+cache_dir = "../artifacts/cache/pytest"

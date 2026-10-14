@@ -1,0 +1,950 @@
+{
+  "upstream_version": "1.4.4",
+  "source_root": "/home/xx_100872445/F1/PICO/pico",
+  "captured_at": "2026-09-23T07:43:06.943574+00:00",
+  "git": "not available: upstream source directory has no .git",
+  "files": [
+    {
+      "path": "VERSION",
+      "source": "/home/xx_100872445/F1/PICO/pico/VERSION",
+      "source_sha256": "d03d8b268b4171328ac2458ce8ca82d69a1fde38469d4e4faae4f8fa8d8a5e35",
+      "source_bytes": 6,
+      "adapted_sha256": "d03d8b268b4171328ac2458ce8ca82d69a1fde38469d4e4faae4f8fa8d8a5e35",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/arm_L_Link1.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_L_Link1.STL",
+      "source_sha256": "122f5da1eaa3c566290f45bc4a6e91a6e20fa559a2c136466cafd115609aa4ff",
+      "source_bytes": 158884,
+      "adapted_sha256": "122f5da1eaa3c566290f45bc4a6e91a6e20fa559a2c136466cafd115609aa4ff",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/arm_L_Link2.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_L_Link2.STL",
+      "source_sha256": "351f3caa1d717377d8039c5d2d15d26dd239a802910bca0c3fd72dba4cd684f6",
+      "source_bytes": 329584,
+      "adapted_sha256": "351f3caa1d717377d8039c5d2d15d26dd239a802910bca0c3fd72dba4cd684f6",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/arm_L_Link3.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_L_Link3.STL",
+      "source_sha256": "1d889da26b0a281f74707aa727301cf36996344fb04c62bbe825706d93c18452",
+      "source_bytes": 144184,
+      "adapted_sha256": "1d889da26b0a281f74707aa727301cf36996344fb04c62bbe825706d93c18452",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/arm_L_Link4.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_L_Link4.STL",
+      "source_sha256": "cb70db2455c31437fff32afaa34898349087f9183d515c7607b2440bd67662c4",
+      "source_bytes": 317484,
+      "adapted_sha256": "cb70db2455c31437fff32afaa34898349087f9183d515c7607b2440bd67662c4",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/arm_L_Link5.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_L_Link5.STL",
+      "source_sha256": "48396c2ae5f6a5241d9e58e9a4b5a2ed374f440c28a446f20d490fc350282124",
+      "source_bytes": 324084,
+      "adapted_sha256": "48396c2ae5f6a5241d9e58e9a4b5a2ed374f440c28a446f20d490fc350282124",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/arm_L_Link6.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_L_Link6.STL",
+      "source_sha256": "15ba20e048bcab55f819a72dece27095f64872f0adcc848e6a03a5c6addba798",
+      "source_bytes": 107884,
+      "adapted_sha256": "15ba20e048bcab55f819a72dece27095f64872f0adcc848e6a03a5c6addba798",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/arm_L_Link7.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_L_Link7.STL",
+      "source_sha256": "9da4c0c7d3a6ce1b9329deff6edc31dc59151917621b54aba49c28b9c6b99f00",
+      "source_bytes": 734684,
+      "adapted_sha256": "9da4c0c7d3a6ce1b9329deff6edc31dc59151917621b54aba49c28b9c6b99f00",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/arm_R_Link1.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_R_Link1.STL",
+      "source_sha256": "b136b7bc9b565700d9089260c83c9191356cab0658dea5646b296a6ba2c50bc4",
+      "source_bytes": 158284,
+      "adapted_sha256": "b136b7bc9b565700d9089260c83c9191356cab0658dea5646b296a6ba2c50bc4",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/arm_R_Link2.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_R_Link2.STL",
+      "source_sha256": "4b18874520252e4209a6c15005c1636ebd472dcfb431d5c127d157cffe660f40",
+      "source_bytes": 327184,
+      "adapted_sha256": "4b18874520252e4209a6c15005c1636ebd472dcfb431d5c127d157cffe660f40",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/arm_R_Link3.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_R_Link3.STL",
+      "source_sha256": "094ac1bea27a907b6a95c5f3cabc661993b445fdde56a25f6fde47477efbcf03",
+      "source_bytes": 140584,
+      "adapted_sha256": "094ac1bea27a907b6a95c5f3cabc661993b445fdde56a25f6fde47477efbcf03",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/arm_R_Link4.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_R_Link4.STL",
+      "source_sha256": "6bef3f3b02dc7f3e4678289eaa6e10f5ac2ca07258c6286d50e579c1ed6052ff",
+      "source_bytes": 319684,
+      "adapted_sha256": "6bef3f3b02dc7f3e4678289eaa6e10f5ac2ca07258c6286d50e579c1ed6052ff",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/arm_R_Link5.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_R_Link5.STL",
+      "source_sha256": "7458754ad9675c44a68afd9d59f00494ebf6bf508b60417efeb3a660c8840087",
+      "source_bytes": 324984,
+      "adapted_sha256": "7458754ad9675c44a68afd9d59f00494ebf6bf508b60417efeb3a660c8840087",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/arm_R_Link6.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_R_Link6.STL",
+      "source_sha256": "3bf5bbbdd3f2c22a1bcec8f410661f9815117fb75e276ca59ff8b4cf8545c85d",
+      "source_bytes": 108884,
+      "adapted_sha256": "3bf5bbbdd3f2c22a1bcec8f410661f9815117fb75e276ca59ff8b4cf8545c85d",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/arm_R_Link7.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_R_Link7.STL",
+      "source_sha256": "64b17deaad40a8077de806963fc8bf6121d077312b2e0c4584936f3aaaba9493",
+      "source_bytes": 737584,
+      "adapted_sha256": "64b17deaad40a8077de806963fc8bf6121d077312b2e0c4584936f3aaaba9493",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/base_link.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/base_link.STL",
+      "source_sha256": "a7cfb3eb6148433848b6e5416c195743f632ea0e291b5edd5f6494d9d754ff36",
+      "source_bytes": 886084,
+      "adapted_sha256": "a7cfb3eb6148433848b6e5416c195743f632ea0e291b5edd5f6494d9d754ff36",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/body_Link1.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/body_Link1.STL",
+      "source_sha256": "1a4340a16efbcd2b53eabcb67f73f0b1166fa8a65457495001fb45ece31df003",
+      "source_bytes": 3393984,
+      "adapted_sha256": "1a4340a16efbcd2b53eabcb67f73f0b1166fa8a65457495001fb45ece31df003",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/body_Link2.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/body_Link2.STL",
+      "source_sha256": "cc828252b579a02dc47bea7288aa7945254f791601cdfa9d1b3b22f70f71cd4c",
+      "source_bytes": 1373184,
+      "adapted_sha256": "cc828252b579a02dc47bea7288aa7945254f791601cdfa9d1b3b22f70f71cd4c",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/body_Link3.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/body_Link3.STL",
+      "source_sha256": "87e58ec84a748d0d314e6b5852306355258a0dcbd6d626832cf7c460d0cb360c",
+      "source_bytes": 2644584,
+      "adapted_sha256": "87e58ec84a748d0d314e6b5852306355258a0dcbd6d626832cf7c460d0cb360c",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/body_Link4.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/body_Link4.STL",
+      "source_sha256": "2edbdcfaa7033529ae36a4db69e0f01100efec36b7b60b88df94ee9cc92480b3",
+      "source_bytes": 2150484,
+      "adapted_sha256": "2edbdcfaa7033529ae36a4db69e0f01100efec36b7b60b88df94ee9cc92480b3",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/body_Link5.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/body_Link5.STL",
+      "source_sha256": "ba78eb77fa40eab9d41aeb0eff0430043de37146952b6b5b219d35f2027865c7",
+      "source_bytes": 6975184,
+      "adapted_sha256": "ba78eb77fa40eab9d41aeb0eff0430043de37146952b6b5b219d35f2027865c7",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/chassis_L_wheel_front_link1.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/chassis_L_wheel_front_link1.STL",
+      "source_sha256": "ea29ee75918bfd73dd027566221ff9676c004da08f4fe63317777c9cd7611f12",
+      "source_bytes": 106384,
+      "adapted_sha256": "ea29ee75918bfd73dd027566221ff9676c004da08f4fe63317777c9cd7611f12",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/chassis_L_wheel_front_link2.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/chassis_L_wheel_front_link2.STL",
+      "source_sha256": "dcbca673162ae826bc4bf254b33c70885526eed5e31f0aed358efd90db0a84a7",
+      "source_bytes": 478984,
+      "adapted_sha256": "dcbca673162ae826bc4bf254b33c70885526eed5e31f0aed358efd90db0a84a7",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/chassis_L_wheel_rear_link1.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/chassis_L_wheel_rear_link1.STL",
+      "source_sha256": "15a6c5ba884c99cf2eb24d8a05946e99d71c23d2c77be65d3b3b86028bf9bb72",
+      "source_bytes": 102784,
+      "adapted_sha256": "15a6c5ba884c99cf2eb24d8a05946e99d71c23d2c77be65d3b3b86028bf9bb72",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/chassis_L_wheel_rear_link2.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/chassis_L_wheel_rear_link2.STL",
+      "source_sha256": "2d27681b7ff213aba13a5dcaf163c769dfdb5744ecc5add88e25f82ff00f1409",
+      "source_bytes": 479584,
+      "adapted_sha256": "2d27681b7ff213aba13a5dcaf163c769dfdb5744ecc5add88e25f82ff00f1409",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/chassis_R_wheel_front_link1.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/chassis_R_wheel_front_link1.STL",
+      "source_sha256": "c18629756a9b234753c329278adcaa6687e136e251d9489259589d890253b4e1",
+      "source_bytes": 106384,
+      "adapted_sha256": "c18629756a9b234753c329278adcaa6687e136e251d9489259589d890253b4e1",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/chassis_R_wheel_front_link2.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/chassis_R_wheel_front_link2.STL",
+      "source_sha256": "d3238fbf7ce6255951cec32f18a9babc27e916e7fc06565903aa4913a573d745",
+      "source_bytes": 479184,
+      "adapted_sha256": "d3238fbf7ce6255951cec32f18a9babc27e916e7fc06565903aa4913a573d745",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/chassis_R_wheel_rear_link1.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/chassis_R_wheel_rear_link1.STL",
+      "source_sha256": "b2800d51f669353f0c37d30f4daadabafaea0d12cfa4ebb3c4f675fda9fef181",
+      "source_bytes": 102784,
+      "adapted_sha256": "b2800d51f669353f0c37d30f4daadabafaea0d12cfa4ebb3c4f675fda9fef181",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/chassis_R_wheel_rear_link2.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/chassis_R_wheel_rear_link2.STL",
+      "source_sha256": "845047bf5f2d22c81af473d96172fe5b06e7e1770d2e3e264a4542521ccf32d1",
+      "source_bytes": 481584,
+      "adapted_sha256": "845047bf5f2d22c81af473d96172fe5b06e7e1770d2e3e264a4542521ccf32d1",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/head_Link1.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/head_Link1.STL",
+      "source_sha256": "28959ada6360baa21ddacf31131fb6bc0dcd6d59b5e537ed59bf1596b3ff50c2",
+      "source_bytes": 370784,
+      "adapted_sha256": "28959ada6360baa21ddacf31131fb6bc0dcd6d59b5e537ed59bf1596b3ff50c2",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/head_Link2.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/head_Link2.STL",
+      "source_sha256": "a230bfbe0c27ccdb39eee354f2a75646d8908333ae7199f4a289cf092d1e4982",
+      "source_bytes": 952984,
+      "adapted_sha256": "a230bfbe0c27ccdb39eee354f2a75646d8908333ae7199f4a289cf092d1e4982",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/meshes/head_Link3.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/head_Link3.STL",
+      "source_sha256": "1aa95e188e974ecba212b1b74f512ab332a5f46b37778254453148127ebdc968",
+      "source_bytes": 2943484,
+      "adapted_sha256": "1aa95e188e974ecba212b1b74f512ab332a5f46b37778254453148127ebdc968",
+      "modified": false
+    },
+    {
+      "path": "assets/f1_wheel/urdf/f1_wheel_0602_new.urdf",
+      "source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/urdf/f1_wheel_0602_new.urdf",
+      "source_sha256": "bc21c6f36446aa2741d6ba20c2190836be967b1f3043dfa39eaae0983c95d5c0",
+      "source_bytes": 38269,
+      "adapted_sha256": "bc21c6f36446aa2741d6ba20c2190836be967b1f3043dfa39eaae0983c95d5c0",
+      "modified": false
+    },
+    {
+      "path": "config/control.json",
+      "source": "/home/xx_100872445/F1/PICO/pico/config/control.json",
+      "source_sha256": "49237b4a9957975941fd010ee8f809f329996b0a649ba25bc1b64c97091e6c6a",
+      "source_bytes": 3872,
+      "adapted_sha256": "4f1e6aadd868ba64826dc84de0b771daf10f006bae6d97d40c469263c4129bed",
+      "modified": true
+    },
+    {
+      "path": "scripts/wait_for_xr.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/scripts/wait_for_xr.py",
+      "source_sha256": "87fcd709c07434e4be4b38987649674d52b3745839e533f5accb18c03a92b995",
+      "source_bytes": 1894,
+      "adapted_sha256": "87fcd709c07434e4be4b38987649674d52b3745839e533f5accb18c03a92b995",
+      "modified": false
+    },
+    {
+      "path": "src/pico_f1/__init__.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/__init__.py",
+      "source_sha256": "1168ba46d0b723f1b63fa94b58c1f6fe9eb39629900e1d3f5f5cd7e2f1675b71",
+      "source_bytes": 80,
+      "adapted_sha256": "1168ba46d0b723f1b63fa94b58c1f6fe9eb39629900e1d3f5f5cd7e2f1675b71",
+      "modified": false
+    },
+    {
+      "path": "src/pico_f1/arm_clutch.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/arm_clutch.py",
+      "source_sha256": "fe5dc3d2595b99263cd35061ed536448cfea77a0eabf7bb9f4fb78ba30c45fe0",
+      "source_bytes": 1279,
+      "adapted_sha256": "fe5dc3d2595b99263cd35061ed536448cfea77a0eabf7bb9f4fb78ba30c45fe0",
+      "modified": false
+    },
+    {
+      "path": "src/pico_f1/arm_output.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/arm_output.py",
+      "source_sha256": "b00db221a452d11563cd49edf17714dcf1b1182edf39963574f6ac83c8d3f539",
+      "source_bytes": 5101,
+      "adapted_sha256": "b00db221a452d11563cd49edf17714dcf1b1182edf39963574f6ac83c8d3f539",
+      "modified": false
+    },
+    {
+      "path": "src/pico_f1/braking.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/braking.py",
+      "source_sha256": "d54994fa48503f635a7c9fbf100a920c25dc998d525fc4c80848f85a73892fec",
+      "source_bytes": 1887,
+      "adapted_sha256": "d54994fa48503f635a7c9fbf100a920c25dc998d525fc4c80848f85a73892fec",
+      "modified": false
+    },
+    {
+      "path": "src/pico_f1/buttons.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/buttons.py",
+      "source_sha256": "a622e23fe5129cef5bff7f8992504ad577de9695433abcd33bac5f3ecde7a71d",
+      "source_bytes": 5833,
+      "adapted_sha256": "a622e23fe5129cef5bff7f8992504ad577de9695433abcd33bac5f3ecde7a71d",
+      "modified": false
+    },
+    {
+      "path": "src/pico_f1/chassis.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/chassis.py",
+      "source_sha256": "cf80f9bdcaccb02cb6cc68955701752ae79a51e2010d51f5e594df9ada552e40",
+      "source_bytes": 32146,
+      "adapted_sha256": "cf80f9bdcaccb02cb6cc68955701752ae79a51e2010d51f5e594df9ada552e40",
+      "modified": false
+    },
+    {
+      "path": "src/pico_f1/config.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/config.py",
+      "source_sha256": "257a01b0e673ee349ad9937470c97921ea538714e2429d0a29ab5ccd459f7e56",
+      "source_bytes": 14245,
+      "adapted_sha256": "6a7e03f65a06fe91f88e0e0073ed399b69f4b56e79643fc2ca556ae33223e193",
+      "modified": true
+    },
+    {
+      "path": "src/pico_f1/precision.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/precision.py",
+      "source_sha256": "ee3348ba5e931593870dd854acca6b82512c1ab7905311242dfb7747f65cb151",
+      "source_bytes": 6490,
+      "adapted_sha256": "ee3348ba5e931593870dd854acca6b82512c1ab7905311242dfb7747f65cb151",
+      "modified": false
+    },
+    {
+      "path": "src/pico_f1/session_pose.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/session_pose.py",
+      "source_sha256": "ea815d47fd2ccfad7d3c0c392969d36b98fe72252d39e831263f3f4baa202e2b",
+      "source_bytes": 3292,
+      "adapted_sha256": "ea815d47fd2ccfad7d3c0c392969d36b98fe72252d39e831263f3f4baa202e2b",
+      "modified": false
+    },
+    {
+      "path": "src/pico_f1/torso.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/torso.py",
+      "source_sha256": "079877ed3a35fb120da04bd56530051f1ee2a34d4f81ae7f8842ac93011fed44",
+      "source_bytes": 4117,
+      "adapted_sha256": "079877ed3a35fb120da04bd56530051f1ee2a34d4f81ae7f8842ac93011fed44",
+      "modified": false
+    },
+    {
+      "path": "src/pico_f1/trajectory.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/trajectory.py",
+      "source_sha256": "ee01383658dfedd45a51f8bdb164338b31c7a4b560869f3bd75e4311a7c67afa",
+      "source_bytes": 7487,
+      "adapted_sha256": "ee01383658dfedd45a51f8bdb164338b31c7a4b560869f3bd75e4311a7c67afa",
+      "modified": false
+    },
+    {
+      "path": "src/pico_f1/xr_readiness.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/xr_readiness.py",
+      "source_sha256": "4c1318f444b6063427d5862c0ace1b4cdf16b2beff83897cd32aa498f9c6171c",
+      "source_bytes": 2285,
+      "adapted_sha256": "4c1318f444b6063427d5862c0ace1b4cdf16b2beff83897cd32aa498f9c6171c",
+      "modified": false
+    },
+    {
+      "path": "tests/test_arm_clutch.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/tests/test_arm_clutch.py",
+      "source_sha256": "c703ceb9a6d24ce3d7ab5fd90a7c28eb64e4a7cb04d11ea3499cd4b2ee7e2196",
+      "source_bytes": 1321,
+      "adapted_sha256": "c703ceb9a6d24ce3d7ab5fd90a7c28eb64e4a7cb04d11ea3499cd4b2ee7e2196",
+      "modified": false
+    },
+    {
+      "path": "tests/test_arm_output.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/tests/test_arm_output.py",
+      "source_sha256": "3397dde99a3c69330e021bb480b6c63098398b58361f06969f06acaccce11589",
+      "source_bytes": 9095,
+      "adapted_sha256": "3397dde99a3c69330e021bb480b6c63098398b58361f06969f06acaccce11589",
+      "modified": false
+    },
+    {
+      "path": "tests/test_precision.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/tests/test_precision.py",
+      "source_sha256": "f8b31b8e3c49559d3281f1c1e8be3dc7423b0f0609d4294d84a14fc5872f45ad",
+      "source_bytes": 5463,
+      "adapted_sha256": "f8b31b8e3c49559d3281f1c1e8be3dc7423b0f0609d4294d84a14fc5872f45ad",
+      "modified": false
+    },
+    {
+      "path": "tests/test_trajectory.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/tests/test_trajectory.py",
+      "source_sha256": "e210ca1a4c1d43e987f3940ac6632da7c516ac54d6c23f554ac9bf1c6ce7adb8",
+      "source_bytes": 5660,
+      "adapted_sha256": "e210ca1a4c1d43e987f3940ac6632da7c516ac54d6c23f554ac9bf1c6ce7adb8",
+      "modified": false
+    },
+    {
+      "path": "tests/test_xr_connection.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/tests/test_xr_connection.py",
+      "source_sha256": "7fcbc084d75780c55c88660430b67b68256627d01e34d25f3345614829b897db",
+      "source_bytes": 4998,
+      "adapted_sha256": "7fcbc084d75780c55c88660430b67b68256627d01e34d25f3345614829b897db",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/src/python/_f1_control_urdf_utils.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/src/python/_f1_control_urdf_utils.py",
+      "source_sha256": "706204ad68a0c9c191a6878822ff21b56d333ec9767c604fddbd507197254b77",
+      "source_bytes": 13190,
+      "adapted_sha256": "127c872a4959b79af42f7bcd99a4a68f4f9c12facf284d2ee7a52030b5a12dd3",
+      "modified": true
+    },
+    {
+      "path": "vendor/f1_safety/src/python/_mujoco_collision.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/src/python/_mujoco_collision.py",
+      "source_sha256": "61bce5aa56ff4e82136b9fdc83f5663dcbb75db737d57f38e42dfeb5025207ab",
+      "source_bytes": 21547,
+      "adapted_sha256": "61bce5aa56ff4e82136b9fdc83f5663dcbb75db737d57f38e42dfeb5025207ab",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/src/python/_mujoco_com.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/src/python/_mujoco_com.py",
+      "source_sha256": "c1d8e0d2939cbf5568cab858296cc5ee893aad931b63b2cd8db20fe3ff8d53a9",
+      "source_bytes": 9621,
+      "adapted_sha256": "c1d8e0d2939cbf5568cab858296cc5ee893aad931b63b2cd8db20fe3ff8d53a9",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/src/python/_mujoco_geometry_utils.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/src/python/_mujoco_geometry_utils.py",
+      "source_sha256": "651d10db2e0f8a3b85e86013349c98363788230dead3cea7bcf722be92dcede8",
+      "source_bytes": 9833,
+      "adapted_sha256": "651d10db2e0f8a3b85e86013349c98363788230dead3cea7bcf722be92dcede8",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/src/python/_mujoco_types.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/src/python/_mujoco_types.py",
+      "source_sha256": "c98072b7ab8dbd97af8ccf1276d6f418234ba99090ed09bf33dcb634e2f43c81",
+      "source_bytes": 4372,
+      "adapted_sha256": "c98072b7ab8dbd97af8ccf1276d6f418234ba99090ed09bf33dcb634e2f43c81",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/src/python/_safety_protector.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/src/python/_safety_protector.py",
+      "source_sha256": "dd7585a2c660e55b675ee2f3b5e2827867f42a14be49493b3f2077a2db2e86be",
+      "source_bytes": 18784,
+      "adapted_sha256": "dd7585a2c660e55b675ee2f3b5e2827867f42a14be49493b3f2077a2db2e86be",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/src/python/com_and_collision_protect_modules.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/src/python/com_and_collision_protect_modules.py",
+      "source_sha256": "c0490e3e19ce49e9de11ec78bbe7a6608fd9265b6b166961c9f61f8e30406bb7",
+      "source_bytes": 9863,
+      "adapted_sha256": "c0490e3e19ce49e9de11ec78bbe7a6608fd9265b6b166961c9f61f8e30406bb7",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/src/python/f1_collision_guard.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/src/python/f1_collision_guard.py",
+      "source_sha256": "4d05b6ad30da68d77901bafca57ddf53da91269e82a8a74ab42aceaf36d6dc51",
+      "source_bytes": 10629,
+      "adapted_sha256": "4d05b6ad30da68d77901bafca57ddf53da91269e82a8a74ab42aceaf36d6dc51",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/src/python/f1_mesh_collision.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/src/python/f1_mesh_collision.py",
+      "source_sha256": "631d1b591931322e2a3cb0f16d8ce5326c4b54181abe48ddd4b24ae3c6b779e4",
+      "source_bytes": 8246,
+      "adapted_sha256": "631d1b591931322e2a3cb0f16d8ce5326c4b54181abe48ddd4b24ae3c6b779e4",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/src/python/f1_safety_config.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/src/python/f1_safety_config.py",
+      "source_sha256": "34cd8737bb0900a745874c69aeffb6984e7193c4f4e24c581bb822c8f1a417e9",
+      "source_bytes": 18125,
+      "adapted_sha256": "34cd8737bb0900a745874c69aeffb6984e7193c4f4e24c581bb822c8f1a417e9",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/src/python/f1_safety_config.yaml",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/src/python/f1_safety_config.yaml",
+      "source_sha256": "83ad2c6bad9686c32c126efdfdfea4b943773c67ed48a4bc9f44e2121c025422",
+      "source_bytes": 8475,
+      "adapted_sha256": "83ad2c6bad9686c32c126efdfdfea4b943773c67ed48a4bc9f44e2121c025422",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/src/python/f1_safety_config_types.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/src/python/f1_safety_config_types.py",
+      "source_sha256": "123f65f1a76412038ee0320d6ecfa4bc81338fc36b0e29f37547f6c868e50d04",
+      "source_bytes": 4681,
+      "adapted_sha256": "123f65f1a76412038ee0320d6ecfa4bc81338fc36b0e29f37547f6c868e50d04",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/src/python/f1_safety_modules.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/src/python/f1_safety_modules.py",
+      "source_sha256": "88cb63f3de0235f1351d7ced5c5a58d603d93293912982470fb6317ac2b24854",
+      "source_bytes": 18122,
+      "adapted_sha256": "88cb63f3de0235f1351d7ced5c5a58d603d93293912982470fb6317ac2b24854",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/src/python/mujoco_com_guard_core.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/src/python/mujoco_com_guard_core.py",
+      "source_sha256": "99b339b520a660cd2447e874e126d08cc35855d97ea8eee561ab3ecf323706aa",
+      "source_bytes": 4810,
+      "adapted_sha256": "99b339b520a660cd2447e874e126d08cc35855d97ea8eee561ab3ecf323706aa",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/arm_L_Link1.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/arm_L_Link1.STL",
+      "source_sha256": "122f5da1eaa3c566290f45bc4a6e91a6e20fa559a2c136466cafd115609aa4ff",
+      "source_bytes": 158884,
+      "adapted_sha256": "122f5da1eaa3c566290f45bc4a6e91a6e20fa559a2c136466cafd115609aa4ff",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/arm_L_Link2.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/arm_L_Link2.STL",
+      "source_sha256": "351f3caa1d717377d8039c5d2d15d26dd239a802910bca0c3fd72dba4cd684f6",
+      "source_bytes": 329584,
+      "adapted_sha256": "351f3caa1d717377d8039c5d2d15d26dd239a802910bca0c3fd72dba4cd684f6",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/arm_L_Link3.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/arm_L_Link3.STL",
+      "source_sha256": "1d889da26b0a281f74707aa727301cf36996344fb04c62bbe825706d93c18452",
+      "source_bytes": 144184,
+      "adapted_sha256": "1d889da26b0a281f74707aa727301cf36996344fb04c62bbe825706d93c18452",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/arm_L_Link4.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/arm_L_Link4.STL",
+      "source_sha256": "cb70db2455c31437fff32afaa34898349087f9183d515c7607b2440bd67662c4",
+      "source_bytes": 317484,
+      "adapted_sha256": "cb70db2455c31437fff32afaa34898349087f9183d515c7607b2440bd67662c4",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/arm_L_Link5.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/arm_L_Link5.STL",
+      "source_sha256": "48396c2ae5f6a5241d9e58e9a4b5a2ed374f440c28a446f20d490fc350282124",
+      "source_bytes": 324084,
+      "adapted_sha256": "48396c2ae5f6a5241d9e58e9a4b5a2ed374f440c28a446f20d490fc350282124",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/arm_L_Link6.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/arm_L_Link6.STL",
+      "source_sha256": "15ba20e048bcab55f819a72dece27095f64872f0adcc848e6a03a5c6addba798",
+      "source_bytes": 107884,
+      "adapted_sha256": "15ba20e048bcab55f819a72dece27095f64872f0adcc848e6a03a5c6addba798",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/arm_L_Link7.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/arm_L_Link7.STL",
+      "source_sha256": "9da4c0c7d3a6ce1b9329deff6edc31dc59151917621b54aba49c28b9c6b99f00",
+      "source_bytes": 734684,
+      "adapted_sha256": "9da4c0c7d3a6ce1b9329deff6edc31dc59151917621b54aba49c28b9c6b99f00",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/arm_R_Link1.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/arm_R_Link1.STL",
+      "source_sha256": "b136b7bc9b565700d9089260c83c9191356cab0658dea5646b296a6ba2c50bc4",
+      "source_bytes": 158284,
+      "adapted_sha256": "b136b7bc9b565700d9089260c83c9191356cab0658dea5646b296a6ba2c50bc4",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/arm_R_Link2.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/arm_R_Link2.STL",
+      "source_sha256": "4b18874520252e4209a6c15005c1636ebd472dcfb431d5c127d157cffe660f40",
+      "source_bytes": 327184,
+      "adapted_sha256": "4b18874520252e4209a6c15005c1636ebd472dcfb431d5c127d157cffe660f40",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/arm_R_Link3.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/arm_R_Link3.STL",
+      "source_sha256": "094ac1bea27a907b6a95c5f3cabc661993b445fdde56a25f6fde47477efbcf03",
+      "source_bytes": 140584,
+      "adapted_sha256": "094ac1bea27a907b6a95c5f3cabc661993b445fdde56a25f6fde47477efbcf03",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/arm_R_Link4.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/arm_R_Link4.STL",
+      "source_sha256": "6bef3f3b02dc7f3e4678289eaa6e10f5ac2ca07258c6286d50e579c1ed6052ff",
+      "source_bytes": 319684,
+      "adapted_sha256": "6bef3f3b02dc7f3e4678289eaa6e10f5ac2ca07258c6286d50e579c1ed6052ff",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/arm_R_Link5.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/arm_R_Link5.STL",
+      "source_sha256": "7458754ad9675c44a68afd9d59f00494ebf6bf508b60417efeb3a660c8840087",
+      "source_bytes": 324984,
+      "adapted_sha256": "7458754ad9675c44a68afd9d59f00494ebf6bf508b60417efeb3a660c8840087",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/arm_R_Link6.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/arm_R_Link6.STL",
+      "source_sha256": "3bf5bbbdd3f2c22a1bcec8f410661f9815117fb75e276ca59ff8b4cf8545c85d",
+      "source_bytes": 108884,
+      "adapted_sha256": "3bf5bbbdd3f2c22a1bcec8f410661f9815117fb75e276ca59ff8b4cf8545c85d",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/arm_R_Link7.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/arm_R_Link7.STL",
+      "source_sha256": "64b17deaad40a8077de806963fc8bf6121d077312b2e0c4584936f3aaaba9493",
+      "source_bytes": 737584,
+      "adapted_sha256": "64b17deaad40a8077de806963fc8bf6121d077312b2e0c4584936f3aaaba9493",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/base_link.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/base_link.STL",
+      "source_sha256": "a7cfb3eb6148433848b6e5416c195743f632ea0e291b5edd5f6494d9d754ff36",
+      "source_bytes": 886084,
+      "adapted_sha256": "a7cfb3eb6148433848b6e5416c195743f632ea0e291b5edd5f6494d9d754ff36",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/body_Link1.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/body_Link1.STL",
+      "source_sha256": "1a4340a16efbcd2b53eabcb67f73f0b1166fa8a65457495001fb45ece31df003",
+      "source_bytes": 3393984,
+      "adapted_sha256": "1a4340a16efbcd2b53eabcb67f73f0b1166fa8a65457495001fb45ece31df003",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/body_Link2.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/body_Link2.STL",
+      "source_sha256": "cc828252b579a02dc47bea7288aa7945254f791601cdfa9d1b3b22f70f71cd4c",
+      "source_bytes": 1373184,
+      "adapted_sha256": "cc828252b579a02dc47bea7288aa7945254f791601cdfa9d1b3b22f70f71cd4c",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/body_Link3.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/body_Link3.STL",
+      "source_sha256": "87e58ec84a748d0d314e6b5852306355258a0dcbd6d626832cf7c460d0cb360c",
+      "source_bytes": 2644584,
+      "adapted_sha256": "87e58ec84a748d0d314e6b5852306355258a0dcbd6d626832cf7c460d0cb360c",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/body_Link4.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/body_Link4.STL",
+      "source_sha256": "2edbdcfaa7033529ae36a4db69e0f01100efec36b7b60b88df94ee9cc92480b3",
+      "source_bytes": 2150484,
+      "adapted_sha256": "2edbdcfaa7033529ae36a4db69e0f01100efec36b7b60b88df94ee9cc92480b3",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/body_Link5.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/body_Link5.STL",
+      "source_sha256": "ba78eb77fa40eab9d41aeb0eff0430043de37146952b6b5b219d35f2027865c7",
+      "source_bytes": 6975184,
+      "adapted_sha256": "ba78eb77fa40eab9d41aeb0eff0430043de37146952b6b5b219d35f2027865c7",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/chassis_L_wheel_front_link1.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/chassis_L_wheel_front_link1.STL",
+      "source_sha256": "ea29ee75918bfd73dd027566221ff9676c004da08f4fe63317777c9cd7611f12",
+      "source_bytes": 106384,
+      "adapted_sha256": "ea29ee75918bfd73dd027566221ff9676c004da08f4fe63317777c9cd7611f12",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/chassis_L_wheel_front_link2.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/chassis_L_wheel_front_link2.STL",
+      "source_sha256": "dcbca673162ae826bc4bf254b33c70885526eed5e31f0aed358efd90db0a84a7",
+      "source_bytes": 478984,
+      "adapted_sha256": "dcbca673162ae826bc4bf254b33c70885526eed5e31f0aed358efd90db0a84a7",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/chassis_L_wheel_rear_link1.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/chassis_L_wheel_rear_link1.STL",
+      "source_sha256": "15a6c5ba884c99cf2eb24d8a05946e99d71c23d2c77be65d3b3b86028bf9bb72",
+      "source_bytes": 102784,
+      "adapted_sha256": "15a6c5ba884c99cf2eb24d8a05946e99d71c23d2c77be65d3b3b86028bf9bb72",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/chassis_L_wheel_rear_link2.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/chassis_L_wheel_rear_link2.STL",
+      "source_sha256": "2d27681b7ff213aba13a5dcaf163c769dfdb5744ecc5add88e25f82ff00f1409",
+      "source_bytes": 479584,
+      "adapted_sha256": "2d27681b7ff213aba13a5dcaf163c769dfdb5744ecc5add88e25f82ff00f1409",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/chassis_R_wheel_front_link1.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/chassis_R_wheel_front_link1.STL",
+      "source_sha256": "c18629756a9b234753c329278adcaa6687e136e251d9489259589d890253b4e1",
+      "source_bytes": 106384,
+      "adapted_sha256": "c18629756a9b234753c329278adcaa6687e136e251d9489259589d890253b4e1",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/chassis_R_wheel_front_link2.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/chassis_R_wheel_front_link2.STL",
+      "source_sha256": "d3238fbf7ce6255951cec32f18a9babc27e916e7fc06565903aa4913a573d745",
+      "source_bytes": 479184,
+      "adapted_sha256": "d3238fbf7ce6255951cec32f18a9babc27e916e7fc06565903aa4913a573d745",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/chassis_R_wheel_rear_link1.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/chassis_R_wheel_rear_link1.STL",
+      "source_sha256": "b2800d51f669353f0c37d30f4daadabafaea0d12cfa4ebb3c4f675fda9fef181",
+      "source_bytes": 102784,
+      "adapted_sha256": "b2800d51f669353f0c37d30f4daadabafaea0d12cfa4ebb3c4f675fda9fef181",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/chassis_R_wheel_rear_link2.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/chassis_R_wheel_rear_link2.STL",
+      "source_sha256": "845047bf5f2d22c81af473d96172fe5b06e7e1770d2e3e264a4542521ccf32d1",
+      "source_bytes": 481584,
+      "adapted_sha256": "845047bf5f2d22c81af473d96172fe5b06e7e1770d2e3e264a4542521ccf32d1",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/head_Link1.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/head_Link1.STL",
+      "source_sha256": "28959ada6360baa21ddacf31131fb6bc0dcd6d59b5e537ed59bf1596b3ff50c2",
+      "source_bytes": 370784,
+      "adapted_sha256": "28959ada6360baa21ddacf31131fb6bc0dcd6d59b5e537ed59bf1596b3ff50c2",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/head_Link2.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/head_Link2.STL",
+      "source_sha256": "a230bfbe0c27ccdb39eee354f2a75646d8908333ae7199f4a289cf092d1e4982",
+      "source_bytes": 952984,
+      "adapted_sha256": "a230bfbe0c27ccdb39eee354f2a75646d8908333ae7199f4a289cf092d1e4982",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/meshes/head_Link3.STL",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/meshes/head_Link3.STL",
+      "source_sha256": "1aa95e188e974ecba212b1b74f512ab332a5f46b37778254453148127ebdc968",
+      "source_bytes": 2943484,
+      "adapted_sha256": "1aa95e188e974ecba212b1b74f512ab332a5f46b37778254453148127ebdc968",
+      "modified": false
+    },
+    {
+      "path": "vendor/f1_safety/urdf/f1_wheel/urdf/f1_wheel_0602_new.urdf",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/f1_safety/urdf/f1_wheel/urdf/f1_wheel_0602_new.urdf",
+      "source_sha256": "6a89ab665ab8fef11a1e428781600e4025586041a9ec5643879bd1306ef06df4",
+      "source_bytes": 39246,
+      "adapted_sha256": "6a89ab665ab8fef11a1e428781600e4025586041a9ec5643879bd1306ef06df4",
+      "modified": false
+    },
+    {
+      "path": "vendor/xrobotoolkit/xrobotoolkit_teleop/__init__.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/__init__.py",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_bytes": 0,
+      "adapted_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "modified": false
+    },
+    {
+      "path": "vendor/xrobotoolkit/xrobotoolkit_teleop/common/base_teleop_controller.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/common/base_teleop_controller.py",
+      "source_sha256": "1c2120afbbf78a66365bbad1e8c468884eca3352ecbe2d610e559cd25ce5d9a0",
+      "source_bytes": 77522,
+      "adapted_sha256": "f35b7b954028a5765852c12a4826ee86fc2b00a9dadbc341c1de7d9682b638c0",
+      "modified": true
+    },
+    {
+      "path": "vendor/xrobotoolkit/xrobotoolkit_teleop/common/base_teleop_controller_ik_mixin.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/common/base_teleop_controller_ik_mixin.py",
+      "source_sha256": "ce0fe4a8c6427d00fb81d4ef67c4653723009e8f5ccc47376e1d5ab4b94fd079",
+      "source_bytes": 29186,
+      "adapted_sha256": "abd8ea0b238aadf1bfceff28f37305c00f3c7d3fc09a365c2f7a308669c766db",
+      "modified": true
+    },
+    {
+      "path": "vendor/xrobotoolkit/xrobotoolkit_teleop/common/base_teleop_controller_ros2_mixin.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/common/base_teleop_controller_ros2_mixin.py",
+      "source_sha256": "3e517988031b95d53cea33ffc621a24ed314334a494abe00bd11419dd292c24d",
+      "source_bytes": 40109,
+      "adapted_sha256": "1cd88094552144485e7d7aa9549fdc11db9d0959c51279896a0df07d3bd65afa",
+      "modified": true
+    },
+    {
+      "path": "vendor/xrobotoolkit/xrobotoolkit_teleop/common/data_logger.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/common/data_logger.py",
+      "source_sha256": "b9a6398abdf33a2f215ac910fc0421e28ecdcc5ca1ffac7aa0af7b87b14a1b2e",
+      "source_bytes": 1708,
+      "adapted_sha256": "b9a6398abdf33a2f215ac910fc0421e28ecdcc5ca1ffac7aa0af7b87b14a1b2e",
+      "modified": false
+    },
+    {
+      "path": "vendor/xrobotoolkit/xrobotoolkit_teleop/common/send2real_robot_f1_udp.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/common/send2real_robot_f1_udp.py",
+      "source_sha256": "92dab8ad5142ed69c9969d45302a435eba2f805978340f482380d6e3583fa1df",
+      "source_bytes": 7558,
+      "adapted_sha256": "51bf470312f4aa0ebbace12bec617d3cb3b2bae29125d753fb94c664320cef2e",
+      "modified": true
+    },
+    {
+      "path": "vendor/xrobotoolkit/xrobotoolkit_teleop/common/xr_client.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/common/xr_client.py",
+      "source_sha256": "a4717e35769e1d79c72d2e5ab387b2f09dca0eff6be78f329297fbfc313aeb58",
+      "source_bytes": 9093,
+      "adapted_sha256": "a4717e35769e1d79c72d2e5ab387b2f09dca0eff6be78f329297fbfc313aeb58",
+      "modified": false
+    },
+    {
+      "path": "vendor/xrobotoolkit/xrobotoolkit_teleop/simulation/__init__.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/simulation/__init__.py",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_bytes": 0,
+      "adapted_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "modified": false
+    },
+    {
+      "path": "vendor/xrobotoolkit/xrobotoolkit_teleop/simulation/placo_teleop_controller.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/simulation/placo_teleop_controller.py",
+      "source_sha256": "867036ee78b35c4e3679991de7b91d3fd07e9dc3c46f5bfe0c1a42ca0dc54291",
+      "source_bytes": 4212,
+      "adapted_sha256": "867036ee78b35c4e3679991de7b91d3fd07e9dc3c46f5bfe0c1a42ca0dc54291",
+      "modified": false
+    },
+    {
+      "path": "vendor/xrobotoolkit/xrobotoolkit_teleop/utils/__init__.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/utils/__init__.py",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "source_bytes": 0,
+      "adapted_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "modified": false
+    },
+    {
+      "path": "vendor/xrobotoolkit/xrobotoolkit_teleop/utils/geometry.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/utils/geometry.py",
+      "source_sha256": "bff1a0538c08d4b462c037a2a7fefc89cbd3ba2bae95e384d9a0118532c92f63",
+      "source_bytes": 3987,
+      "adapted_sha256": "bff1a0538c08d4b462c037a2a7fefc89cbd3ba2bae95e384d9a0118532c92f63",
+      "modified": false
+    },
+    {
+      "path": "vendor/xrobotoolkit/xrobotoolkit_teleop/utils/parallel_gripper_utils.py",
+      "source": "/home/xx_100872445/F1/PICO/pico/vendor/xrobotoolkit/xrobotoolkit_teleop/utils/parallel_gripper_utils.py",
+      "source_sha256": "22d63ab03449574c5964c5c5367d2c7e015ba9f2699c27ad11811038c5d66f8f",
+      "source_bytes": 313,
+      "adapted_sha256": "22d63ab03449574c5964c5c5367d2c7e015ba9f2699c27ad11811038c5d66f8f",
+      "modified": false
+    }
+  ],
+  "original_source_status": {
+    "checked_at": "2026-09-28T03:32:43.493748+00:00",
+    "readable_files": 0,
+    "unavailable_files": 110,
+    "meaning": "Historical source paths are unavailable in this workspace. Original source_sha256 values and LOCAL_CHANGES.patch are retained as captured provenance; no new comparison against unavailable originals is claimed.",
+    "retained_local_changes_sha256": "7a062ed3412774896dda8ef11be0f455c8e67804d3b1d6bc62568228f650f11b"
+  },
+  "standalone_migration": {
+    "updated_at": "2026-09-28T03:32:43.493748+00:00",
+    "baseline_kind": "Previously adapted project snapshot; not the original upstream source",
+    "baseline_location": "Historical F1/pico_upper snapshot; not a runtime dependency",
+    "baseline_upstream_manifest_sha256": "9f3581154cd7d84b503f9ab9952327df805ec0ac29f29207b401456d83753e89",
+    "baseline_adapted_source_files_verified": 110,
+    "patch": "STANDALONE_MIGRATION.patch",
+    "patch_sha256": "0d1178caa6ee3035becb274ce0b9e8b4ab7ef08674695ee628dc05420d35511f",
+    "patch_basis": "Previous adapted snapshot to standalone integration; excludes provenance metadata to avoid recursive checksums",
+    "patch_replay_verified": true,
+    "files": [
+      {
+        "path": "README.md",
+        "baseline_sha256": "6bd4564768ad3559b68fdaecdb1a8f4d9ec32377d34f5097449863dd677fceeb",
+        "adapted_sha256": "937a09d6f2f6eca5c604d66eeeeb972ad94e42b099f222e468550b4fb0056f14",
+        "baseline_bytes": 4918,
+        "adapted_bytes": 934
+      },
+      {
+        "path": "docs/OPERATIONS.md",
+        "baseline_sha256": null,
+        "adapted_sha256": "2df93ca4821262de362aca6b1074395afc3b32a7ae0fa4b8f362d37b1623bccf",
+        "baseline_bytes": 0,
+        "adapted_bytes": 5355
+      },
+      {
+        "path": "docs/adaptation.md",
+        "baseline_sha256": "7fdcc40c053604dae51cdb28fd31fe8626ffc62c1a31ad75a43cb8861d34253a",
+        "adapted_sha256": "fe91883481410767778b2de7389437431dbc038e7d9053df854e08088a1651d8",
+        "baseline_bytes": 4373,
+        "adapted_bytes": 4568
+      },
+      {
+        "path": "scripts/env.sh",
+        "baseline_sha256": "3cf2daee95648a7a807bf3af98193871724947c40665871b5e751d6840352768",
+        "adapted_sha256": "d4a20d64233891c4967221017227f01dd237fef2e1af5c75ead1b8e259c879a2",
+        "baseline_bytes": 2068,
+        "adapted_bytes": 2607
+      },
+      {
+        "path": "scripts/finalize_manifest.py",
+        "baseline_sha256": "40d9de6eacc23b3acba0e68eab036cf156255f8dcd3b1310b4a2404b373bfe0e",
+        "adapted_sha256": "ee0243cf9cfc20df95237659fdc76aa99f8e857b1d08909db1a07faf84ffb072",
+        "baseline_bytes": 1827,
+        "adapted_bytes": 2324
+      },
+      {
+        "path": "stop.sh",
+        "baseline_sha256": "b2cdabf381bf15956ea39891f092590b504bbe4fb73d2abaf1acdf721815283a",
+        "adapted_sha256": "0b7228ea194a6ad58b96ff1c52a8550db9fc08912e6e2e414d1008aa6886efae",
+        "baseline_bytes": 374,
+        "adapted_bytes": 628
+      }
+    ]
+  }
+}

@@ -1,0 +1,354 @@
+{
+  "robot_id": "F1-09",
+  "motion_enabled": true,
+  "joints_enabled": true,
+  "limits_verified": true,
+  "control_contract_verified": true,
+  "gripper_verified": true,
+  "base_verified": true,
+  "expected_hard_auto": true,
+  "feedback_max_age_s": 0.25,
+  "graph_max_age_s": 0.5,
+  "graph_observation_s": 1.0,
+  "command_hz": 30.0,
+  "max_joint_delta_deg": null,
+  "max_joint_speed_deg_s": 30.0,
+  "max_joint_acceleration_deg_s2": 75.0,
+  "joint_tolerance_deg": 1.0,
+  "settle_timeout_s": 3.0,
+  "gripper_tolerance": 5.0,
+  "gripper_timeout_s": 4.0,
+  "max_base_ttl_s": 0.3,
+  "base_speed_limits": {
+    "vx": 0.1,
+    "vy": 0.1,
+    "wz": 0.15
+  },
+  "joint_limits_deg": {
+    "arm_l_j1": [
+      -178,
+      178
+    ],
+    "arm_l_j2": [
+      -94,
+      120
+    ],
+    "arm_l_j3": [
+      -178,
+      178
+    ],
+    "arm_l_j4": [
+      -145,
+      60
+    ],
+    "arm_l_j5": [
+      -178,
+      178
+    ],
+    "arm_l_j6": [
+      -60,
+      60
+    ],
+    "arm_l_j7": [
+      -90,
+      90
+    ],
+    "arm_r_j1": [
+      -178,
+      178
+    ],
+    "arm_r_j2": [
+      -94,
+      120
+    ],
+    "arm_r_j3": [
+      -178,
+      178
+    ],
+    "arm_r_j4": [
+      -145,
+      60
+    ],
+    "arm_r_j5": [
+      -178,
+      178
+    ],
+    "arm_r_j6": [
+      -60,
+      60
+    ],
+    "arm_r_j7": [
+      -90,
+      90
+    ],
+    "body_j1": [
+      -130,
+      130
+    ],
+    "body_j2": [
+      -10,
+      10
+    ],
+    "body_j3": [
+      -70,
+      0
+    ],
+    "body_j4": [
+      -95,
+      0
+    ],
+    "body_j5": [
+      -40,
+      0
+    ],
+    "head_j1": [
+      -40,
+      40
+    ],
+    "head_j2": [
+      -25,
+      25
+    ],
+    "head_j3": [
+      -15,
+      15
+    ]
+  },
+  "base_frame": "base_link",
+  "topics": {
+    "joints": "/hal/joint_states",
+    "joint_command": "/motion_ctl/joint_ctl",
+    "left_gripper": "/motion_ctl/gripper/left/state",
+    "right_gripper": "/motion_ctl/gripper/right/state",
+    "left_gripper_command": "/motion_ctl/gripper/left",
+    "right_gripper_command": "/motion_ctl/gripper/right",
+    "base": "/move/State",
+    "base_command": "/move/ManualMoveCmd",
+    "battery": "/driver/battery/Data"
+  },
+  "camera_topics": {
+    "head": "/camera/head/color/image_raw/compressed",
+    "left": "/camera/left_wrist/color/image_raw/compressed",
+    "right": "/camera/right_wrist/color/image_raw/compressed"
+  },
+  "id": "F1-09",
+  "label": "F1-09 · Thor",
+  "ip": "192.168.31.58",
+  "version": "0.6.6",
+  "groups": {
+    "left_arm": [
+      "arm_l_j1",
+      "arm_l_j2",
+      "arm_l_j3",
+      "arm_l_j4",
+      "arm_l_j5",
+      "arm_l_j6",
+      "arm_l_j7"
+    ],
+    "right_arm": [
+      "arm_r_j1",
+      "arm_r_j2",
+      "arm_r_j3",
+      "arm_r_j4",
+      "arm_r_j5",
+      "arm_r_j6",
+      "arm_r_j7"
+    ],
+    "head": [
+      "head_j1",
+      "head_j2",
+      "head_j3"
+    ],
+    "body": [
+      "body_j1",
+      "body_j2",
+      "body_j3",
+      "body_j4",
+      "body_j5"
+    ]
+  },
+  "limits": {
+    "arm_l_j1": [
+      -178,
+      178
+    ],
+    "arm_l_j2": [
+      -94,
+      120
+    ],
+    "arm_l_j3": [
+      -178,
+      178
+    ],
+    "arm_l_j4": [
+      -145,
+      60
+    ],
+    "arm_l_j5": [
+      -178,
+      178
+    ],
+    "arm_l_j6": [
+      -60,
+      60
+    ],
+    "arm_l_j7": [
+      -90,
+      90
+    ],
+    "arm_r_j1": [
+      -178,
+      178
+    ],
+    "arm_r_j2": [
+      -94,
+      120
+    ],
+    "arm_r_j3": [
+      -178,
+      178
+    ],
+    "arm_r_j4": [
+      -145,
+      60
+    ],
+    "arm_r_j5": [
+      -178,
+      178
+    ],
+    "arm_r_j6": [
+      -60,
+      60
+    ],
+    "arm_r_j7": [
+      -90,
+      90
+    ],
+    "body_j1": [
+      -130,
+      130
+    ],
+    "body_j2": [
+      -10,
+      10
+    ],
+    "body_j3": [
+      -70,
+      0
+    ],
+    "body_j4": [
+      -95,
+      0
+    ],
+    "body_j5": [
+      -40,
+      0
+    ],
+    "head_j1": [
+      -40,
+      40
+    ],
+    "head_j2": [
+      -25,
+      25
+    ],
+    "head_j3": [
+      -15,
+      15
+    ]
+  },
+  "contract_note": "F1-09 绑定驱动/全身配置；双臂、身体、头部、夹爪与底盘现场操作。身体/头部200Hz，工程模型地面排除不等于完整碰撞规划；相对升降按本机URDF几何，未做绝对高度标定。",
+  "data_path": "/home/user/lxl/pico_data",
+  "expected_machine_id": "90429b8a96e04ef79dbc12175b538115",
+  "controller_binary_sha256": "898ef58fb7118ecbf416af134e01700ed38ffdd3480293cf06fe95da14bce0c8",
+  "expected_motor_parameters": {
+    "arm_control_mode": 3,
+    "arm_impedance_type": 1,
+    "left_gripper_type": "omnipicker",
+    "right_gripper_type": "omnipicker",
+    "enable_udp_motors": true,
+    "udp_motor_host": "127.0.0.1",
+    "udp_motor_send_port": 50001
+  },
+  "fixed_speed": true,
+  "body_speed_deg_s": 15.0,
+  "body_acceleration_deg_s2": 40.0,
+  "max_action_s": 6.0,
+  "command_policy": "actual_commands",
+  "command_monitor_binary": "/home/user/Bruno/F1/F1-4242/runtime/command-monitor-v1/build/libf1_command_monitor_shared.so",
+  "command_monitor_sha256": "146b5b7ad4aaa9ffa752b37106580068ff97feca592d0b9f7c8c43437c430c25",
+  "body_command_hz": 200.0,
+  "body_max_command_gap_s": 0.025,
+  "default_presets": [
+    {
+      "key": "lxl-xy-reset-v1",
+      "name": "标准零位 · LXL XY（双臂）",
+      "source": "lxl_xy_reset",
+      "units": "degree",
+      "joints": {
+        "arm_l_j1": 110,
+        "arm_l_j2": -90,
+        "arm_l_j3": -90,
+        "arm_l_j4": -110,
+        "arm_l_j5": 0,
+        "arm_l_j6": 0,
+        "arm_l_j7": 0,
+        "arm_r_j1": -110,
+        "arm_r_j2": -90,
+        "arm_r_j3": 90,
+        "arm_r_j4": -110,
+        "arm_r_j5": 0,
+        "arm_r_j6": 0,
+        "arm_r_j7": 0
+      }
+    },
+    {
+      "key": "native-pose2-full-v1",
+      "name": "全身零位 · 原生 pose_2",
+      "source": "native_pose_2",
+      "units": "degree",
+      "joints": {
+        "arm_l_j1": 110.0,
+        "arm_l_j2": -90.0,
+        "arm_l_j3": -90.0,
+        "arm_l_j4": -110.0,
+        "arm_l_j5": 0.0,
+        "arm_l_j6": 0.0,
+        "arm_l_j7": 0.0,
+        "arm_r_j1": -110.0,
+        "arm_r_j2": -90.0,
+        "arm_r_j3": 90.0,
+        "arm_r_j4": -110.0,
+        "arm_r_j5": 0.0,
+        "arm_r_j6": 0.0,
+        "arm_r_j7": 0.0,
+        "body_j1": 0.0,
+        "body_j2": 0.0,
+        "body_j3": -5.0,
+        "body_j4": -10.0,
+        "body_j5": -5.0,
+        "head_j1": 0.0,
+        "head_j2": 0.0,
+        "head_j3": 0.0
+      }
+    }
+  ],
+  "ground_guard": true,
+  "feedback_limit_recovery_deg": 1.0,
+  "waist_cartesian_enabled": true,
+  "full_home_source": {
+    "path": "/home/user/workspace/whole_body_ctl/whole_body_config.ini",
+    "sha256": "5bd2a4cb8c6c91ce918b19f822bd5f55421f7716772dd74149f8c1390ed98cd1",
+    "section": "pose_2",
+    "scope": "arms14 + body5 + head3; excludes gripper and base odometry"
+  },
+  "startup_script_sha256": "64254d3005cfed067625cb4df39fe68472737cd1fdf3504b14263399521b1c75",
+  "controller_parameter_rmw": "rmw_fastrtps_cpp",
+  "max_pose_task_s": 60.0,
+  "joint_contract": "f1-09-joints.json",
+  "head_boundary_recovery": {
+    "enabled": true,
+    "max_outside_deg": 3.0,
+    "timeout_s": 3.0
+  }
+}

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><title>F1 URDF 离线验收</title>
+<style>body{margin:0;background:#faf8f2;font:16px system-ui}#model{height:760px;width:900px}pre{white-space:pre-wrap}</style>
+<div id="model"></div><pre id="result">RUNNING</pre>
+<script type="module">
+import {createRobotViewer,JOINT_MAP,measuredValues,buildRobot,setPose} from '../web/model-viewer.js';
+import {STLLoader} from '../web/vendor/three/STLLoader.js';
+import * as THREE from '../web/vendor/three/three.module.min.js';
+const results=[];
+function check(condition, message){if(!condition)throw new Error(message);results.push(message);}
+function rejects(fn,message){let rejected=false;try{fn();}catch(error){rejected=true;}check(rejected,message);}
+const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const pose=Object.fromEntries(Object.keys(JOINT_MAP).map(name=>[name,0]));
+Object.assign(pose,{arm_l_j1:90,arm_l_j2:-90,arm_l_j3:-90,arm_l_j4:-90,
+  arm_l_j5:20,arm_l_j6:-25,arm_l_j7:35,
+  arm_r_j1:-90,arm_r_j2:-90,arm_r_j3:90,arm_r_j4:-90,
+  arm_r_j5:-30,arm_r_j6:22,arm_r_j7:-15,
+  body_j3:-19,body_j4:-24,body_j5:-5,head_j2:-27});
+const targetPose={...pose,arm_l_j1:95,arm_l_j7:-21,arm_r_j5:26,arm_r_j6:-18};
+async function waitStatus(states){
+  for(let i=0;i<140&&!states.includes(document.querySelector('.f1-model-status')?.dataset.state);i++)await pause(100);
+  return document.querySelector('.f1-model-status');
+}
+async function run(){
+  if(new URLSearchParams(location.search).get('mapping')==='missing'){
+    const fetchOriginal=window.fetch.bind(window);
+    window.fetch=async(...args)=>{
+      const response=await fetchOriginal(...args);
+      if(new URL(args[0],location.href).pathname.endsWith('/manifest.json')){
+        const manifest=await response.json();delete manifest.joint_signs;
+        return new Response(JSON.stringify(manifest),{status:200,headers:{'Content-Type':'application/json'}});
+      }
+      return response;
+    };
+    const viewer=createRobotViewer(document.querySelector('#model'));viewer.update({joints:pose});
+    const status=await waitStatus(['error']);
+    check(status.dataset.state==='error'&&status.textContent.includes('角度映射缺失'),'missing manifest signs render an explicit error');
+    document.querySelector('#result').textContent='PASS\n'+results.join('\n');
+    return;
+  }
+  check(Object.keys(JOINT_MAP).length===22,'22 measured axes only');
+  check(JOINT_MAP.body_j1==='body_joint5'&&JOINT_MAP.body_j5==='body_joint1','body direction uses reversed joint names');
+  check(Object.keys(measuredValues({arm_l_j1:{position:NaN},body_j1:null,arm_r_j2:Infinity,head_j1:7,wheel_j1:1})).join()==='head_j1','invalid / unmapped values ignored');
+  check(measuredValues({arm_l_j7:35,arm_r_j5:-30,arm_r_j6:22}).arm_l_j7===35&&measuredValues(pose).arm_r_j5===-30&&measuredValues(pose).arm_r_j6===22,'raw HAL feedback keeps its original signs');
+  const manifest=await(await fetch('../web/models/f1_wheel/manifest.json')).json();
+  const corrected=['arm_l_j7','arm_r_j5','arm_r_j6'];
+  check(corrected.every(name=>manifest.joint_signs[name]===-1),'three wrist-axis signs match the independently verified FK mapping');
+  const url=new URL('../web/models/f1_wheel/'+manifest.urdf,location.href);
+  const doc=new DOMParser().parseFromString(await(await fetch(url)).text(),'application/xml');
+  const geometry=new Map(),loader=new STLLoader();
+  await Promise.all([...doc.querySelectorAll('visual mesh')].map(async mesh=>{
+    const path=mesh.getAttribute('filename');
+    geometry.set(path,loader.parse(await(await fetch(new URL(path,url))).arrayBuffer()));
+  }));
+  for(const [name,signs] of [
+    ['missing',undefined],['empty',{}],['partial',{arm_l_j7:-1,arm_r_j5:-1}],
+    ['unknown',{arm_l_j7:-1,arm_r_j5:-1,wheel_j1:-1}],
+    ['nonnumeric',{...manifest.joint_signs,arm_l_j7:'-1'}],
+    ['nonunit',{...manifest.joint_signs,arm_r_j6:2}],
+    ['extra',{...manifest.joint_signs,head_j1:1}]
+  ])rejects(()=>buildRobot(doc,geometry,false,signs),'reject '+name+' angle mapping');
+  const model=buildRobot(doc,geometry,false,manifest.joint_signs),target=buildRobot(doc,geometry,true,manifest.joint_signs);
+  check(Object.isFrozen(model.jointSigns)&&model.jointSigns!==manifest.joint_signs,'model owns an immutable mapping snapshot');
+  check(model.links.size===31&&model.joints.size===30,'full original 31-link, 30-joint hierarchy');
+  const wrong=doc.cloneNode(true);wrong.querySelector('joint[name="arm_L_joint7"]').setAttribute('name','unexpected_joint');
+  rejects(()=>buildRobot(wrong,geometry,false,manifest.joint_signs),'mismatched URDF joint names fail explicitly');
+  const inputBefore=JSON.stringify(pose);
+  setPose(model,pose);setPose(target,targetPose);
+  for(const [label,tree,values] of [['actual',model,pose],['target',target,targetPose]]){
+    for(const name of corrected){
+      const joint=tree.joints.get(JOINT_MAP[name]);
+      const expected=new THREE.Quaternion().setFromAxisAngle(joint.axis,-values[name]*Math.PI/180);
+      check(joint.object.quaternion.angleTo(expected)<1e-7,label+' applies the verified sign to '+name);
+    }
+  }
+  check(JSON.stringify(pose)===inputBefore,'rendering does not mutate raw HAL feedback');
+  const before=model.links.get('arm_L_Link7').matrixWorld.clone();
+  // Changing only a target must leave the measured link transforms unchanged.
+  setPose(target,targetPose);
+  check(model.links.get('arm_L_Link7').matrixWorld.equals(before),'draft FK does not alter measured geometry');
+  check(!target.links.get('arm_L_Link7').matrixWorld.equals(before),'draft FK moves intended arm');
+  const rightBefore=model.links.get('arm_R_Link7').matrixWorld.clone();
+  setPose(model,{arm_l_j1:95});
+  check(model.links.get('arm_R_Link7').matrixWorld.equals(rightBefore),'left-arm update does not move right arm');
+  const q=model.joints.get('arm_L_joint1').object.quaternion.clone();
+  setPose(model,{arm_l_j1:NaN});
+  check(model.joints.get('arm_L_joint1').object.quaternion.equals(q),'invalid feedback retains last valid angle');
+  // Separate NumPy code checks URDF rendering algebra; it is not physical calibration.
+  setPose(model,pose);setPose(target,targetPose);
+  const names=['arm_L_Link7','arm_R_Link5','arm_R_Link6','arm_R_Link7','head_Link3','body_Link3'];
+  window.modelMatrices=Object.fromEntries([['actual',model],['target',target]].map(([label,tree])=>[label,Object.fromEntries(names.map(name=>[name,tree.links.get(name).matrixWorld.elements]))]));
+  const viewer=createRobotViewer(document.querySelector('#model'));
+  viewer.update({joints:{arm_l_j1:90},stale:false});
+  const status=await waitStatus(['waiting','error']);
+  check(status.dataset.state==='waiting','missing 21 axes is not shown as zero pose');
+  viewer.update({joints:pose,draft:targetPose,stale:false});await pause(250);
+  check(status.dataset.state==='live','complete feedback becomes live');
+  check(status.textContent==='实测与目标','edited target visibly distinguished');
+  viewer.update({joints:pose,stale:true});await pause(50);
+  check(status.dataset.state==='stale','expired feedback explicitly marked');
+  viewer.update({joints:pose,draft:targetPose,stale:false});
+  document.querySelector('#result').textContent='PASS\n'+results.join('\n')+'\nMATRICES '+JSON.stringify(window.modelMatrices);
+  window.modelTestViewer=viewer;
+}
+run().catch(error=>{document.querySelector('#result').textContent='FAIL '+error.stack;});
+</script></html>

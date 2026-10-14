@@ -236,8 +236,8 @@ A/B使用low-latency，反馈延迟和控制通道不同，不能做同口径质
 
 - `DM0.5/logs/telemetry/powered/g2_source_speed_o10_raw5_20260903_151446.jsonl`
 - `DM0.5/logs/telemetry/feedback/g2_source_speed_o10_raw5_20260903_151446.jsonl`
-- `G2Teleop/logs/g2_source_speed_o10_raw5_20260903_151446.console.log`
-- `G2Teleop/scripts/32_g2_source_speed_qdirect_o10_raw5.sh`
+- `DAgger/artifacts/logs/g2_teleop/g2_source_speed_o10_raw5_20260903_151446.console.log`
+- `DAgger/G2/teleop/scripts/32_g2_source_speed_qdirect_o10_raw5.sh`
 
 15:13:37还有一轮约13.15秒的人工Ctrl-C试跑，只覆盖1315次arm和18次O10调用，不应与上述完整
 自然结束结果混为一轮。
@@ -638,7 +638,7 @@ dispatch间隔P50/P95/P99/max为10.000/10.513/12.771/14.921ms。51次O10调用�
 Powered日志`g2_powered_f710_20260904_132248.jsonl`随后记录18次无停顿自动recenter（平移6、旋转
 12），旧workspace saturation、watchdog、IK HOLD、runtime fault和fresh=false均为0；操作者确认
 修复效果很好。当前执行层冻结为`f710-powered-v1-20260904`，精确文件/配置/验收日志SHA见
-`G2Teleop/configs/f710_powered_v1_baseline.json`。后续主线转入人工episode recorder，控制语义变化
+`DAgger/G2/teleop/configs/f710_powered_v1_baseline.json`。后续主线转入人工episode recorder，控制语义变化
 必须以新候选重新验收，不能直接污染该基线。
 
 冻结后已建立START锁存式HIL纯逻辑候选：仅START改变POLICY/HIL所有权，RB只在HIL内部控制机械臂，
@@ -673,13 +673,13 @@ F710执行层已经是“功能完成候选”，但要经过A切档、RT无RB�
 
 ## 14. 详细材料入口
 
-- `G2Teleop/doc/F710_PINK_OTG_CONTROL_ARCHITECTURE.md`
-- `G2Teleop/doc/G2_F710_DAGGER_FULL_FLOW.md`
+- `DAgger/docs/G2/teleop/F710_PINK_OTG_CONTROL_ARCHITECTURE.md`
+- `DAgger/docs/G2/G2_F710_DAGGER_FULL_FLOW.md`
 - `g2_robot/docs/GDK_2.6.3_RELEVANT_API.md`
 - `g2_robot/docs/G2_ROBOT_STRUCTURE.md`
 - `g2_robot/docs/G2_TROUBLESHOOTING.md`
 - `DM0.5/docs/robot/JOINT_COMMAND_FEEDBACK_DIAGNOSTICS.md`
 - `DM0.5/docs/robot/incidents/2026-07-31_01_UNIFIED_O10_SERVO_BLOCK.md`
-- `G2Teleop/scripts/26_g2_o10_point_target_ab.py`
-- `G2Teleop/scripts/28_g2_o10_event_replay.py`
-- `G2Teleop/scripts/32_g2_source_speed_qdirect_o10_raw5.sh`
+- `DAgger/G2/teleop/scripts/26_g2_o10_point_target_ab.py`
+- `DAgger/G2/teleop/scripts/28_g2_o10_event_replay.py`
+- `DAgger/G2/teleop/scripts/32_g2_source_speed_qdirect_o10_raw5.sh`

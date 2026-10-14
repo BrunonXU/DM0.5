@@ -1,0 +1,291 @@
+{
+  "robot_id": "F1",
+  "motion_enabled": false,
+  "joints_enabled": false,
+  "limits_verified": false,
+  "control_contract_verified": false,
+  "gripper_verified": false,
+  "base_verified": false,
+  "expected_hard_auto": true,
+  "feedback_max_age_s": 0.25,
+  "graph_max_age_s": 0.5,
+  "graph_observation_s": 1.0,
+  "command_hz": 30.0,
+  "max_joint_delta_deg": null,
+  "max_joint_speed_deg_s": 30.0,
+  "max_joint_acceleration_deg_s2": 75.0,
+  "joint_tolerance_deg": 1.0,
+  "settle_timeout_s": 3.0,
+  "gripper_tolerance": 5.0,
+  "gripper_timeout_s": 4.0,
+  "max_base_ttl_s": 0.3,
+  "base_speed_limits": {
+    "vx": 0.1,
+    "vy": 0.1,
+    "wz": 0.15
+  },
+  "joint_limits_deg": {
+    "arm_l_j1": [
+      -178,
+      178
+    ],
+    "arm_l_j2": [
+      -94,
+      120
+    ],
+    "arm_l_j3": [
+      -178,
+      178
+    ],
+    "arm_l_j4": [
+      -145,
+      60
+    ],
+    "arm_l_j5": [
+      -178,
+      178
+    ],
+    "arm_l_j6": [
+      -60,
+      60
+    ],
+    "arm_l_j7": [
+      -90,
+      90
+    ],
+    "arm_r_j1": [
+      -178,
+      178
+    ],
+    "arm_r_j2": [
+      -94,
+      120
+    ],
+    "arm_r_j3": [
+      -178,
+      178
+    ],
+    "arm_r_j4": [
+      -145,
+      60
+    ],
+    "arm_r_j5": [
+      -178,
+      178
+    ],
+    "arm_r_j6": [
+      -60,
+      60
+    ],
+    "arm_r_j7": [
+      -90,
+      90
+    ],
+    "body_j1": [
+      -130,
+      130
+    ],
+    "body_j2": [
+      -10,
+      10
+    ],
+    "body_j3": [
+      -70,
+      0
+    ],
+    "body_j4": [
+      -95,
+      0
+    ],
+    "body_j5": [
+      -40,
+      0
+    ],
+    "head_j1": [
+      -40,
+      40
+    ],
+    "head_j2": [
+      -25,
+      25
+    ],
+    "head_j3": [
+      -15,
+      15
+    ]
+  },
+  "base_frame": "base_link",
+  "topics": {
+    "joints": "/hal/joint_states",
+    "joint_command": "/motion_ctl/joint_ctl",
+    "left_gripper": "/motion_ctl/gripper/left/state",
+    "right_gripper": "/motion_ctl/gripper/right/state",
+    "left_gripper_command": "/motion_ctl/gripper/left",
+    "right_gripper_command": "/motion_ctl/gripper/right",
+    "base": "/move/State",
+    "base_command": "/move/ManualMoveCmd",
+    "battery": "/driver/battery/Data"
+  },
+  "camera_topics": {
+    "head": "/camera/head/color/image_raw/compressed",
+    "left": "/camera/left_wrist/color/image_raw/compressed",
+    "right": "/camera/right_wrist/color/image_raw/compressed"
+  },
+  "id": "F1",
+  "label": "F1 · 请配置本机",
+  "ip": "127.0.0.1",
+  "version": "0.6.0",
+  "groups": {
+    "left_arm": [
+      "arm_l_j1",
+      "arm_l_j2",
+      "arm_l_j3",
+      "arm_l_j4",
+      "arm_l_j5",
+      "arm_l_j6",
+      "arm_l_j7"
+    ],
+    "right_arm": [
+      "arm_r_j1",
+      "arm_r_j2",
+      "arm_r_j3",
+      "arm_r_j4",
+      "arm_r_j5",
+      "arm_r_j6",
+      "arm_r_j7"
+    ],
+    "head": [
+      "head_j1",
+      "head_j2",
+      "head_j3"
+    ],
+    "body": [
+      "body_j1",
+      "body_j2",
+      "body_j3",
+      "body_j4",
+      "body_j5"
+    ]
+  },
+  "limits": {
+    "arm_l_j1": [
+      -178,
+      178
+    ],
+    "arm_l_j2": [
+      -94,
+      120
+    ],
+    "arm_l_j3": [
+      -178,
+      178
+    ],
+    "arm_l_j4": [
+      -145,
+      60
+    ],
+    "arm_l_j5": [
+      -178,
+      178
+    ],
+    "arm_l_j6": [
+      -60,
+      60
+    ],
+    "arm_l_j7": [
+      -90,
+      90
+    ],
+    "arm_r_j1": [
+      -178,
+      178
+    ],
+    "arm_r_j2": [
+      -94,
+      120
+    ],
+    "arm_r_j3": [
+      -178,
+      178
+    ],
+    "arm_r_j4": [
+      -145,
+      60
+    ],
+    "arm_r_j5": [
+      -178,
+      178
+    ],
+    "arm_r_j6": [
+      -60,
+      60
+    ],
+    "arm_r_j7": [
+      -90,
+      90
+    ],
+    "body_j1": [
+      -130,
+      130
+    ],
+    "body_j2": [
+      -10,
+      10
+    ],
+    "body_j3": [
+      -70,
+      0
+    ],
+    "body_j4": [
+      -95,
+      0
+    ],
+    "body_j5": [
+      -40,
+      0
+    ],
+    "head_j1": [
+      -40,
+      40
+    ],
+    "head_j2": [
+      -25,
+      25
+    ],
+    "head_j3": [
+      -15,
+      15
+    ]
+  },
+  "contract_note": "新机只读模板；关节、限位、模式和模型值来自F1-09示例，需本机核验后逐项启用。",
+  "data_path": "${F1_CONSOLE_RUNTIME}/raw_data",
+  "expected_machine_id": "",
+  "controller_binary_sha256": "",
+  "expected_motor_parameters": {
+    "arm_control_mode": 3,
+    "arm_impedance_type": 1,
+    "left_gripper_type": "omnipicker",
+    "right_gripper_type": "omnipicker",
+    "enable_udp_motors": true,
+    "udp_motor_host": "127.0.0.1",
+    "udp_motor_send_port": 50001
+  },
+  "fixed_speed": true,
+  "body_speed_deg_s": 15.0,
+  "body_acceleration_deg_s2": 40.0,
+  "max_action_s": 6.0,
+  "command_policy": "actual_commands",
+  "command_monitor_binary": "${F1_CONSOLE_RUNTIME}/command-monitor/build/libf1_command_monitor_shared.so",
+  "command_monitor_sha256": "",
+  "body_command_hz": 200.0,
+  "body_max_command_gap_s": 0.025,
+  "default_presets": [],
+  "ground_guard": true,
+  "feedback_limit_recovery_deg": 1.0,
+  "waist_cartesian_enabled": false,
+  "startup_script_sha256": "",
+  "controller_parameter_rmw": "rmw_fastrtps_cpp",
+  "startup_script": "/home/user/workspace/start_all.sh",
+  "ec_startup_script": "/home/user/workspace/start_ec_master.sh",
+  "max_pose_task_s": 60.0
+}

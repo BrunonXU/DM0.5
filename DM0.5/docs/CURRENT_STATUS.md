@@ -52,7 +52,7 @@ related: [robot/G2_SMOOTH_TELEOP_ROOT_CAUSE_AND_NEXT_STEPS.md, robot/G2_DM05_CON
 
 ## F710 / HIL并行进度及遗留检查
 
-F710执行层已冻结为 `f710-powered-v1-20260904`；离散RT手意图仍用事件驱动move_ee_pos，不能误称它也已迁移双17D。START锁存HIL状态机、34D仲裁和Mock recorder已有纯逻辑闭环；START button 7未现场确认，未接真实policy/相机视频闭环，`training_ready=false`。统一推理加Null/RingBuffer/Video旁路sink仍是待实现决策。最新细节见[F710架构14.18–14.20](../../G2Teleop/doc/F710_PINK_OTG_CONTROL_ARCHITECTURE.md)。
+F710执行层已冻结为 `f710-powered-v1-20260904`；离散RT手意图仍用事件驱动move_ee_pos，不能误称它也已迁移双17D。START锁存HIL状态机、34D仲裁和Mock recorder已有纯逻辑闭环；START button 7未现场确认，未接真实policy/相机视频闭环，`training_ready=false`。统一推理加Null/RingBuffer/Video旁路sink仍是待实现决策。最新细节见[F710架构14.18–14.20](../../DAgger/docs/G2/teleop/F710_PINK_OTG_CONTROL_ARCHITECTURE.md)。
 
 代码审计待处理：旧日志filename仍含raw5/changed_only，判配置应读runtime_start；双17D发送路径未调用旧手命令持久化逻辑，不能假定last_hand_command.json反映最新Servo手型。既有O10重启零反馈事故仍有效，做34D静态hold前不能把全零读数直接视为安全当前位置。本轮没有修改上述运行逻辑。
 

@@ -1,0 +1,37 @@
+--- /home/user/workspace/start_all.sh
++++ /home/user/Bruno/DAgger/releases/20261008-f1-hgdagger-v11/DAgger/startup/start_all.sh
+@@ -15,11 +15,11 @@
+ # export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+ 
+ # 获取脚本所在目录
+-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
++SCRIPT_DIR=/home/user/workspace
+ cd "$SCRIPT_DIR"
+ 
+ # 日志目录
+-LOG_DIR="$SCRIPT_DIR/logs2"
++LOG_DIR=/home/user/Bruno/DAgger-runtime/base-start-logs
+ mkdir -p "$LOG_DIR"
+ 
+ echo "启动机械臂运动学节点..."
+@@ -33,17 +33,17 @@
+ 
+ 
+ echo "启动头部奥比相机..."
+-ros2 launch orbbec_camera head_gemini330.launch.py > "$LOG_DIR/head_camera.log" 2>&1 &
++bash /home/user/Bruno/DAgger/releases/20261008-f1-hgdagger-v11/DAgger/scripts/60_f1_camera_internal.sh start head > "$LOG_DIR/head_camera.log" 2>&1 &
+ 
+ sleep 2
+ 
+ echo "启动右手腕相机..."
+-ros2 launch realsense2_camera rs_launch_right_wrist_d405.py > "$LOG_DIR/right_wrist.log" 2>&1 &
++bash /home/user/Bruno/DAgger/releases/20261008-f1-hgdagger-v11/DAgger/scripts/60_f1_camera_internal.sh start right > "$LOG_DIR/right_wrist.log" 2>&1 &
+ 
+ sleep 2
+ 
+ echo "启动左手腕相机..."
+-ros2 launch realsense2_camera rs_launch_left_wrist_d405.py > "$LOG_DIR/left_wrist.log" 2>&1 &
++bash /home/user/Bruno/DAgger/releases/20261008-f1-hgdagger-v11/DAgger/scripts/60_f1_camera_internal.sh start left > "$LOG_DIR/left_wrist.log" 2>&1 &
+ 
+ sleep 2
+ 

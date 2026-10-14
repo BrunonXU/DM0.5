@@ -1,16 +1,18 @@
 [build-system]
-requires = ["setuptools>=68"]
-build-backend = "setuptools.build_meta"
+requires=["setuptools>=68"]
+build-backend="setuptools.build_meta"
 [project]
-name = "g2dagger"
-version = "0.1.0"
-description = "Independent G2 human-intervention and recording runtime"
-requires-python = ">=3.10"
-dependencies = ["numpy>=1.24"]
-[project.optional-dependencies]
-windows = ["pygame>=2.5,<3"]
-test = ["pytest>=7"]
-[tool.setuptools.packages.find]
-where = ["src"]
+name="dagger-workspace"
+version="0.2.0"
+requires-python=">=3.10"
+dependencies=["numpy>=1.24"]
+[tool.setuptools]
+packages=["f1dagger", "g2dagger", "dagger_core"]
+[tool.setuptools.package-dir]
+f1dagger="F1/src/f1dagger"
+g2dagger="G2/src/g2dagger"
+dagger_core="shared/src/dagger_core"
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths=["F1/tests", "G2/tests", "shared/tests"]
+pythonpath=["F1/src", "G2/src", "shared/src", "F1/tests", "G2/tests"]
+cache_dir="artifacts/cache/pytest"

@@ -1,0 +1,275 @@
+--- before/README.md
++++ after/README.md
+@@ -1,69 +1,19 @@
+-# F1-09 双臂精细 Pico 试用
++# 可选上肢 Pico
+ 
+-基于 meaxiao Pico **1.4.4** 的独立上肢适配，源码开发副本在6000D，F1部署在 `/home/user/Bruno/F1/pico_upper/`。只开放双臂14轴和两个夹爪。lxl 原目录、现有数采和上传配置保持原样。
++基于 meaxiao 1.4.4，提供双臂和夹爪遥操；不控制身体/底盘。工作台可从 Pico 页准备、确认和停止本会话。
+ 
+-## 现场运行
++先在工作台 `configs/installation.env` 配置 Pico 的 Python、XR SDK、ROS 和共用控制锁，再核对本目录 `config/control.json` 与 `teleop/config.json` 的脚本哈希。
+ 
+-**F1-09 的 user 本机终端**（不可从 SSH 启动动作），先在原运行终端退出旧 lxl 遥操/回放，保留已经运行的 PCService 及机器人驱动。新脚本会检查控制冲突，不自动杀旧工程。
++在机器人现场终端，从本目录运行：
+ 
+ ```bash
+-cd /home/user/Bruno/F1/pico_upper/current
+-./check.sh
+-./start.sh
++bash check.sh --dependencies  # 仅检查依赖
++bash check.sh                 # 只读预检
++bash start.sh                 # 现场确认后启动
++# 另一现场终端：
++bash stop.sh
+ ```
+ 
+-`check.sh` 只读取依赖、控制占用、实测关节及碰撞模型，不创建命令发布者。它需要完整22轴 `/hal/joint_states` 和两路夹爪状态，新鲜且静止；身体/头部反馈仅供模型碰撞检测。只测依赖用 `./check.sh --dependencies`。
++PCService 需已运行；依赖准备、按钮含义、日志与停止边界见 [现场操作](docs/OPERATIONS.md)。新机须重新验证模型、限位、夹爪方向及机器合同。
+ 
+-启动流程：持有与4242工作台共用的控制锁 → 检查旧进程及现有发布者 → 当前实测姿态与碰撞检查 → 现场按 Enter → 等待新鲜XR输入且全部控制松开 → 再次检查并捕获当前姿态 → 独立臂桥/遥操。启动不走固定姿态、复位或控制模式切换。
+-
+-若PCService尚未运行，在**另一个F1本机终端**只启动已有XR服务（不要启动lxl整套遥操）：
+-
+-```bash
+-mkdir -p /home/user/Bruno/F1/pico_upper/runtime/logs
+-/opt/apps/roboticsservice/runService.sh > /home/user/Bruno/F1/pico_upper/runtime/logs/pcservice.log 2>&1
+-```
+-
+-这是供应商已有服务的启动脚本；它不启动我们的遥操或录制。确认服务运行后再执行本包`start.sh`。
+-
+-Pico App 仍连接机器人局域网 **192.168.31.58**，选 Head + Controller 并 Send。内部臂桥使用 `127.0.0.1:42428`，**不要把内部 IP 改成局域网地址**。仅检查并复用已经运行的 PCService（63901/60061）；脚本不启动/停止它。
+-
+-等待日志出现 `UPPER_TELEOP_READY` 后接管。启动终端保持前台运行；Ctrl+C 或另一个 F1 终端执行：
+-
+-```bash
+-cd /home/user/Bruno/F1/pico_upper/current
+-./stop.sh
+-```
+-
+-只结束本试用包进程，不发送腰部/底盘零速，不回姿态，不打开夹爪。停止不等于硬件急停。日志：
+-
+-```bash
+-tail -f /home/user/Bruno/F1/pico_upper/runtime/logs/teleop.log
+-# 另一终端检查输出桥：
+-tail -f /home/user/Bruno/F1/pico_upper/runtime/logs/bridge.log
+-```
+-
+-## 保留的升级与本次范围
+-
+-| 项目 | 当前试用行为 |
+-|---|---|
+-| 独立 Grip | 左右臂分别接管/松开保持；再次接管重新建立参考 |
+-| 细调 | 保留上游自适应增量：慢移平移0.2倍、旋转0.25倍，快移连续恢复；这不是实物毫米精度保证 |
+-| 轨迹与输出 | 50Hz IK/碰撞审批；Ruckig轨迹；250Hz最终臂重采样。上游参数不变：30°/s，输出100°/s²、600°/s³ |
+-| 碰撞与断流 | 保留单臂碰撞锁存、反馈/输入超时保持、释放Grip恢复；模型初始化失败额外明确拒绝启动 |
+-| 菜单键 | 左三横菜单重建局部坐标参考，不发复位 |
+-| 夹爪 | 沿用上游 `100 − Trigger × 100`：Trigger松开=100，按到底=0；硬件口径100闭、0开。本次仅对应Grip接管时发该侧夹爪命令，另一侧保持 |
+-| X/Y/A/B、摇杆 | 全部不产生动作/录制请求；**X+Y复位暂不提供** |
+-| 身体/底盘 | 不创建发布者、不起worker、不发启动/退出零速、不切模式、不调用腰升降或body_j3复位；仍读取全身反馈用于碰撞 |
+-| 数采/上传 | 不启动录制器、相机、传输器、中央服务和数据网页；此试用会话不录制。旧数据与旧录制逻辑未修改 |
+-
+-开始时先松开扳机/Grip。Trigger继承上游反向定义，首次接管某臂时要注意对应夹爪目标；不要在持物情况下凭旧版按键记忆操作。不可同时运行旧lxl遥操、新版试用或4242动作会话。
+-
+-## 依赖和边界
+-
+-- Python3.12、ROS Jazzy和现有F1消息/驱动；numpy、ruckig、placo/placo_utils、meshcat、mujoco、coal、PyYAML；XR SDK及PCService沿用F1本机安装。
+-- 默认先用 `runtime/venv/bin/python`，若无则只读使用现有 `pico4ultra_py312`。通过 `PICO_UPPER_PYTHON` 指定独立环境，脚本不安装/升级原环境。
+-- 本包不需要 move 消息、pyarrow、MCAP或相机。它不是全身版的替代部署，数据平台位置待确定。
+-- 上游模型及臂映射沿用源码，F1-09机械映射和实物操作仍需现场验收。离线测试/只读检查不能代替真机验收。若反馈、模型或控制源不满足要求，保持拒绝，不跳过保护。
+-- 上游关闭CoM质心保护的选择保持原样；保留其碰撞保护。模型碰撞检查不等于全工作空间环境感知。
+-
+-变更证据见 [适配说明](docs/adaptation.md)、[上游来源](UPSTREAM.json)。依赖、文件哈希、离线测试和现场验收分开记录；真实部署结果以主任务部署清单为准。
++[适配设计](docs/adaptation.md) · [上游来源](UPSTREAM.json) · [工作台部署](../../docs/SHARING.md) · [网页启停](../../docs/PICO.md)
+--- /dev/null
++++ after/docs/OPERATIONS.md
+@@ -0,0 +1,71 @@
++# 上肢 Pico 现场操作与依赖
++
++基于 meaxiao Pico **1.4.4**，只开放双臂14轴和两个夹爪。当前副本位于 `integrations/pico_upper/`；以下以 `/home/user/Bruno/F1-infra/current/` 的新部署为例，实际路径由安装配置决定。原 LXL 保留其自己的控制/数采流程。
++
++## 现场运行
++
++先完成工作台 `configs/installation.env`、`config/control.json` 和脚本哈希的本机核对；`scripts/env.sh` 自动读取上层工作台安装配置。`PICO_UPPER_CONTROL_LOCK` 与工作台的 `F1_CONTROL_LOCK` 必须指向同一文件。
++
++**机器人本机的现场终端**（不可从 SSH 启动动作），先在原运行终端退出旧 lxl 遥操/回放，保留已经运行的 PCService 及机器人驱动。新脚本会检查控制冲突，不自动杀旧工程。
++
++```bash
++cd /home/user/Bruno/F1-infra/current/integrations/pico_upper
++./check.sh
++./start.sh
++```
++
++`check.sh` 只读取依赖、控制占用、实测关节及碰撞模型，不创建命令发布者。它需要完整22轴 `/hal/joint_states` 和两路夹爪状态，新鲜且静止；身体/头部反馈仅供模型碰撞检测。只测依赖用 `./check.sh --dependencies`。
++
++启动流程：持有与4242工作台共用的控制锁 → 检查旧进程及现有发布者 → 当前实测姿态与碰撞检查 → 现场按 Enter → 等待新鲜XR输入且全部控制松开 → 再次检查并捕获当前姿态 → 独立臂桥/遥操。启动不走固定姿态、复位或控制模式切换。
++
++若PCService尚未运行，在**另一个F1本机终端**只启动已有XR服务（不要启动lxl整套遥操）：
++
++```bash
++mkdir -p /home/user/Bruno/F1-infra/runtime/pico_upper/logs
++/opt/apps/roboticsservice/runService.sh > /home/user/Bruno/F1-infra/runtime/pico_upper/logs/pcservice.log 2>&1
++```
++
++这是供应商已有服务的启动脚本；它不启动我们的遥操或录制。确认服务运行后再执行本包`start.sh`。
++
++Pico App 连接机器人实际局域网 IP（原 F1-09 为 **192.168.31.58**），选 Head + Controller 并 Send。内部臂桥使用 `127.0.0.1:42428`，**不要把内部 IP 改成局域网地址**。仅检查并复用已经运行的 PCService（63901/60061）；脚本不启动/停止它。
++
++等待日志出现 `UPPER_TELEOP_READY` 后接管。启动终端保持前台运行；Ctrl+C 或另一个 F1 终端执行：
++
++```bash
++cd /home/user/Bruno/F1-infra/current/integrations/pico_upper
++./stop.sh
++```
++
++只结束本试用包进程，不发送腰部/底盘零速，不回姿态，不打开夹爪。停止不等于硬件急停。日志：
++
++```bash
++tail -f /home/user/Bruno/F1-infra/runtime/pico_upper/logs/teleop.log
++# 另一终端检查输出桥：
++tail -f /home/user/Bruno/F1-infra/runtime/pico_upper/logs/bridge.log
++```
++
++## 保留的升级与本次范围
++
++| 项目 | 当前试用行为 |
++|---|---|
++| 独立 Grip | 左右臂分别接管/松开保持；再次接管重新建立参考 |
++| 细调 | 保留上游自适应增量：慢移平移0.2倍、旋转0.25倍，快移连续恢复；这不是实物毫米精度保证 |
++| 轨迹与输出 | 50Hz IK/碰撞审批；Ruckig轨迹；250Hz最终臂重采样。上游参数不变：30°/s，输出100°/s²、600°/s³ |
++| 碰撞与断流 | 保留单臂碰撞锁存、反馈/输入超时保持、释放Grip恢复；模型初始化失败额外明确拒绝启动 |
++| 菜单键 | 左三横菜单重建局部坐标参考，不发复位 |
++| 夹爪 | 沿用上游 `100 − Trigger × 100`：Trigger松开=100，按到底=0；硬件口径100闭、0开。本次仅对应Grip接管时发该侧夹爪命令，另一侧保持 |
++| X/Y/A/B、摇杆 | 全部不产生动作/录制请求；**X+Y复位暂不提供** |
++| 身体/底盘 | 不创建发布者、不起worker、不发启动/退出零速、不切模式、不调用腰升降或body_j3复位；仍读取全身反馈用于碰撞 |
++| 数采/上传 | 不启动录制器、相机、传输器、中央服务和数据网页；此试用会话不录制。旧数据与旧录制逻辑未修改 |
++
++开始时先松开扳机/Grip。Trigger继承上游反向定义，首次接管某臂时要注意对应夹爪目标；不要在持物情况下凭旧版按键记忆操作。不可同时运行旧lxl遥操、新版试用或4242动作会话。
++
++## 依赖和边界
++
++- Python3.12、ROS Jazzy和现有F1消息/驱动；numpy、ruckig、placo/placo_utils、meshcat、mujoco、coal、PyYAML；XR SDK及PCService沿用F1本机安装。
++- 默认先用 `runtime/venv/bin/python`，若无则只读使用现有 `pico4ultra_py312`。通过 `PICO_UPPER_PYTHON` 指定独立环境，脚本不安装/升级原环境。
++- 本包不需要 move 消息、pyarrow、MCAP或相机。它不是全身版的替代部署，独立录制由工作台管理，见 [录制合同](../../../docs/RECORDING.md)。
++- 上游模型及臂映射沿用源码，F1-09机械映射和实物操作仍需现场验收。离线测试/只读检查不能代替真机验收。若反馈、模型或控制源不满足要求，保持拒绝，不跳过保护。
++- 上游关闭CoM质心保护的选择保持原样；保留其碰撞保护。模型碰撞检查不等于全工作空间环境感知。
++
++变更证据见 [适配说明](adaptation.md)、[上游来源](../UPSTREAM.json)。依赖、文件哈希、离线测试和现场验收分开记录；真实部署结果以主任务部署清单为准。
+--- before/docs/adaptation.md
++++ after/docs/adaptation.md
+@@ -1,6 +1,6 @@
+ # 双臂试用适配与验证边界
+ 
+-2026-09-23。原工程：`/home/xx_100872445/F1/PICO/pico` v1.4.4。用户确认原作者同意复用。本目录保存所需源码与模型，不修改原工程、不复制原账号凭据/venv/录制数据。第三方与原作者署名保留在源码；此文不作额外许可证授权。
++最初适配：2026-09-23；以下原始来源与测试结果属于历史记录。当前副本已随独立 F1-infra 置于 `integrations/pico_upper/`，操作见 [OPERATIONS](OPERATIONS.md)。原工程：`/home/xx_100872445/F1/PICO/pico` v1.4.4。用户确认原作者同意复用。本目录保存所需源码与模型，不修改原工程、不复制原账号凭据/venv/录制数据。第三方与原作者署名保留在源码；此文不作额外许可证授权。
+ 
+ ## 组件边界
+ 
+@@ -25,7 +25,7 @@
+ 2. teleop使用 `GuardedNode`。不创建底盘/身体发布者和worker，不订阅外部TCP回放控制或recording状态。A/B/X/Y不起动作；XY消费端也禁用。
+ 3. 移除旧 `f1_init_api`/UDP桥。独立桥拒绝长度1/2/14/16的所有旧协议包，仅接收本地18D有限数值、夹爪范围和布尔使能。所有 `/motion_ctl/joint_ctl` 发布必须精确等于左7+右7命名列表。
+ 4. `GuardedNode` 拒绝其他发布topic和全部service client，阻止底盘/模式/腰升降绕行。退出只停自己的进程，不补发零速或复位。
+-5. 双臂/夹爪命令与4242共享 `/home/user/Bruno/F1/runtime/control.lock`。旧程序不遵守此锁，所以另查旧lxl进程与ROS命令发布者；运行时桥持续检查外部发布源，出现冲突则整会话退出。无法原子阻止非合作旧程序在检查后抢发，因此现场仍须先结束旧遥操。
++5. 双臂/夹爪命令与4242共享 安装配置中 `F1_CONTROL_LOCK` 指定的锁。旧程序不遵守此锁，所以另查旧lxl进程与ROS命令发布者；运行时桥持续检查外部发布源，出现冲突则整会话退出。无法原子阻止非合作旧程序在检查后抢发，因此现场仍须先结束旧遥操。
+ 6. 新增collision模型初始化失败的显式拒绝；使用现有 `feedback_timeout_s` 检查逐关节反馈新鲜度，避免缓存某个已消失关节仍算完整反馈。没有放宽碰撞或轨迹阈值。
+ 7. 夹爪仅在对应臂Grip接管时发布，避免接管单臂却更新另一夹爪。扳机方向沿用原源码。
+ 8. 模型缓存写入 `runtime/model_cache/<release_hash>`，日志/会话也在runtime。源码不写运行输出。
+@@ -40,6 +40,6 @@
+ 
+ ## 与数采的关系
+ 
+-此包不碰旧lxl文件，但也不会同时运行其 `all_remote_lxl.py`，因为该入口同时包含旧控制桥和录制。因此“旧数采逻辑不改”不等于“新遥操自动调用旧MCAP录制”。先验证操作手感；未来确定目标位置后，把录制作为独立服务接入统一状态/控制事件，明确原始动作与最终执行目标。
++此包不碰旧lxl文件，但也不会同时运行其 `all_remote_lxl.py`，因为该入口同时包含旧控制桥和录制。因此“旧数采逻辑不改”不等于“新遥操自动调用旧MCAP录制”。工作台现已将录制作为独立服务接入，明确原始动作与最终执行目标；合同与待验收项见 [RECORDING](../../../docs/RECORDING.md)。
+ 
+-这次没有导入 meaxiao 的 `lerobot_recorder.py`、`transfer.py`、`collection.py` 或dashboard。不会自动创建场景、配对服务器、上传episode或修改原数据目录。
++此上肢组件没有导入 meaxiao 的 `lerobot_recorder.py`、`transfer.py`、`collection.py` 或dashboard。不会自动创建场景、配对服务器、上传episode或修改原数据目录。
+--- before/scripts/env.sh
++++ after/scripts/env.sh
+@@ -2,8 +2,14 @@
+ # Source only. No services, collection routing, publishers or system changes.
+ _pu_script="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ export PICO_F1_ROOT="$(cd "$_pu_script/.." && pwd)"
+-export PICO_UPPER_RUNTIME="${PICO_UPPER_RUNTIME:-/home/user/Bruno/F1/pico_upper/runtime}"
+-export PICO_UPPER_CONTROL_LOCK="${PICO_UPPER_CONTROL_LOCK:-/home/user/Bruno/F1/runtime/control.lock}"
++HERE="$(cd "$_pu_script/../../.." && pwd -P)"
++if [[ "${F1_ENV_LOADED:-}" != 1 && -f "${F1_INSTALLATION_ENV:-$HERE/configs/installation.env}" ]]; then
++    source "${F1_INSTALLATION_ENV:-$HERE/configs/installation.env}"
++fi
++export F1_INFRA_HOME="${F1_INFRA_HOME:-$HOME/Bruno/F1-infra}"
++export F1_CONSOLE_RUNTIME="${F1_CONSOLE_RUNTIME:-$F1_INFRA_HOME/runtime}"
++export PICO_UPPER_RUNTIME="${PICO_UPPER_RUNTIME:-$F1_CONSOLE_RUNTIME/pico_upper}"
++export PICO_UPPER_CONTROL_LOCK="${F1_CONTROL_LOCK:-${PICO_UPPER_CONTROL_LOCK:-$F1_CONSOLE_RUNTIME/control.lock}}"
+ export PICO_F1_CONFIG="$PICO_F1_ROOT/config/ip_config.py"
+ export PICO_F1_CONTROL_CONFIG="$PICO_F1_ROOT/config/control.json"
+ export PICO_F1_INITIAL_POSE="$PICO_UPPER_RUNTIME/session_initial_pose.json"
+@@ -19,17 +25,17 @@
+     fi
+ fi
+ set +u
+-source /opt/ros/jazzy/setup.bash
+-source "${PICO_UPPER_ROS_SETUP:-/home/user/workspace/f1/install/setup.bash}"
++source "${F1_ROS_SETUP:-/opt/ros/jazzy/setup.bash}"
++source "${PICO_UPPER_ROS_SETUP:-${F1_ROBOT_SETUP:-/home/user/workspace/f1/install/setup.bash}}"
+ set -u
+-export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+-export ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET
++export RMW_IMPLEMENTATION="${RMW_IMPLEMENTATION:-rmw_cyclonedds_cpp}"
++export ROS_AUTOMATIC_DISCOVERY_RANGE="${ROS_AUTOMATIC_DISCOVERY_RANGE:-SUBNET}"
+ unset ROS_LOCALHOST_ONLY ROS_STATIC_PEERS
+ if [[ -r "${F1_CYCLONEDDS_URI:-/etc/ros/cyclonedds/cyclonedds.xml}" ]]; then
+     export CYCLONEDDS_URI="${F1_CYCLONEDDS_URI:-/etc/ros/cyclonedds/cyclonedds.xml}"
+ fi
+-export PYTHONPATH="$PICO_F1_ROOT/src:$PICO_F1_ROOT/config:$PICO_F1_ROOT/vendor/xrobotoolkit:$PICO_F1_ROOT/vendor/f1_safety/src/python:$_pu_sdk/build/lib.linux-aarch64-cpython-312${PYTHONPATH:+:$PYTHONPATH}"
+-export LD_LIBRARY_PATH="$_pu_sdk/lib/aarch64:/home/user/miniconda3/envs/pico4ultra_py312/lib/python3.12/site-packages/cmeel.prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
++export PYTHONPATH="$PICO_F1_ROOT/src:$PICO_F1_ROOT/config:$PICO_F1_ROOT/vendor/xrobotoolkit:$PICO_F1_ROOT/vendor/f1_safety/src/python:${PICO_UPPER_SDK_PYTHON_PATH:-$_pu_sdk/build/lib.linux-aarch64-cpython-312}${PYTHONPATH:+:$PYTHONPATH}"
++export LD_LIBRARY_PATH="${PICO_UPPER_SDK_LIB:-$_pu_sdk/lib/aarch64}:${PICO_UPPER_CMEEL_LIB:-/home/user/miniconda3/envs/pico4ultra_py312/lib/python3.12/site-packages/cmeel.prefix/lib}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+ export TMPDIR="$PICO_UPPER_RUNTIME/tmp"
+ mkdir -p "$PICO_UPPER_RUNTIME/logs" "$TMPDIR"
+ unset _pu_script _pu_sdk
+--- before/scripts/finalize_manifest.py
++++ after/scripts/finalize_manifest.py
+@@ -1,6 +1,7 @@
+ #!/usr/bin/env python3
+ """Development-only: record adapted hashes/diff and create source release inventory."""
+ from pathlib import Path
++import argparse
+ import datetime
+ import difflib
+ import hashlib
+@@ -8,14 +9,20 @@
+ ROOT=Path(__file__).resolve().parents[1]
+ def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+ def main():
++    parser=argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('--upstream-root',type=Path,
++                        help='Verified upstream snapshot with the same relative paths as this component')
++    args=parser.parse_args()
+     upstream=json.loads((ROOT/'UPSTREAM.json').read_text())
+     patches=[]
+     for row in upstream['files']:
+         local=ROOT/row['path']
+         row['adapted_sha256']=sha(local)
+         row['modified']=row['source_sha256']!=row['adapted_sha256']
+-        original=Path(row['source'])
+-        if row['modified'] and local.suffix in ('.py','.json','.yaml','.sh') and original.is_file():
++        original=args.upstream_root/row['path'] if args.upstream_root else Path(row['source'])
++        if row['modified'] and local.suffix in ('.py','.json','.yaml','.sh'):
++            if not original.is_file():
++                raise RuntimeError(f'upstream source missing: {original}; supply --upstream-root with the verified snapshot; existing evidence was not rewritten')
+             if sha(original)!=row['source_sha256']:
+                 raise RuntimeError(f'upstream changed since capture: {original}')
+             patches.extend(difflib.unified_diff(original.read_text().splitlines(True),local.read_text().splitlines(True),
+--- before/stop.sh
++++ after/stop.sh
+@@ -2,6 +2,10 @@
+ # Stopping this session needs only Python stdlib, even if a ROS environment broke.
+ set -Eeuo pipefail
+ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+-export PICO_UPPER_RUNTIME="${PICO_UPPER_RUNTIME:-/home/user/Bruno/F1/pico_upper/runtime}"
++HERE="$(cd "$ROOT/../.." && pwd -P)"
++if [[ "${F1_ENV_LOADED:-}" != 1 && -f "${F1_INSTALLATION_ENV:-$HERE/configs/installation.env}" ]]; then
++    source "${F1_INSTALLATION_ENV:-$HERE/configs/installation.env}"
++fi
++export PICO_UPPER_RUNTIME="${PICO_UPPER_RUNTIME:-${F1_CONSOLE_RUNTIME:-${F1_INFRA_HOME:-$HOME/Bruno/F1-infra}/runtime}/pico_upper}"
+ export PYTHONPATH="$ROOT/src${PYTHONPATH:+:$PYTHONPATH}"
+ exec /usr/bin/python3 -m pico_upper.supervisor stop

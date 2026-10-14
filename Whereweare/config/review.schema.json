@@ -1,0 +1,356 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://whereweare.local/review.schema.json",
+  "title": "Whereweare curated review candidate",
+  "description": "Human-readable, evidence-backed review. Dates must come from explicit source text. Missing goal_status defaults to proposed; inferred goals must not be confirmed.",
+  "type": "object",
+  "properties": {
+    "headline": {
+      "type": "string",
+      "maxLength": 100,
+      "minLength": 1
+    },
+    "projects": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1
+          },
+          "headline": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "goal": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "goal_status": {
+            "type": "string",
+            "enum": [
+              "proposed",
+              "confirmed",
+              "unknown"
+            ],
+            "default": "proposed"
+          },
+          "next_step": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "blocker": {
+            "type": "string",
+            "maxLength": 120
+          },
+          "evidence": {
+            "type": "array",
+            "maxItems": 12,
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "maxLength": 500,
+                  "minLength": 1
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "required": [
+                "path",
+                "line"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "stages": {
+            "type": "array",
+            "maxItems": 7,
+            "description": "Evidence-backed architecture / delivery stages; empty when not yet reviewed. Not a completion percentage.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 60
+                },
+                "label": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 12
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "verified",
+                    "review",
+                    "blocked",
+                    "unknown"
+                  ]
+                },
+                "note": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 24
+                },
+                "evidence": {
+                  "type": "array",
+                  "maxItems": 12,
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "path": {
+                        "type": "string",
+                        "maxLength": 500,
+                        "minLength": 1
+                      },
+                      "line": {
+                        "type": "integer",
+                        "minimum": 1
+                      }
+                    },
+                    "required": [
+                      "path",
+                      "line"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "capability": {
+                  "type": "string",
+                  "maxLength": 160
+                },
+                "exit_criteria": {
+                  "type": "string",
+                  "maxLength": 160
+                },
+                "support_ids": {
+                  "type": "array",
+                  "maxItems": 12,
+                  "items": {
+                    "type": "string",
+                    "maxLength": 100
+                  }
+                }
+              },
+              "required": [
+                "id",
+                "label",
+                "status",
+                "note",
+                "evidence"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "lane_label": {
+            "type": "string",
+            "maxLength": 18,
+            "description": "Short workstream label retaining ownership, e.g. 示教 · DAgger. Empty uses project name."
+          }
+        },
+        "required": [
+          "id",
+          "headline",
+          "goal",
+          "next_step",
+          "blocker",
+          "evidence"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "events": {
+      "type": "array",
+      "maxItems": 300,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+          },
+          "project_id": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1
+          },
+          "date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 40,
+            "minLength": 1
+          },
+          "detail": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "progress",
+              "blocker",
+              "decision",
+              "plan",
+              "maintenance"
+            ]
+          },
+          "importance": {
+            "type": "string",
+            "enum": [
+              "major",
+              "minor"
+            ]
+          },
+          "evidence": {
+            "type": "array",
+            "maxItems": 12,
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "maxLength": 500,
+                  "minLength": 1
+                },
+                "line": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "required": [
+                "path",
+                "line"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "object_id": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "lifecycle": {
+            "type": "string",
+            "enum": [
+              "current",
+              "paused",
+              "resolved",
+              "superseded"
+            ]
+          },
+          "supersedes": {
+            "type": "array",
+            "maxItems": 10,
+            "items": {
+              "type": "string",
+              "maxLength": 100
+            }
+          }
+        },
+        "required": [
+          "id",
+          "project_id",
+          "date",
+          "title",
+          "detail",
+          "kind",
+          "importance",
+          "evidence"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "report": {
+      "type": "object",
+      "properties": {
+        "headline": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "changes": {
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1
+          }
+        },
+        "next": {
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1
+          }
+        },
+        "risks": {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 1
+          }
+        }
+      },
+      "required": [
+        "headline",
+        "changes",
+        "next",
+        "risks"
+      ],
+      "additionalProperties": false
+    },
+    "reviewed_sources": {
+      "type": "array",
+      "maxItems": 200,
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "start_line": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "end_line": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "path",
+          "start_line",
+          "end_line"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "headline",
+    "projects",
+    "events",
+    "report"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,167 @@
+{
+  "schema_version": 1,
+  "directories": [
+    {
+      "path": "DAgger",
+      "role": "project",
+      "project_ids": [
+        "dagger-f1",
+        "dagger-g2"
+      ],
+      "sources": [
+        "DAgger/docs/F1/STATUS.md",
+        "DAgger/docs/G2/RECORDING_AND_PROGRESS.md"
+      ],
+      "note": "按F1/G2分线，避免互相代替现场状态。"
+    },
+    {
+      "path": "DM0.5",
+      "role": "project",
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "sources": [
+        "DM0.5/README.md",
+        "DM0.5/docs/CURRENT_STATUS.md",
+        "DM0.5/docs/robot/G2_SMOOTH_TELEOP_ROOT_CAUSE_AND_NEXT_STEPS.md"
+      ],
+      "note": "瓶分拣策略栈；共享控制证据只计一次。"
+    },
+    {
+      "path": "F1",
+      "role": "project",
+      "project_ids": [
+        "block-sort",
+        "foam-sort"
+      ],
+      "sources": [
+        "F1/foam_sort_whole_body/docs/training_plan.md",
+        "F1/docs/connect/3F-JIMU.md"
+      ],
+      "note": "积木场景与泡沫棉实验分开；连接记录不代表训练验收。"
+    },
+    {
+      "path": "F1-4242",
+      "role": "project",
+      "project_ids": [
+        "f1-console"
+      ],
+      "sources": [
+        "F1-4242/docs/STATUS.md"
+      ],
+      "note": "共享工作台，关联DAgger贡献但不重复计成果。"
+    },
+    {
+      "path": "PI0.5",
+      "role": "dependency",
+      "project_ids": [
+        "pi05-stack"
+      ],
+      "sources": [
+        "PI0.5/README.md"
+      ],
+      "note": "上游OpenPI；不把上游新闻当作积木任务进展。"
+    },
+    {
+      "path": "Projects-Hub",
+      "role": "alias",
+      "project_ids": [
+        "whereweare"
+      ],
+      "sources": [
+        "Whereweare/README.md"
+      ],
+      "note": "Whereweare兼容软链；读取实际目录，不重复扫描。"
+    },
+    {
+      "path": "RLinf",
+      "role": "dependency",
+      "project_ids": [
+        "rlinf-stack"
+      ],
+      "sources": [
+        "RLinf/README.md"
+      ],
+      "note": "上游后训练依赖；业务接入看任务文档。"
+    },
+    {
+      "path": "Whereweare",
+      "role": "project",
+      "project_ids": [
+        "whereweare"
+      ],
+      "sources": [
+        "Whereweare/README.md",
+        "Whereweare/docs/STATUS.md"
+      ],
+      "note": "本中台及项目制度；自身报告不循环充当外部进展证据。"
+    },
+    {
+      "path": "g2_robot",
+      "role": "project",
+      "project_ids": [
+        "g2-runtime",
+        "bottle-sort"
+      ],
+      "sources": [
+        "g2_robot/README.md",
+        "g2_robot/docs/G2_ROBOT_STRUCTURE.md"
+      ],
+      "note": "现场运行时；权威跨服务器状态归DM0.5。"
+    },
+    {
+      "path": "h20-access-check-20261008",
+      "role": "evidence",
+      "project_ids": [],
+      "sources": [],
+      "note": "运维核对产物，仅有probe文件；无业务状态文档，不扫描二进制。"
+    },
+    {
+      "path": "tasks",
+      "role": "collection",
+      "project_ids": [
+        "phone-packaging",
+        "g2-book"
+      ],
+      "sources": [
+        "tasks/g2_phone_packaging_pi05_rl/README.md",
+        "tasks/g2_book/README.md"
+      ],
+      "note": "任务集合，不单独计算为一条业务线。"
+    },
+    {
+      "path": "third_party",
+      "role": "dependency",
+      "project_ids": [
+        "workspace-deps"
+      ],
+      "sources": [
+        "third_party/patches/README.md"
+      ],
+      "note": "共享上游组件及补丁，仅索引声明文档。"
+    },
+    {
+      "path": "tasks/g2_phone_packaging_pi05_rl",
+      "role": "project",
+      "project_ids": [
+        "phone-packaging"
+      ],
+      "sources": [
+        "tasks/g2_phone_packaging_pi05_rl/README.md",
+        "tasks/g2_phone_packaging_pi05_rl/docs/G2_phone_box_VLA_data_pipeline_v2.md"
+      ],
+      "note": "独立手机装盒任务，不替代复杂积木分拣。"
+    },
+    {
+      "path": "tasks/g2_book",
+      "role": "project",
+      "project_ids": [
+        "g2-book"
+      ],
+      "sources": [
+        "tasks/g2_book/README.md"
+      ],
+      "note": "独立Book任务；当前只知采集入口。"
+    }
+  ]
+}

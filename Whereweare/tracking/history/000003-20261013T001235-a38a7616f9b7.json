@@ -1,0 +1,2309 @@
+{
+  "schema_version": 1,
+  "revision": 3,
+  "reviewed_at": "2026-10-13T00:13:02-04:00",
+  "timezone": "America/New_York",
+  "mode": "update",
+  "period_start": null,
+  "period_end": "2026-10-13",
+  "packet_id": "20261013T001235-a38a7616f9b7",
+  "headline": "唯一主线已确定：PI0.5复杂积木分拣。",
+  "projects": [
+    {
+      "id": "bottle-sort",
+      "headline": "单34D Sync已有实测；09-17推理服务暂停。",
+      "goal": "完成抓瓶、左右手交接与托盘分拣，并建立成功率基线。",
+      "goal_status": "proposed",
+      "next_step": "先核对G2维修与服务恢复条件，再确定完整分拣验收。",
+      "blocker": "无维修恢复记录；控制顺畅不等于完整任务与长稳验收。",
+      "evidence": [
+        {
+          "path": "DM0.5/README.md",
+          "line": 3,
+          "sha256": "96395751a951a16edb99343cd89070d5899d37d57814c7bedf51f6a62eb80a90"
+        },
+        {
+          "path": "DM0.5/docs/robot/G2_SMOOTH_TELEOP_ROOT_CAUSE_AND_NEXT_STEPS.md",
+          "line": 21,
+          "sha256": "fee185e33c7adc38eb2757846b342cc7ae50e42cf713517cd83dc1c6a682e939"
+        },
+        {
+          "path": "DM0.5/docs/robot/G2_SMOOTH_TELEOP_ROOT_CAUSE_AND_NEXT_STEPS.md",
+          "line": 73,
+          "sha256": "fee185e33c7adc38eb2757846b342cc7ae50e42cf713517cd83dc1c6a682e939"
+        },
+        {
+          "path": "DM0.5/docs/CURRENT_STATUS.md",
+          "line": 17,
+          "sha256": "472a8ec068bbcc65b6595c10b09bfd7a4c7488fbb48d2e30973c1ae83bbba083"
+        },
+        {
+          "path": "DAgger/docs/G2/RECORDING_AND_PROGRESS.md",
+          "line": 53,
+          "sha256": "a93f1f34eea384a4c3c5fc35d37d40cf207376cd577a1b2601f764e57d8eb0ae"
+        }
+      ]
+    },
+    {
+      "id": "block-sort",
+      "headline": "待关联复杂积木的任务文档。",
+      "goal": "",
+      "goal_status": "unknown",
+      "next_step": "补齐任务大纲、当前状态与首个验收目标。",
+      "blocker": "尚未找到专项来源；不能借用手机装盒或积木起姿进度。",
+      "evidence": []
+    },
+    {
+      "id": "phone-packaging",
+      "headline": "数采方案已形成；当前仅允许pilot。",
+      "goal": "先建立π0.5手机装盒SFT基线，再由固定评测决定精细阶段优化。",
+      "goal_status": "proposed",
+      "next_step": "用10–20条pilot验证动作映射、夹爪、同步与转换回读。",
+      "blocker": "正式采集前仍需冻结物理支撑、数据合同和评测场景。",
+      "evidence": [
+        {
+          "path": "tasks/g2_phone_packaging_pi05_rl/README.md",
+          "line": 13,
+          "sha256": "c390f635c438d42c6d68baaa17269da51d4c49f2d9b192b6aa8c8fb7ae3d429e"
+        },
+        {
+          "path": "tasks/g2_phone_packaging_pi05_rl/README.md",
+          "line": 34,
+          "sha256": "c390f635c438d42c6d68baaa17269da51d4c49f2d9b192b6aa8c8fb7ae3d429e"
+        },
+        {
+          "path": "tasks/g2_phone_packaging_pi05_rl/README.md",
+          "line": 42,
+          "sha256": "c390f635c438d42c6d68baaa17269da51d4c49f2d9b192b6aa8c8fb7ae3d429e"
+        }
+      ]
+    },
+    {
+      "id": "foam-sort",
+      "headline": "70K运动退化有诊断线索；未见修复开训新记录。",
+      "goal": "让单模型完成泡沫棉抓取、移动与放置，并通过固定场景验收。",
+      "goal_status": "proposed",
+      "next_step": "建议从5K建立独立短修复分支，先验收活动指标。",
+      "blocker": "新推理入口被身体姿态不一致阻止；真实执行与暂停恢复未验收。",
+      "evidence": [
+        {
+          "path": "F1/foam_sort_whole_body/docs/training_plan.md",
+          "line": 10,
+          "sha256": "6059c8613673588f05a3f80e3e47c575fbb88bbe1ec2e6c1e17f7d0ab319725e"
+        },
+        {
+          "path": "F1/foam_sort_whole_body/docs/training_plan.md",
+          "line": 14,
+          "sha256": "6059c8613673588f05a3f80e3e47c575fbb88bbe1ec2e6c1e17f7d0ab319725e"
+        },
+        {
+          "path": "F1/foam_sort_whole_body/docs/training_plan.md",
+          "line": 18,
+          "sha256": "6059c8613673588f05a3f80e3e47c575fbb88bbe1ec2e6c1e17f7d0ab319725e"
+        }
+      ]
+    },
+    {
+      "id": "f1-console",
+      "headline": "统一数采出口已部署；1834帧v3数据仍待审核。",
+      "goal": "形成可审核、可回读、可发布的统一数采出口。",
+      "goal_status": "proposed",
+      "next_step": "审核现有候选数据；独立Pico补一次真实30Hz短录制验收。",
+      "blocker": "转换回读通过不等于训练就绪，Pico实机数采尚待验证。",
+      "evidence": [
+        {
+          "path": "F1-4242/docs/STATUS.md",
+          "line": 33,
+          "sha256": "8dd14b126dee54976a2ba567afa9e1b876e7757e4f42543991d2deb081471b41"
+        },
+        {
+          "path": "F1-4242/docs/STATUS.md",
+          "line": 37,
+          "sha256": "8dd14b126dee54976a2ba567afa9e1b876e7757e4f42543991d2deb081471b41"
+        },
+        {
+          "path": "F1-4242/docs/STATUS.md",
+          "line": 45,
+          "sha256": "8dd14b126dee54976a2ba567afa9e1b876e7757e4f42543991d2deb081471b41"
+        }
+      ]
+    },
+    {
+      "id": "dagger-f1",
+      "headline": "START连续分条已部署；现场按键与运动录制待验收。",
+      "goal": "稳定完成现场示教分条，逐步验证真实策略HIL闭环。",
+      "goal_status": "proposed",
+      "next_step": "由现场验收START开始/结束与连续录制。",
+      "blocker": "现有shadow无动作短检；真实模型配置与闭环训练未验收。",
+      "evidence": [
+        {
+          "path": "DAgger/docs/F1/STATUS.md",
+          "line": 3,
+          "sha256": "c8cfc2e0060ef3ef4a1736638c284210270f957ed0f2e78c6d4648c849af8416"
+        },
+        {
+          "path": "DAgger/docs/F1/STATUS.md",
+          "line": 9,
+          "sha256": "c8cfc2e0060ef3ef4a1736638c284210270f957ed0f2e78c6d4648c849af8416"
+        },
+        {
+          "path": "DAgger/docs/F1/STATUS.md",
+          "line": 11,
+          "sha256": "c8cfc2e0060ef3ef4a1736638c284210270f957ed0f2e78c6d4648c849af8416"
+        },
+        {
+          "path": "DAgger/docs/F1/STATUS.md",
+          "line": 44,
+          "sha256": "c8cfc2e0060ef3ef4a1736638c284210270f957ed0f2e78c6d4648c849af8416"
+        }
+      ]
+    },
+    {
+      "id": "dagger-g2",
+      "headline": "09-10右拇指送修暂停；恢复状态未核验。",
+      "goal": "维修后恢复可审计的人工接管与纠正采集。",
+      "goal_status": "proposed",
+      "next_step": "先记录维修标定，再验收空载开闭、Home与反馈。",
+      "blocker": "尚无维修恢复证据；旧数据保持training_ready=false。",
+      "evidence": [
+        {
+          "path": "DAgger/docs/G2/RECORDING_AND_PROGRESS.md",
+          "line": 3,
+          "sha256": "a93f1f34eea384a4c3c5fc35d37d40cf207376cd577a1b2601f764e57d8eb0ae"
+        },
+        {
+          "path": "DAgger/docs/G2/RECORDING_AND_PROGRESS.md",
+          "line": 5,
+          "sha256": "a93f1f34eea384a4c3c5fc35d37d40cf207376cd577a1b2601f764e57d8eb0ae"
+        },
+        {
+          "path": "DAgger/docs/G2/RECORDING_AND_PROGRESS.md",
+          "line": 51,
+          "sha256": "a93f1f34eea384a4c3c5fc35d37d40cf207376cd577a1b2601f764e57d8eb0ae"
+        }
+      ]
+    },
+    {
+      "id": "g2-runtime",
+      "headline": "右手只读姿态采集入口已同步；现场采集仍待确认。",
+      "goal": "为G2任务提供可核验的反馈、控制与运维入口。",
+      "goal_status": "proposed",
+      "next_step": "先补右手姿态采集与维修后的反馈核验记录。",
+      "blocker": "历史结构页保留旧控制配置；不能据此推断现场状态。",
+      "evidence": [
+        {
+          "path": "g2_robot/docs/G2_ROBOT_STRUCTURE.md",
+          "line": 3,
+          "sha256": "e5b3b7277bdb9bc7d3748d81fa36a6eedcfa9bf833d50ff1bda037e47940532a"
+        },
+        {
+          "path": "g2_robot/docs/G2_ROBOT_STRUCTURE.md",
+          "line": 7,
+          "sha256": "e5b3b7277bdb9bc7d3748d81fa36a6eedcfa9bf833d50ff1bda037e47940532a"
+        },
+        {
+          "path": "g2_robot/README.md",
+          "line": 8,
+          "sha256": "60dc757ce96045da15c5dbafdfaf0c69f80f94cff0654a23c9235bf8a4a5f761"
+        }
+      ]
+    },
+    {
+      "id": "g2-book",
+      "headline": "只有采集数据入口；任务成果尚无记录。",
+      "goal": "",
+      "goal_status": "unknown",
+      "next_step": "补充Book任务目标、已有采集结论和下一验收点。",
+      "blocker": "README未记录任务范围、可靠日期或实测结果。",
+      "evidence": [
+        {
+          "path": "tasks/g2_book/README.md",
+          "line": 3,
+          "sha256": "4544c2773808e5f100956294471084902ab4457118c00c1d70912c3db8d39aa0"
+        },
+        {
+          "path": "tasks/g2_book/README.md",
+          "line": 8,
+          "sha256": "4544c2773808e5f100956294471084902ab4457118c00c1d70912c3db8d39aa0"
+        }
+      ]
+    },
+    {
+      "id": "pi05-stack",
+      "headline": "上游OpenPI已登记；业务进展归具体任务。",
+      "goal": "",
+      "goal_status": "unknown",
+      "next_step": "由手机与积木任务分别维护适配、训练与验收记录。",
+      "blocker": "官方模型和上游更新不能证明本地训练已经完成。",
+      "evidence": [
+        {
+          "path": "PI0.5/README.md",
+          "line": 3,
+          "sha256": "567fc57766bd736664f50126cab8145af4071ca16cc5e238f2b11e369169c3b5"
+        },
+        {
+          "path": "tasks/g2_phone_packaging_pi05_rl/README.md",
+          "line": 16,
+          "sha256": "c390f635c438d42c6d68baaa17269da51d4c49f2d9b192b6aa8c8fb7ae3d429e"
+        }
+      ]
+    },
+    {
+      "id": "rlinf-stack",
+      "headline": "上游RLinf已登记；手机后训练仍是后续路线。",
+      "goal": "",
+      "goal_status": "unknown",
+      "next_step": "先完成手机SFT与固定评测，再决定精细阶段后训练。",
+      "blocker": "无当前任务的RL闭环验收证据。",
+      "evidence": [
+        {
+          "path": "RLinf/README.md",
+          "line": 25,
+          "sha256": "f887730931dfab263dbdd0889db14eb065248c4dd9f20d9da5a13abb585a4001"
+        },
+        {
+          "path": "tasks/g2_phone_packaging_pi05_rl/README.md",
+          "line": 13,
+          "sha256": "c390f635c438d42c6d68baaa17269da51d4c49f2d9b192b6aa8c8fb7ae3d429e"
+        },
+        {
+          "path": "tasks/g2_phone_packaging_pi05_rl/README.md",
+          "line": 39,
+          "sha256": "c390f635c438d42c6d68baaa17269da51d4c49f2d9b192b6aa8c8fb7ae3d429e"
+        }
+      ]
+    },
+    {
+      "id": "workspace-deps",
+      "headline": "共享上游依赖与本地补丁已登记。",
+      "goal": "",
+      "goal_status": "unknown",
+      "next_step": "随业务记录使用版本与转换验收，暂不单列研发目标。",
+      "blocker": "上游功能与本地补丁存在不等于业务完成。",
+      "evidence": [
+        {
+          "path": "third_party/patches/README.md",
+          "line": 3,
+          "sha256": "6b5f7e8811e35a82f1dc58b471055057f6c277a0744e5b12027285cf8c426604"
+        }
+      ]
+    },
+    {
+      "id": "whereweare",
+      "headline": "文档审阅、时间树与日周回顾已贯通。",
+      "goal": "打开首页能说清主线变化、当前阻塞和下一验收点。",
+      "goal_status": "proposed",
+      "next_step": "明确积木主线的阶段验收点，再打磨偏航提醒和建议采纳。",
+      "blocker": "目标确认、学习依赖和一键纠错尚未上线。",
+      "evidence": [
+        {
+          "path": "Whereweare/docs/STATUS.md",
+          "line": 7,
+          "sha256": "c87a25e4a428a97ffdc118e156427ec074e5f9b3adda80c41654e78cdf94151b"
+        },
+        {
+          "path": "Whereweare/docs/STATUS.md",
+          "line": 19,
+          "sha256": "c87a25e4a428a97ffdc118e156427ec074e5f9b3adda80c41654e78cdf94151b"
+        },
+        {
+          "path": "Whereweare/docs/STATUS.md",
+          "line": 30,
+          "sha256": "c87a25e4a428a97ffdc118e156427ec074e5f9b3adda80c41654e78cdf94151b"
+        }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "id": "bottle-hand-name-fix",
+      "project_id": "bottle-sort",
+      "date": "2026-09-07",
+      "title": "右手名称修正",
+      "detail": "canonical名称修正后四指单轴验证完成；完整任务成功率未因此验收。",
+      "kind": "progress",
+      "importance": "minor",
+      "evidence": [
+        {
+          "path": "DM0.5/docs/CURRENT_STATUS.md",
+          "line": 35,
+          "sha256": "472a8ec068bbcc65b6595c10b09bfd7a4c7488fbb48d2e30973c1ae83bbba083"
+        },
+        {
+          "path": "DM0.5/docs/robot/G2_SMOOTH_TELEOP_ROOT_CAUSE_AND_NEXT_STEPS.md",
+          "line": 38,
+          "sha256": "fee185e33c7adc38eb2757846b342cc7ae50e42cf713517cd83dc1c6a682e939"
+        },
+        {
+          "path": "DM0.5/docs/CURRENT_STATUS.md",
+          "line": 21,
+          "sha256": "472a8ec068bbcc65b6595c10b09bfd7a4c7488fbb48d2e30973c1ae83bbba083"
+        }
+      ]
+    },
+    {
+      "id": "bottle-unified34-baseline",
+      "project_id": "bottle-sort",
+      "date": "2026-09-08",
+      "title": "单34D Sync成为基线",
+      "detail": "完整推理较长轮82.346秒，覆盖右手闭合；双17D保留回退，不代表全任务或长稳验收。",
+      "kind": "decision",
+      "importance": "major",
+      "evidence": [
+        {
+          "path": "DM0.5/docs/robot/G2_SMOOTH_TELEOP_ROOT_CAUSE_AND_NEXT_STEPS.md",
+          "line": 21,
+          "sha256": "fee185e33c7adc38eb2757846b342cc7ae50e42cf713517cd83dc1c6a682e939"
+        },
+        {
+          "path": "DM0.5/docs/robot/G2_SMOOTH_TELEOP_ROOT_CAUSE_AND_NEXT_STEPS.md",
+          "line": 58,
+          "sha256": "fee185e33c7adc38eb2757846b342cc7ae50e42cf713517cd83dc1c6a682e939"
+        },
+        {
+          "path": "DM0.5/docs/robot/G2_SMOOTH_TELEOP_ROOT_CAUSE_AND_NEXT_STEPS.md",
+          "line": 73,
+          "sha256": "fee185e33c7adc38eb2757846b342cc7ae50e42cf713517cd83dc1c6a682e939"
+        }
+      ]
+    },
+    {
+      "id": "g2-readonly-hand-capture",
+      "project_id": "g2-runtime",
+      "date": "2026-09-08",
+      "title": "右手只读采集入口同步",
+      "detail": "新增只读10帧姿态采集，不覆盖Home、不发送动作；现场采集待操作者执行。",
+      "kind": "maintenance",
+      "importance": "minor",
+      "evidence": [
+        {
+          "path": "g2_robot/docs/G2_ROBOT_STRUCTURE.md",
+          "line": 3,
+          "sha256": "e5b3b7277bdb9bc7d3748d81fa36a6eedcfa9bf833d50ff1bda037e47940532a"
+        },
+        {
+          "path": "g2_robot/docs/G2_ROBOT_STRUCTURE.md",
+          "line": 7,
+          "sha256": "e5b3b7277bdb9bc7d3748d81fa36a6eedcfa9bf833d50ff1bda037e47940532a"
+        }
+      ]
+    },
+    {
+      "id": "dagger-g2-thumb-repair-pause",
+      "project_id": "dagger-g2",
+      "date": "2026-09-10",
+      "title": "右拇指送修暂停",
+      "detail": "操作者确认硬件故障后暂停；10-12仅整理文档，未核验维修或恢复。",
+      "kind": "blocker",
+      "importance": "major",
+      "evidence": [
+        {
+          "path": "DAgger/docs/G2/RECORDING_AND_PROGRESS.md",
+          "line": 3,
+          "sha256": "a93f1f34eea384a4c3c5fc35d37d40cf207376cd577a1b2601f764e57d8eb0ae"
+        },
+        {
+          "path": "DAgger/docs/G2/RECORDING_AND_PROGRESS.md",
+          "line": 5,
+          "sha256": "a93f1f34eea384a4c3c5fc35d37d40cf207376cd577a1b2601f764e57d8eb0ae"
+        }
+      ]
+    },
+    {
+      "id": "bottle-inference-services-paused",
+      "project_id": "bottle-sort",
+      "date": "2026-09-17",
+      "title": "推理服务暂停",
+      "detail": "Sync与RTC服务暂停释放F1训练资源，容器和权重保留；此为当日状态记录。",
+      "kind": "decision",
+      "importance": "major",
+      "evidence": [
+        {
+          "path": "DM0.5/docs/CURRENT_STATUS.md",
+          "line": 17,
+          "sha256": "472a8ec068bbcc65b6595c10b09bfd7a4c7488fbb48d2e30973c1ae83bbba083"
+        }
+      ]
+    },
+    {
+      "id": "foam-ik-replan-body-blocker",
+      "project_id": "foam-sort",
+      "date": "2026-09-20",
+      "title": "新推理入口受起姿阻塞",
+      "detail": "IK有效前缀重规划已部署；现场preflight被身体姿态与参考不一致阻止，真实执行/暂停恢复未验收。",
+      "kind": "blocker",
+      "importance": "major",
+      "evidence": [
+        {
+          "path": "F1/foam_sort_whole_body/docs/training_plan.md",
+          "line": 16,
+          "sha256": "6059c8613673588f05a3f80e3e47c575fbb88bbe1ec2e6c1e17f7d0ab319725e"
+        },
+        {
+          "path": "F1/foam_sort_whole_body/docs/training_plan.md",
+          "line": 18,
+          "sha256": "6059c8613673588f05a3f80e3e47c575fbb88bbe1ec2e6c1e17f7d0ab319725e"
+        },
+        {
+          "path": "F1/foam_sort_whole_body/results/deployments/20260920-4F-ik-replan-v1/README.md",
+          "line": 3,
+          "sha256": "00ec36f30142decc5c477ef2cb6e31e0c8d04d105841fc6de2af3cea86520e8f"
+        }
+      ]
+    },
+    {
+      "id": "foam-partial-base-diagnosis",
+      "project_id": "foam-sort",
+      "date": "2026-09-20",
+      "title": "定位运动退化线索",
+      "detail": "同70K离线反事实显著恢复运动，partial-base接线成为重要线索；未来标签mask不可部署，尚未证明唯一根因。",
+      "kind": "progress",
+      "importance": "major",
+      "evidence": [
+        {
+          "path": "F1/foam_sort_whole_body/docs/training_plan.md",
+          "line": 10,
+          "sha256": "6059c8613673588f05a3f80e3e47c575fbb88bbe1ec2e6c1e17f7d0ab319725e"
+        },
+        {
+          "path": "F1/foam_sort_whole_body/docs/training_plan.md",
+          "line": 12,
+          "sha256": "6059c8613673588f05a3f80e3e47c575fbb88bbe1ec2e6c1e17f7d0ab319725e"
+        },
+        {
+          "path": "F1/foam_sort_whole_body/results/formal_training_20260917/matched_motion_probe_20260920/oracle_mask_70000/README.md",
+          "line": 3,
+          "sha256": "29e296dc776958331144ba19a2386b29f5f7295a6c0240a28ef5e879342db51d"
+        }
+      ]
+    },
+    {
+      "id": "dagger-f1-demo-home",
+      "project_id": "dagger-f1",
+      "date": "2026-10-12",
+      "title": "Y起姿改为积木demo",
+      "detail": "仅双臂目标改变，腰头夹爪保持；配置与无输出轨迹已验证，现场到位待验收。此项不代表积木分拣进展。",
+      "kind": "maintenance",
+      "importance": "minor",
+      "evidence": [
+        {
+          "path": "DAgger/docs/F1/STATUS.md",
+          "line": 13,
+          "sha256": "c8cfc2e0060ef3ef4a1736638c284210270f957ed0f2e78c6d4648c849af8416"
+        },
+        {
+          "path": "DAgger/docs/F1/STATUS.md",
+          "line": 15,
+          "sha256": "c8cfc2e0060ef3ef4a1736638c284210270f957ed0f2e78c6d4648c849af8416"
+        },
+        {
+          "path": "DAgger/docs/F1/STATUS.md",
+          "line": 19,
+          "sha256": "c8cfc2e0060ef3ef4a1736638c284210270f957ed0f2e78c6d4648c849af8416"
+        }
+      ]
+    },
+    {
+      "id": "dagger-f1-start-recording",
+      "project_id": "dagger-f1",
+      "date": "2026-10-12",
+      "title": "START连续分条部署",
+      "detail": "人工示教按START开始/结束一条，保存后可录下一条；shadow通过，现场按键与运动仍待验收。",
+      "kind": "progress",
+      "importance": "major",
+      "evidence": [
+        {
+          "path": "DAgger/docs/F1/STATUS.md",
+          "line": 3,
+          "sha256": "c8cfc2e0060ef3ef4a1736638c284210270f957ed0f2e78c6d4648c849af8416"
+        },
+        {
+          "path": "DAgger/docs/F1/STATUS.md",
+          "line": 9,
+          "sha256": "c8cfc2e0060ef3ef4a1736638c284210270f957ed0f2e78c6d4648c849af8416"
+        },
+        {
+          "path": "DAgger/docs/F1/STATUS.md",
+          "line": 11,
+          "sha256": "c8cfc2e0060ef3ef4a1736638c284210270f957ed0f2e78c6d4648c849af8416"
+        }
+      ]
+    },
+    {
+      "id": "console-library-storage-merge",
+      "project_id": "f1-console",
+      "date": "2026-10-12",
+      "title": "目录与容量合并展示",
+      "detail": "DATA录制目录和存储信息合并为一卡片；采集与数据合同不变。",
+      "kind": "maintenance",
+      "importance": "minor",
+      "evidence": [
+        {
+          "path": "F1-4242/docs/STATUS.md",
+          "line": 5,
+          "sha256": "8dd14b126dee54976a2ba567afa9e1b876e7757e4f42543991d2deb081471b41"
+        },
+        {
+          "path": "F1-4242/docs/STATUS.md",
+          "line": 7,
+          "sha256": "8dd14b126dee54976a2ba567afa9e1b876e7757e4f42543991d2deb081471b41"
+        }
+      ]
+    },
+    {
+      "id": "console-unified-data-v29",
+      "project_id": "f1-console",
+      "date": "2026-10-12",
+      "title": "统一数采出口上线",
+      "detail": "16D合同、官方LeRobot v3出口与审核队列已部署；旧F710记录导出1834帧/74段，仍待审核。",
+      "kind": "progress",
+      "importance": "major",
+      "evidence": [
+        {
+          "path": "F1-4242/docs/STATUS.md",
+          "line": 33,
+          "sha256": "8dd14b126dee54976a2ba567afa9e1b876e7757e4f42543991d2deb081471b41"
+        },
+        {
+          "path": "F1-4242/docs/STATUS.md",
+          "line": 37,
+          "sha256": "8dd14b126dee54976a2ba567afa9e1b876e7757e4f42543991d2deb081471b41"
+        },
+        {
+          "path": "F1-4242/docs/STATUS.md",
+          "line": 39,
+          "sha256": "8dd14b126dee54976a2ba567afa9e1b876e7757e4f42543991d2deb081471b41"
+        }
+      ]
+    },
+    {
+      "id": "whereweare-review-loop-20261013",
+      "project_id": "whereweare",
+      "date": "2026-10-13",
+      "title": "真实文档审阅贯通",
+      "detail": "增量审阅可发布到时间树，日周回顾、主次和归档已可用；46项后端检查与浏览器验收通过。目标确认和偏航提醒留待下一阶段。",
+      "kind": "progress",
+      "importance": "major",
+      "evidence": [
+        {
+          "path": "Whereweare/docs/STATUS.md",
+          "line": 7,
+          "sha256": "ac1c5ae82f5a378fd32b0f4a883d9598716ca87a3866bc32cf81455a4a15877f"
+        },
+        {
+          "path": "Whereweare/docs/STATUS.md",
+          "line": 19,
+          "sha256": "ac1c5ae82f5a378fd32b0f4a883d9598716ca87a3866bc32cf81455a4a15877f"
+        }
+      ]
+    },
+    {
+      "id": "dagger-g2-hil-recovery-evidence",
+      "project_id": "dagger-g2",
+      "date": null,
+      "title": "策略接管与恢复已有实测",
+      "detail": "来源以09-08 165733标记该轮：10次HIL/9次恢复、0 SAFE_HOLD；未完整训练审计，此处不补推年份。",
+      "kind": "progress",
+      "importance": "major",
+      "evidence": [
+        {
+          "path": "DAgger/docs/G2/RECORDING_AND_PROGRESS.md",
+          "line": 24,
+          "sha256": "a93f1f34eea384a4c3c5fc35d37d40cf207376cd577a1b2601f764e57d8eb0ae"
+        }
+      ]
+    },
+    {
+      "id": "foam-short-repair-proposal",
+      "project_id": "foam-sort",
+      "date": null,
+      "title": "建议从5K短修复",
+      "detail": "09-20文档建议明确缺失动作构造后，从5K开独立短修复并按活动指标验收；尚无实施新记录。",
+      "kind": "plan",
+      "importance": "major",
+      "evidence": [
+        {
+          "path": "F1/foam_sort_whole_body/docs/training_plan.md",
+          "line": 14,
+          "sha256": "6059c8613673588f05a3f80e3e47c575fbb88bbe1ec2e6c1e17f7d0ab319725e"
+        }
+      ]
+    },
+    {
+      "id": "book-record-pull-entry",
+      "project_id": "g2-book",
+      "date": null,
+      "title": "原始记录拉取入口",
+      "detail": "已记录只读拉取脚本入口；不据此声称已有采集或任务验收，原文未注明日期。",
+      "kind": "maintenance",
+      "importance": "minor",
+      "evidence": [
+        {
+          "path": "tasks/g2_book/README.md",
+          "line": 8,
+          "sha256": "4544c2773808e5f100956294471084902ab4457118c00c1d70912c3db8d39aa0"
+        },
+        {
+          "path": "tasks/g2_book/README.md",
+          "line": 14,
+          "sha256": "4544c2773808e5f100956294471084902ab4457118c00c1d70912c3db8d39aa0"
+        }
+      ]
+    },
+    {
+      "id": "phone-collection-design",
+      "project_id": "phone-packaging",
+      "date": null,
+      "title": "数采方案形成",
+      "detail": "路线为π0.5 SFT→固定真机评测→精细阶段后训练；当前仅允许pilot，原文未注明日期。",
+      "kind": "progress",
+      "importance": "major",
+      "evidence": [
+        {
+          "path": "tasks/g2_phone_packaging_pi05_rl/README.md",
+          "line": 13,
+          "sha256": "c390f635c438d42c6d68baaa17269da51d4c49f2d9b192b6aa8c8fb7ae3d429e"
+        },
+        {
+          "path": "tasks/g2_phone_packaging_pi05_rl/README.md",
+          "line": 42,
+          "sha256": "c390f635c438d42c6d68baaa17269da51d4c49f2d9b192b6aa8c8fb7ae3d429e"
+        }
+      ]
+    },
+    {
+      "id": "phone-pilot-gate",
+      "project_id": "phone-packaging",
+      "date": null,
+      "title": "下一门：pilot验证",
+      "detail": "计划10–20条pilot验证同步与动作合同，再冻结setup和正式采集规则；尚无完成证据。",
+      "kind": "plan",
+      "importance": "major",
+      "evidence": [
+        {
+          "path": "tasks/g2_phone_packaging_pi05_rl/README.md",
+          "line": 34,
+          "sha256": "c390f635c438d42c6d68baaa17269da51d4c49f2d9b192b6aa8c8fb7ae3d429e"
+        },
+        {
+          "path": "tasks/g2_phone_packaging_pi05_rl/README.md",
+          "line": 44,
+          "sha256": "c390f635c438d42c6d68baaa17269da51d4c49f2d9b192b6aa8c8fb7ae3d429e"
+        }
+      ]
+    }
+  ],
+  "report": {
+    "headline": "PI0.5复杂积木分拣为唯一主线，已在时间树突出。",
+    "changes": [
+      "用户确认主次：积木分拣为唯一主线，其余保留支线或共享工具。"
+    ],
+    "next": [
+      "为积木主线关联专项文档，明确当前状态和最近一个验收点。"
+    ],
+    "risks": [
+      "主线已确认；专项进展与阶段验收目标仍缺依据。"
+    ]
+  },
+  "report_scope": "review",
+  "source_manifest": {
+    "DAgger/docs/F1/F1_HG_DAGGER.md": {
+      "sha256": "ed0245e51e1108e4ffea5b23318fccb33b5cc4c030ac83b598ccd111f52a1475",
+      "line_count": 214,
+      "project_ids": [
+        "dagger-f1"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/F1/F1_VALIDATION.md": {
+      "sha256": "342b64caff1a83d39c397d478c9f2b41c83ed30f382ae66e9332762cd60f5cd3",
+      "line_count": 345,
+      "project_ids": [
+        "dagger-f1"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/F1/HIL_RELEASE.md": {
+      "sha256": "50ec0fb2101c23ad49c62e6adb2aa82f385c9c1de6a9f00c1dd5b076ac686498",
+      "line_count": 42,
+      "project_ids": [
+        "dagger-f1"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/F1/HIL_ROUTES_RELEASE.md": {
+      "sha256": "10d346c48f1c999465fc1c63dc2162c25eef1058460141b9175968c93ec3270f",
+      "line_count": 28,
+      "project_ids": [
+        "dagger-f1"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/F1/HIL_WORKBENCH.md": {
+      "sha256": "4274f875f2459e77f194e8ef4bb830056d7e6de5377eb67e4502bf98afa69ead",
+      "line_count": 97,
+      "project_ids": [
+        "dagger-f1"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/F1/README.md": {
+      "sha256": "8725682c50a08d9df44dbac7dff7c38714a459a37a1d061c8043176babbef7b6",
+      "line_count": 13,
+      "project_ids": [
+        "dagger-f1"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/F1/STATUS.md": {
+      "sha256": "c8cfc2e0060ef3ef4a1736638c284210270f957ed0f2e78c6d4648c849af8416",
+      "line_count": 54,
+      "project_ids": [
+        "dagger-f1"
+      ],
+      "primary": true
+    },
+    "DAgger/docs/G2/00_INDEX.md": {
+      "sha256": "5c8b3756ac6438af891daa1906a20ff32f7e89b78f6f9727ee8211307c70e619",
+      "line_count": 68,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/AUDIT_PREVIEW_20260908_152050.md": {
+      "sha256": "31e4f80a2a49f1ecf56452657265cbc6bb2e7a136e73dfa32b97a09e0c282f59",
+      "line_count": 20,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/DATASET_REFERENCE_VIDEOS_20260909.md": {
+      "sha256": "11edb38de880cef81a5402721f2c62050ad2e1f27cd7188ef8ea281accf1c187",
+      "line_count": 10,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/FIX_RECORDING_20260908.md": {
+      "sha256": "508c77a525e816b030dd13c73b80256a4e1c9d002ca82caed17545912493c84b",
+      "line_count": 46,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/G2_F710_DAGGER_FULL_FLOW.md": {
+      "sha256": "3b7e16c29c92015357e18723d7ad6b6fe4f6d8ebd2e380f7862e6c00d8b5fd7d",
+      "line_count": 352,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/G2_IPAD_DAGGER_FULL_FLOW.md": {
+      "sha256": "e33736ec761644806694ec8d946ce9de24056919feca3929d2cd4539ab89b62e",
+      "line_count": 273,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/HANDOFF_20260907_F710_HIL_RECORDING.md": {
+      "sha256": "5d4d0a07fea3dc681d08f9f5a28ca70d423cecec2cb93eb18b1967c68fad7061",
+      "line_count": 134,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/HAND_GRASP_DISCUSSION_20260908.md": {
+      "sha256": "3de2342a611a93410931e26a862f788d04b26c9b92f12e1064d99ffaff45fac4",
+      "line_count": 25,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/HIL_NETWORK_SHADOW_20260907.md": {
+      "sha256": "9edd87b9b936480e5196c261acfceaf45e4d2719db3ab9c2e628c04e242201c2",
+      "line_count": 126,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/HIL_REAL_OBSERVATION_SHADOW_20260907.md": {
+      "sha256": "2d8e79c42e5264f86cd887170fff1bfcc899b5f99273aded6625cf8689739d09",
+      "line_count": 67,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/HIL_RECONNECT_RB_20260908.md": {
+      "sha256": "1fe4418b9bba2305b8bd564dcd2697abcc32ef1a9bdc2569366c9ebc0a6e213c",
+      "line_count": 35,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/HIL_RECORDING_OFFLINE_20260907.md": {
+      "sha256": "4ed96417dd45ee4c31ea892a070e4db6be30a3cf7470f309f0f2868be25bbb91",
+      "line_count": 136,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/HOME_DUPLICATE_TARGET_FIX_20260909.md": {
+      "sha256": "bab7c70ef9d959176eb8ef35472b4d30965849bbf81db2527c334b9c01c5f92c",
+      "line_count": 15,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/HOME_PINKY_REVIEW_20260908.md": {
+      "sha256": "7d834b479452652f047821eec2f3f00e730a3ee5c1444e00b9c1061c37415c0f",
+      "line_count": 11,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/MIGRATION_20260907.md": {
+      "sha256": "6ef36d64f342a22b3c7ef394b0f9ab5b4e365de39d5c9f1a0cd995307e457f00",
+      "line_count": 16,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/NO_ACK_20260908.md": {
+      "sha256": "5ddfaf631d45b7e37c66af9136fd3bbba5313a9ee374ddcda2447aa0403cdf41",
+      "line_count": 11,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/PAOS_BRIDGE_ORIGIN_20260907.md": {
+      "sha256": "2dc9003095f867572e9d0c524208d459e9c257040aa35f120938462de47bf755",
+      "line_count": 34,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/PAUSED_HAND_REPAIR_20260910.md": {
+      "sha256": "16dddb8aa0271a45b3481023bc4808c5ec32cbcc77938bad4189f3f3b94399ed",
+      "line_count": 37,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/POWERED_HIL_CANDIDATE_20260907.md": {
+      "sha256": "0a219137c6a38f6602ed92f88c737f8b3eae47c7363f9c51969beb219baea1e7",
+      "line_count": 84,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/POWERED_HIL_FIRST_FLOW_REVIEW_20260907.md": {
+      "sha256": "6ef9524f4bd64d64029284185c7510e910f0e941c19f71d6a96ea9f2057f1744",
+      "line_count": 44,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/PREVIEW_20260908_175457.md": {
+      "sha256": "bb6e8bb5a738c9b5b16ea54e9089632e45805307660ebee19ef5fcdf36f0b07c",
+      "line_count": 15,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/RECORDING_AND_PROGRESS.md": {
+      "sha256": "a93f1f34eea384a4c3c5fc35d37d40cf207376cd577a1b2601f764e57d8eb0ae",
+      "line_count": 64,
+      "project_ids": [
+        "bottle-sort",
+        "dagger-g2"
+      ],
+      "primary": true
+    },
+    "DAgger/docs/G2/REPLAY_RESULTS_20260909.md": {
+      "sha256": "9a8d830aea9235acbfd068367ce297025017bdffa054332518e578c21139ef02",
+      "line_count": 15,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/REPLAY_UNIFIED34_20260909.md": {
+      "sha256": "01888871d8215148461411584f819d3848b136b8b3769a6da585463b6fa97d98",
+      "line_count": 45,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/RIGHT_GRASP_FRAME3166_20260908.md": {
+      "sha256": "c7fddbbe4f3c203dc87894b99a42b93dfc7fc0e707a8a6065c94ccb47e08757d",
+      "line_count": 17,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/RUNTIME_LOCK_FIX_20260907.md": {
+      "sha256": "5576e78b28259be3eecdaf63d24b7db407ad9485fc116040c492b3cdbd15fafa",
+      "line_count": 11,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/SDK_DATASET_HAND_CONTRACT_20260908.md": {
+      "sha256": "737bbc9dc72c652908618b3e59a5efeb8950ba7d6496deceb589dc4585576d3b",
+      "line_count": 37,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/START_GATE_AND_THREE_RUNS_20260908.md": {
+      "sha256": "0afd46468795565b5553bbec0ff6c31d9606d2a93e6bb8611abbb45d6d4044a2",
+      "line_count": 50,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/START_HERE.md": {
+      "sha256": "9ebd24418c6eb206b47897d880f3a9b4c8c10c29e5f8ea3223811137b927893e",
+      "line_count": 136,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/STATUS_20260908.md": {
+      "sha256": "8a548e76885944ada8610a60d487a759cce6a779b85f4fcde99e5c1e765a1762",
+      "line_count": 18,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/STORAGE_FIX_20260908.md": {
+      "sha256": "88bc12f2da2db4d37c156c1cc192a78e951bbb964383b8a7bd36ce8fbc3bf0c6",
+      "line_count": 19,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/STORAGE_GPU_REVIEW_20260908.md": {
+      "sha256": "cd9eb943434888d3cf91ef1ed9877a9aefc25630e3e5a07ff7152744acc24fc3",
+      "line_count": 72,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/THREE_CAMERA_PREVIEW_20260908.md": {
+      "sha256": "a8f235f87a28606265513978372b5bd05e45d7fb034efec39ec09cca562ba38f",
+      "line_count": 13,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/THUMB_CONTACT_AND_DATASET_20260908.md": {
+      "sha256": "506f0408135867f0fae9b953bc0c8a2a582683f2a25a0631e39f30e3e964dda2",
+      "line_count": 42,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/teleop/DAGGER_MOVED.md": {
+      "sha256": "c6a3197a0591e3fbfd872ed658356aca269c825edc7d437878b0283a292df764",
+      "line_count": 25,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/teleop/F710_PINK_OTG_CONTROL_ARCHITECTURE.md": {
+      "sha256": "0ba2c6130fcb13d557398c14074fad5a4737214ec3841a84f5f5a98acb8934c6",
+      "line_count": 1497,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/teleop/G2_KINEMATICS_AND_PINK_IK_PLAN.md": {
+      "sha256": "0e57389456bee810a459590ec763e4651d1d1ee2e766307bc1a5d1f16360de55",
+      "line_count": 238,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/teleop/INCIDENT_20260827_F710_BASE_MOTION.md": {
+      "sha256": "9e929f838cdce26813595114c52e2fcf98450ddc13e32a9b5b777449af1d16fb",
+      "line_count": 60,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/teleop/README.md": {
+      "sha256": "559e977b3f908eda9792b7269a8884ad0ffd422b2226ea2185a0ac8569f7fecb",
+      "line_count": 23,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/teleop/README_BEFORE_LAYOUT_20261009.md": {
+      "sha256": "f4d9757709f12ff7285e73b39e6a877f5df0f345cec6a8102535d25e6fe07657",
+      "line_count": 136,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/teleop/START_HERE_WINDOWS_G2.md": {
+      "sha256": "2eed1ab0b33ca685aa9655c48dcd9b145274bba5aa2c5c01d3b4a750fc272381",
+      "line_count": 353,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DAgger/docs/G2/teleop/WINDOWS_TO_G2_SHADOW_RUNBOOK.md": {
+      "sha256": "911166bfae8276c091ced5150e2f46871c2e1d2551785784d1b5f3adf70e9690",
+      "line_count": 230,
+      "project_ids": [
+        "dagger-g2"
+      ],
+      "primary": false
+    },
+    "DM0.5/README.md": {
+      "sha256": "96395751a951a16edb99343cd89070d5899d37d57814c7bedf51f6a62eb80a90",
+      "line_count": 37,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": true
+    },
+    "DM0.5/docs/AGENTS.md": {
+      "sha256": "92656170cdbeccce273900345193a07fbac904635f9839d8bb0d858bdee19ae4",
+      "line_count": 82,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/CURRENT_STATUS.md": {
+      "sha256": "472a8ec068bbcc65b6595c10b09bfd7a4c7488fbb48d2e30973c1ae83bbba083",
+      "line_count": 59,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": true
+    },
+    "DM0.5/docs/README.md": {
+      "sha256": "900a976d506c50ed0d00f3f9cd51199d9f518dbed7f9daba2bd2d354a9e479cd",
+      "line_count": 462,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/archive/CURRENT_STATUS_THROUGH_20260831.md": {
+      "sha256": "319de0bf337c63fa7aaf830739f68040495af7ee150edca2ccdc04469a52255b",
+      "line_count": 64,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/archive/README.md": {
+      "sha256": "61f92bc6a7015a2f5f6c87df9c2c1e8c967220bd7c9cedbbd2c40de7a2fc3776",
+      "line_count": 29,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/archive/legacy_mixed/G2_35K_HTTP_RUNBOOK.md": {
+      "sha256": "cdb51c649a5a74de314cdd86355f4b25903de3653730822c9e75a3725cec11f9",
+      "line_count": 521,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/archive/legacy_mixed/G2_CLIENT_RUNTIME_20260729.md": {
+      "sha256": "2e591c3efe138e7a8d739f4dd1f6cdd8c1ea0213f5d16c373fbd422d817826da",
+      "line_count": 363,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/archive/legacy_mixed/IMPLEMENTATION_STATUS_20260730.md": {
+      "sha256": "f22d64aa9d041aee8d9920b5349340f39ff9f4a673b7253d915f5d36ac43437e",
+      "line_count": 174,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/archive/legacy_mixed/LORA_EXPERIMENTS_OLD_INDEX.md": {
+      "sha256": "7431de4ba06cf30c61cc897350e7219cc5dcffc27afe48e1c5dcee43a92d0980",
+      "line_count": 25,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/archive/legacy_mixed/OPERATIONS_LESSONS_20260728.md": {
+      "sha256": "b52c7dc0f295b0f8ffd5eaee9dd7d152c6997d5b750512bec19906c553b2100b",
+      "line_count": 444,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/archive/legacy_mixed/PROJECT_ROADMAP_202607.md": {
+      "sha256": "e79e256cddbf1bd4536dbd9d183edbacc925831a2ef3dabe50d0a290f71c5771",
+      "line_count": 127,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/archive/legacy_mixed/RTC_DUAL_GDK_ARCHITECTURE_20260821.md": {
+      "sha256": "b82cfc3ec133c26bb76d50635d02f7d7977b243ef3463b6ea146be945c2c8230",
+      "line_count": 290,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/archive/legacy_mixed/RTX6000D_SERVER_HANDOFF_20260728.md": {
+      "sha256": "556ad9a5e8f34370ac460f622ddb4f2e7cc4fc30663b633f8ac051c7424a1a8a",
+      "line_count": 257,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/core/CUSTOMIZATION_MAP.md": {
+      "sha256": "70627139f7f218a9d7c96cb8ac106cdb57dc3e09d81436c36fa34c06c824c7e4",
+      "line_count": 59,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/core/README.md": {
+      "sha256": "6894512650a6a78f33c50588e8568b992835f1f3fc038ed19dd343cd30879788",
+      "line_count": 20,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/core/TRAINING_AND_DEPLOYMENT_CONTRACT.md": {
+      "sha256": "8b724f6907bd25bf034a44097ecd448330d586afd500bb0cad0adf88a0ab3e21",
+      "line_count": 183,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/ACTION_SMOOTHING_FIRST_PRINCIPLES_AND_PRIORITY.md": {
+      "sha256": "3697e795a0bdb92e00a5efd4335f8c6cbc0bb2aabe3bcd0e8be21bf04df5d050",
+      "line_count": 195,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/G2_DM05_CONTROL_TODO.md": {
+      "sha256": "15ab15233aa9d033856f7ac5a055067f56ce80dc62d20a0b4f34be69a37f6610",
+      "line_count": 52,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/G2_DM05_NEW_CHAT_PROMPT.md": {
+      "sha256": "db6fbea304cf59884e00e931e33e1b5fda84cbf8783dca5c70bd3383f8bff39d",
+      "line_count": 102,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/G2_SMOOTH_TELEOP_ROOT_CAUSE_AND_NEXT_STEPS.md": {
+      "sha256": "fee185e33c7adc38eb2757846b342cc7ae50e42cf713517cd83dc1c6a682e939",
+      "line_count": 685,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": true
+    },
+    "DM0.5/docs/robot/INFERENCE_LATENCY_FIRST_PRINCIPLES.md": {
+      "sha256": "76e950f1932377fed98a53b1d62353de2170f7b3de20203ac7569ca83ecaf6a0",
+      "line_count": 582,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/JOINT_COMMAND_FEEDBACK_DIAGNOSTICS.md": {
+      "sha256": "b6e044c3f20124fd9caf0336252407cb7eab701ef7cb8841536180bbb9468d2b",
+      "line_count": 260,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/MOTION_DIAGNOSTICS_DASHBOARD_IMPLEMENTATION.md": {
+      "sha256": "66d454b093852890504333d2033869b82994faae90723d93726f60a15fe44f79",
+      "line_count": 195,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/README.md": {
+      "sha256": "2996222009c84436f6b2d2cb7f6cdc061f05a93ec94ef06d9a39218ac39f0a44",
+      "line_count": 39,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/RTC_AND_CONTROL_TIMING_FIRST_PRINCIPLES.md": {
+      "sha256": "5432ea93cc6180a1c784a3035320c44130ee7959169777535348d9947353793e",
+      "line_count": 107,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/RTC_PROCESS_ISOLATION.md": {
+      "sha256": "53ff26371bfc70026fe066460d8242be0c58c5a6cfd90b418629f312866c25b8",
+      "line_count": 109,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/TRANSPORT_BINARY_WEBSOCKET.md": {
+      "sha256": "a8d2d65e71622ac91f78e61fb8aa84865d0362473b6c5c8ccd166f48471515ec",
+      "line_count": 101,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/experiments/DENOISING_AND_COMPILE_20260820.md": {
+      "sha256": "7bfc2680e3e0025b3157fc4912f0726191cd232724a2492a61ff308426d04921",
+      "line_count": 320,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/experiments/G2_ACTION_SMOOTHING_PLAN_SOURCE.md": {
+      "sha256": "810fd5379bae4aadb0e94b39314d492d8247036a5942d41bbe0c66652ea8ba32",
+      "line_count": 625,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/experiments/HAND_V11_OFFLINE_SWEEP_20260827.md": {
+      "sha256": "859a5b7565fa3232f08fc459b1933f03f99de3b4889601ca74affd3d5295dc04",
+      "line_count": 131,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/experiments/NETWORK_TRANSPORT_AB_20260825.md": {
+      "sha256": "5d60c684edf81c12c19f1f713c2c55dfe34dfb21d86fde6becc745f14f746308",
+      "line_count": 105,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/experiments/O10_TACTILE_AND_COMMAND_RATE_20260825.md": {
+      "sha256": "e140e6454203c5daaba593e2c4adf8b0ed8e195c41dc388eb442c0949cadca8a",
+      "line_count": 287,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/experiments/PROCESS_ISOLATION_AND_TRANSPORT_20260824.md": {
+      "sha256": "273cb4e13fefd3ca34492d4fc4d3c0eafad3a37896a11ce4465ef4049a661747",
+      "line_count": 81,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/experiments/README.md": {
+      "sha256": "dd31c62bd4446af75e96c3d42ff1e5bf41a1a6e0610e016f4d8ae69aa710790c",
+      "line_count": 29,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/experiments/RTC_ENGINEERING_DECISION_20260818.md": {
+      "sha256": "ae59c38eea3dec4cd8c09690632047b54fd12b3c30b416c204b69658f52a418d",
+      "line_count": 792,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/experiments/RTC_IMPLEMENTATION_AND_OFFLINE_REPORT_20260818.md": {
+      "sha256": "b42ff23d83c9140bfbeea599da2612b9a63e7ae5c031bf04104cd77a2d7fd8e8",
+      "line_count": 133,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/experiments/RTC_SMOOTHING_ABLATION_20260821.md": {
+      "sha256": "1f5e821d565d583c568649537a08eede76bfed667cccdf0c3d98636d8a770ee7",
+      "line_count": 354,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/experiments/RTC_SYNC_BASELINE_MIGRATION_20260827.md": {
+      "sha256": "163d06a314b485ce7036c0e38c3a5f206a086d7045c9c51e26cb7d10a156ac61",
+      "line_count": 82,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/experiments/SHARED_HAND_TRAJECTORY_OFFLINE_ABLATION_20260827.md": {
+      "sha256": "60f7c4d272e9e6b03cef6a6df7f7fc6422aa803e10f11d9fb8a8ee8c47b7e980",
+      "line_count": 170,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/experiments/SYNC_ARM_INTERPOLATION_ABLATION_20260827.md": {
+      "sha256": "15338d49340717cb454159f6db04185aaedebd54ea4bd476cba8b080cc57fad8",
+      "line_count": 75,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/experiments/SYNC_ARM_MICRO_TREMOR_ABLATION_20260827.md": {
+      "sha256": "b0fa8dd89fd08490d68743e35985a055fcab09aff93517f206748f70bf5a8ba7",
+      "line_count": 148,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/incidents/2026-07-31_01_UNIFIED_O10_SERVO_BLOCK.md": {
+      "sha256": "fae1e4ff53d444ae98e78c6dd85994889b09c42851bd08b4cffe173a174c12b6",
+      "line_count": 29,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/incidents/2026-08-04_01_O10_ZERO_FEEDBACK_REPLAY.md": {
+      "sha256": "5e9b3f13be13e33f59214d2cde55c52ac2a39207f320d0b7b9cff656ced7be7d",
+      "line_count": 36,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/incidents/2026-08-18_01_RTC_ROLLBACK.md": {
+      "sha256": "b8a13a3fe35fc6d4514b7242c3eaa4a2f8d0cfc6e521d379d216b34b67658ec1",
+      "line_count": 348,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/incidents/2026-08-20_01_RTC_STATE_COORDINATE_AND_SUFFIX.md": {
+      "sha256": "f9c3520729b479af800807480aa6cc3de44ce5d385ad97d3ba588b90c53d0046",
+      "line_count": 29,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/incidents/2026-08-21_01_SERVO_DEADLINE_JITTER.md": {
+      "sha256": "24f2fdb1ec853ee36f3b779c25bdcb90ffb3fd616f56f3d9c4456a5574dc6351",
+      "line_count": 40,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/incidents/2026-08-21_02_RTC_EARLY_TERMINATION.md": {
+      "sha256": "028efb517b48bb88b6eb4215218f2c8d24e6c25aa4d5dd83ecf9d0fff709faec",
+      "line_count": 27,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/incidents/2026-08-26_01_GPU_INFERENCE_TRAINING_CONTENTION.md": {
+      "sha256": "9f301279f23e96d0408a8ad0dc8517efde707d0303cbeebf9da16822f9ba0e35",
+      "line_count": 66,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/incidents/2026-08-27_01_SHARED_PREVIEW_POSITION_LIMIT_AND_START_PHASE.md": {
+      "sha256": "279b198b9e5c81c49b29b278c5bba2fe538f4adb6c8623bde3d3a1945707d5d1",
+      "line_count": 79,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/incidents/README.md": {
+      "sha256": "17c65e314838e8847ce84b88525a2ed4db4a46eb1d5db3b6a7e901c613a1d017",
+      "line_count": 29,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/incidents/undated_01_HEAD_CAMERA_NULL.md": {
+      "sha256": "299ed41f8138222eccf668a21e4c118accead80c01e87e2cc155454e8b9ac52d",
+      "line_count": 30,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/incidents/undated_02_G2_TO_SERVER_ASYMMETRIC_ROUTE.md": {
+      "sha256": "b74af571ddeef0fc9c4e569344300a777acdd5941b572d9d4a675dcd9e9c28b2",
+      "line_count": 30,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/robot/incidents/undated_03_GDK_INIT_AND_DDS_WARMUP.md": {
+      "sha256": "2bfef61424f112aeb5b1f5ade7b009b0a98535cb727ddeeeaa1fdcec791e4b16",
+      "line_count": 28,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/training/CHECKPOINT_SELECTION_FIRST_PRINCIPLES.md": {
+      "sha256": "0bc96a321da35e5730d26e79123d64f40b6320afa05fd575d211c50620d6ff7b",
+      "line_count": 317,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/training/DATA_AUDIT.md": {
+      "sha256": "d54d9f89e744a13b60ade996685899baab7c4451f951c6ee68fb1217e6c09bb1",
+      "line_count": 146,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/training/README.md": {
+      "sha256": "270f858d197c5c54fd9d135c76d0015343e1984ad05e5e5a1608b87da62c5ebb",
+      "line_count": 28,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/training/RTX6000D_ASSETS.md": {
+      "sha256": "ffae58b5556fbde4726ba6781228e6d0c6419219ff1110ae063fac143aef0473",
+      "line_count": 166,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/training/experiments/new_lora/CHECKPOINT_75K_DEPLOYMENT_AND_VISUAL_GATE.md": {
+      "sha256": "5306255bb3e8a3dce3b9959496632aaec704b0ff2ff1a138ecd726870438d161",
+      "line_count": 124,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/training/experiments/new_lora/CHECKPOINT_VALIDATION_DESIGN.md": {
+      "sha256": "f90b7ea5428e621065d428f6c2915cb52e1d407ef8601db61f9875efa9f36952",
+      "line_count": 452,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/training/experiments/new_lora/README.md": {
+      "sha256": "645af3afdebfcf273c263df76943ca45451b427ddeb1da928ad81218291af28c",
+      "line_count": 153,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/training/experiments/new_lora/VALIDATION_REPORT.md": {
+      "sha256": "3f70299382e95d1f03f2a91ec33096ca815016abd5098a575962537d72bacdcc",
+      "line_count": 272,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/training/experiments/new_lora/VISUAL_AUG_PAIRED_REPORT.md": {
+      "sha256": "dcf174596cd4a0b65f2479fd7c7d7248e75f12908e487476c29263bc7e2af1a1",
+      "line_count": 67,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/training/experiments/old_lora/CHECKPOINT_VALIDATION_AND_SELECTION.md": {
+      "sha256": "439c401d16bf23ff5d4e0315ee8d87f7175b0ae3083dc3dd40a3a12fdc7970b7",
+      "line_count": 299,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/training/experiments/old_lora/EIGHT_GPU_500_STEP_GATE.md": {
+      "sha256": "80ed0c31978b566d6d1d7547cc52007b4c6befeea5fb8ee8d556a812ddc4e111",
+      "line_count": 152,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/training/experiments/old_lora/EXTENSION_50K_TO_100K.md": {
+      "sha256": "a92d69789d9c0950715d67aae17737f2dce63caf507a620eb5bdc952e13e288b",
+      "line_count": 155,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/training/experiments/old_lora/FORMAL_50K_TRAINING.md": {
+      "sha256": "6e47e0a95780ab888324ec4f0df6f65e55a1d8b97655daccc2580393daa34b8a",
+      "line_count": 168,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/training/experiments/old_lora/README.md": {
+      "sha256": "9c3d9851a9835366b715679db4a35579f9c3dd3f743d332e6b32e5878719a6a1",
+      "line_count": 35,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/training/incidents/2026-07-28_01_FLEX_ATTENTION_BACKWARD.md": {
+      "sha256": "968d30c84fe80ccfdea69091180a31d519f381ad8c20544017de44e150ff7011",
+      "line_count": 35,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/training/incidents/2026-07-28_02_IDE_LONG_TASK_TERMINATED.md": {
+      "sha256": "4e49d4e7a29ed6f8ee135996f48367a8c2baf4e17556a6b6e91270a3a96dc29b",
+      "line_count": 29,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/training/incidents/2026-07-28_03_VALIDATION_NORM_STATS_LEAK.md": {
+      "sha256": "170854c82d79cede90edbca9f43ee7bf436f97fe7deb7e258d0f4db4bea6536b",
+      "line_count": 29,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/training/incidents/2026-07-28_04_GLOBAL_BATCH_MISMATCH.md": {
+      "sha256": "ccc567cb452317315d7d8242bfdaae4e65be48c95e48bb1e3c10918e1c6cff4b",
+      "line_count": 27,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/training/incidents/2026-07-28_05_LAUNCHER_STOPPED_CONTAINER_ALIVE.md": {
+      "sha256": "b0f18ff5f7fd3c2c35d47e5a2129deb004a55d33fda25fde56a0e15a64b50aa1",
+      "line_count": 31,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/training/incidents/2026-07-28_06_VIDEO_H5_TIMESTAMP_ALIGNMENT.md": {
+      "sha256": "09731092c472f70dce3806d4847b94594f233a280d43d21199cc48c7b08c091a",
+      "line_count": 28,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/training/incidents/2026-07-28_07_ACTION_HEAD_32D_TO_34D.md": {
+      "sha256": "20612b09926b895f11d04421aa7f503ec22ac9057a379f9d91b0b34f533840f5",
+      "line_count": 30,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/training/incidents/2026-07-28_08_RESUME_ADAPTER_DTYPE_CHANGE.md": {
+      "sha256": "e5fefd683ccc61aa39bc4716333937e2e712c6e23fccbebd0e81f324e52e9a25",
+      "line_count": 28,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/training/incidents/2026-07-29_01_TMUX_KILLED_TRAINING_CONTINUED.md": {
+      "sha256": "43b2da456242f8abbb83238dd27dd05ef310d638c93c60301f35241e7009baef",
+      "line_count": 29,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "DM0.5/docs/training/incidents/README.md": {
+      "sha256": "9a8bac1140f03897028b6c5bf6b51b3b39f90ba6092b427345117078443d917b",
+      "line_count": 29,
+      "project_ids": [
+        "bottle-sort"
+      ],
+      "primary": false
+    },
+    "F1-4242/docs/API.md": {
+      "sha256": "499c17d53909d0a7244ebd75da840860bc1dd646916156da493f3b967af01899",
+      "line_count": 256,
+      "project_ids": [
+        "f1-console"
+      ],
+      "primary": false
+    },
+    "F1-4242/docs/ARCHITECTURE.md": {
+      "sha256": "97f6ce31c53dbef0cd3f5307218e17b91b82e65b2663fca7748181fa52b320c4",
+      "line_count": 66,
+      "project_ids": [
+        "f1-console"
+      ],
+      "primary": false
+    },
+    "F1-4242/docs/AUTOSTART.md": {
+      "sha256": "87bf5f5140cbe872ee87d6480c53630d11846a91b630c025d87371285c1ff94f",
+      "line_count": 89,
+      "project_ids": [
+        "f1-console"
+      ],
+      "primary": false
+    },
+    "F1-4242/docs/DATA.md": {
+      "sha256": "6cd85a7bb519c85fbfeb5a5351c7c278b01517cfb040143ac8d8a13f876b64c1",
+      "line_count": 129,
+      "project_ids": [
+        "f1-console"
+      ],
+      "primary": false
+    },
+    "F1-4242/docs/HIL.md": {
+      "sha256": "e62647937e9e85dd81f63148875b280c72eef1e7a179e91a0942b6e32168501b",
+      "line_count": 69,
+      "project_ids": [
+        "f1-console"
+      ],
+      "primary": false
+    },
+    "F1-4242/docs/HIL_ROUTES_RELEASE.md": {
+      "sha256": "d73dcfefdef0499aa1a7316a436f5b7981212672276f5474ac8383430bf1f920",
+      "line_count": 27,
+      "project_ids": [
+        "f1-console"
+      ],
+      "primary": false
+    },
+    "F1-4242/docs/JOINT_CONFIGURATION.md": {
+      "sha256": "5f5534656ff90e9d31635eb514b580ca29f05830186c099999ff24bfc5db9195",
+      "line_count": 124,
+      "project_ids": [
+        "f1-console"
+      ],
+      "primary": false
+    },
+    "F1-4242/docs/MODEL.md": {
+      "sha256": "d97736dac254a257e9e6d3e237f205164ffe9d0bc326ab5bb968a3943d8af27c",
+      "line_count": 75,
+      "project_ids": [
+        "f1-console"
+      ],
+      "primary": false
+    },
+    "F1-4242/docs/MODEL_AUDIT.md": {
+      "sha256": "0f60ad943bdb39d9189efdc36735746dd3f2005c57c0d8630a753cb8cf52c604",
+      "line_count": 86,
+      "project_ids": [
+        "f1-console"
+      ],
+      "primary": false
+    },
+    "F1-4242/docs/PICO.md": {
+      "sha256": "2c02e21343fc35bd4e74a68880e82e15ba6e0e889d6f462d02cd040b9fdf6839",
+      "line_count": 91,
+      "project_ids": [
+        "f1-console"
+      ],
+      "primary": false
+    },
+    "F1-4242/docs/POSE.md": {
+      "sha256": "387c3f687cd5c28a58305ef652254cc0ec51f0f356f26f08f83b1e13451b4a77",
+      "line_count": 142,
+      "project_ids": [
+        "f1-console"
+      ],
+      "primary": false
+    },
+    "F1-4242/docs/POSE_TASK.md": {
+      "sha256": "579fbc05eb3e1c69593339693199e9d8718a234851f480be21d70db5688541d9",
+      "line_count": 58,
+      "project_ids": [
+        "f1-console"
+      ],
+      "primary": false
+    },
+    "F1-4242/docs/README.md": {
+      "sha256": "49903e540c9fe930472f0c2443364695038e36ae30cabb131ee92c088f9bb72c",
+      "line_count": 31,
+      "project_ids": [
+        "f1-console"
+      ],
+      "primary": false
+    },
+    "F1-4242/docs/RECORDING.md": {
+      "sha256": "049fd0f345657ed6b6f36a4b489d196ec58f50b6f8c782ebdf7d9946045b8d6b",
+      "line_count": 136,
+      "project_ids": [
+        "f1-console"
+      ],
+      "primary": false
+    },
+    "F1-4242/docs/RECORDING_CONTRACT_REVIEW.md": {
+      "sha256": "3676758a93c189b73e2054ebbce27cafea2864605168d0f4faa664955f38e3df",
+      "line_count": 69,
+      "project_ids": [
+        "f1-console"
+      ],
+      "primary": false
+    },
+    "F1-4242/docs/RESET_REPAIR.md": {
+      "sha256": "58902f4f53bdc62921f49b7b5e9db3f2a3657fc5e0d77d60a8b7ab8aa0c8ba09",
+      "line_count": 117,
+      "project_ids": [
+        "f1-console"
+      ],
+      "primary": false
+    },
+    "F1-4242/docs/SHARING.md": {
+      "sha256": "1adda4aecdd7456ae861bd2bbf543c7752b215ba0b1bdf4a6cf55c91eb6db078",
+      "line_count": 132,
+      "project_ids": [
+        "f1-console"
+      ],
+      "primary": false
+    },
+    "F1-4242/docs/STATUS.md": {
+      "sha256": "8dd14b126dee54976a2ba567afa9e1b876e7757e4f42543991d2deb081471b41",
+      "line_count": 198,
+      "project_ids": [
+        "f1-console"
+      ],
+      "primary": true
+    },
+    "F1-4242/docs/UNIFIED_DATA.md": {
+      "sha256": "b1df73feb43095a48052aa859626b8ee9a5a124af7d7b1c0866503cfc349e1d3",
+      "line_count": 60,
+      "project_ids": [
+        "f1-console"
+      ],
+      "primary": false
+    },
+    "F1-4242/docs/USER_GUIDE.md": {
+      "sha256": "22c61247c3784e24a3085f578859c3defc4749ea41121966e480ccb4c56f9311",
+      "line_count": 83,
+      "project_ids": [
+        "f1-console"
+      ],
+      "primary": false
+    },
+    "F1-4242/docs/history/SOURCES.md": {
+      "sha256": "b97f603466f6b3fc91c39317e1583aa16e6843e9ed2390fac27aa7ba3fa2500d",
+      "line_count": 37,
+      "project_ids": [
+        "f1-console"
+      ],
+      "primary": false
+    },
+    "F1-4242/docs/history/initial_integration.md": {
+      "sha256": "6fe817e74837a93848cc4a7946dd6910302440ed04564f2b92bb4aa950b4f0a6",
+      "line_count": 162,
+      "project_ids": [
+        "f1-console"
+      ],
+      "primary": false
+    },
+    "F1-4242/docs/history/pose_task_v14.md": {
+      "sha256": "4b8c0083ef94c960a9216f0932fe6c1bd04bc906083ee6fbec9b4c7414ebb8e1",
+      "line_count": 51,
+      "project_ids": [
+        "f1-console"
+      ],
+      "primary": false
+    },
+    "F1/foam_sort_whole_body/README.md": {
+      "sha256": "e29b17e100faa1baa7701f304c39d9fdd63c875164250be1e0346f5f910d5d90",
+      "line_count": 76,
+      "project_ids": [
+        "foam-sort"
+      ],
+      "primary": false
+    },
+    "F1/foam_sort_whole_body/docs/README.md": {
+      "sha256": "9a28282b2afa18e093470afd5f76e6974af4dc045319f9fe6fd2d97212b1c72a",
+      "line_count": 38,
+      "project_ids": [
+        "foam-sort"
+      ],
+      "primary": false
+    },
+    "F1/foam_sort_whole_body/docs/action_interface_contract.md": {
+      "sha256": "30738febf67de6146a97aef76285bbb721ef47b813bac78433ef62c18d386956",
+      "line_count": 99,
+      "project_ids": [
+        "foam-sort"
+      ],
+      "primary": false
+    },
+    "F1/foam_sort_whole_body/docs/archive/README.md": {
+      "sha256": "c54ae378d47268eb3148effe743d5afc52cb38a732ba0045ff0027c1cdc1cac4",
+      "line_count": 12,
+      "project_ids": [
+        "foam-sort"
+      ],
+      "primary": false
+    },
+    "F1/foam_sort_whole_body/docs/archive/body_mapping_and_cycle_review.md": {
+      "sha256": "a7506771ab9cd5d7c0886b9664825c1f337853672de90ac9f9ed17fd941057f4",
+      "line_count": 100,
+      "project_ids": [
+        "foam-sort"
+      ],
+      "primary": false
+    },
+    "F1/foam_sort_whole_body/docs/archive/first_alignment_run.md": {
+      "sha256": "f7f39395a43429c008defffdc829459529616889bb09b3c2ede0f3aa7dfc92c9",
+      "line_count": 161,
+      "project_ids": [
+        "foam-sort"
+      ],
+      "primary": false
+    },
+    "F1/foam_sort_whole_body/docs/archive/raw_dataset_audit.md": {
+      "sha256": "c2d1238e5e7c2cfef19412a631f766e59587fa24636eba5db960114eb329f8eb",
+      "line_count": 277,
+      "project_ids": [
+        "foam-sort"
+      ],
+      "primary": false
+    },
+    "F1/foam_sort_whole_body/docs/archive/whole_body_experiment_proposal.md": {
+      "sha256": "edd3933110170643848e83f08a0b2f6f57c5cb98157fb352a58d417446c347df",
+      "line_count": 134,
+      "project_ids": [
+        "foam-sort"
+      ],
+      "primary": false
+    },
+    "F1/foam_sort_whole_body/docs/data_cleaning/README.md": {
+      "sha256": "a48217d71029383bea5c87cd1fe7f975b41143147ff600aaa70dfd382415ed02",
+      "line_count": 18,
+      "project_ids": [
+        "foam-sort"
+      ],
+      "primary": false
+    },
+    "F1/foam_sort_whole_body/docs/data_cleaning/chassis_label_repair.md": {
+      "sha256": "cdf0e22ac3fc4db34b0f6485db17ffde64d84747fce92931be51b3bb7d6fc48e",
+      "line_count": 119,
+      "project_ids": [
+        "foam-sort"
+      ],
+      "primary": false
+    },
+    "F1/foam_sort_whole_body/docs/data_cleaning/cleaning_decisions.md": {
+      "sha256": "f9c65b9f7e681756f428eaf1ac07fd6bce37c69d24c14c6902559da279d914a9",
+      "line_count": 261,
+      "project_ids": [
+        "foam-sort"
+      ],
+      "primary": false
+    },
+    "F1/foam_sort_whole_body/docs/data_cleaning/f1_data_pipeline.md": {
+      "sha256": "1110272112f4fc63c7bdb735605bf1af8df9de8885ef01deecf7940be5c84ab7",
+      "line_count": 207,
+      "project_ids": [
+        "foam-sort"
+      ],
+      "primary": false
+    },
+    "F1/foam_sort_whole_body/docs/dataset_acceptance.md": {
+      "sha256": "ef86aefb38c5b8e10e7a8c5a442a2fa99138e00c59eb8d8e45d156091f8e2c23",
+      "line_count": 88,
+      "project_ids": [
+        "foam-sort"
+      ],
+      "primary": false
+    },
+    "F1/foam_sort_whole_body/docs/incidents/replay_failures_and_lessons.md": {
+      "sha256": "cb97da628a79ca8d03755206a02822d54c7bd7eef6833c623cb610162f69f3f6",
+      "line_count": 66,
+      "project_ids": [
+        "foam-sort"
+      ],
+      "primary": false
+    },
+    "F1/foam_sort_whole_body/docs/inference_runbook.md": {
+      "sha256": "bc880609f9a51fcdd49dbe9c1ca9aa089b05790faf59add97fb5d796c702a1b1",
+      "line_count": 142,
+      "project_ids": [
+        "foam-sort"
+      ],
+      "primary": false
+    },
+    "F1/foam_sort_whole_body/docs/replay_runbook.md": {
+      "sha256": "1aee316d8e2f1516b002c9e726c5b1bd8ddd2d4997175093978e1d607c574861",
+      "line_count": 199,
+      "project_ids": [
+        "foam-sort"
+      ],
+      "primary": false
+    },
+    "F1/foam_sort_whole_body/docs/training/dm05_eef_delta_recipe.md": {
+      "sha256": "781c79f211dd02548c29c878e5d1940c435fe3b5271226b00a4b9aad82bf23b4",
+      "line_count": 337,
+      "project_ids": [
+        "foam-sort"
+      ],
+      "primary": false
+    },
+    "F1/foam_sort_whole_body/docs/training/dm05_validation_recipe.md": {
+      "sha256": "53a9fe8d3fe8df6c796c040633796aa1b18d3c171ca208ee4679663127d2edc8",
+      "line_count": 116,
+      "project_ids": [
+        "foam-sort"
+      ],
+      "primary": false
+    },
+    "F1/foam_sort_whole_body/docs/training/ik_fk_demo_recipe.md": {
+      "sha256": "bc307ffbb87d6d8060e7f34ac2f37249c464f300b4fd666dcfe8eb03880e54e9",
+      "line_count": 111,
+      "project_ids": [
+        "foam-sort"
+      ],
+      "primary": false
+    },
+    "F1/foam_sort_whole_body/docs/training_plan.md": {
+      "sha256": "6059c8613673588f05a3f80e3e47c575fbb88bbe1ec2e6c1e17f7d0ab319725e",
+      "line_count": 406,
+      "project_ids": [
+        "foam-sort"
+      ],
+      "primary": true
+    },
+    "F1/foam_sort_whole_body/docs/video_access.md": {
+      "sha256": "5ff958dae872095969e766e73e9e5ab8d11fe2b56ac7dc086a7b8b78b501c236",
+      "line_count": 32,
+      "project_ids": [
+        "foam-sort"
+      ],
+      "primary": false
+    },
+    "F1/foam_sort_whole_body/results/deployments/20260920-4F-ik-replan-v1/README.md": {
+      "sha256": "00ec36f30142decc5c477ef2cb6e31e0c8d04d105841fc6de2af3cea86520e8f",
+      "line_count": 58,
+      "project_ids": [
+        "foam-sort"
+      ],
+      "primary": true
+    },
+    "F1/foam_sort_whole_body/results/formal_training_20260917/matched_motion_probe_20260920/oracle_mask_70000/README.md": {
+      "sha256": "29e296dc776958331144ba19a2386b29f5f7295a6c0240a28ef5e879342db51d",
+      "line_count": 51,
+      "project_ids": [
+        "foam-sort"
+      ],
+      "primary": true
+    },
+    "PI0.5/README.md": {
+      "sha256": "567fc57766bd736664f50126cab8145af4071ca16cc5e238f2b11e369169c3b5",
+      "line_count": 323,
+      "project_ids": [
+        "pi05-stack"
+      ],
+      "primary": true
+    },
+    "RLinf/README.md": {
+      "sha256": "f887730931dfab263dbdd0889db14eb065248c4dd9f20d9da5a13abb585a4001",
+      "line_count": 508,
+      "project_ids": [
+        "rlinf-stack"
+      ],
+      "primary": true
+    },
+    "Whereweare/README.md": {
+      "sha256": "5b428eaae822dfb17b8230021140fbf82f31606f0a96cdfc57467ee8dca83863",
+      "line_count": 102,
+      "project_ids": [
+        "whereweare"
+      ],
+      "primary": true
+    },
+    "Whereweare/docs/STATUS.md": {
+      "sha256": "c87a25e4a428a97ffdc118e156427ec074e5f9b3adda80c41654e78cdf94151b",
+      "line_count": 34,
+      "project_ids": [
+        "whereweare"
+      ],
+      "primary": true
+    },
+    "g2_robot/README.md": {
+      "sha256": "60dc757ce96045da15c5dbafdfaf0c69f80f94cff0654a23c9235bf8a4a5f761",
+      "line_count": 45,
+      "project_ids": [
+        "g2-runtime"
+      ],
+      "primary": true
+    },
+    "g2_robot/docs/00_G2_OPERATOR_GUIDE.md": {
+      "sha256": "6c8c05b685a0664b9287f44ee49da3df14681df175d1d145a6c0d88ec8e90705",
+      "line_count": 439,
+      "project_ids": [
+        "g2-runtime"
+      ],
+      "primary": false
+    },
+    "g2_robot/docs/12_G2_CLIENT_DM05_RUNTIME.md": {
+      "sha256": "01260c404efb52d8fef2bbdeaae695ec0f5f17bc801b2f38d3ea6ce6ae759740",
+      "line_count": 367,
+      "project_ids": [
+        "g2-runtime"
+      ],
+      "primary": false
+    },
+    "g2_robot/docs/Bruno.md": {
+      "sha256": "edd6c8e53b01a694e6a6f7f9cf28afce1f16077edbb018dc5d6cee47a6e45c6c",
+      "line_count": 261,
+      "project_ids": [
+        "g2-runtime"
+      ],
+      "primary": false
+    },
+    "g2_robot/docs/G2_ACTION_SMOOTHING_PLAN.md": {
+      "sha256": "ee049b4d73ab54205b53105ff4aec56fc308270df9d47ad49e915d14fbd2b0bb",
+      "line_count": 9,
+      "project_ids": [
+        "g2-runtime"
+      ],
+      "primary": false
+    },
+    "g2_robot/docs/G2_ROBOT_STRUCTURE.md": {
+      "sha256": "e5b3b7277bdb9bc7d3748d81fa36a6eedcfa9bf833d50ff1bda037e47940532a",
+      "line_count": 807,
+      "project_ids": [
+        "g2-runtime"
+      ],
+      "primary": true
+    },
+    "g2_robot/docs/G2_TROUBLESHOOTING.md": {
+      "sha256": "848abb47c78aec8d2519b3091f3529e3134a7b40ea576c0b7492040a14c89374",
+      "line_count": 197,
+      "project_ids": [
+        "g2-runtime"
+      ],
+      "primary": false
+    },
+    "g2_robot/docs/GDK_2.6.3_RELEVANT_API.md": {
+      "sha256": "0ab6e1d532e2acfc38fb6288a55f2b5cc9cf30fb5ef95487fa868af1b4a78e22",
+      "line_count": 163,
+      "project_ids": [
+        "g2-runtime"
+      ],
+      "primary": false
+    },
+    "g2_robot/docs/README.md": {
+      "sha256": "62ea1591d2affef6c7badd12ce3e36c83e6b5f820c6198198818dd7b9ba550c3",
+      "line_count": 13,
+      "project_ids": [
+        "g2-runtime"
+      ],
+      "primary": false
+    },
+    "g2_robot/docs/RTC_SMOOTHING_ABLATION_20260821.md": {
+      "sha256": "acad933e888f91f25cfae8a02ef016febd3eb1025b5a5bac8d264aa48fb52148",
+      "line_count": 7,
+      "project_ids": [
+        "g2-runtime"
+      ],
+      "primary": false
+    },
+    "tasks/g2_book/README.md": {
+      "sha256": "4544c2773808e5f100956294471084902ab4457118c00c1d70912c3db8d39aa0",
+      "line_count": 14,
+      "project_ids": [
+        "g2-book"
+      ],
+      "primary": true
+    },
+    "tasks/g2_phone_packaging_pi05_rl/README.md": {
+      "sha256": "c390f635c438d42c6d68baaa17269da51d4c49f2d9b192b6aa8c8fb7ae3d429e",
+      "line_count": 45,
+      "project_ids": [
+        "phone-packaging",
+        "pi05-stack",
+        "rlinf-stack"
+      ],
+      "primary": true
+    },
+    "tasks/g2_phone_packaging_pi05_rl/docs/00_DEMO_CONCEPT.md": {
+      "sha256": "87a28c3085d7f84e181e29154da4c32dedf3b91d9904111aefe613e028f3eb33",
+      "line_count": 57,
+      "project_ids": [
+        "phone-packaging"
+      ],
+      "primary": false
+    },
+    "tasks/g2_phone_packaging_pi05_rl/docs/G2_phone_box_VLA_data_pipeline_v2.md": {
+      "sha256": "6f68e2623c80edddc35f7719888c50562865164dba97cb8723faa053e423c6ca",
+      "line_count": 2034,
+      "project_ids": [
+        "phone-packaging"
+      ],
+      "primary": true
+    },
+    "third_party/patches/README.md": {
+      "sha256": "6b5f7e8811e35a82f1dc58b471055057f6c277a0744e5b12027285cf8c426604",
+      "line_count": 16,
+      "project_ids": [
+        "workspace-deps"
+      ],
+      "primary": true
+    }
+  },
+  "registry_fingerprint": "5c40f30f208d3c1d8aa14c8093551ab01d1642ee96ccd25b6fb6f61cdefda47a",
+  "tracking_preferences": {
+    "bottle-sort": {
+      "tier": "secondary",
+      "archived": false
+    },
+    "block-sort": {
+      "tier": "main",
+      "archived": false,
+      "id": "block-sort",
+      "updated_at": "2026-10-13T04:12:35.220697+00:00"
+    },
+    "phone-packaging": {
+      "tier": "secondary",
+      "archived": false
+    },
+    "foam-sort": {
+      "tier": "secondary",
+      "archived": false
+    },
+    "f1-console": {
+      "tier": "support",
+      "archived": false
+    },
+    "dagger-f1": {
+      "tier": "support",
+      "archived": false
+    },
+    "dagger-g2": {
+      "tier": "support",
+      "archived": false
+    },
+    "g2-runtime": {
+      "tier": "support",
+      "archived": false
+    },
+    "g2-book": {
+      "tier": "secondary",
+      "archived": false
+    },
+    "pi05-stack": {
+      "tier": "support",
+      "archived": false
+    },
+    "rlinf-stack": {
+      "tier": "support",
+      "archived": false
+    },
+    "workspace-deps": {
+      "tier": "support",
+      "archived": false
+    },
+    "whereweare": {
+      "tier": "support",
+      "archived": false
+    }
+  },
+  "tracking_fingerprint": "e139eb19ecdb6cd711517c3e19ba30c836fbeb17c2365455aee32ee36042d25f",
+  "latest_reports": {}
+}

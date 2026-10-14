@@ -1,0 +1,76 @@
+{
+  "version": "meaxiao 1.4.4",
+  "contract": "f1_upper_16d_v1",
+  "files": [
+    {
+      "source": "/home/xza_100850113/projects/F1/reference/20260923_pico_comparison/files/meaxiao/src/pico_f1/lerobot_v3.py",
+      "source_sha256": "033bc36e864b596833f23e52dc4dc0051aca69dea9537a9f8db845081783b188",
+      "destination": "upstream/lerobot_v3.py",
+      "adapted_sha256": "2366caef518464e9f1cc416f440ea208eeff4f9ad8ac43bdfc0294273d839df3",
+      "adapted_bytes": 25600,
+      "modified": true
+    },
+    {
+      "source": "/home/xza_100850113/projects/F1/reference/20260923_pico_comparison/files/meaxiao/src/pico_f1/camera_sync.py",
+      "source_sha256": "cfccb963df5eceb4ee9fa368571042c180eeeb30e2270ff24d83fb5c2ae639f8",
+      "destination": "upstream/camera_sync.py",
+      "adapted_sha256": "cfccb963df5eceb4ee9fa368571042c180eeeb30e2270ff24d83fb5c2ae639f8",
+      "adapted_bytes": 5766,
+      "modified": false
+    },
+    {
+      "source": "/home/xza_100850113/projects/F1/reference/20260923_pico_comparison/files/meaxiao/src/pico_f1/alignment_archive.py",
+      "source_sha256": "99964ee46876d7632e4c59cb944a34abff7d0d898983c2402d253af0416643c6",
+      "destination": "upstream/alignment_archive.py",
+      "adapted_sha256": "59f84ea089ae96683cc63e72efe6f7cfa71fbd32aacd05581f598cf23b6eca68",
+      "adapted_bytes": 2542,
+      "modified": true
+    },
+    {
+      "source": "/home/xza_100850113/projects/F1/reference/20260923_pico_comparison/files/meaxiao/src/pico_f1/sample_history.py",
+      "source_sha256": "d6eb9232f1508039da8240bf8d380ca8d11521ae8dd29ce86c705fe9033f7cfc",
+      "destination": "upstream/sample_history.py",
+      "adapted_sha256": "d6eb9232f1508039da8240bf8d380ca8d11521ae8dd29ce86c705fe9033f7cfc",
+      "adapted_bytes": 810,
+      "modified": false
+    },
+    {
+      "source": "/home/xza_100850113/projects/F1/reference/20260923_pico_comparison/files/meaxiao/src/pico_f1/session_pose.py",
+      "source_sha256": "ea815d47fd2ccfad7d3c0c392969d36b98fe72252d39e831263f3f4baa202e2b",
+      "destination": "upstream/session_pose.py",
+      "adapted_sha256": "ea815d47fd2ccfad7d3c0c392969d36b98fe72252d39e831263f3f4baa202e2b",
+      "adapted_bytes": 3292,
+      "modified": false
+    },
+    {
+      "source": "/home/xza_100850113/projects/F1/reference/20260923_pico_comparison/files/meaxiao/vendor/f1_bridge/lerobot_recorder.py",
+      "source_sha256": "e832c49cfa34d46e805bd466d96e02217b69828e6bebd2bbb6f0547f90e396b9",
+      "destination": "upstream/lerobot_recorder.py",
+      "adapted_sha256": "3b5c46ae03d67bb33cc4ee9036b6f8d4b8d29ae2767df3efcb5bf7802f2f4e66",
+      "adapted_bytes": 54380,
+      "modified": true
+    }
+  ],
+  "profile": "F1-09 observed right wrist 10Hz; 10fps output; 150ms source gap; left required",
+  "source_identity_basis": "verified_pico_session_and_graph; no Python packet publisher_gid available on F1-09 Jazzy",
+  "source_receipt_evidence": {
+    "callback_type": "dict",
+    "fields": [
+      "source_timestamp",
+      "received_timestamp",
+      "publication_sequence_number",
+      "reception_sequence_number"
+    ],
+    "received_timestamp_ns": 1790156322253782198,
+    "ros_now_ns": 1790156322253919425,
+    "method": "read-only /hal/joint_states subscription; no command publishers"
+  },
+  "adaptation_verification": {
+    "checked_at": "2026-10-12",
+    "original_sources": "All six historical source files were readable and matched their captured source_sha256; paths are provenance, not runtime dependencies.",
+    "patch": "LOCAL_CHANGES.patch",
+    "patch_sha256": "24ccd3c359c7c5a611f0ae317966b1bb8002888f86ecbd43d4d726893ad2e7b7",
+    "patch_basis": "Verified historical original source bytes to current adapted files",
+    "patch_replay_verified": true
+  }
+}

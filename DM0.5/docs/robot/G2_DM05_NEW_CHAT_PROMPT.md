@@ -31,7 +31,7 @@ related: [../CURRENT_STATUS.md]
 2. `DM0.5/docs/robot/G2_SMOOTH_TELEOP_ROOT_CAUSE_AND_NEXT_STEPS.md`：完整根因、实验、日志与SDK链接；前半保留历史，注意日期及superseded说明。
 3. `DM0.5/docs/robot/G2_DM05_CONTROL_TODO.md`：我的三项后续TODO，均尚未完成。
 4. `g2_robot/docs/00_G2_OPERATOR_GUIDE.md`第0节、`g2_robot/docs/G2_ROBOT_STRUCTURE.md`末尾：当前入口与部署记录。
-5. 若涉及遥操/DAgger，读 `G2Teleop/doc/F710_PINK_OTG_CONTROL_ARCHITECTURE.md`，尤其14.18–14.20，及其引用的冻结基线。
+5. 若涉及遥操/DAgger，读 `DAgger/docs/G2/teleop/F710_PINK_OTG_CONTROL_ARCHITECTURE.md`，尤其14.18–14.20，及其引用的冻结基线。
 
 旧实验必须保留，但旧“手部只能10Hz”“入口19未同步”“F710尚待冻结”“RB决定HIL所有权”均不是当前结论。
 
@@ -96,6 +96,7 @@ O10重启后零反馈事故仍需注意，当前位置hold不能仅因时间戳�
 
 我的偏好是尽量保留模型动作能力；不要擅加动作阈值、deadband、硬导数限幅、手部冻结或固定测试时长。
 这不授权删除既有硬件保护。修改SDK接口前按g2_robot/AGENTS.md核对官方资料，未知要明确标注。
+2026-10-12本地目录归并后，遥操源码位于 `DAgger/G2/teleop/`。下述远端路径是历史部署记录，目录整理未迁移实机。
 6000D的g2_robot映射到G2 `agi@10.130.86.13:/home/agi/xza/DM0.5`，G2Teleop映射到 `/home/agi/xza/G2Teleop`。
 同步只scp具体文件，G2禁用apt；不通过SSH执行Robot/GDK/Servo/复位/Powered。修改及无硬件测试后，由我在G2现场执行真机命令。
 09-07这一轮只更新本地文档，没有同步、运行测试或操作机器人。先用几句话确认你读到的当前基线和下一步，再继续我指定的任务。

@@ -796,7 +796,7 @@ SUPER_IMPORTANT已记录此次衔接。未远程执行GDK/Servo。
 
 ## 2026-09-09 数据集单34D回放
 
-G2Teleop新入口43复用本项目training_data_replay新增--unified-34/--files-only；normal100Hz，原948×34 action/30Hz，ENTER、共享PID锁。现有arms-only/Split仍保留。49项本地纯逻辑测试通过，新入口真机未验收。同步具体文件：operations/hardware_tests/training_data_replay.py与G2Teleop/scripts/43_g2_dataset_unified34_replay.sh；说明见../../DAgger/doc/REPLAY_UNIFIED34_20260909.md。
+G2Teleop新入口43复用本项目training_data_replay新增--unified-34/--files-only；normal100Hz，原948×34 action/30Hz，ENTER、共享PID锁。现有arms-only/Split仍保留。49项本地纯逻辑测试通过，新入口真机未验收。同步具体文件：operations/hardware_tests/training_data_replay.py与G2Teleop/scripts/43_g2_dataset_unified34_replay.sh；说明见../../DAgger/docs/G2/REPLAY_UNIFIED34_20260909.md。
 
 部署后补证：G2端43入口默认files-only与bash -n通过（退出0、no GDK）；未执行--execute。
 

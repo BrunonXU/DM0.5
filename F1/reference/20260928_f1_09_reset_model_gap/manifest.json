@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "issue_id": "F1-09-MODEL-001",
+  "robot_id": "F1-09",
+  "archived_at_utc": "2026-09-28T08:35:24.208802+00:00",
+  "evidence_date": "2026-09-28",
+  "scope": "Local archival of existing evidence; no robot connection, commands, parameter or geometry changes",
+  "files": [
+    {
+      "path": "symmetry.json",
+      "mode": "exact_copy",
+      "source_path": "F1-4242/results/pose_symmetry_20260928/symmetry.json",
+      "source_sha256": "a457178395e0decf7af86dc752d9ba24c53d83b7efbb662a67ee380e6889a0d3",
+      "sha256": "a457178395e0decf7af86dc752d9ba24c53d83b7efbb662a67ee380e6889a0d3",
+      "bytes": 100010
+    },
+    {
+      "path": "symmetry-analysis.md",
+      "mode": "exact_copy",
+      "source_path": "F1-4242/results/pose_symmetry_20260928/README.md",
+      "source_sha256": "95cf7a34bba5e8135b1c3b4f7842eb0d9ee6a2a258c7844dc28e8f620a9d10fb",
+      "sha256": "95cf7a34bba5e8135b1c3b4f7842eb0d9ee6a2a258c7844dc28e8f620a9d10fb",
+      "bytes": 5735
+    },
+    {
+      "path": "reset-feedback-audit.json",
+      "mode": "exact_copy",
+      "source_path": "F1-4242/results/pose_symmetry_20260928/reset-feedback-audit.json",
+      "source_sha256": "cca7ae47f6ff5471470562d758f3883f4427924caf66de652392dcda6b713243",
+      "sha256": "cca7ae47f6ff5471470562d758f3883f4427924caf66de652392dcda6b713243",
+      "bytes": 13048
+    },
+    {
+      "path": "geometry-identifiability.json",
+      "mode": "exact_copy",
+      "source_path": "F1-4242/results/model_audit_20260928/tcp-origin-identifiability.json",
+      "source_sha256": "2eeee25030621121f10f741c6274f2813da8868bc705200b2e398e529bce093f",
+      "sha256": "2eeee25030621121f10f741c6274f2813da8868bc705200b2e398e529bce093f",
+      "bytes": 11340
+    },
+    {
+      "path": "geometry-identifiability.md",
+      "mode": "exact_copy",
+      "source_path": "F1-4242/results/model_audit_20260928/tcp-origin-identifiability.md",
+      "source_sha256": "d7724be51591b17f0777da35db99044fe64022c9a005a4a095ac690629590337",
+      "sha256": "d7724be51591b17f0777da35db99044fe64022c9a005a4a095ac690629590337",
+      "bytes": 4977
+    },
+    {
+      "path": "native-arm-dh.MvKDCfg",
+      "mode": "exact_copy",
+      "source_path": "F1-4242/results/model_audit_20260928/tcp-native-config.MvKDCfg",
+      "source_sha256": "ce20b1a80974c3ed58cdac4973152625096c8ad93a779e5fd4108c26ce19bd52",
+      "sha256": "ce20b1a80974c3ed58cdac4973152625096c8ad93a779e5fd4108c26ce19bd52",
+      "bytes": 2887
+    },
+    {
+      "path": "f1_wheel_0602_new.urdf",
+      "mode": "exact_copy",
+      "source_path": "F1-4242/web/models/f1_wheel/urdf/f1_wheel_0602_new.urdf",
+      "source_sha256": "bc21c6f36446aa2741d6ba20c2190836be967b1f3043dfa39eaae0983c95d5c0",
+      "sha256": "bc21c6f36446aa2741d6ba20c2190836be967b1f3043dfa39eaae0983c95d5c0",
+      "bytes": 38269
+    },
+    {
+      "path": "model_mapping.json",
+      "mode": "exact_copy",
+      "source_path": "F1-4242/configs/model_mapping.json",
+      "source_sha256": "21e1879e2b5e15dfe590a27b1cb3c256626364b161cb950e24c5dd08a86633d5",
+      "sha256": "21e1879e2b5e15dfe590a27b1cb3c256626364b161cb950e24c5dd08a86633d5",
+      "bytes": 703
+    },
+    {
+      "path": "native-fk-samples.json",
+      "mode": "exact_copy",
+      "source_path": "F1-4242/tests/fixtures/f1_native_fk.json",
+      "source_sha256": "c036f8f7d3bd0a2c84729a2f613b5232b1920f476763181080d0e092ea501d18",
+      "sha256": "c036f8f7d3bd0a2c84729a2f613b5232b1920f476763181080d0e092ea501d18",
+      "bytes": 15021
+    },
+    {
+      "path": "activation-v22-ui.json",
+      "mode": "exact_copy",
+      "source_path": "F1-4242/results/deployments/20260928-f1-4242-v22-ui/activation.json",
+      "source_sha256": "aa54ec37e9f6c99265988cb5a34b369551e95fab9546c0910317176120a8322a",
+      "sha256": "aa54ec37e9f6c99265988cb5a34b369551e95fab9546c0910317176120a8322a",
+      "bytes": 1010
+    },
+    {
+      "path": "live-readonly-v22-ui.json",
+      "mode": "exact_copy",
+      "source_path": "F1-4242/results/deployments/20260928-f1-4242-v22-ui/live-readonly.json",
+      "source_sha256": "0e8f9ed3780a40cabce1b1cfbf629eb047567e85251da5c19dd5afde361a9e4b",
+      "sha256": "0e8f9ed3780a40cabce1b1cfbf629eb047567e85251da5c19dd5afde361a9e4b",
+      "bytes": 5583
+    },
+    {
+      "path": "onsite-pose-events.json",
+      "mode": "derived_event_subset",
+      "source_path": "F1-4242/results/pose_completion_20260928/post-user-full-reset.json",
+      "source_sha256": "9a2c4ecc6b868a331a4b1ed9e4f77799c9495e6961cd1c8b0b46c2ac1d9cda22",
+      "sha256": "9f40558f0653dfe3b76f35d282c3a66e25799488291351f82b36164b7dfff615",
+      "bytes": 6526,
+      "selection": {
+        "action_ids": [
+          "3e17edc0a56b4da38a01fdb19ab4d412",
+          "e403050962804065995c423a48f3092b",
+          "f2b3f53ea73e4a79a67c815c11519fbb"
+        ],
+        "event_kinds": [
+          "action_request",
+          "action_result"
+        ],
+        "fields": [
+          "action_id",
+          "action_kind",
+          "at",
+          "error",
+          "id",
+          "kind",
+          "kind_name",
+          "message",
+          "result",
+          "targets"
+        ]
+      }
+    }
+  ]
+}

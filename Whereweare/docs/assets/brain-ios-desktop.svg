@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="900" viewBox="0 0 1440 900" role="img" aria-labelledby="title desc"><title id="title">Whereweare 桌面首页方案</title><desc id="desc">方案草图，三条并行线共用日期轴，现在位于约六成位置，右侧为未排期建议。</desc><defs><style>text{font-family:system-ui,-apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif;fill:#292720}.meta{font-size:14px;fill:#6B675E}.body{font-size:18px}.strong{font-size:20px;font-weight:600}.small{font-size:16px;fill:#6B675E}.rule{stroke:#DDD8CF;stroke-width:1}.main{stroke:#B4493E}.demo{stroke:#56766E}.data{stroke:#68768B}</style></defs><rect width="1440" height="900" fill="#F4F1E9"/>
+<rect width="1440" height="76" fill="#FAF8F3"/><text x="56" y="47" font-size="26" font-family="Georgia,serif" font-weight="650">Whereweare</text>
+<rect x="561" y="17" width="76" height="42" rx="21" fill="#EAE6DE"/><text x="599" y="44" text-anchor="middle" class="body" font-weight="600">现在</text>
+<text x="697" y="44" text-anchor="middle" class="body">项目库</text><text x="795" y="44" text-anchor="middle" class="body">回顾</text>
+<rect x="1260" y="16" width="124" height="44" rx="22" fill="#292720"/><text x="1322" y="44" text-anchor="middle" style="font-size:17px;fill:#FFF">更新进度</text>
+<text x="56" y="131" font-size="32" font-weight="650">F1 · π0.5 积木分拣</text><text x="56" y="168" class="body">采集链路已有记录，专项数据待验收。</text>
+<text x="1384" y="130" class="meta" text-anchor="end">结构草图 · 待评审</text>
+<rect x="56" y="190" width="140" height="40" rx="20" fill="#E9E5DD"/><text x="74" y="216" class="small">场景 · 部分验证</text>
+<text x="220" y="216" class="small">示教 ◐</text><text x="330" y="216" class="small">数据 ◐</text><text x="440" y="216" class="small">训练 ○</text><text x="550" y="216" class="small">实机 ○</text>
+<line x1="56" y1="249" x2="1384" y2="249" class="rule"/>
+<rect x="56" y="268" width="229" height="40" rx="20" fill="#E9E5DD"/><rect x="60" y="272" width="83" height="32" rx="16" fill="#FFFDF9"/>
+<text x="101" y="294" text-anchor="middle" class="small" style="fill:#292720">近两周</text><text x="182" y="294" text-anchor="middle" class="small">近一月</text><text x="249" y="294" text-anchor="middle" class="small">全部</text>
+<text x="240" y="334" class="meta" text-anchor="middle">09.29</text><text x="415" y="334" class="meta" text-anchor="middle">10.03</text><text x="589" y="334" class="meta" text-anchor="middle">10.07</text><text x="807" y="334" class="meta" text-anchor="middle">10.12</text><text x="851" y="316" class="meta" text-anchor="middle">10.13</text>
+<rect x="832" y="325" width="38" height="421" rx="19" fill="#EAE4DA"/>
+<text x="851" y="294" class="body" text-anchor="middle" style="fill:#B4493E;font-weight:600">现在</text>
+<text x="1184" y="294" class="small" text-anchor="middle">接下来 · 建议 / 未排期</text>
+<line x1="851" y1="328" x2="851" y2="744" stroke="#CFC8BC" stroke-dasharray="3 6"/>
+<circle cx="64" cy="402" r="4" fill="#B4493E"/><text x="80" y="409" class="strong" style="fill:#B4493E">积木任务</text><text x="192" y="409" class="body" style="fill:#6B675E">›</text>
+<path d="M236 402H1015" fill="none" stroke="#B4493E" stroke-width="3"/>
+<path d="M1037 402H1366" fill="none" stroke="#B4493E" stroke-width="2" stroke-dasharray="5 7" opacity=".6"/>
+<path d="M1019 408l6 -12m0 12l6 -12" stroke="#B2ABA1" stroke-width="1.5"/>
+<circle cx="851" cy="402" r="7" fill="#B4493E"/>
+<text x="871" y="439" class="body" font-weight="600">专项数据待验收</text><text x="871" y="467" class="body" style="fill:#6B675E">训练与分拣尚未确认</text>
+<circle cx="1184" cy="402" r="6" fill="#F4F1E9" stroke="#B4493E" stroke-width="2"/>
+<text x="1184" y="377" class="body" text-anchor="middle">确认专项数据标准</text><text x="248" y="362" class="meta">09.28 · 上次记录</text><text x="248" y="389" class="body" font-weight="600">姿态已有现场记录</text><text x="248" y="431" class="body" style="fill:#6B675E">仅姿态范围</text><circle cx="64" cy="559" r="4" fill="#56766E"/><text x="80" y="566" class="strong" >示教</text><text x="192" y="566" class="body" style="fill:#6B675E">›</text>
+<path d="M236 559H1015" fill="none" stroke="#56766E" stroke-width="2"/>
+<path d="M1037 559H1366" fill="none" stroke="#56766E" stroke-width="2" stroke-dasharray="5 7" opacity=".6"/>
+<path d="M1019 565l6 -12m0 12l6 -12" stroke="#B2ABA1" stroke-width="1.5"/>
+<circle cx="851" cy="559" r="7" fill="#56766E"/>
+<text x="871" y="596" class="body" font-weight="600">录制有现场记录</text><text x="871" y="624" class="body" style="fill:#6B675E">训练就绪仍待确认</text>
+<circle cx="1184" cy="559" r="6" fill="#F4F1E9" stroke="#56766E" stroke-width="2"/>
+<text x="1184" y="534" class="body" text-anchor="middle">审核新示教质量</text><path d="M807 559V547L597 547" fill="none" stroke="#C6C0B6"/><circle cx="807" cy="559" r="5" fill="#F4F1E9" stroke="#56766E" stroke-width="2"/><text x="399" y="475" class="meta">10.12</text><text x="399" y="505" class="body" font-weight="600">START分条已部署</text><text x="399" y="531" class="body" style="fill:#6B675E">当时待现场记录</text><path d="M851 559V541L817 541" fill="none" stroke="#C6C0B6"/><circle cx="851" cy="559" r="10" fill="none" stroke="#56766E" stroke-width="1.5"/><text x="627" y="475" class="meta">10.13</text><text x="627" y="505" class="body" font-weight="600">848组三图已录</text><text x="627" y="531" class="body" style="fill:#6B675E">结构通过 · 质量待审核</text><circle cx="64" cy="716" r="4" fill="#68768B"/><text x="80" y="723" class="strong" >数据</text><text x="192" y="723" class="body" style="fill:#6B675E">›</text>
+<path d="M236 716H1015" fill="none" stroke="#68768B" stroke-width="2"/>
+<path d="M1037 716H1366" fill="none" stroke="#68768B" stroke-width="2" stroke-dasharray="5 7" opacity=".6"/>
+<path d="M1019 722l6 -12m0 12l6 -12" stroke="#B2ABA1" stroke-width="1.5"/>
+<circle cx="851" cy="716" r="7" fill="#68768B"/>
+<text x="871" y="753" class="body" font-weight="600">候选待质量审核</text><text x="871" y="781" class="body" style="fill:#6B675E">新候选还需导出回读</text>
+<circle cx="1184" cy="716" r="6" fill="#F4F1E9" stroke="#68768B" stroke-width="2"/>
+<text x="1184" y="691" class="body" text-anchor="middle">核对候选并回读</text><path d="M807 716V704L597 704" fill="none" stroke="#C6C0B6"/><circle cx="807" cy="716" r="5" fill="#F4F1E9" stroke="#68768B" stroke-width="2"/><text x="399" y="632" class="meta">10.12</text><text x="399" y="662" class="body" font-weight="600">旧候选1834帧</text><text x="399" y="688" class="body" style="fill:#6B675E">回读通过 · 待审核</text><path d="M851 716V698L817 698" fill="none" stroke="#C6C0B6"/><circle cx="851" cy="716" r="10" fill="none" stroke="#68768B" stroke-width="1.5"/><text x="627" y="632" class="meta">10.13</text><text x="627" y="662" class="body" font-weight="600">新候选695帧</text><text x="627" y="688" class="body" style="fill:#6B675E">48段 · 待审核</text><line x1="56" y1="810" x2="1384" y2="810" class="rule"/><text x="56" y="850" class="small">已暂停 · 输入延迟测试　›</text><text x="1384" y="850" class="small" text-anchor="end">更早记录　›</text></svg>

@@ -1,0 +1,10 @@
+[Unit]
+Description=Discover saved F1 captures once per minute
+
+[Timer]
+OnBootSec=60
+OnUnitActiveSec=60
+Unit=f1-conversion-scan.service
+
+[Install]
+WantedBy=timers.target
