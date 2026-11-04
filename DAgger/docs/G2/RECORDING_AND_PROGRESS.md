@@ -45,7 +45,7 @@
 - data/raw/powered_hil：原始三路JPEG/PNG、各自设备时间戳/单位/时钟域、host monotonic、34D reported状态/有效性、policy请求/chunk、控制事件与SDK证据。
 - data/exports：42脚本生成的三图预览MP4/JPG/阶段JSON，原速按host到达时间显示最近帧；不是训练视频。
 - data/archive/offline：本地审计和分析产物。logs：遥测和console。
-- G2的data/logs实际位于 `/data/logs/xza/DAgger/`，`/home/agi/xza/DAgger/data`、logs是符号链接。6000D与G2是不同副本，不把本地有文件当作远端已备份。
+- G2的data/logs实际位于 `/data/logs/xza/DAgger/`，`/home/user/xza/DAgger/data`、logs是符号链接。6000D与G2是不同副本，不把本地有文件当作远端已备份。
 - 保留policy proposal、human candidate、selected、submitted、SDK返回与measured的区别；手部reported有效性仍未认证，不伪造反馈或由位置差推算握力。
 
 ## 5. 下一步顺序（维修后）

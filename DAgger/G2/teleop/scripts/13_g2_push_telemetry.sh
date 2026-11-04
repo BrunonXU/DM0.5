@@ -2,9 +2,9 @@
 # Push finalized F710 telemetry to the 6000D dashboard inbox.
 set -Eeuo pipefail
 
-SERVER_HOST="${G2_TELEMETRY_SERVER_HOST:-10.130.153.114}"
-SERVER_USER="${G2_TELEMETRY_SERVER_USER:-xza_100850113}"
-RECEIVER="${G2_TELEMETRY_RECEIVER:-/home/xza_100850113/projects/g2_robot/scripts/receive_g2_telemetry.sh}"
+SERVER_HOST="${G2_TELEMETRY_SERVER_HOST:-192.0.2.1}"
+SERVER_USER="${G2_TELEMETRY_SERVER_USER:-user}"
+RECEIVER="${G2_TELEMETRY_RECEIVER:-/home/user/projects/g2_robot/scripts/receive_g2_telemetry.sh}"
 main=""
 feedback=""
 category="powered"

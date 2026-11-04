@@ -9,7 +9,7 @@ from pathlib import Path
 SDK=Path('/home/user/workspace/f1/install/tj_sdk/lib/libMarvinSDK.so')
 SDK_SHA='8580298c967ba2ca9166a7175a289a59c3d5aa3a9ae09c17373fde36c4092346'
 EXE='/home/user/workspace/f1/install/motor_ctl/lib/motor_ctl/motor_ctl_node'
-MACHINE='f8181edeb110424bbd1963cf717dfeee'
+MACHINE='00000000000000000000000000000001'
 
 def decode(data):
     if len(data)!=1428:raise ValueError('SDK status size mismatch')

@@ -1,6 +1,47 @@
 # F1 recording cues
 
-Kenney Interface Sounds (CC0), https://kenney.nl/assets/interface-sounds .
-User selected confirmation_001 (开始 A) and confirmation_002 (完成 B).
-Assets are mono PCM16 16kHz, attenuated to approximately -3dBFS peak with 5ms fade-in.
-Playback applies separate 0–100% software gains (default18%), plus 400ms silence before/150ms after for audio-path startup. System mixer is unchanged.
+正常六段音色保持不变。异常预先生成中文PCM16、16kHz WAV，运行端无需网络或TTS服务；按键受理时非阻塞提交，普通RTC等待不反复播放。
+
+V47异常语音收敛为“请评分／连接中断／动作受限／系统故障”四条豆包女声；具体原因与恢复方法保留在终端。短暂输入抖动、RTC等待与RB确认不播异常。同一异常去重，恢复取消过期提示。试听在[Why&How](http://192.0.2.1:4243/?html=f1-rlt-controls)，是否部署以控制终端为准。
+
+## V47：四条豆包短提示
+
+女声为魅力苏菲2.0，音调-2；仅6000D构建时调用API，密钥不入包。`voice-manifest.json`记录文本、音色、时长与SHA256。正常六种WAV保持不变。
+
+| 文件 | 文案 | 事件 |
+|---|---|---|
+| confirm_rlt | 请评分 | 未评分交还或Y |
+| communication_wait | 连接中断 | 真实传输／手柄断开 |
+| motion_limited | 动作受限 | 策略或人工候选边界拒绝 |
+| system_fault | 系统故障 | 录制失败、输出／反馈故障或策略故障停止 |
+
+## V44历史：离线中文异常语音
+
+适用范围：2026-11-03开发候选；下文历史与既有配置须结合当前STATUS阅读。
+
+V42 局部 RLT 使用下列六种原始 WAV；声音表示已受理的操作或已完成的保存，不保证机械臂已经开始移动。策略候选暂停、RTC 重规划、RB 恢复均不播放人工接管音，避免把保持误认为控制权交给人。
+
+局部 RLT 从 V37 起常驻打开 PCM 设备，提示音无逐次 400ms 前置静音，也不为每个声音重开设备。声音提交不阻塞控制；PCM 提交时间只能用于诊断，实际声学起点与动作先后仍需现场核验。可在 [Why&How 提示音演示](http://192.0.2.1:4243/?html=f1-rlt-controls) 试听当前 WAV 和模拟流程。
+
+## 当前局部 RLT 映射（V42）
+
+| WAV | 何时触发 | 操作含义 |
+|---|---|---|
+| `started.wav` | START开条后，录制器完成创建并进入recording | 新完整episode已开始，VLA等待／执行新策略；不是每次START都响 |
+| `takeover.wav` | 自动策略中的START接管受理，或保护暂停后的真实START接管受理 | 人工接管意图已受理；按现场提示回中／RB使能，不能靠提示音绕过保护 |
+| `rlt_started.wav` | →切入局部RLT被受理 | 本条唯一一次局部放置开始，保持后读取新观测 |
+| `local_success.wav` | ↑确认当前健康局部任务成功并关闭该段 | 奖励1；人工确认后保持人工，自主确认后交VLA，整条继续录制 |
+| `resumed.wav` | START交回VLA被受理 | 开始读取新观测／等待新策略，不等到动作开始才提示 |
+| `saved.wav` | Y回位、右夹爪张开、反馈稳定两秒后，整条实际封存成功 | 保存完成，不表示任务成功；按下Y的瞬间不响此音 |
+
+↑自主成功同时交回VLA时，成功音优先，紧接的`resumed`被抑制，避免两声含义重叠。其他新受理提示会撤销过时的待播声音。重复或被拒绝的按键不响成功音；每个推理周期、纯时序保持、候选碰撞暂停和RB重新使能只更新文字，不播放接管音。
+
+当前音量读取现场`recording_audio.json`，不硬编码到控制逻辑。2026-11-03只读核对为started 53%、saved 50%；`started/takeover/resumed/rlt_started`共用started，`saved/local_success`共用saved。网页滑条是试听音量，电脑和机器人扬声器响度不同。
+
+## 原始音色与普通录制路线
+
+HIL提示为原创合成，mono PCM16 16kHz：`takeover.wav`为294→220Hz下行双音（0.92s），`resumed.wav`为440→660Hz上行双音（0.62s）。RLT切入为523.25→659.25→783.99Hz上行三音（0.525s）；成功为两声880Hz短确认音。
+
+开始与保存为用户选定的Kenney confirmation_001（开始A）／confirmation_002（完成B）。来源：[Kenney Interface Sounds](https://kenney.nl/assets/interface-sounds)，CC0；mono PCM16 16kHz，约−3dBFS峰值及5ms淡入。恢复音峰值0.55 full scale；接管音按此前现场试听调整为90/53增益（约+4.6dB），峰值0.934，无削波。这次页面核对不修改任何WAV或机器人音量。
+
+普通录制路线的逐文件播放器仍使用播放前400ms／后150ms静音，默认软件音量18%；这是普通录制路径的合同，不适用于当前局部RLT常驻提示播放器。非RLT RTC-HIL的恢复音仍在新策略接受后播放；局部RLT采用上表的交还受理语义，不能将两条路线混写。

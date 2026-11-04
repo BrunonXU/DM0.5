@@ -119,7 +119,7 @@ Mock能证明“网络和输入输出协议跑通”，不能证明：
 | 笔记本 | ping/端口/mock真实推理验收、上传部署包 |
 | G2域控制器 | 运行真实相机/state Client和本地100Hz控制 |
 
-6000D在2026-07-30读到的实验网地址是`10.130.153.114`，但地址可能变化。每次
+6000D在2026-07-30读到的实验网地址是`192.0.2.1`，但地址可能变化。每次
 必须先在服务器执行：
 
 ```bash
@@ -129,11 +129,11 @@ hostname -I
 下文统一使用：
 
 ```bash
-SERVER_IP=10.130.153.114
+SERVER_IP=192.0.2.1
 PORT=7891
 ```
 
-如实测地址不同，替换`SERVER_IP`。`172.17.0.1`是Docker网桥，不提供给笔记本
+如实测地址不同，替换`SERVER_IP`。`192.0.2.41`是Docker网桥，不提供给笔记本
 或G2使用。
 
 HTTP服务没有身份认证，只允许在受控实验室网络访问。不得把7891直接暴露公网。
@@ -176,9 +176,9 @@ tmux new -s dm05-http-35k
 在tmux中设置负责人分配的GPU，例如：
 
 ```bash
-PROJECT_ROOT=/home/xza_100850113/projects/DM0.5
+PROJECT_ROOT=/home/user/projects/DM0.5
 GPU_ID=0
-IMAGE='docker.1ms.run/dexmal/opendm@sha256:60a754dce047fbef40ab7d3a160fd82ccfbf5fa0509d862b6702311499dfbd4d'
+IMAGE='docker.1ms.run/dexmal/opendm@sha256:REDACTED_HOST_FINGERPRINT'
 mkdir -p "${PROJECT_ROOT}/server/runs/deployment"
 ```
 
@@ -241,7 +241,7 @@ curl -sS -o /dev/null -w '%{http_code}\n' \
 在笔记本执行：
 
 ```bash
-SERVER_IP=10.130.153.114
+SERVER_IP=192.0.2.1
 
 ping -c 4 "${SERVER_IP}"
 nc -vz "${SERVER_IP}" 7891
@@ -262,14 +262,14 @@ curl -sS -o /dev/null -w '%{http_code}\n' \
 
 ```bash
 rsync -avP \
-  xza_100850113@"${SERVER_IP}":/home/xza_100850113/projects/DM0.5/g2_dm05_deployment_20260730.tar.gz \
-  /home/bruno/桌面/
+  user@"${SERVER_IP}":/home/user/projects/DM0.5/g2_dm05_deployment_20260730.tar.gz \
+  /home/user/桌面/
 
-mkdir -p /home/bruno/桌面/g2_dm05_deployment
-tar -xzf /home/bruno/桌面/g2_dm05_deployment_20260730.tar.gz \
-  -C /home/bruno/桌面/g2_dm05_deployment
+mkdir -p /home/user/桌面/g2_dm05_deployment
+tar -xzf /home/user/桌面/g2_dm05_deployment_20260730.tar.gz \
+  -C /home/user/桌面/g2_dm05_deployment
 
-cd /home/bruno/桌面/g2_dm05_deployment
+cd /home/user/桌面/g2_dm05_deployment
 python3 -m venv .venv
 source .venv/bin/activate
 pip install numpy requests pillow
@@ -338,8 +338,8 @@ G2_USER=替换成域控制器用户名
 G2_IP=替换成域控制器IP
 
 rsync -avP \
-  /home/bruno/桌面/g2_dm05_deployment_20260730.tar.gz \
-  "${G2_USER}@${G2_IP}:/home/${G2_USER}/"
+  /home/user/桌面/g2_dm05_deployment_20260730.tar.gz \
+  "${G2_USER}@${G2_IP}:/home/user{G2_USER}/"
 ```
 
 登录并解压：
@@ -348,10 +348,10 @@ rsync -avP \
 ssh "${G2_USER}@${G2_IP}"
 
 G2_USER="$(whoami)"
-mkdir -p "/home/${G2_USER}/g2_dm05_deployment"
-tar -xzf "/home/${G2_USER}/g2_dm05_deployment_20260730.tar.gz" \
-  -C "/home/${G2_USER}/g2_dm05_deployment"
-cd "/home/${G2_USER}/g2_dm05_deployment"
+mkdir -p "/home/user{G2_USER}/g2_dm05_deployment"
+tar -xzf "/home/user{G2_USER}/g2_dm05_deployment_20260730.tar.gz" \
+  -C "/home/user{G2_USER}/g2_dm05_deployment"
+cd "/home/user{G2_USER}/g2_dm05_deployment"
 ```
 
 ### C2. 域控制器依赖和网络
@@ -366,9 +366,9 @@ from PIL import Image
 print("PASS: GDK/client dependencies import")
 PY
 
-nc -vz 10.130.153.114 7891
+nc -vz 192.0.2.1 7891
 curl -sS -o /dev/null -w '%{http_code}\n' \
-  http://10.130.153.114:7891/process_frame
+  http://192.0.2.1:7891/process_frame
 ```
 
 成功标准：
@@ -395,7 +395,7 @@ mkdir -p logs
 
 python3 -m g2_sort.deployment.g2_sdk_client \
   --mode shadow \
-  --policy-endpoint http://10.130.153.114:7891/process_frame \
+  --policy-endpoint http://192.0.2.1:7891/process_frame \
   --request-timeout-seconds 30 \
   --max-requests 1 \
   --telemetry-jsonl logs/g2_35k_shadow_1.jsonl
@@ -413,7 +413,7 @@ python3 -m g2_sort.deployment.g2_sdk_client \
 ```bash
 python3 -m g2_sort.deployment.g2_sdk_client \
   --mode shadow \
-  --policy-endpoint http://10.130.153.114:7891/process_frame \
+  --policy-endpoint http://192.0.2.1:7891/process_frame \
   --request-timeout-seconds 30 \
   --max-requests 10 \
   --telemetry-jsonl logs/g2_35k_shadow_10.jsonl
@@ -432,7 +432,7 @@ python3 -m g2_sort.deployment.g2_sdk_client \
 ```bash
 python3 -m g2_sort.deployment.g2_sdk_client \
   --mode shadow \
-  --policy-endpoint http://10.130.153.114:7891/process_frame \
+  --policy-endpoint http://192.0.2.1:7891/process_frame \
   --request-timeout-seconds 30 \
   --max-requests 100 \
   --telemetry-jsonl logs/g2_35k_shadow_100.jsonl
@@ -476,7 +476,7 @@ PY
 ```bash
 python3 -m g2_sort.deployment.g2_sdk_client \
   --mode powered-sync \
-  --policy-endpoint http://10.130.153.114:7891/process_frame \
+  --policy-endpoint http://192.0.2.1:7891/process_frame \
   --request-timeout-seconds 30 \
   --execute-prefix-steps 6 \
   --max-requests 1 \

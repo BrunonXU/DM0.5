@@ -4,7 +4,7 @@
 
 ## 用途与真实合同
 
-G2Teleop `scripts/43_g2_dataset_unified34_replay.sh` → G2 `/home/agi/xza/DM0.5/g2_sort/operations/hardware_tests/training_data_replay.py`（6000D对应g2_robot，不是训练目录DM0.5）。
+G2Teleop `scripts/43_g2_dataset_unified34_replay.sh` → G2 `/home/user/xza/DM0.5/g2_sort/operations/hardware_tests/training_data_replay.py`（6000D对应g2_robot，不是训练目录DM0.5）。
 
 - 冻结episode sorting_20260409161901，training_replay_v1.json，948×34 **action**，30Hz，31.567秒。
 - ServoStreamer按monotonic时间线性插值到100Hz，G2RobotController选择unified-34分支，每次send_action调用一次joint_servo_control，34个canonical名称与位置一一配对。
@@ -20,19 +20,19 @@ G2Teleop `scripts/43_g2_dataset_unified34_replay.sh` → G2 `/home/agi/xza/DM0.5
 停止DAgger/普通遥操等其他owner。在Windows PowerShell先登录：
 
 ```powershell
-ssh agi@10.130.86.13
+ssh agi@192.0.2.8
 ```
 
 进入G2 Linux终端后：
 
 ```bash
-cd /home/agi/xza/G2Teleop
+cd /home/user/xza/G2Teleop
 bash scripts/43_g2_dataset_unified34_replay.sh --execute
 ```
 
 按ENTER，5秒倒计时。无需tunnel、sender或START，因为这是固定数据集回放，不是DAgger流程。不会自动复位双臂，也不自动保存三图。若只有手部起点不符，ENTER后会执行上面的同接口手部准备；若反馈仍不匹配，将打印偏差最大的关节并停止，不绕过门禁。
 
-检查文件可去掉--execute。日志在G2 `/home/agi/xza/DM0.5/logs/diagnostics/training_replay_unified34_时间.json` 和同名 `.console.log`；报告含source/布局/名称/最终目标和反馈/控制统计。
+检查文件可去掉--execute。日志在G2 `/home/user/xza/DM0.5/logs/diagnostics/training_replay_unified34_时间.json` 和同名 `.console.log`；报告含source/布局/名称/最终目标和反馈/控制统计。
 
 ## 本轮验证与限制
 

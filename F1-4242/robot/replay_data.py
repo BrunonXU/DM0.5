@@ -1,4 +1,4 @@
-"""Read immutable F710 publication evidence. No ROS, output, or source writes."""
+"""Read immutable native recording publication evidence. No ROS, output, or source writes."""
 from bisect import bisect_left, bisect_right
 from dataclasses import dataclass
 import hashlib
@@ -11,6 +11,28 @@ CONTEXT = tuple(f'head_j{i}' for i in range(1, 4)) + tuple(f'body_j{i}' for i in
 NAMES = ARMS + ('left_gripper_position', 'right_gripper_position')
 KEYS = ('joint_command', 'left_gripper_command', 'right_gripper_command')
 MAX_ROWS = 400000
+FULL_MASK = (True,) * 16
+LEFT_ABSENT_MASK = (True,) * 14 + (False, True)
+LEFT_ABSENT_HARDWARE = dict(schema='f1_hardware_capabilities_v1',
+                          left_gripper_present=False, right_gripper_present=True,
+                          left_wrist_camera_present=True)
+
+
+def hardware_mask(manifest):
+    binding = manifest.get('binding', {})
+    version = manifest.get('schema_version')
+    hardware = binding.get('hardware_capabilities')
+    if type(version) is int and version == 3 and hardware is None:
+        return FULL_MASK
+    if (type(version) is int and version == 4 and hardware == LEFT_ABSENT_HARDWARE
+            and all(type(hardware.get(k)) is bool for k in LEFT_ABSENT_HARDWARE if k != 'schema')
+            and valid_mask(binding.get('state_valid_mask'), LEFT_ABSENT_MASK)):
+        return LEFT_ABSENT_MASK
+    raise ValueError('录制版本与硬件合同不匹配；仅支持 schema 3 双夹爪或 schema 4 明确移除左夹爪')
+
+
+def valid_mask(value, expected):
+    return isinstance(value, list) and all(type(v) is bool for v in value) and tuple(value) == expected
 
 
 def number(v, label):
@@ -61,6 +83,15 @@ class Recording:
     observations: tuple
     events: tuple
     state_series: tuple = ()
+    valid_mask: tuple = FULL_MASK
+
+    @property
+    def command_keys(self):
+        return (KEYS[0],) + tuple(KEYS[i-13] for i in (14, 15) if self.valid_mask[i])
+
+    @property
+    def gripper_indices(self):
+        return tuple(i for i in (14, 15) if self.valid_mask[i])
 
     @property
     def origin(self):
@@ -116,7 +147,9 @@ class Segment:
                     end_s=(self.commands[-1].ns-r.origin)/1e9,
                     command_count=len(self.commands), events=list(self.events),
                     initial_targets=dict(zip(ARMS, self.commands[0].values[:14])),
-                    initial_grippers=dict(zip(('left', 'right'), self.commands[0].values[14:])),
+                    initial_grippers={('left', 'right')[i-14]: self.commands[0].values[i]
+                                      for i in r.gripper_indices},
+                    state_valid_mask=list(r.valid_mask),
                     context=dict(zip(CONTEXT, self.context)),
                     audit_scope='command_events_observations_sha256_not_image_payloads',
                     time_basis='first_command_publication', speed=1)
@@ -126,13 +159,14 @@ def read_recording(root):
     raw = file_bytes(root, 'journal/manifest.json', 2 * 1024**2)
     manifest = json.loads(raw)
     binding = manifest.get('binding', {})
+    mask = hardware_mask(manifest)
     expected = dict(dimension=16, names=list(NAMES), units=['degree']*14+['0..100']*2)
-    if (manifest.get('schema_version') != 3 or manifest.get('contract') != 'f1_upper_16d_v1'
+    if (manifest.get('contract') != 'f1_upper_16d_v1'
             or manifest.get('action_contract') != expected or manifest.get('complete') is not True
             or manifest.get('status') != 'completed' or manifest.get('writer_error')
-            or manifest.get('drop_count') != 0 or binding.get('purpose') != 'demonstration'
+            or manifest.get('drop_count') != 0
             or binding.get('execution_mode') != 'powered' or binding.get('synthetic')):
-        raise ValueError('仅支持完整提交、真实 powered 的 F710 人工示教原件')
+        raise ValueError('需要完整提交的真实 powered 录制，以及匹配的关节命令合同')
     episode = manifest.get('episode_id')
     streams = {}
     for name in ('control', 'observations', 'events'):
@@ -146,6 +180,8 @@ def read_recording(root):
             row = json.loads(line)
             if row.get('episode_id') != episode or row.get('stream_sequence') != len(rows):
                 raise ValueError('日志录制身份或流序号不一致')
+            if mask != FULL_MASK and row.get('schema_version') != 4:
+                raise ValueError('日志行版本与硬件合同不一致')
             rows.append(row)
         if len(rows) != manifest.get('counts', {}).get(name):
             raise ValueError(name + ' 日志计数不一致')
@@ -159,6 +195,9 @@ def read_recording(root):
             raise ValueError('控制时间或命令序号未严格递增')
         previous, seq = at, current_seq
         q = vector(row.get('submitted'), 16)
+        if mask != FULL_MASK and (not valid_mask(row.get('action_valid_mask'), mask)
+                or not valid_mask(row.get('state_valid_mask'), mask) or q[14] != 0):
+            raise ValueError('命令缺少有效硬件掩码或缺失夹爪占位值无效')
         if row.get('publication_complete') is not True or row.get('execution_mode') != 'powered':
             raise ValueError('命令缺少完整的真实发布证据；不使用实测值回填')
         pubs = row.get('publications')
@@ -173,14 +212,18 @@ def read_recording(root):
             if not isinstance(gid, str) or len(gid) != 32 or not any(bytes.fromhex(gid)):
                 raise ValueError('命令发布者身份无效')
             seen.add(key); last_publication = ns
+            if key == KEYS[1] and not mask[14]:
+                raise ValueError('录制包含向已移除左夹爪的发布')
             indices = range(14) if key == KEYS[0] else (14 if key == KEYS[1] else 15,)
             for i in indices:
                 values[i], stamps[i] = q[i], ns
             publications.append((key, ns))
         recorded_stamps = row.get('action_source_timestamps_ns')
         if (not isinstance(recorded_stamps, list) or len(recorded_stamps) != 16
-                or any(type(t) is not int for t in recorded_stamps)
-                or stamps != recorded_stamps or tuple(values) != q):
+                or any((type(t) is not int) if valid else t is not None
+                       for t, valid in zip(recorded_stamps, mask))
+                or stamps != recorded_stamps
+                or any(values[i] != q[i] for i in range(16) if mask[i])):
             raise ValueError('动作值与逐字段发布/保持证据不一致')
         commands.append(Command(at, current_seq, q, tuple(publications), str(row.get('source', ''))))
     if len(commands) < 2:
@@ -196,11 +239,19 @@ def read_recording(root):
         # Comparison is optional for older journals, never invent feedback
         # from command targets or a camera timestamp.
         state, stamps = row.get('state16'), row.get('state_timestamps_ns')
+        if mask != FULL_MASK and (not valid_mask(row.get('state_valid_mask'), mask)
+                or row.get('absent_state_semantics') != 'zero_storage_placeholder_not_measurement'
+                or state is None or stamps is None):
+            raise ValueError('观测缺少已移除硬件的来源说明')
         if state is not None and stamps is not None:
             state = vector(state, 16)
             if not isinstance(stamps, list) or len(stamps) != 16:
                 raise ValueError('实测反馈时间戳维度不符')
             for i, (v, stamp) in enumerate(zip(state, stamps)):
+                if not mask[i]:
+                    if v != 0 or type(stamp) is not int or stamp != 0:
+                        raise ValueError('缺失夹爪占位不能冒充实测反馈')
+                    continue
                 stamp = integer(stamp)
                 if stamp > at or (state_series[i] and stamp < state_series[i][-1][0]):
                     raise ValueError('实测反馈时间戳无效')
@@ -217,4 +268,4 @@ def read_recording(root):
             events.append(row)
     return Recording(episode, hashlib.sha256(raw).hexdigest(), binding.get('robot'),
                      binding.get('profile_sha256'), tuple(commands), tuple(observations), tuple(events),
-                     tuple(tuple(s) for s in state_series))
+                     tuple(tuple(s) for s in state_series), mask)

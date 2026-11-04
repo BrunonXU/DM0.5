@@ -2,7 +2,7 @@
   "schema": "f1_hil_panel_v1",
   "runtime": "~/Bruno/DAgger-runtime/f1-09",
   "launcher": "~/Bruno/DAgger/start_f1_teleop.sh",
-  "ssh_host": "user@192.168.31.58",
+  "ssh_host": "user@192.0.2.7",
   "data_root": "~/Bruno/data/hil_data",
   "legacy_data_roots": [
     "~/lxl/dagger_data"

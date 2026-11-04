@@ -15,8 +15,11 @@ def test_legacy_to_demo_home_trajectory_keeps_non_arm_state(setup, tmp_path, bod
     import copy
     profile = copy.deepcopy(profile)
     profile['f710_home'].pop('clearance', None)
+    profile['f710_home'].pop('route', None)
+    profile['f710_home'].pop('scope', None)
     full = full.copy()
     source = json.loads((Path(__file__).parent/'fixtures/demo_v0_preset.json').read_text())
+    profile['f710_home']['joints'] = {name:source['joints'][name] for name in ARM_NAMES}
     if body_pose == 'demo':
         full[14:] = [source['joints'][name] for name in FULL_NAMES[14:]]
     start = np.r_[full[:14], 43., 66.]

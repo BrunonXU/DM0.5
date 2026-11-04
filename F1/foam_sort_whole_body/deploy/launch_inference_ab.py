@@ -132,7 +132,7 @@ def start(gpu, keys=("5k", "20k")):
                 "--label", f"f1.inference.snapshot={snapshot_id}",
                 "--log-opt", "max-size=50m", "--log-opt", "max-file=5",
                 "-v", f"{PROJECTS}:{PROJECTS}:ro", "-v", "/mnt/dm05_nvme/dm05:/mnt/dm05_nvme/dm05:ro"]
-        env = {"PYTHONDONTWRITEBYTECODE": "1", "PYTHONUNBUFFERED": "1", "USER": "xza_100850113",
+        env = {"PYTHONDONTWRITEBYTECODE": "1", "PYTHONUNBUFFERED": "1", "USER": "user",
                "HF_HUB_OFFLINE": "1", "TRANSFORMERS_OFFLINE": "1", "NO_ALBUMENTATIONS_UPDATE": "1",
                "TOKENIZERS_PARALLELISM": "false", "OMP_NUM_THREADS": "2", "OPENBLAS_NUM_THREADS": "1",
                "TORCHINDUCTOR_CACHE_DIR": "/tmp/torchinductor", "TRITON_CACHE_DIR": "/tmp/triton",

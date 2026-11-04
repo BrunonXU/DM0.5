@@ -16,9 +16,9 @@ source "$SCRIPT_DIR/lib/common.sh"
 
 POLICY_TRANSPORT="${NEWLORA_RTC_TRANSPORT:-websocket-binary}"
 if [[ "$POLICY_TRANSPORT" == "websocket-binary" ]]; then
-  POLICY_ENDPOINT="${NEWLORA_RTC_ENDPOINT:-ws://10.130.153.114:7893/process_frame}"
+  POLICY_ENDPOINT="${NEWLORA_RTC_ENDPOINT:-ws://192.0.2.1:7893/process_frame}"
 elif [[ "$POLICY_TRANSPORT" == "http-multipart-json" ]]; then
-  POLICY_ENDPOINT="${NEWLORA_RTC_ENDPOINT:-http://10.130.153.114:7893/process_frame}"
+  POLICY_ENDPOINT="${NEWLORA_RTC_ENDPOINT:-http://192.0.2.1:7893/process_frame}"
 else
   echo "STOP: NEWLORA_RTC_TRANSPORT必须是http-multipart-json或websocket-binary" >&2
   exit 2

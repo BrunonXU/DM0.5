@@ -27,7 +27,7 @@ finally:
     gdk.gdk_release()
 ```
 
-`source /home/agi/app/env.sh`只准备动态库、`PYTHONPATH`和配置路径，不等于
+`source /home/user/app/env.sh`只准备动态库、`PYTHONPATH`和配置路径，不等于
 `gdk_init()`。
 
 ## Robot状态

@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import numpy as np
 import pytest
-from test_f1_numerical import setup
+from legacy_home_setup import setup, numerical_setup
 from f1dagger.contract import ARM_NAMES, home_target
 from f1dagger.robot_io import CollisionGate
 

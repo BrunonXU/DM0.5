@@ -14,7 +14,7 @@ related: []
 
 # DM0.5 × G2 经验与踩坑记录（迁移来源）
 
-> 本文完整保留原始混合记录。新增训练事故写入 [`../../training/incidents/`](../../training/incidents/)，通用推导进入 [`../../core/`](../../core/) 或 [`../../robot/`](../../robot/)。
+> 本文完整保留原始混合记录。新增训练事故写入 [`../../training/incidents/`](../../training/incidents)，通用推导进入 [`../../core/`](../../core) 或 [`../../robot/`](../../robot)。
 
 更新时间：2026-07-28
 
@@ -109,7 +109,7 @@ RTX 6000D的计算能力和FlashAttention支持应通过实际镜像验证。项
 ### 原因与处理
 
 GVFS是用户会话挂载，不等于服务器全局挂载。CIFS认证需要正确区分用户名和
-域；本环境使用工号作为username、`huaqin.com`作为domain。挂载成功后保持
+域；本环境使用工号作为username、`company.example.invalid`作为domain。挂载成功后保持
 只读，并先核对三个源文件的精确字节数。
 
 ### 安全
@@ -271,7 +271,7 @@ RTX 6000D hardware limit: 101,376 bytes
 增加GPU数量、减少batch size或释放其他卡都不会提高单个SM的硬件上限。
 
 该错误已在固定digest的官方镜像
-`sha256:60a754dce047fbef40ab7d3a160fd82ccfbf5fa0509d862b6702311499dfbd4d`
+`sha256:REDACTED_HOST_FINGERPRINT`
 中原样复现；自建FA2镜像也得到相同错误。因此不能把原因归到项目自编译的
 FlashAttention wheel，也不能通过“换回官方Docker”直接解决Flex backward。
 

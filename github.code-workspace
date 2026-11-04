@@ -1,0 +1,39 @@
+{
+  "folders": [
+    {
+      "name": "Projects",
+      "path": "."
+    },
+    {
+      "name": "DM0.5 历史任务",
+      "path": "DM0.5"
+    },
+    {
+      "name": "G2 历史运行",
+      "path": "g2_robot"
+    },
+    {
+      "name": "Whereweare 已搁置",
+      "path": "Whereweare"
+    },
+    {
+      "name": "工具源码",
+      "path": "tools"
+    },
+    {
+      "name": "OpenPI",
+      "path": "PI0.5"
+    },
+    {
+      "name": "RLinf",
+      "path": "RLinf"
+    },
+    {
+      "name": "LeRobot",
+      "path": "third_party/lerobot"
+    }
+  ],
+  "settings": {
+    "git.ignoreLimitWarning": true
+  }
+}

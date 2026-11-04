@@ -1,6 +1,7 @@
 """Standalone installation paths shared by the gateway and its child processes."""
 from pathlib import Path
 import json
+import ipaddress
 import os
 import string
 
@@ -31,7 +32,7 @@ def installation_environment(runtime=None):
                 'F1_CONSOLE_PYTHON', 'F1_RECORDING_PYTHON', 'PICO_UPPER_CMEEL_LIB',
                 'PICO_UPPER_SDK_PYTHON_PATH', 'PICO_UPPER_SDK_LIB',
                 'RMW_IMPLEMENTATION', 'ROS_DOMAIN_ID', 'CYCLONEDDS_URI',
-                'ROS_AUTOMATIC_DISCOVERY_RANGE', 'F1_CONSOLE_PORT'):
+                'ROS_AUTOMATIC_DISCOVERY_RANGE', 'F1_CONSOLE_PORT', 'F1_SITE_PATH'):
         if key in os.environ:
             values[key] = os.environ[key]
     return values
@@ -46,8 +47,46 @@ def profile_path():
     return Path(installation_environment()['F1_PROFILE_PATH']).expanduser().resolve()
 
 
+def _site_ipv4(value):
+    if not isinstance(value, str):
+        raise ValueError('Invalid robot IPv4 address')
+    address = ipaddress.IPv4Address(value)
+    if address.is_unspecified or address.is_multicast or int(address) == 0xffffffff:
+        raise ValueError('Use a reachable robot IPv4 address')
+    return str(address)
+
+
+def console_allowed_hosts(profile, port):
+    """Explicit primary/backup addresses; each HTTP request remains same-origin."""
+    addresses = ('127.0.0.1', 'localhost', profile['ip'], *profile.get('backup_ips', []))
+    return {f'{address}:{port}' for address in addresses}
+
+
 def read_profile(path=None):
     profile = json.loads(Path(path or profile_path()).read_text())
+    # Display/network changes must not rewrite the audited robot profile or its
+    # raw-file SHA used by existing recordings and Replay. No control fields
+    # are accepted here; old installations without this file retain behavior.
+    site_path = os.environ.get('F1_SITE_PATH')
+    if site_path:
+        site_file = Path(site_path).expanduser()
+        if site_file.is_symlink() or not site_file.is_file() or site_file.stat().st_size > 16384:
+            raise ValueError('Invalid site configuration file')
+        site = json.loads(site_file.read_text())
+        required = {'schema', 'label', 'ip'}
+        if not isinstance(site, dict) or not required <= set(site) or set(site) - required - {'backup_ips'} or site['schema'] != 'f1_site_v1':
+            raise ValueError('Site configuration accepts only schema, label, ip and optional backup_ips')
+        label = site['label']
+        if not isinstance(label, str) or not label.strip() or len(label) > 80 or any(ord(c) < 32 or ord(c) == 127 for c in label):
+            raise ValueError('Invalid robot display name')
+        address = _site_ipv4(site['ip'])
+        backups = site.get('backup_ips', [])
+        if not isinstance(backups, list) or len(backups) > 4:
+            raise ValueError('backup_ips must be a list of at most four robot IPv4 addresses')
+        backups = [_site_ipv4(value) for value in backups]
+        if len(set(backups)) != len(backups) or address in backups:
+            raise ValueError('Primary and backup robot IPv4 addresses must be distinct')
+        profile.update(label=label.strip(), ip=address, backup_ips=backups)
     for key in ('data_path', 'command_monitor_binary', 'startup_script', 'ec_startup_script'):
         if profile.get(key):
             profile[key] = expand_path(profile[key])

@@ -1,0 +1,11 @@
+{
+  "schema": "f1_anchor_action_review_v1",
+  "contract": "f1_upper_16d_v1",
+  "manifest_sha256": "",
+  "human_review_accepted": false,
+  "reviewer": "",
+  "accepted_interventions": [],
+  "accepted_time_ranges_ns": [],
+  "task_success": false,
+  "notes": "Unfilled template. Copy outside the immutable raw recording and fill only after reviewing that exact recording. Time ranges are inclusive host-monotonic nanoseconds, not wall-clock times or relative seconds."
+}

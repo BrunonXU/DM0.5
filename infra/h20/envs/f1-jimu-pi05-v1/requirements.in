@@ -1,0 +1,85 @@
+# Candidate for H20 F1_ComplexyToys OpenPI_RLinf SFT preparation, 2026-10-15.
+# Python 3.11.14; Linux x86_64. Resolve to a hash-locked requirements file before
+# installation. Use the official cu128 index ONLY for torch/torchvision wheels.
+# RLinf source snapshot is installed separately with --no-deps; do not run
+# RLinf's broad embodied installer or install the separate PI0.5 checkout here.
+# This is an environment candidate, not a validated F1 reader/training recipe.
+
+# GPU runtime: aligned with rlinf-openpi's declared torch requirement.
+torch @ https://download.pytorch.org/whl/cu128/torch-2.7.1%2Bcu128-cp311-cp311-manylinux_2_28_x86_64.whl#sha256=c301dc280458afd95450af794924c98fe07522dd148ff384739b810e3e3179f2
+torchvision @ https://download.pytorch.org/whl/cu128/torchvision-0.22.1%2Bcu128-cp311-cp311-manylinux_2_28_x86_64.whl#sha256=92568ac46b13a8c88b61589800b1b9c4629be091ea7ce080fc6fc622e11e0915
+torchcodec==0.3.0
+
+# RLinf OpenPI fork. Its dependency rlinf-transformer-openpi supplies the
+# transformers import package. NEVER also install stock transformers here.
+rlinf-openpi==0.1.1
+rlinf-transformer-openpi==4.53.2
+tokenizers==0.21.4
+huggingface-hub==0.35.3
+
+# Conservative OpenPI numerical stack; matches relevant PI0.5 uv.lock pins.
+numpy==1.26.4
+jax[cuda12]==0.5.3
+jaxlib==0.5.3
+flax==0.10.2
+orbax-checkpoint==0.11.13
+equinox==0.12.2
+optax==0.2.4
+chex==0.1.90
+ml-dtypes==0.4.1
+tensorstore==0.1.74
+jaxtyping==0.2.36
+beartype==0.19.0
+ml-collections==1.0.0
+numpydantic==1.6.9
+tyro==1.0.13
+
+# Training loader baseline: v2.1 only. v3 inspection uses the separate data
+# environment because rerun-sdk >=0.24 forces NumPy2, conflicting with OpenPI.
+lerobot==0.3.3
+datasets==3.6.0
+diffusers==0.35.2
+gymnasium==0.29.1
+draccus==0.10.0
+opencv-python==4.11.0.86
+opencv-python-headless==4.11.0.86
+av==14.2.0
+pyarrow==20.0.0
+pandas==2.2.3
+
+# RLinf scheduler/FSDP/SFT imports and local diagnostics. Transitive versions
+# are resolved and then locked; no reasoning/simulator/robot-driver bundles.
+ray[default]==2.47.0
+hydra-core==1.3.2
+omegaconf==2.3.0
+accelerate==1.7.0
+torchdata==0.11.0
+einops==0.8.1
+safetensors==0.5.3
+timm==1.0.19
+scipy==1.15.3
+wandb==0.21.4
+tensorboard==2.20.0
+sortedcontainers==2.4.0
+icmplib==3.0.4
+nvitop>=1.5,<2
+pybind11>=2.13,<3
+setuptools>=71,<75.9
+ninja>=1.11,<2
+pytest>=8.3,<9
+rich>=14,<15
+imageio[ffmpeg]>=2.36,<3
+psutil>=6,<8
+packaging>=24.2,<26
+
+# Satisfy RLinf's core package metadata and provide task-local maintenance tools.
+debugpy>=1.8,<2
+gsutil>=5.31,<6
+ruff>=0.12,<0.13
+pre-commit>=4,<5
+liger-kernel>=0.5,<0.6
+swanlab>=0.7,<1
+uv==0.13.1
+pip>=25,<26
+wheel>=0.45,<0.46
+cmake>=3.30,<4

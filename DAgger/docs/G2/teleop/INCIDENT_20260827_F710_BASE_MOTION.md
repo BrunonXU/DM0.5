@@ -16,12 +16,12 @@ G2 底盘直接运动。预期只读取手柄事件，不应产生任何机器�
 3. G2 从开机起常驻厂商进程：
 
    ```text
-   /home/agi/app/lib/teleop_it/teleop_main_node
-   /home/agi/app/bin/remote_hal/pico_adapter
+   /home/user/app/lib/teleop_it/teleop_main_node
+   /home/user/app/bin/remote_hal/pico_adapter
    ```
 
 4. 两个进程分别位于 `vr_control.service`和`remote_hal.service` cgroup；由厂商 launcher
-   按 `/home/agi/app/conf/manifest.d/base-remote.json`启动。
+   按 `/home/user/app/conf/manifest.d/base-remote.json`启动。
 5. `teleop_main_node`二进制包含并使用：
 
    ```text
@@ -32,7 +32,7 @@ G2 底盘直接运动。预期只读取手柄事件，不应产生任何机器�
    ---Chassis is controlling---
    ```
 
-6. `/home/agi/app/config/user_info.json`存在原厂 joystick 底盘遥控模式配置。
+6. `/home/user/app/config/user_info.json`存在原厂 joystick 底盘遥控模式配置。
 7. 系统日志确认 F710 在 XInput 下由 `xpad`注册；同一 `/dev/input`设备可以被多个进程
    同时读取，本项目的只读打开不会排斥厂商进程。
 

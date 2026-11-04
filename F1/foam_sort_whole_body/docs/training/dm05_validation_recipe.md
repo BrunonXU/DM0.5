@@ -95,10 +95,10 @@ python -m f1_training.validation compare --reports REPORT_A.json REPORT_B.json -
 
 ### 批量评估、复核与留档
 
-在6000D既有DM0.5容器终端，项目按主机绝对路径挂载、工作目录为`/home/xza_100850113/projects`：
+在6000D既有DM0.5容器终端，项目按主机绝对路径挂载、工作目录为`/home/user/projects`：
 
 ```bash
-export PYTHONPATH=/home/xza_100850113/projects/F1/foam_sort_whole_body/models/DM0.5:/home/xza_100850113/projects/DM0.5/opendm
+export PYTHONPATH=/home/user/projects/F1/foam_sort_whole_body/models/DM0.5:/home/user/projects/DM0.5/opendm
 export MPLCONFIGDIR=/tmp/f1-matplotlib
 # 实际路径由正式run填写；这里不占用GPU或启动任何任务。
 python -m f1_training.validation sweep --release BOUND_RELEASE.json --selection pass_b.json --checkpoints CHECKPOINT_A CHECKPOINT_B --output SWEEP_DIR --device cuda:0

@@ -157,3 +157,20 @@ def test_policy_waits_for_post_boundary_state_even_when_images_are_new(stage, st
         assert e.supervisor.state is HILState.POLICY and e.ready is not None
     finally:
         e.close()
+
+
+@pytest.mark.parametrize('error', ['ConnectionClosedError: no close frame received or sent',
+                                 'PermissionError: telemetry directory unavailable'])
+def test_failed_transport_response_preserves_error_without_accepting_actions(error):
+    policy=HttpPolicy({'endpoint':'http://127.0.0.1:1'}, 'diagnostic test', lambda a: None)
+    with pytest.raises(ValueError, match='policy request failed \\(unverified response\\)') as caught:
+        policy.validate_identity({'success':False,'error':error,'actions':[[0.]*16]},
+                                 {'contract':CONTRACT}, observation())
+    assert error in str(caught.value)
+
+
+def test_unidentified_success_still_rejected_after_error_reporting_fix():
+    policy=HttpPolicy({'endpoint':'http://127.0.0.1:1'}, 'diagnostic test', lambda a: None)
+    with pytest.raises(ValueError, match='policy identity type mismatch: contract'):
+        policy.validate_identity({'success':True,'actions':[[0.]*16]},
+                                 {'contract':CONTRACT}, observation())

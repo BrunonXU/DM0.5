@@ -10,6 +10,19 @@ def crossings(series):
             if (old >= 50) != (v >= 50)]
 
 
+def arm_summary(channels):
+    """Equal joint weights: more receipts must not give a joint more influence."""
+    valid = [c for c in channels if c['metrics'] and c['matched'] >= 2]
+    metrics = None
+    if valid:
+        metrics = dict(mean_abs=sum(c['metrics']['mean_abs'] for c in valid)/len(valid),
+                       rms=math.sqrt(sum(c['metrics']['rms']**2 for c in valid)/len(valid)),
+                       max_abs=max(c['metrics']['max_abs'] for c in valid))
+    return dict(unit='deg', joints_compared=len(valid), joints_total=len(channels),
+                complete=len(valid) == len(channels), metrics=metrics,
+                weighting='equal_joint_weight; minimum_two_matched_samples_per_joint')
+
+
 def compare(segment, samples, *, max_gap_s, execution_status):
     channels = []
     source = segment.recording.state_series
@@ -18,6 +31,8 @@ def compare(segment, samples, *, max_gap_s, execution_status):
         stamps = [t for t, _ in original]
         current = []
         for sample in samples:
+            if not segment.recording.valid_mask[j]:
+                continue
             t = sample['feedback_times_s'][j]
             if 0 <= t <= segment.duration and (not current or t > current[-1][0]):
                 current.append((t, sample['actual'][j]))
@@ -41,6 +56,7 @@ def compare(segment, samples, *, max_gap_s, execution_status):
                           max_abs=abs(worst[1]), max_at_s=worst[0],
                           compared_span_s=matched[-1][0]-matched[0][0])
         row = dict(name=name, unit='deg' if j < 14 else '%', matched=len(matched),
+                   hardware_present=segment.recording.valid_mask[j],
                    missing=missing, original_samples=sum(0 <= t <= segment.duration for t in stamps),
                    replay_samples=len(current), metrics=metric,
                    # Downsample the plot only; metrics use every captured sample.
@@ -48,7 +64,7 @@ def compare(segment, samples, *, max_gap_s, execution_status):
         if j >= 14:
             a = crossings([(t,v) for t,v in original if 0 <= t <= segment.duration])
             b = crossings(current)
-            same = [d for _,d in a] == [d for _,d in b]
+            same = segment.recording.valid_mask[j] and [d for _,d in a] == [d for _,d in b]
             row['crossings_50_percent'] = dict(original_count=len(a), replay_count=len(b),
                     comparable=same, deltas_s=[y[0]-x[0] for x,y in zip(a,b)] if same else None)
         channels.append(row)
@@ -56,4 +72,6 @@ def compare(segment, samples, *, max_gap_s, execution_status):
                 basis='per_channel_host_receipt_time_relative_to_first_command; linear_interpolation; no_time_warp',
                 sampling='feedback captured up to 50Hz; repeated receipts excluded',
                 max_interpolation_gap_s=max_gap_s, channels=channels,
+                arms_summary={key:arm_summary(rows) for key, rows in (
+                    ('both', channels[:14]), ('left', channels[:7]), ('right', channels[7:14]))},
                 verdict='偏差统计，不自动判定硬件合格；中断记录仅代表已执行部分')

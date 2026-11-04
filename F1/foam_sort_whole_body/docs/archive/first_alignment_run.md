@@ -140,7 +140,7 @@ log 时间是记录接收时间。本次完成了时间索引和异常筛选，�
 依赖版本见 [requirements-audit.txt](../../requirements-audit.txt)，当前解释器 `/tmp/f1-foam-audit-venv/bin/python` 是临时环境，跨重启需重新确认存在。
 
 ```bash
-cd /home/xza_100850113/projects/F1/foam_sort_whole_body
+cd /home/user/projects/F1/foam_sort_whole_body
 ./scripts/run_cleaning_v1.sh all
 ```
 

@@ -1,0 +1,27 @@
+/* Replay layout only; colors, type, buttons and corners remain the v32 styles. */
+.motion-replay .replay-compact-heading { margin-bottom: 14px; }
+.motion-replay .replay-compact-heading > div { display: flex; align-items: baseline; gap: 8px 16px; flex-wrap: wrap; }
+.motion-replay .replay-control-line { display: flex; align-items: center; justify-content: space-between; gap: 16px 24px; flex-wrap: wrap; }
+.motion-replay .replay-summary { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 18px; flex: 1 1 260px; min-width: 0; }
+.motion-replay .replay-statistics { margin: 0; }
+.motion-replay .replay-statistics > span { white-space: nowrap; }
+.motion-replay .replay-buttons { margin: 0; align-items: stretch; gap: 8px; }
+.motion-replay [data-r-start-task] { min-width: 120px; }
+.motion-replay .replay-force { color: #96612a; border-color: #c8a16f; background: #fcf5e9; }
+.motion-replay .replay-force:hover:enabled { background: #f5ead8; }
+.motion-replay .replay-force-note { margin: 10px 0 0; color: #8b6c44; font-size: 13px; text-align: right; }
+.motion-replay [data-r-status]:not(:empty) { margin-top: 16px; }
+.motion-replay [data-r-more] > summary { cursor: pointer; }
+.motion-replay .replay-blockers { margin-top: 4px; }
+.motion-replay .replay-result-heading h4 { margin: 0; }
+.motion-replay .replay-result .table-scroll { overscroll-behavior: contain; }
+@media (max-width: 700px) {
+  .motion-replay .replay-control-line { align-items: stretch; }
+  .motion-replay .replay-summary { flex-basis: 100%; }
+  .motion-replay .replay-buttons { display: grid; grid-template-columns: minmax(0, 1fr) auto; width: 100%; }
+  .motion-replay [data-r-start-task], .motion-replay [data-r-align] { grid-column: 1; }
+  .motion-replay [data-r-stop] { grid-column: 2; grid-row: 1 / 3; }
+  .motion-replay .replay-progress-heading { flex-wrap: wrap; }
+  .motion-replay .replay-chart-legend { gap: 8px 16px; }
+  .motion-replay .replay-chart-legend small { flex-basis: 100%; }
+}

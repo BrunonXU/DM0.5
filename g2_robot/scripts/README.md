@@ -1,7 +1,7 @@
 # G2现场脚本
 
-所有脚本自动加载`/home/agi/app/env.sh`。Shadow/回退仍可连接7892 HTTP；正式Sync固定连接
-GPU7上的`ws://10.130.153.114:7892/process_frame`并使用native JPEG/PNG binary WebSocket。
+所有脚本自动加载`/home/user/app/env.sh`。Shadow/回退仍可连接7892 HTTP；正式Sync固定连接
+GPU7上的`ws://192.0.2.1:7892/process_frame`并使用native JPEG/PNG binary WebSocket。
 新产物只写入项目`logs/`分类目录。
 可通过环境变量`POLICY_ENDPOINT`显式覆盖服务地址。
 

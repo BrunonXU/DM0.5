@@ -1,0 +1,412 @@
+{
+  "items": [
+    {
+      "id": "f1-home",
+      "kind": "markdown",
+      "title": "F1积木：从这里开始",
+      "description": "只看当前需要知道的结论，再选择状态、现场命令或训练与推理配方。",
+      "category": "01 · 先看这里",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/README.md"
+    },
+    {
+      "id": "harness-implementation",
+      "kind": "markdown",
+      "title": "HARNESS：实施方案与验收门槛",
+      "description": "源码与文档基础上的分阶段实施方案；只读、几何和最小闭环分别验收，当前不代表机器人能力已实现。",
+      "category": "01 · 先看这里",
+      "source": "/home/user/projects/HARNESS/docs/IMPLEMENTATION_PLAN.md"
+    },
+    {
+      "id": "harness-upstream-reuse",
+      "kind": "markdown",
+      "title": "HARNESS：上游复用与适配边界",
+      "description": "核对上游来源、固定身份和已有 F1 能力的复用范围，区分源码检出与运行验收。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/HARNESS/docs/UPSTREAM_REUSE.md"
+    },
+    {
+      "id": "f1-status",
+      "kind": "markdown",
+      "title": "F1当前进度与下一步",
+      "description": "已完成、待现场验证和接下来要决定什么，以这一页为准。",
+      "category": "01 · 先看这里",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/STATUS.md"
+    },
+    {
+      "id": "f1-rlt-controls",
+      "kind": "html",
+      "title": "V47操作与四条异常短提示",
+      "description": "请评分／连接中断／动作受限／系统故障。正常六种音色保留；详细原因与恢复步骤看终端。",
+      "category": "01 · 先看这里",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/inference/visualizations/rlt-controls/index.html"
+    },
+    {
+      "id": "f1-rlt-review-preview",
+      "kind": "html",
+      "title": "RLT数据审核布局候选",
+      "description": "用户决定暂不修改正式数据页；仅保留候选示意，不修改数据。",
+      "category": "04 · 历史与候选",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/inference/visualizations/rlt-review-preview/index.html"
+    },
+    {
+      "id": "f1-rlt-continuity-v45",
+      "kind": "markdown",
+      "title": "V45连续性与可信RLT整改",
+      "description": "控制已部署、数据重建与清洁对照完成；Windows、真机对照和连续采集待验。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/inference/experiments/20261103-continuity-validation-V44.md"
+    },
+    {
+      "id": "f1-checkpoint-comparison",
+      "kind": "markdown",
+      "title": "F1模型实验表：历史基线与Full选模",
+      "description": "旧Full与新DAgger均未选出完整任务冠军；区分历史对照、首轮失败证据及部署状态。",
+      "category": "01 · 先看这里",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/Eval/CHECKPOINT_COMPARISON.md"
+    },
+    {
+      "id": "f1-terminal-identity-v43",
+      "kind": "markdown",
+      "title": "F1 V43：终端实际版本与两条暂停复核",
+      "description": "局部RLT已显示实际控制版本和每段actor；Windows包待安装，通信抖动与ACK重连仍待修。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/inference/experiments/20261103-terminal-identity-V43.md"
+    },
+    {
+      "id": "f1-rlt-rtc-v42",
+      "kind": "markdown",
+      "title": "F1 V42：暂停提示、RTC时序与训练撤回",
+      "description": "核对这条为何暂停、是否入训、撤回结果与四步进展；连续性和任务效果仍待现场。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/inference/experiments/20261103-rlt-rtc-V42.md"
+    },
+    {
+      "id": "f1-rlt-repair-v39",
+      "kind": "markdown",
+      "title": "F1 V39：首次START恢复、姿态偏转与加速对照",
+      "description": "START修复已部署；动作迁移和三组训练已完成，Q未改善，连续RLT仍待完成。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/inference/experiments/20261102-rlt-repair-V39.md"
+    },
+    {
+      "id": "f1-latest-rollout-20261102",
+      "kind": "markdown",
+      "title": "F1最新一条：三次START、数据边界与2192更新",
+      "description": "原件完整、人工放置成功；迟到↑终点已重裁，V39启动修复已部署，训练效果未证明。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/inference/experiments/20261102-latest-rollout-audit.md"
+    },
+    {
+      "id": "f1-session-unicode-v38",
+      "kind": "markdown",
+      "title": "F1会话V38：中文乱码与日志文件锁",
+      "description": "原生Unicode显示、逐文件同步隔离。Windows包已上传待安装，机器人保持V37。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/inference/experiments/20261102-session-unicode-V38.md"
+    },
+    {
+      "id": "f1-session-audio-v37",
+      "kind": "markdown",
+      "title": "F1 V37：终端卡顿、手柄通道与提示音",
+      "description": "START已收到但输入失鲜；独立手柄SSH、非阻塞显示、音频常驻。机器人已部署，Windows待安装。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/inference/experiments/20261102-session-audio-V37.md"
+    },
+    {
+      "id": "f1-operator-session-v36",
+      "kind": "markdown",
+      "title": "F1会话V36：Ctrl+C退出与连接日志自动同步",
+      "description": "历史会话修复；现场日志不完整，已由V37独立手柄SSH和非阻塞显示替代。",
+      "category": "04 · 历史记录",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/inference/experiments/20261102-operator-session-V36.md"
+    },
+    {
+      "id": "f1-rlt-framework-v34",
+      "kind": "markdown",
+      "title": "F1 RTC＋局部RLT V34：执行与学习框架整改",
+      "description": "执行末点、局部优先上传和监控已部署；四组BC／Q诊断与尚未完成的训练动作语义迁移。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/inference/experiments/20261102-framework-repair.md"
+    },
+    {
+      "id": "f1-two-rollouts-20261102",
+      "kind": "markdown",
+      "title": "11月2日两条RLT：上翘轨迹与真实续训",
+      "description": "两条184个有效转移已自动训练到1776／444；发现C16未跟到末点即保持，区分执行偏离、离线效果与监控问题。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/inference/experiments/20261102-two-rollouts.md"
+    },
+    {
+      "id": "f1-rlt-dagger",
+      "kind": "markdown",
+      "title": "RLT人工纠正试训：步数、指标与停止依据",
+      "description": "先诊断五条critic高估，再复用九条成功纠正；解释独立验证、有限预算和停止条件。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/training/experiments/20261026-rlt-dagger-success.md"
+    },
+    {
+      "id": "f1-rlt-local-v2",
+      "kind": "markdown",
+      "title": "局部 RLT v2：新操作与异步训练",
+      "description": "局部协议、Y崩溃修复与音效已部署；重启后的手臂跟随待现场，后台学习器暂停。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/inference/experiments/20261027-rlt-local-v2.md"
+    },
+    {
+      "id": "f1-rlt-runtime",
+      "kind": "markdown",
+      "title": "RLT正式推理接入与异步下一步",
+      "description": "BC400固定actor的局部C16接入、部署验收边界，以及实际经验、奖励和官方异步版本同步的推进顺序。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/inference/experiments/20261026-rlt-runtime.md"
+    },
+    {
+      "id": "f1-rlt-b1250",
+      "kind": "markdown",
+      "title": "B1250冻结RLT：特征、训练与现场门槛",
+      "description": "冻结token与五条离线小头试训已完成；保留首轮高估证据，人工纠正后续见新配方。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/training/experiments/20261026-rlt-frozen-b1250.md"
+    },
+    {
+      "id": "v1-dagger-eval",
+      "kind": "markdown",
+      "title": "V1＋DAgger首轮真机：失败定位与下一步",
+      "description": "四条无人工协助：250边界拒绝，500／1K停滞，625错位释放；三视图、动作计划与训练监督。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/Eval/V1_DAgger/README.md"
+    },
+    {
+      "id": "v1-dagger-stage-sampling",
+      "kind": "markdown",
+      "title": "DAgger松手问题：采样配方对照",
+      "description": "同一1K断点、同数据各续250步，区分多训练与阶段采样的收益；兼查提前误松和完整流程退化。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/training/experiments/20261022-stage-sampling.md"
+    },
+    {
+      "id": "f1-release-supervision",
+      "kind": "markdown",
+      "title": "松手为何犹豫：监督时序与静止等待",
+      "description": "八个真实释放事件逐帧核对；区分标签错位、看不见的等待计时和训练拟合能力。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/DataPrehandle/reports/20261023-release-supervision.md"
+    },
+    {
+      "id": "f1-manual-demo-audit",
+      "kind": "markdown",
+      "title": "人工示教暂停恢复：同条录制与RB操作",
+      "description": "三条旧录制已删除；同条暂停恢复已部署，ARM与真实反馈零输出通过，现场恢复待验。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/DataPrehandle/reports/20261023-manual-demo.md"
+    },
+    {
+      "id": "v1-fullsft-eval",
+      "kind": "markdown",
+      "title": "V1 FullSFT真机复盘与DAgger选模",
+      "description": "旧Full15次真实会话、13条现场反馈；孔口停滞、释放与回位；新模型成绩见独立DAgger复盘。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/Eval/V1fullSFT/README.md"
+    },
+    {
+      "id": "f1-v1-summary",
+      "kind": "markdown",
+      "title": "V1一页总结：训练结论与下一阶段",
+      "description": "保留15条成功示教，集中补孔口纠正、释放和回位停稳；阶段快照。",
+      "category": "01 · 先看这里",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/V1_Summry.md"
+    },
+    {
+      "id": "f1-startup",
+      "kind": "markdown",
+      "title": "F1现场流程、推理命令与手柄教程",
+      "description": "连续分条：START开始/接管，↑保存；Windows更新、完整三端命令、摇操与现场验收。",
+      "category": "01 · 先看这里",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/inference/STARTUP.md"
+    },
+    {
+      "id": "training-recipe",
+      "kind": "markdown",
+      "title": "当前训练recipe",
+      "description": "训练合同、图像处理、动作表示和已经确认的纠错项。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/TRAINING_RECIPE.md"
+    },
+    {
+      "id": "v1-dagger-fullsft",
+      "kind": "markdown",
+      "title": "V1＋DAgger：标准布局纠正训练配方",
+      "description": "V1与九条纠正75∶25混采、单臂Full；已到1K停查，四份候选包待评估。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/V1_DAgger_FullSFT.md"
+    },
+    {
+      "id": "rtc-hil-acceptance",
+      "kind": "markdown",
+      "title": "RTC-HIL接入与首条纠正验收",
+      "description": "真实接管交还与首条700窗reader通过；原有音效补接及后续逐条审核边界。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/inference/experiments/20261021-rtc-hil.md"
+    },
+    {
+      "id": "hil-audio-review",
+      "kind": "html",
+      "title": "HIL人工介入：四种音效试听",
+      "description": "点击比较四个接管音，连听策略开始、人工介入、交还生效；仅浏览器试听。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/DataPrehandle/visualizations/20261021-hil-audio/index.html"
+    },
+    {
+      "id": "f1-inference",
+      "kind": "markdown",
+      "title": "F1当前推理：RTC、延迟与执行平滑",
+      "description": "当前Full/H20与保留基线的参数、已实施加速、真实延迟口径和平滑细节。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/INFERENCE_RECIPE.md"
+    },
+    {
+      "id": "f1-rlinf-offline",
+      "kind": "markdown",
+      "title": "RLinf离线优化：哪些值得替换？",
+      "description": "当前分段延迟、组件同条件对照与YES/NO结论；保留现有框架，通过项集中现场验收。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/inference/experiments/20261023-rlinf-offline.md"
+    },
+    {
+      "id": "v1-fullsft",
+      "kind": "markdown",
+      "title": "V1_FullSFT：已执行配方与评估计划",
+      "description": "同一份V1、Home与短窗口监督、全参数训练和global128；已到1K评估点。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/V1_FullSFT.md"
+    },
+    {
+      "id": "full-1k-review",
+      "kind": "markdown",
+      "title": "Full 1K复盘：是否继续训练",
+      "description": "训练曲线、固定生成评估及证据边界，解释为何先比较625与1K真机表现。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/training/experiments/20261020-v1-fullsft.md"
+    },
+    {
+      "id": "f1-release-diagnosis",
+      "kind": "markdown",
+      "title": "孔口不松手、回位又走偏：RTC还是模型？",
+      "description": "释放与回位分阶段诊断：396次释放＋48次回位对照，解释如何补纠正和终点保持。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/Eval/V1_FullSFT_20261021_ANALYSIS.md"
+    },
+    {
+      "id": "f1-dagger-plan",
+      "kind": "markdown",
+      "title": "下一批怎么采：完整示教与DAgger纠正",
+      "description": "1K采集基线、布局变化、接管入口的验收，以及真实回位保持与标签审核。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/DataPrehandle/DAgger_V1_PLAN.md"
+    },
+    {
+      "id": "f1-hil-agent",
+      "kind": "markdown",
+      "title": "交给Agent：RTC与HIL-DAgger接入",
+      "description": "实施范围、控制权与标签合同、首条数据验收和完整交付要求。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/DataPrehandle/HIL_DAGGER_AGENT_PROMPT.md"
+    },
+    {
+      "id": "f1-eval",
+      "kind": "markdown",
+      "title": "真机评测：结论与记录",
+      "description": "按阶段比较模型，区分用户现场反馈、telemetry证据和待验证推断。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/Eval/README.md"
+    },
+    {
+      "id": "rtc-speed",
+      "kind": "html",
+      "title": "1.2倍速怎样让F1更早完成任务？",
+      "description": "播放同路径倍速动画，比较执行相位、分阶段提速、RTC预算与任务用时。",
+      "category": "03 · 按需学原理",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/inference/visualizations/rtc-speed.html"
+    },
+    {
+      "id": "action-windows",
+      "kind": "html",
+      "title": "一帧观测，怎样变成50步动作？",
+      "description": "拖动真实V1时间起点，查看动作窗口、尾部不足与96门槛。",
+      "category": "03 · 按需学原理",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/artifacts/20261020-window-walkthrough/window-explorer.html"
+    },
+    {
+      "id": "window-walkthrough",
+      "kind": "markdown",
+      "title": "从真实数据理解H50和96窗口",
+      "description": "从一组图片到每一步动作来源，分清时序、标签和训练样本。",
+      "category": "03 · 按需学原理",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/DataPrehandle/reports/20261020-window-walkthrough.md"
+    },
+    {
+      "id": "reset-and-tail",
+      "kind": "markdown",
+      "title": "不能复位，是因为没学到末尾吗？",
+      "description": "区分人工撤离、自动Home和短窗口的闭环覆盖问题。",
+      "category": "03 · 按需学原理",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/DataPrehandle/reports/20261020-reset-and-tail-windows.md"
+    },
+    {
+      "id": "preprocessing",
+      "kind": "markdown",
+      "title": "数据预处理SOP",
+      "description": "原始录制如何经过时间对齐、质量筛选和动作适配进入模型。",
+      "category": "03 · 按需学原理",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/DataPrehandle/README.md"
+    },
+    {
+      "id": "training-50k",
+      "kind": "markdown",
+      "title": "旧V1 LoRA：训练到50K还在进步吗？",
+      "description": "历史LoRA曲线与过拟合讨论；当前Full配方和进度另见前面的配方与结论。",
+      "category": "04 · 历史复盘",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/training/experiments/20261020-v1-50k-review-full-plan.md"
+    },
+    {
+      "id": "f1-data-design",
+      "kind": "html",
+      "title": "F1数据页候选：视频回看与统一Replay",
+      "description": "桌面交互候选：MP4优先、整体关节概览、审核与时间点备注、各来源Replay入口。仅样例，无机器人控制。",
+      "category": "05 · 界面候选",
+      "source": "/home/user/Tools/WhyHow/content/f1-data-design/index.html"
+    },
+    {
+      "id": "graphify-f1-infra-review",
+      "kind": "markdown",
+      "title": "Graphify 试用：F1-infra 全项目关系与检索效果",
+      "description": "本地建图、三个真实问题与配置/HTTP边界；附查询证据和复现命令。",
+      "category": "03 · 按需学原理",
+      "source": "/home/user/Tools/WhyHow/content/graphify-f1-infra/README.md"
+    },
+    {
+      "id": "graphify-f1-infra",
+      "kind": "html",
+      "title": "F1-infra 全项目关系图",
+      "description": "Graphify 结构快照；按 Replay、视频同步、录制导出查看直接邻接关系。",
+      "category": "03 · 按需学原理",
+      "source": "/home/user/Tools/WhyHow/content/graphify-f1-infra/graph.html"
+    },
+    {
+      "id": "f1-rlt-rtc-V41",
+      "kind": "markdown",
+      "title": "RLT V41：重训、RTC与在线部署",
+      "description": "修正数据与Q重训、F1 RTC及新学习器已部署；零输出验收、无线长尾与首条真机待验。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/training/experiments/20261102-rlt-rtc-V41.md"
+    },
+    {
+      "id": "f1-rlt-decision-V40",
+      "kind": "markdown",
+      "title": "RLT V40：数据对齐、重训与计算加速",
+      "description": "真实决策重建、两条新数据、BC/Q重训对照；明确生产迁移与连续RTC尚未完成。",
+      "category": "02 · 配方与结论",
+      "source": "/home/user/projects/tasks/F1_ComplexyToys/training/experiments/20261102-rlt-decision-V40.md"
+    }
+  ]
+}

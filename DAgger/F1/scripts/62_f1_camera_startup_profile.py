@@ -13,7 +13,7 @@ from pathlib import Path
 import tempfile
 
 BRUNO_ROOT = Path('/home/user/Bruno')
-MACHINE_ID = '90429b8a96e04ef79dbc12175b538115'
+MACHINE_ID = '00000000000000000000000000000000'
 FIELDS = {'startup_script', 'startup_script_sha256'}
 
 

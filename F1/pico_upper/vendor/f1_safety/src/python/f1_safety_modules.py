@@ -434,7 +434,7 @@ if __name__ == "__main__":
     """
     快速验证：加载配置 + 预处理 URDF + 随机关节命令测试。
     运行方式：
-        cd /home/cyb/F1_robot/src/python
+        cd /home/user/F1_robot/src/python
         python3 f1_safety_modules.py [config_xml_path]
     """
     import sys

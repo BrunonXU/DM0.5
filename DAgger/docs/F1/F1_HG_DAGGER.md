@@ -1,8 +1,20 @@
 # F1-09 上肢 HG-DAgger
 
+START／→／↑／Y的控制职责保留。未↑而交还VLA或Y时，局部终态在交还前冻结，语音提醒“RLT确认按钮”，结果待审核；不再默认失败0。人工接管本身不判失败，成功标签也不自动批准全部人工尝试为专家。
+
+同会话输入短暂失鲜先保持并重新规划；HIL仍须新鲜回中和新RB，真实断线与危险候选仍需明确恢复。当前部署与Windows版本以[STATUS](STATUS.md)为准。
+
+## V45的新操作语义
+
+适用范围：2026-11-03控制V45已部署；Windows V45整包已上传待安装，现场验收待完成。历史版本说明保留，勿覆盖新客户端。
+
 开发源码入口为 `F1/src/f1dagger/`（独立发布包为 `src/f1dagger/`），复用 DAgger 的 F710 协议、接管状态机、策略 chunk 调度和异步录制。G2Teleop 与 G2 生产启动脚本未改。F1 工作台和 Pico 专用录制器不参与本流程。
 
 > 本页保留已验证的 v15 稳定入口和完整合同；三路线版本、后续记录和当前数据目录以 [STATUS](STATUS.md) / [三端操作](HIL_WORKBENCH.md) 为准。
+
+2026-10-23 工作区整理后，6000D 的 LeRobot 源码已移到 [Libraries](../../../workspace/Libraries/README.md)，导出环境使用下方新路径；绑定版本和源码内容保持原样。历史机器人发布包不随开发机目录调整。
+
+2026-11-03 网络入口更新：下面仍适用于旧 v15 的连接命令改为有线优先，Wi-Fi 保留备用；不改变该旧入口的模型、协议或发布结论。当前单窗口和持久连接设置见[Windows入口](../../F1/windows_client/README.md)，不要用本页旧 sender 覆盖新版操控包。
 
 ## v15 稳定入口与连续限位
 
@@ -67,10 +79,12 @@ Windows 与 F1 在同一现场网络时，在 PowerShell 执行：
 
 ```powershell
 cd "$HOME/DAgger-F1"
-ssh -F NUL -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=15 -o ServerAliveCountMax=3 -L 127.0.0.1:7907:127.0.0.1:7906 user@192.168.31.58
+ssh -F NUL -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=15 -o ServerAliveCountMax=3 -L 127.0.0.1:7907:127.0.0.1:7906 user@192.0.2.7
 ```
 
-输入 F1 的 user 密码后没有新输出是正常现象；此窗口就是隧道。`-F NUL` 跳过已有 SSH 配置中的无关 7890 转发，不要在用户名、下划线或 `@` 前加反斜杠。2026-10-08 已重新核对 F1 Wi-Fi 地址为 `192.168.31.58`；若不在同一网络，直连命令不能替代站点已验证的跨网 SSH 路径。
+输入 F1 的 user 密码后没有新输出是正常现象；此窗口就是隧道。`-F NUL` 跳过已有 SSH 配置中的无关 7890 转发，不要在用户名、下划线或 `@` 前加反斜杠。2026-10-08 已重新核对 F1 Wi-Fi 地址为 `192.0.2.3`；若不在同一网络，直连命令不能替代站点已验证的跨网 SSH 路径。
+
+上句 Wi-Fi 地址核对是历史记录；2026-11-03 已启用的有线地址为 `192.0.2.7`。有线不可达时，先退出旧隧道，再将 SSH／SCP 目标显式改为 `user@192.0.2.3`；运行中不自动切换。
 
 转发关系为 Windows `127.0.0.1:7907` → F1 `127.0.0.1:7906`；F1 接收端仅监听 loopback。同一台 Windows 保留一个该隧道窗口，旧隧道仍占用 7907 时应结束旧窗口后再启动。
 
@@ -80,7 +94,7 @@ ssh -F NUL -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=15 -o ServerAli
 
 ```powershell
 cd "$HOME/DAgger-F1"
-scp -F NUL user@192.168.31.58:/home/user/Bruno/DAgger/releases/20261009-f1-hgdagger-v15/DAgger/windows_client/scripts/03_windows_f1_sender.py ./scripts/03_windows_f1_sender.py
+scp -F NUL user@192.0.2.7:/home/user/Bruno/DAgger/releases/20261009-f1-hgdagger-v15/DAgger/windows_client/scripts/03_windows_f1_sender.py ./scripts/03_windows_f1_sender.py
 if ($LASTEXITCODE -ne 0) { throw "F1 sender 更新失败，请保留报错" }
 $senderHash = (Get-FileHash ./scripts/03_windows_f1_sender.py -Algorithm SHA256).Hash.ToLowerInvariant()
 if ($senderHash -ne "b4a65812e2251e530e13054d6dcf008e735cd18b075c41237cbede3dccd9ba82") { throw "F1 sender 版本校验失败" }
@@ -89,7 +103,7 @@ if ($senderHash -ne "b4a65812e2251e530e13054d6dcf008e735cd18b075c41237cbede3dccd
 
 默认使用 `$HOME\.venv\Scripts\python.exe`，沿用之前已能识别 F710 的 Python/pygame 环境；只有安装位置不同才在启动前设置 `$env:F1_SENDER_PYTHON` 为实际 Python 路径。F710 顶部 X/D 开关使用 X；正面 MODE 使用摇杆与十字键不互换的模式（MODE状态灯灭）。在 joy.cpl 中推左圆形摇杆应移动 X轴/Y轴十字光标；若移动“视角头盔”，先停止sender并按MODE恢复。启动时先释放 START、RB 和摇杆。
 
-等 sender 收到应用 ACK，确认模式为 `F1 POWERED` 或 `F1 SHADOW` 且 acked 持续增加。仅 `TCP Connected` 不证明接收端已工作。`POWERED + waiting_for_teleop_start` 时，释放 START 后单击进入人工，正常回执变为 `hil_latched`；SHADOW 的同样交互只验证输入，不会运动。若仍为等待态，先查看本轮持久日志 `C:\Users\100850113\DAgger-F1\logs\windows_sender_console.log` 和 F1 终端，不要通过延长 ACK/watchdog 掩盖故障。
+等 sender 收到应用 ACK，确认模式为 `F1 POWERED` 或 `F1 SHADOW` 且 acked 持续增加。仅 `TCP Connected` 不证明接收端已工作。`POWERED + waiting_for_teleop_start` 时，释放 START 后单击进入人工，正常回执变为 `hil_latched`；SHADOW 的同样交互只验证输入，不会运动。若仍为等待态，先查看本轮持久日志 `C:\Users\user\DAgger-F1\logs\windows_sender_console.log` 和 F1 终端，不要通过延长 ACK/watchdog 掩盖故障。
 
 sender 使用现有 reader、mapper、意图协议、ACK 和重连。F1 包装入口先完成手柄初始化再建立 TCP，并关闭传统 Windows 控制台的 QuickEdit（退出时恢复），运行提示显示 F1。冻结 G2 sender 不变。操作：
 
@@ -157,15 +171,15 @@ bash scripts/50_f1_hil.sh run --execute \
 
 ## 6000D：审计、人工审阅、导出
 
-将完整 `raw/<run_id>`（含 journal、payload、模型 binding 和 preflight）复制到 6000D `artifacts/data/` 内相应原始目录，保留不变。优先复用已有独立导出环境；首次准备时，在开发机 `/home/xza_100850113/projects/DAgger/F1` 执行：
+将完整 `raw/<run_id>`（含 journal、payload、模型 binding 和 preflight）复制到 6000D `artifacts/data/` 内相应原始目录，保留不变。优先复用已有独立导出环境；首次准备时，在开发机 `/home/user/projects/DAgger/F1` 执行：
 
 ```bash
 python3.12 -m venv /tmp/f1-export-env
 /tmp/f1-export-env/bin/pip install torch==2.8.0 torchvision==0.23.0 --index-url https://download.pytorch.org/whl/cpu
 /tmp/f1-export-env/bin/pip install -r configs/f1_export_requirements.txt
-/tmp/f1-export-env/bin/pip install --no-deps -e /home/xza_100850113/projects/third_party/lerobot
+/tmp/f1-export-env/bin/pip install --no-deps -e /home/user/Libraries/third_party/lerobot
 export F1_EXPORT_PYTHON=/tmp/f1-export-env/bin/python
-export F1_LEROBOT_ROOT=/home/xza_100850113/projects/third_party/lerobot
+export F1_LEROBOT_ROOT=/home/user/Libraries/third_party/lerobot
 bash scripts/51_f1_export.sh audit /path/to/raw/run_id
 bash scripts/51_f1_export.sh review-template /path/to/raw/run_id --output /path/to/review.json
 ```

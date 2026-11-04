@@ -8,7 +8,7 @@ release_id: null
 created_at: null
 
 source:
-  development_root: /home/xza_100850113/projects/F1/foam_sort_whole_body
+  development_root: /home/user/projects/F1/foam_sort_whole_body
   git_commit: null
   working_tree_dirty: null
   # 保存选定文件的实际内容和校验值；commit不能代替未提交修改。

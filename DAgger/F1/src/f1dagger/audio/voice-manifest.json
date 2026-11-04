@@ -1,0 +1,29 @@
+{
+  "schema": "f1_voice_pack_v1",
+  "engine": "doubao/seed-tts-2.0",
+  "speaker": "zh_female_sophie_uranus_bigtts",
+  "pitch": -2,
+  "runtime_tts": false,
+  "phrases": {
+    "confirm_rlt": {
+      "text": "请评分。",
+      "duration_s": 1.16625,
+      "sha256": "10887fff0dc82f48d645828a189f6b6f79c7358c6b3c12a08bbda27b54ffc541"
+    },
+    "communication_wait": {
+      "text": "连接中断。",
+      "duration_s": 0.999875,
+      "sha256": "b059d348744f4afc0fd246c369a47a8ab331c258bc4049e953281742c7d9b85f"
+    },
+    "motion_limited": {
+      "text": "动作受限。",
+      "duration_s": 1.007625,
+      "sha256": "ee23199913f05dcc83c7aa2e374b2990f9d7e0e2b8c5832e1eb04cfe5c16a0d9"
+    },
+    "system_fault": {
+      "text": "系统故障。",
+      "duration_s": 1.577625,
+      "sha256": "eb696233ab08e0a25cf981870acf4ab749665c91e033ca123e94699491b609c0"
+    }
+  }
+}

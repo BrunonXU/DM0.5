@@ -3,7 +3,7 @@ set -euo pipefail
 
 source "$(dirname -- "${BASH_SOURCE[0]}")/lib/paths.sh"
 ROOT="$G2TELEOP_ROOT"
-DM=/home/agi/xza/DM0.5
+DM=/home/user/xza/DM0.5
 STAMP=$(date +%Y%m%d_%H%M%S)
 TELEMETRY="$DM/logs/telemetry/shadow/g2_bc_eef_causal_commands_${STAMP}.jsonl"
 ARTIFACT="$DM/logs/diagnostics/g2_bc_eef_causal_commands_${STAMP}.npz"

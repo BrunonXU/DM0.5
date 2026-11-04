@@ -1,0 +1,50 @@
+[
+  {
+    "path": "PI0.5",
+    "url": "https://github.com/Physical-Intelligence/openpi.git",
+    "commit": "15a9616a00943ada6c20a0f158e3adb39df2ccac",
+    "patch": "third_party/patches/openpi-local.patch"
+  },
+  {
+    "path": "RLinf",
+    "url": "https://github.com/RLinf/RLinf.git",
+    "commit": "d00fe72060a5aa1554e92fe7bf72846d43d48c1c",
+    "patch": "third_party/patches/rlinf-local.patch"
+  },
+  {
+    "path": "third_party/lerobot",
+    "url": "https://github.com/huggingface/lerobot.git",
+    "commit": "713a409faedd73bb5597481b8885f17fbee23330",
+    "patch": null
+  },
+  {
+    "path": "tools/rea",
+    "url": "https://github.com/morluto/rea.git",
+    "commit": "c22d7cd7567b52e6e6ba13f14df11c4a720c0c4e",
+    "patch": null
+  },
+  {
+    "path": "HARNESS/third_party/RPent",
+    "url": "https://github.com/RLinf/RPent.git",
+    "commit": "886b3b274d3dd30bbc15615ea512d65ae90bc8b3",
+    "patch": null,
+    "checkout_matches_pin": true,
+    "checkout_clean": true
+  },
+  {
+    "path": "HARNESS/third_party/PyRUA-Lean",
+    "url": "https://github.com/DAGroup-PKU/PyRUA-Lean.git",
+    "commit": "e8f01dca744421d70684adbbc1713fd4d92f8aca",
+    "patch": null,
+    "checkout_matches_pin": true,
+    "checkout_clean": true
+  },
+  {
+    "path": "HARNESS/third_party/ASPIRE",
+    "url": "https://github.com/NVlabs/ASPIRE.git",
+    "commit": "fa00f0ef2bc1d91d594b9aa502c22133c9f538f7",
+    "patch": null,
+    "checkout_matches_pin": true,
+    "checkout_clean": true
+  }
+]

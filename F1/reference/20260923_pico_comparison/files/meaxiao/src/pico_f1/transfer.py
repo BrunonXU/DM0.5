@@ -23,7 +23,7 @@ import uuid
 import threading
 
 ROBOTS = ("F1_D070", "F1_D070_01", "F1_D071", "F1_D072")
-DEFAULT_BASE = Path("/media/xx_100872445/069dd146-6f88-4f29-b859-245b1c012179/pico/mocap_data")
+DEFAULT_BASE = Path("/media/user/069dd146-6f88-4f29-b859-245b1c012179/pico/mocap_data")
 DEFAULT_DEST = DEFAULT_BASE / "mm/mocap_data"
 REMOTE_PROJECT = "/home/user/meaxiao/pico"
 

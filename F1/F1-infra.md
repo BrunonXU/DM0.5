@@ -1,6 +1,6 @@
 ---
 created: 2026-09-23
-updated: 2026-09-28
+updated: 2026-11-03
 type: infrastructure_inventory_and_console_status
 primary_target: F1-09
 status: console_deployed_onsite_arm_trial
@@ -8,9 +8,11 @@ status: console_deployed_onsite_arm_trial
 
 # F1-infra：基础软件复用、域控分布与控制台方案
 
+**本页主要保留2026年9月的架构与现场快照。2026-11-03起F1-09日常入口有线优先，工作台使用`http://192.0.2.7:4242/`，Wi-Fi`.58`仅备用。** 当前主备配置与验收见[工作台状态](../F1-4242/docs/STATUS.md#wired-backup-v38)和[F1系统配置](F1系统配置.md#f1-09-wired-20261103)；下方历史IP、版本和功能边界不代表当前部署。
+
 **F1 已经具备一套可复用的遥操、数采、传输、数据网页、模型资产和机器人控制基础。具身侧优先补统一接口与轻量控制台，不必重写电机驱动、相机、录制器或传输系统。**
 
-你记得的两个基础启动脚本是 **`/home/user/workspace/start_ec_master.sh` 和 `/home/user/workspace/start_all.sh`**。完整 Pico 源码确实在 6000D，但位于另一开发账户：**`/home/xx_100872445/F1/PICO/pico`**。它已有数据审阅网页和 URDF/STL。我们已在F1-09部署独立4242工作台与状态/动作网关；访客默认只读，双臂/身体/升降/夹爪/底盘现场试用已按用户确认启用，动作能力与实物验收分开管理。
+你记得的两个基础启动脚本是 **`/home/user/workspace/start_ec_master.sh` 和 `/home/user/workspace/start_all.sh`**。完整 Pico 源码确实在 6000D，但位于另一开发账户：**`/home/user/F1/PICO/pico`**。它已有数据审阅网页和 URDF/STL。我们已在F1-09部署独立4242工作台与状态/动作网关；访客默认只读，双臂/身体/升降/夹爪/底盘现场试用已按用户确认启用，动作能力与实物验收分开管理。
 
 **用户已指定HTML首台目标为 F1-09（22009）。** 用户补充的现场Pico入口是`/home/user/lxl/start_all_pico1.sh`，将它作为F1-09优先核查对象。其他机器及后续独立Pico工程作为复用来源；09-23恢复连接后确认F1-09有`/home/user/lxl`、其IP配置为`.58`，而`/home/user/meaxiao`不存在。同日后续已将独立双臂适配版部署到`/home/user/Bruno/F1/pico_upper/`，不覆盖lxl；源码、部署和现场动作验收仍分开记录。
 
@@ -32,7 +34,7 @@ status: console_deployed_onsite_arm_trial
 
 其余模块保留各自核验日期；本次文档归档不代表重新验收遥操、数采或全部系统功能。
 
-**`http://192.168.31.58:4242/`已在F1-09启动。** 首版独立实现公共架构，借鉴Hall的调姿/配置交互；meaxiao v1.4.4已适配为只控制双臂与夹爪的`pico_upper`试用包。**F1-4242 已升级为独立上肢采集与审阅入口；LXL main 不变。当前发布、检查结果与未验收项统一见[工作台说明](../F1-4242/README.md)，上传和中央分析平台尚未配置。** lxl原目录保留，不与新版遥操同时发布控制；原80供应商站保持独立。
+**`http://192.0.2.3:4242/`已在F1-09启动。** 首版独立实现公共架构，借鉴Hall的调姿/配置交互；meaxiao v1.4.4已适配为只控制双臂与夹爪的`pico_upper`试用包。**F1-4242 已升级为独立上肢采集与审阅入口；LXL main 不变。当前发布、检查结果与未验收项统一见[工作台说明](../F1-4242/README.md)，上传和中央分析平台尚未配置。** lxl原目录保留，不与新版遥操同时发布控制；原80供应商站保持独立。
 
 | 功能 | 复用来源 | 当前实际状态 |
 |---|---|---|
@@ -77,7 +79,7 @@ v4 桌面六页、14条关节滑条、真实22轴模型和390px手机检查通�
 
 用户确认已获复用同意后，已保存 **56份选定源码/配置/测试的原样参考及SHA256清单**。用户随后明确调整顺序：本轮先部署双臂遥操试用和4242工作台；数采、上传和中央审阅保持原样。此处为早先顺序；同日用户追加要求后，URDF、数据审核和独立LeRobot录制分支已接入；参见第0节当前功能表。独立reset当前存在实物不符锁止记录，不直接采用其固定角度。
 
-详见 [lxl与meaxiao的逐项比较、模块清单和引入顺序](docs/pico_comparison_and_adoption.md)、[源码快照](reference/20260923_pico_comparison/README.md)。系统不允许列出`/home/xx_100872445`根目录，本轮覆盖其可读取的`F1/`工程；其他账户级平台尚不能宣称查全。原工程未改；已部署的自有目录、只读服务与现场待验收项见第0节。
+详见 [lxl与meaxiao的逐项比较、模块清单和引入顺序](docs/pico_comparison_and_adoption.md)、[源码快照](reference/20260923_pico_comparison/README.md)。系统不允许列出`/home/user`根目录，本轮覆盖其可读取的`F1/`工程；其他账户级平台尚不能宣称查全。原工程未改；已部署的自有目录、只读服务与现场待验收项见第0节。
 
 **同日16:23权限复核：** xx主目录ACL当前已拒绝xza访问；此前读取限于当时开放的F1工程。未发现本会话写入xx或其Ubuntu目录的记录，详见[权限与修改范围核查](docs/xx_access_audit_20260923.md)。
 
@@ -101,12 +103,12 @@ v4 桌面六页、14条关节滑条、真实22轴模型和390px手机检查通�
 
 | 6000D位置 | 内容 | 机器人位置/运行分工 |
 |---|---|---|
-| `/home/xza_100850113/projects/F1/` | 本项目系统证据、泡沫任务、模型与机器人客户端 | 自有部署统一 `/home/user/Bruno/F1/...`；6000D训练/推理，F1执行/观测 |
-| `/home/xx_100872445/F1/PICO/pico/` | 完整Pico v1.4.4源码、LeRobot数采、传输、dashboard、URDF/mesh | `/home/user/meaxiao/pico`；teleop、bridge、recorder、PC Service运行在F1，6000D收数/合并/审阅 |
-| `/home/xx_100872445/F1/reset/` | 独立全身复位v1.1.3源码、机型基准与模型核验 | `/home/user/meaxiao/reset`；部分机型目前被该工程锁止，不能直接作为通用按钮 |
-| `/home/xx_100872445/F1/本体平台/0804_fix_urdf/{origin,make}/` | 原lxl遥操/桥/MCAP录制、加密产物和模型参考 | 用户给出的`/home/user/lxl`链路；原脚本与后续修复脚本另有差异，见第3.1节 |
+| `/home/user/projects/F1/` | 本项目系统证据、泡沫任务、模型与机器人客户端 | 自有部署统一 `/home/user/Bruno/F1/...`；6000D训练/推理，F1执行/观测 |
+| `/home/user/F1/PICO/pico/` | 完整Pico v1.4.4源码、LeRobot数采、传输、dashboard、URDF/mesh | `/home/user/meaxiao/pico`；teleop、bridge、recorder、PC Service运行在F1，6000D收数/合并/审阅 |
+| `/home/user/F1/reset/` | 独立全身复位v1.1.3源码、机型基准与模型核验 | `/home/user/meaxiao/reset`；部分机型目前被该工程锁止，不能直接作为通用按钮 |
+| `/home/user/F1/本体平台/0804_fix_urdf/{origin,make}/` | 原lxl遥操/桥/MCAP录制、加密产物和模型参考 | 用户给出的`/home/user/lxl`链路；原脚本与后续修复脚本另有差异，见第3.1节 |
 
-Pico中央接收/状态目录为 `/home/xx_100872445/F1/PICO/transfer_6000d/`；数据根目录由 `config/collection.yaml` 指定。源码在6000D不意味着遥操作控制循环也在6000D。原工作区 `reference/20260914_action_mapping*` 只有选定旧源码，不能替代完整项目。[Pico说明][pico-readme]、[独立复位说明][reset-readme]。
+Pico中央接收/状态目录为 `/home/user/F1/PICO/transfer_6000d/`；数据根目录由 `config/collection.yaml` 指定。源码在6000D不意味着遥操作控制循环也在6000D。原工作区 `reference/20260914_action_mapping*` 只有选定旧源码，不能替代完整项目。[Pico说明][pico-readme]、[独立复位说明][reset-readme]。
 
 ### 2.2 域控与控制链
 
@@ -155,7 +157,7 @@ flowchart TB
 | `workspace/camera/OrbbecSDK_ROS2/` | 头部Gemini系列 | 复用原launch；内外参/时间源另核 |
 | `workspace/agv/install/` | 底盘消息和客户端环境 | 订阅状态、发送上层命令，不自写底盘固件 |
 | `zxl/src/arm_replay/`与`install/arm_replay` | 原回放器 | 主要反馈轨迹回放，与本项目目标动作回放不同 |
-| `Bruno/F1/foam_sort_whole_body/` | 本项目版本化控制/pose/home/推理客户端 | 提取公共接口，保留任务profile边界 |
+| `Bruno/F1/foam_sort_whole_body/` | 本项目版本化控制/pose/home/user | 提取公共接口，保留任务profile边界 |
 
 ### 2.3 多机身份与差异
 
@@ -175,13 +177,13 @@ flowchart TB
 
 | 接口 | 已核对地址 | 含义/限制 |
 |---|---|---|
-| wlan0 | 192.168.31.58/24，网关192.168.31.1 | 到6000D的已核对路由；用户已在路由器保留DHCP地址 |
-| enP3p1s0f3 | 192.168.10.10/24，无网关 | 有线维护口 |
-| enP3p1s0f1 | 192.168.127.170/24，网关192.168.127.1 | 09-23确认本机CycloneDDS绑定此口；网页转发192.168.127.10，主机系统待核 |
-| enP3p1s0f2 | 192.168.1.180/24，网关192.168.1.1 | 已知网段；仍需核天机SDK实际目标和线路 |
-| ap0 | 192.168.80.1/24 | AP接口，不是所连Wi-Fi地址 |
+| wlan0 | 192.0.2.3/24，网关192.0.2.19 | 到6000D的已核对路由；用户已在路由器保留DHCP地址 |
+| enP3p1s0f3 | 192.0.2.11/24，无网关 | 有线维护口 |
+| enP3p1s0f1 | 192.0.2.2/24，网关192.0.2.20 | 09-23确认本机CycloneDDS绑定此口；网页转发192.0.2.12，主机系统待核 |
+| enP3p1s0f2 | 192.0.2.5/24，网关192.0.2.21 | 已知网段；仍需核天机SDK实际目标和线路 |
+| ap0 | 192.0.2.22/24 | AP接口，不是所连Wi-Fi地址 |
 
-09-23已进一步确认Jazzy、DDS配置绑定enP3p1s0f1、lxl部署、原生身体配置及底盘反馈；Nginx网页后端为192.168.127.10。同日后续已追加mode=3、imp=1和22轴/双夹爪反馈核验；运行二进制指纹、相机序列号、URDF映射、底盘主机系统和串口仍按证据逐项补齐。第一版控制台的能力表应由本机核验结果生成，未确认的升降/预设只显示待核，不直接套D070或D071配置。[F1-09原接入记录](docs/connect/F1-09.md)。
+09-23已进一步确认Jazzy、DDS配置绑定enP3p1s0f1、lxl部署、原生身体配置及底盘反馈；Nginx网页后端为192.0.2.12。同日后续已追加mode=3、imp=1和22轴/双夹爪反馈核验；运行二进制指纹、相机序列号、URDF映射、底盘主机系统和串口仍按证据逐项补齐。第一版控制台的能力表应由本机核验结果生成，未确认的升降/预设只显示待核，不直接套D070或D071配置。[F1-09原接入记录](docs/connect/F1-09.md)。
 
 ## 3. 开机脚本与自启职责
 
@@ -214,7 +216,7 @@ flowchart TB
 
 原数据说明是MCAP/rosbag：采集写`/home/user/lxl/pico_data/all_data/`，独立轨迹工具`remote_sth/dist/ros2_bag_tool.py`写`pico_data/ros2bags/`。原列表包含HAL、夹爪/TCP命令反馈、三图和lead，但没有底盘命令/反馈。原按键是A开始/B停止、XY复位，不能与新版Pico的X/Y双击录制、B保存/丢弃、27D LeRobot合同混用。
 
-原`ip_config.py`还有`target_left/right`启动姿态与`reset_left/right`复位姿态；启动桥可能主动移动手臂，不是纯后台通信服务。档案内`local_ip=192.168.31.70`只属于那份模板，不能覆盖F1-09已登记的`.58`；新版`meaxiao/pico`内部UDP用127.0.0.1是另一设计，不能原样改给旧脚本。
+原`ip_config.py`还有`target_left/right`启动姿态与`reset_left/right`复位姿态；启动桥可能主动移动手臂，不是纯后台通信服务。档案内`local_ip=192.0.2.23`只属于那份模板，不能覆盖F1-09已登记的`.58`；新版`meaxiao/pico`内部UDP用127.0.0.1是另一设计，不能原样改给旧脚本。
 
 **“三个程序已启动”的一行输出不能当完整验收。** 原版没有对两个`cd`失败或后台退出做可靠拦截，最后固定打印成功；09-03旧机记录确实出现仅PC Service存活、Pico能连但机器人不动。另一个[PICO/deployment同名修复脚本][legacy-fixed]因那批加密包`Link7_R`与F1模型`arm_R_Link7`不兼容，会明确退出；对应旧机曾改用`start_all_pico2.sh`源码版。这是那批版本的事实，**不证明F1-09也有同样故障，也不构成现在替它换启动入口的依据**。
 
@@ -224,7 +226,7 @@ F1-09恢复连接后应定点读它的`start_all_pico1.sh`、`ip_config.py`、�
 
 ### 4.1 完整Pico远不止“摇操＋数采”
 
-下表路径相对 `/home/xx_100872445/F1/PICO/pico/`，本轮按源码核对；目标机实际部署另查。
+下表路径相对 `/home/user/F1/PICO/pico/`，本轮按源码核对；目标机实际部署另查。
 
 | 能力 | 位置 | 复用价值/边界 |
 |---|---|---|
@@ -258,7 +260,7 @@ F1-09恢复连接后应定点读它的`start_all_pico1.sh`、`ip_config.py`、�
 | 姿态保存/插补恢复 | [pose_model.py](foam_sort_whole_body/robot/f1_replay/pose_model.py)、[pose_backend.py](foam_sort_whole_body/robot/f1_replay/pose_backend.py)、[pose_cli.py](foam_sort_whole_body/robot/f1_replay/pose_cli.py) | 同步插补、计划、反馈到位、日志；原任务后端要求完整目标组；新工作台已有独立适配，目标与实测保持语义见第8节 |
 | 调度与分段跟随 | [runtime.py](foam_sort_whole_body/robot/f1_replay/runtime.py)、[pose_segments.py](foam_sort_whole_body/robot/f1_replay/pose_segments.py) | 单调时钟、过期处理、不突发补帧、分段到位；前端不管理实时周期 |
 | 局部底盘归位 | [base_home.py](foam_sort_whole_body/robot/f1_replay/base_home.py)、[trial_home.py](foam_sort_whole_body/robot/f1_replay/trial_home.py) | 本机/本次开机里程计锚点、朝向→XY→双臂；无SLAM和绕障 |
-| 控制源冲突检测 | [command_monitor](foam_sort_whole_body/robot/command_monitor/) | 监听实际外部命令，不只看注册发布者；不是硬件互斥锁 |
+| 控制源冲突检测 | [command_monitor](foam_sort_whole_body/robot/command_monitor) | 监听实际外部命令，不只看注册发布者；不是硬件互斥锁 |
 | FK/IK | [kinematics.py](foam_sort_whole_body/robot/kinematics.py)、[原生库/服务证据][kine] | NumPy/SciPy数学层与原生SDK核对，参考系/工具点/连续性需保留 |
 | 三图/状态与模型客户端 | `robot/f1_policy_client/`、`models/DM0.5/f1_inference/` | 观测、新鲜度、HTTP、shadow/execute/日志；基本网页无需启动模型 |
 | 诊断录包 | `f1_replay/recording_check.py`、`f1_policy_client/record_probe.py`及Recorder | ROS C++类型支持、订阅就绪、关闭后核对；这是rosbag诊断，不替代Pico LeRobot writer |
@@ -347,19 +349,19 @@ F1-09恢复连接后应定点读它的`start_all_pico1.sh`、`ip_config.py`、�
 | 链路 | 已知配置/协议 | 证据与缺口 |
 |---|---|---|
 | 6000D→各F1登录 | 127.0.0.1:22022/22029/22165/22009，SSH | 09-23稍早均不可用，15:11起F1-09/22009已恢复并核验；各机身份独立 |
-| F1→6000D持久隧道 | 6000D `10.130.153.114:22` | 配置证据；不自动转发DDS |
-| Thor→天机双臂 | 已装launch的SDK目标`192.168.1.190` | 当前IP、SDK传输端口/固件待核，不是已知串口 |
+| F1→6000D持久隧道 | 6000D `192.0.2.1:22` | 配置证据；不自动转发DDS |
+| Thor→天机双臂 | 已装launch的SDK目标`192.0.2.4` | 当前IP、SDK传输端口/固件待核，不是已知串口 |
 | motor_ctl→头/身体主站 | UDP `127.0.0.1:50001` | 历史参数/监听；电机ID0..2=head_j1..3，3..7=body_j1..5 |
 | 主站→motor_ctl反馈 | UDP `50002` | 旧机实测motor_ctl监听，反馈帧格式要读接收实现 |
 | 主站→电机 | EtherCAT；4F为`f1-eni.xml`，F1-09脚本为`f1-hm.xml`；`-intelgbe 1 1` | 物理网口/从站拓扑待核，不能将网口序号直接认作DDS网卡 |
 | 双夹爪 | 左can0、右can1，OmniPicker | SocketCAN，不是tty；文档有CAN-FD配置示例，当前bitrate/ID/稳定绑定待实机核 |
 | Pico头显→PC Service | 旧安装文档记63901；Python SDK回环60061 | 外部XR链路，与下两行本机UDP控制面不同；当前实例监听另核 |
-| 原lxl teleop→bridge/录制 | `ip_config.py`的local_ip与8888/8899 UDP | 09-23实读F1-09配置为192.168.31.58；未启动遥操核验链路，不能套新版回环配置 |
+| 原lxl teleop→bridge/录制 | `ip_config.py`的local_ip与8888/8899 UDP | 09-23实读F1-09配置为192.0.2.3；未启动遥操核验链路，不能套新版回环配置 |
 | Pico teleop→bridge | 完整源码`config/ip_config.py`：`127.0.0.1:8888/UDP` | 本轮实读开发配置；`scripts/env.sh`通过PICO_F1_CONFIG指定，机器人配置仍需核验 |
 | Pico→recorder | 同配置`127.0.0.1:8899/UDP` | float64标量：1开始、0停止、2保存、3丢弃 |
 | Pico录制状态 | `/pico/recording_status`，std_msgs/String | idle/recording/finalizing/review；recovery是恢复保留结果，不能仅凭idle区分保存/丢弃/恢复 |
-| 自有具身研发工作台（已部署） | F1-09 `http://192.168.31.58:4242/` | 状态/相机/姿态/URDF/认证/事件、独立上肢采集与数据审阅已接入；访客只读，中央传输未配置 |
-| F1-09原供应商网页 | Thor80→192.168.127.10:8080；6001/6004同主机转发 | 09-23根页200；地图/底盘运维静态源码已读，业务操作未验收 |
+| 自有具身研发工作台（已部署） | F1-09 `http://192.0.2.3:4242/` | 状态/相机/姿态/URDF/认证/事件、独立上肢采集与数据审阅已接入；访客只读，中央传输未配置 |
+| F1-09原供应商网页 | Thor80→192.0.2.12:8080；6001/6004同主机转发 | 09-23根页200；地图/底盘运维静态源码已读，业务操作未验收 |
 | 数采网页 | 6000D `127.0.0.1:18976` HTTP | 本地监听/SSH转发的配置入口，数据审阅API；未验证今天服务在线 |
 | Thor↔底盘ROS | CycloneDDS；4F已核domain 0、enP3p1s0f1 | 对端计算单元/设备总线/时钟同步未闭合；不是单个固定TCP端口 |
 | 三相机 | D405双腕＋头部Gemini系列驱动 | launch已定位；当前序列号、USB拓扑和标定逐机核对 |
@@ -391,7 +393,7 @@ Pico8888动作包是NumPy float64原始字节，14D/16D以左7右7承载双臂�
 
 ### 8.1 复用现有网页组件，增加F1本地接口服务
 
-当前开发位于`F1/F1-4242/`，F1发布位于`/home/user/Bruno/F1/F1-4242/`，入口`http://192.168.31.58:4242/`。前端使用原生HTML/CSS/ES modules，后端是独立Python网关与ROS适配；状态轮询、预设、访问会话、控制租约和事件已实现。Hall提供交互参考，不直接启动其导览服务。数据页提供 Windows 文件夹式目录、三路共同时间轴回放、16通道 state/action、文件/话题详情及独立审核；meaxiao 的录制会话与写入模块适配为本机上肢16D / 10fps，来源与完整性检查独立设计。未来APP可复用同一服务合同；实时执行留F1，开发与重数据/模型工作留6000D。
+当前开发位于`F1/F1-4242/`，F1发布位于`/home/user/Bruno/F1/F1-4242/`，入口`http://192.0.2.3:4242/`。前端使用原生HTML/CSS/ES modules，后端是独立Python网关与ROS适配；状态轮询、预设、访问会话、控制租约和事件已实现。Hall提供交互参考，不直接启动其导览服务。数据页提供 Windows 文件夹式目录、三路共同时间轴回放、16通道 state/action、文件/话题详情及独立审核；meaxiao 的录制会话与写入模块适配为本机上肢16D / 10fps，来源与完整性检查独立设计。未来APP可复用同一服务合同；实时执行留F1，开发与重数据/模型工作留6000D。
 
 现有dashboard约5秒轮询已提交数据，其播放/暂停是视频操作，不是机器人操控。另在reset记录发现历史“网页调姿/复位”线索，但没有定位服务源码/URL；它值得恢复连接后再查，**本轮不能说整台F1完全没有控制网页，也不能说那个网页已足够复用**。[原网页对比记录][old-web]。
 
@@ -464,18 +466,18 @@ Pico8888动作包是NumPy float64原始字节，14D/16D以左7右7承载双臂�
 [kine]: reference/20260916_kinematics/README.md
 [motor-launch]: reference/20260914_action_mapping/files/home/user/workspace/f1/install/motor_ctl/share/motor_ctl/launch/motor_ctl.launch.xml
 [waist]: foam_sort_whole_body/results/4f_pose_review_20260918/files/home/user/0721.gamepad.udplog/whole_body_ctl/gamepad_waist_updown/waist_updown_node.py
-[pico-readme]: /home/xx_100872445/F1/PICO/pico/README.md
-[pico-ip]: /home/xx_100872445/F1/PICO/pico/config/ip_config.py
-[pico-bridge]: /home/xx_100872445/F1/PICO/pico/vendor/f1_bridge/send2real_robot_f1_udp2topic.py
-[recorder]: /home/xx_100872445/F1/PICO/pico/vendor/f1_bridge/lerobot_recorder.py
-[dashboard]: /home/xx_100872445/F1/PICO/pico/src/pico_f1/dashboard_server.py
-[reset-readme]: /home/xx_100872445/F1/reset/README.md
-[old-web]: /home/xx_100872445/F1/reset/D072_WEB_RESET_COMPARISON.md
-[viewer]: /home/xx_100872445/F1/PICO/pico/vendor/f1_safety/src/python/_f1_state_viewer_components.py
+[pico-readme]: /home/user/F1/PICO/pico/README.md
+[pico-ip]: /home/user/F1/PICO/pico/config/ip_config.py
+[pico-bridge]: /home/user/F1/PICO/pico/vendor/f1_bridge/send2real_robot_f1_udp2topic.py
+[recorder]: /home/user/F1/PICO/pico/vendor/f1_bridge/lerobot_recorder.py
+[dashboard]: /home/user/F1/PICO/pico/src/pico_f1/dashboard_server.py
+[reset-readme]: /home/user/F1/reset/README.md
+[old-web]: /home/user/F1/reset/D072_WEB_RESET_COMPARISON.md
+[viewer]: /home/user/F1/PICO/pico/vendor/f1_safety/src/python/_f1_state_viewer_components.py
 
-[legacy-guide]: /home/xx_100872445/F1/本体平台/F1-PICO安装连接.md
-[legacy-start]: /home/xx_100872445/F1/本体平台/0804_fix_urdf/make/lxl/start_all_pico1.sh
-[legacy-fixed]: /home/xx_100872445/F1/PICO/deployment/start_all_pico1.sh
+[legacy-guide]: /home/user/F1/本体平台/F1-PICO安装连接.md
+[legacy-start]: /home/user/F1/本体平台/0804_fix_urdf/make/lxl/start_all_pico1.sh
+[legacy-fixed]: /home/user/F1/PICO/deployment/start_all_pico1.sh
 
 ### 4242 网页遥操启停补充（2026-09-24）
 

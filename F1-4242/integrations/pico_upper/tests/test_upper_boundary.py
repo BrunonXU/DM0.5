@@ -18,7 +18,7 @@ class OutputBoundaryTests(unittest.TestCase):
                 decode_frame(struct.pack('<'+'d'*len(values),*values),('127.0.0.1',5))
     def test_nonlocal_invalid_and_nonfinite_rejected(self):
         frame = [0.]*14+[50.,50.,1.,0.]
-        with self.assertRaises(ValueError): decode_frame(struct.pack('<18d',*frame),('192.168.31.58',5))
+        with self.assertRaises(ValueError): decode_frame(struct.pack('<18d',*frame),('192.0.2.3',5))
         for index,value in [(0,float('nan')),(3,float('inf')),(14,101),(16,.5)]:
             invalid=frame.copy(); invalid[index]=value
             with self.assertRaises(ValueError): validate_frame(invalid)

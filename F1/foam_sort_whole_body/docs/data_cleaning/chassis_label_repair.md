@@ -92,7 +92,7 @@
 以下命令在**6000D终端、任务目录**运行。输入文件先保存为示例位置，输出使用新的版本目录；日志放该次运行目录。导入生成独立候选sidecar及来源绑定，不覆盖原数据或自动批准19D训练。
 
 ```bash
-cd /home/xza_100850113/projects/F1/foam_sort_whole_body
+cd /home/user/projects/F1/foam_sort_whole_body
 mkdir -p results/base_relabel_v1/received
 # 将网页下载的文件保存为 results/base_relabel_v1/received/000057_review.json
 mkdir results/base_relabel_v1/reviewed_000057_run01

@@ -86,8 +86,8 @@ def test_finish_requires_auth_same_origin_and_never_acquires_motion(http_app,mon
     _,_,cookie=request('/api/session')
     called=[]
     monkeypatch.setattr(app.hil,'finish',lambda body:called.append(body) or {'requested':True,'saved':False,'run_id':'test'})
-    assert request('/api/hil/finish',{'session_key':{}},cookie)[0]==401
-    assert request('/api/login',{'token':app.token},cookie)[0]==200
+    assert request('/api/hil/finish',{'session_key':{}},cookie,origin=False)[0]==403
+    assert request('/api/login',{},cookie)[0]==200
     assert request('/api/hil/finish',{'session_key':{}},cookie,origin=False)[0]==403
     assert not called
     assert request('/api/hil/finish',{'session_key':{}},cookie)[0]==200

@@ -8,7 +8,7 @@ if [[ -L "$socket_dir" || ( -e "$socket_dir" && ! -O "$socket_dir" ) ]]; then
 fi
 mkdir -p -m 700 "$socket_dir"
 socket_path="$socket_dir/master.sock"
-ssh_args=(-F /dev/null -i /home/xza_100850113/.ssh/id_ed25519_f1
+ssh_args=(-F /dev/null -i /home/user/.ssh/id_ed25519_f1
   -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes
   -o HostKeyAlias=f1-d070 -o ExitOnForwardFailure=yes -o ConnectTimeout=10
   -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -p 22022

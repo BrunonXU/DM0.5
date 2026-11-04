@@ -1,55 +1,50 @@
 ---
-updated: 2026-09-24
+updated: 2026-11-03
 status: implemented
 scope: F1-4242 HTTP API
 ---
 
 # F1-4242 接口合同
 
+当前接口为免密码操作：浏览器Cookie仅隔离会话和控制租约，不是密码认证。一次明确点击提交操作，入口须知、兼容路由与完整验证规则见 [直接操作](DIRECT_OPERATION.md)；后文带版本号的旧认证说明仅适用于对应历史版本。
+
 数据驱动实机回放：GET `/api/replay/review`、POST `/api/replay/start`、POST `/api/replay/align`、GET `/api/replay/reports/<id>` 及一次性检查票据合同见 [REPLAY](REPLAY.md)。普通 `/api/actions` 不接受客户端 `kind:replay`；进度、停止和控制租约沿用本文接口。
 
-本地 HTTP：`http://192.168.31.58:4242`，或经过既有 SSH 隧道的 `http://localhost:4242`。
+录制备注通过独立的 `/api/data/notes` 保存，不提交审核结论。它与原审核接口共用来源签名和版本冲突检查；客户端需保留未保存草稿，不能遇到冲突就自动覆盖。页面行为见 [数据说明](DATA.md)。
+
+F1-09本地HTTP优先`http://192.0.2.7:4242`，Wi-Fi备用`http://192.0.2.3:4242`；两者须在站点配置登记。既有SSH隧道仍用`http://localhost:4242`。主备地址都只接受各自同源写请求，换地址不会沿用另一个浏览器源的会话。
 浏览器 → 本机后端 → ROS 适配器；浏览器不直接执行 shell、UDP 或 ROS 命令。
 机器能力和验证状态以 `/api/state`、`/api/robot` 为准，路由存在不表示实机动作已启用。
+
+## 本地 UI/UX 候选增量
+
+审核 CAS 版本、可区分 409、保存直达 DATA 身份、状态年龄/有效期、最近 Replay 报告及非阻塞基础启动的字段见 [UIUX_UPGRADE](UIUX_UPGRADE.md#接口增量)。这些接口随精修候选一起发布，不能只替换前端。部署状态见 [STATUS](STATUS.md)。
 
 ## 请求、会话与错误
 
 - 所有 JSON 响应包含 `ok`；失败包含 `error`。请求/响应禁止 NaN/Infinity。
 - GET 可匿名查看状态、相机、预设、数据清单。数据文件本体不提供任意路径下载接口。
 - POST 必须同源，带 `Origin`、`X-F1-Request: 1`，JSON 对象不得超过 256,000 字节。
-- 会话 Cookie：`f1_console_session`，HttpOnly、SameSite=Strict。控制码、令牌和 Cookie 均不应放 URL。
-- 400：请求格式错误；401：未认证/码错误；403：Host 或同源检查失败；404：接口/文件不存在；
-  409：输入、控制权或动作状态冲突；429：控制码限流，含 `retry_after_s`；503：相机无新鲜图像。
-- 控制码按连接来源 IP 限制连续失败：5 次/60 秒；全局 30 次/60 秒。忽略 `X-Forwarded-For`。
-  经同一 SSH 隧道访问的浏览器可能共享来源 IP。限流在服务进程中维护，重启后重置。
+- 会话 Cookie：`f1_console_session`，HttpOnly、SameSite=Strict。会话 Cookie 和租约令牌不应放 URL。
+- 400：请求格式错误；403：Host 或同源检查失败；404：接口不存在；409：输入、控制权或动作状态冲突；503：相机无新鲜图像。
 
 ## 身份与控制权
 
 | 方法/路由 | 请求 | 响应与行为 |
 |---|---|---|
-| GET `/api/session` | — | `authenticated`、`control_code_configured` |
-| POST `/api/login` | `{control_code}` | 验证控制码，只认证会话；不占控制权，不启动动作。旧 `{token}` 访问码仍兼容 |
-| POST `/api/logout` | `{}` | 退出认证；如果自己占用控制权，请求停止，停止完成后才释放锁 |
-| POST `/api/control/acquire` | `{control_code, owner?}` | 每次验证控制码后获取共享租约，返回 `authenticated:true, lease_id, expires_in_s`；owner 为 1–80 字符，默认现场操作者 |
+| GET `/api/session` | — | `authenticated:true`、`password_required:false` |
+| POST `/api/login` | `{}` | 兼容路由，无凭据验证；不占控制权，不启动动作 |
+| POST `/api/logout` | `{}` | 取消本会话控制/回放意图；如果自己占用控制权，请求停止，停止完成后才释放锁 |
+| POST `/api/control/acquire` | `{owner?}` | 无需密码，获取本浏览器共享租约，返回 `authenticated:true, lease_id, expires_in_s`；owner 为 1–80 字符，默认现场操作者 |
 | POST `/api/control/heartbeat` | `{lease_id}` | 持有者续租，返回 `expires_in_s` |
 | POST `/api/control/release` | `{lease_id}` | 请求停止并释放；返回 `stopped, action`。执行器未停止时保持锁 |
 | POST `/api/stop` | `{lease_id}` | 请求停止本工作台动作；不自动释放控制权，不是硬件急停 |
 
 默认租约 3 秒。心跳应每秒发送；关闭网页或断网后由后端停止并释放。
-写接口需已授权会话；动作遵循 acquire → plan（关节）→ actions，网页首次输入控制码启用操控后按会话复用授权。当前交互见 [USER_GUIDE](USER_GUIDE.md)。控制码不持久化到网页存储；底盘取得控制权后，仍要明确按住方向键才发 base_jog。
-获取控制权不会发动作；旧访问码认证也不能绕过 `/api/control/acquire` 的控制码验证。
+写接口需同源请求；动作遵循 acquire → plan → actions，一次执行点击按需取得租约并直接提交。底盘取得控制权后仍须按住方向键才发 base_jog。获取控制权本身不会发送动作。
 Pico 与网页沿用同一个跨进程 `flock`，另有 ROS 发布者、反馈新鲜度、配置合同检查。
 
-控制码只以随机盐和 PBKDF2-SHA256（600,000 次）的摘要保存为 `runtime/control_code.json`，文件权限 0600。
-部署时在 F1 本机通过标准输入设置，不放源码、网页、URL 或发布清单：
-
-```bash
-cd /home/user/Bruno/F1-infra/current
-read -r -s -p '新控制码: ' f1_control_code
-printf '\n'
-printf '%s\n' "$f1_control_code" | python3 control_auth.py --runtime /home/user/Bruno/F1-infra/runtime
-unset f1_control_code
-```
+当前不配置或验证安全码、访问码；迁移与兼容说明见 [直接操作](DIRECT_OPERATION.md)。
 
 ## 状态与相机
 
@@ -84,7 +79,7 @@ POST `/api/actions` 必须先认证，并持有有效 `lease_id`。
 | `base` | `vx,vy,wz,ttl_s` | 线速度 m/s、角速度 rad/s；已开放现场点动；持续续期仍最多 6 秒 |
 | `base_jog` | `targets:{vx,vy,wz},ttl_s` | 兼容前端写法，转换为 `base` |
 
-`POST /api/actions/plan` 同样需要认证和 `lease_id`，接收 `kind:joints/lift` 及上述字段，返回 `{ok:true, plan:{origin,targets,motion_s,max_action_s,fixed_speed}}`。它只计算预览，不创建命令发布者、不占动作 ID。正式执行会重新读取反馈并规划，预览不是之后必定可执行的承诺。
+`POST /api/actions/plan` 同样需要同源会话和 `lease_id`，接收 `kind:joints/lift` 及上述字段，返回 `{ok:true, plan:{origin,targets,motion_s,max_action_s,fixed_speed}}`。它只计算预览，不创建命令发布者、不占动作 ID。正式执行会重新读取反馈并规划，预览不是之后必定可执行的承诺。
 
 F1-09 使用固定速度与加速度配置，旧 `duration_s` 在本机固定速度模式下忽略。取消 5° 单次步幅，保留本机关节范围；规划运动最多 5.7 秒，预留连续到位检查，执行预算 6 秒。大幅目标超预算返回 409 并提示拆分。双臂、身体、头部、升降、夹爪及底盘已按本机profile开放；当前姿态入口使用下文kind:pose；软件接口验证不等于实物动作验收。身体单独使用 200Hz 五次曲线和绝对调度，身体+双臂混合请求会要求分组执行。动作结果 `command_timing` 包含 `target_hz,samples,actual_hz,p95_gap_ms,max_gap_ms,scope`（应用下发时刻，不是电机内部 servo 或 DDS 到达时刻）；调度间隔超过 25ms 会失败停发。参数与停止语义见 [POSE.md](POSE.md)。
 
@@ -101,7 +96,7 @@ F1-09 使用固定速度与加速度配置，旧 `duration_s` 在本机固定速
 | POST `/api/presets/import` | `{presets:[...]}`；一次 1–100 条，全部校验后原子写入 |
 | POST `/api/presets/delete` | `{id}` |
 
-写入需要认证但不需要控制租约。保存/导入/载入预设均不执行机器人动作。
+写入需要同源会话但不需要控制租约。保存/导入/载入预设均不执行机器人动作。
 格式 `f1_console_preset_v1`，记录机器人、度单位、创建时间、来源和 profile SHA。导入显式 units 必须为 degree，旧文件省略 units 时按 degree 兼容。前端逐项导出使用 `{schema:"f1-console-presets-v1",robot_id,presets:[一项]}`。profile.default_presets 按 key 仅初始化一次，默认 LXL XY 包含双臂 14 轴，用户已有项不覆盖；删除后由 presets.defaults.json 保持删除状态。
 
 ## 本地数据浏览与审核
@@ -112,7 +107,8 @@ F1-09 使用固定速度与加速度配置，旧 `duration_s` 在本机固定速
 | GET `/api/data/catalog` | 同 `/api/data` |
 | GET `/api/data/episodes/<id>` | `{episode}`，ID 为列表返回的 24 位十六进制不透明值，不是文件路径 |
 | GET `/api/data/recording` | `{recording}`，只读观察，无启动/停止副作用 |
-| POST `/api/data/reviews` | `{episode_id,status:'pending'或'approved'或'rejected',notes,expected_source_signature}`；需要认证，返回 `{review}` |
+| POST `/api/data/reviews` | `{episode_id,status:'pending'或'approved'或'rejected',notes,expected_source_signature,expected_review_revision}`；需要同源会话，返回 `{review}` |
+| POST `/api/data/notes` | `{episode_id,notes,expected_source_signature,expected_review_revision}`；仅保存备注，返回 `{review}`；不读取客户端 `status` |
 
 Episode 字段：
 
@@ -123,9 +119,12 @@ Episode 字段：
 - `metadata_sha256,source_signature,review,preview_url`。`preview_url` 仅当原始路径和 metadata SHA 匹配已有抽帧证据时给出，否则为 null。
 
 Review 字段：`status,notes,updated_at,reviewer,source_signature,metadata_sha256,stale`。
+备注独立写入时另含 `notes_updated_at,notes_editor`，保留既有 `status,updated_at,reviewer`。首次仅写备注仍为 `pending`，不会伪造审核时间或审核人；空字符串清空备注，最多4,000字符，非文本或超长返回400。只改备注也会更新 `revision`，防止旧审核表单覆盖新备注。
 来源变化后返回 `status:'pending',stale:true,previous_review`，旧意见不自动沿用到新数据。
-提交必须带打开条目时的 `expected_source_signature`；来源已变则拒绝并要求刷新重审。
-审核只写独立 `runtime/data_reviews/<id>.json`；不重命名、删改 MCAP，不配置传输/转换。
+提交必须带打开条目时的 `expected_source_signature` 与 `review.revision`（请求字段 `expected_review_revision`）；来源已变、缺少版本或其他窗口已更新均返回可区分的 409 和当前审核摘要，不覆盖新结论。
+按2026-10-26用户要求，备注／审核写入每条录制目录的独立 `f1-annotations.json`，成功返回前执行文件与目录同步；不重命名、删改MCAP、journal或payload，不配置传输／转换。该文件为权威记录，`runtime/data_reviews/<id>.json`仅作为旧备份和无随行文件时的兼容来源；旧备份不覆盖新文件。
+
+文件携带schema、原位置、迁移定位信息和review正文；复制到新位置且定位信息匹配时恢复备注，历史审核保留在`previous_review`，当前状态回到pending，不把迁移当成重新验收。备注文件和临时写入文件不计入原始来源签名／体积。目录锁与版本校验避免多个工作台互相覆盖；无写权限、磁盘满、损坏或符号链接不会退回浏览器假报保存成功。
 
 `source_signature` 是路径、文件大小/mtime 和 metadata SHA 的轻量变更检测，**不是完整 MCAP 内容哈希或完整性验收**。
 审核结果仅表示操作员给出的内容意见，不自动等于通过训练监督合同。
@@ -174,17 +173,17 @@ LeRobot 上肢为 16 维；至多 2,000 点（含首尾），带 `action_held,ac
 
 ## 网页遥操会话
 
-`GET /api/teleop/state` 返回 `{teleop:{phase,variant,id,available,can_confirm,can_stop,legacy_config,log_tail,error}}`；GET 无启动副作用，状态每秒轮询。`nonce` 仅在当前浏览器拥有待确认会话时返回。
+新会话由一次启动点击继续，旧待确认会话协议仅供取消/兼容，不自动启动。`GET /api/teleop/state` 返回 `{teleop:{phase,variant,id,available,can_confirm,can_stop,legacy_config,log_tail,error}}`；GET 无启动副作用，状态每秒轮询。`nonce` 仅在当前浏览器拥有待确认会话时返回。
 
-所有写接口沿用登录 cookie、同源 Origin 与 `X-F1-Request: 1`，不接收脚本路径或 shell 文本：
+所有写接口沿用浏览器 cookie、同源 Origin 与 `X-F1-Request: 1`，不接收脚本路径或 shell 文本：
 
 | POST | JSON | 行为 |
 |---|---|---|
-| `/api/teleop/prepare` | `{"variant":"upper"}` 或 `lxl` | 固定进程组启动只读准备；互斥检查后等待确认 |
+| `/api/teleop/prepare` | `{"variant":"upper"}` 或 `lxl` | 固定进程组预检；本次请求保存direct_start意图，通过后继续启动 |
 | `/api/teleop/confirm` | `{"session_id":"...","nonce":"..."}` | 仅发起者、有效 nonce、无网页动作会话可确认 |
 | `/api/teleop/stop` | `{"session_id":"..."}` | 取消准备或停止本网页会话，不以动作租约/录制结束为门槛 |
 
-成功 200 返回 `{ok:true,teleop:...}`；未登录 401，同源校验失败 403，状态冲突/未知版本/离线模式 409。POST 成功只代表操作受理，以后续 phase 为准。停止接口不接管现场启动的外部 Pico。详见 [Pico 使用说明](PICO.md)。
+成功 200 返回 `{ok:true,teleop:...}`；同源校验失败 403，状态冲突/未知版本/离线模式 409。POST 成功只代表操作受理，以后续 phase 为准。停止接口不接管现场启动的外部 Pico。详见 [Pico 使用说明](PICO.md)。
 
 
 ## v12：相对升降与固定基础启动
@@ -261,4 +260,17 @@ GET `/api/data/hil/<id>/timeline`：原始观测数、实际时间跨度与频�
 
 需已有登录和同源请求，不需要动作租约。请求：`{"confirm":true,"episodes":[{"id":"24位目录ID","source_signature":"目录返回的签名"}]}`，1–100条且不可重复。
 
-预检失败返回409且不删除任何条目；未登录401、跨源403。通过后返回 `ok:true, complete, transaction, results`，逐条 `state` 为 `pending/staged/raw_deleted/deleted`，失败附 `error`。`complete:false` 必须提示局部清理失败并保留事务ID，不能显示全部成功。客户端超时不代表服务端未执行，应刷新目录并核对事务记录，不能自动重试。删除范围和并发约束见 DATA 文档。
+预检失败返回409且不删除任何条目；跨源403。通过后返回 `ok:true, complete, transaction, results`，逐条 `state` 为 `pending/staged/raw_deleted/deleted`，失败附 `error`。`complete:false` 必须提示局部清理失败并保留事务ID，不能显示全部成功。客户端超时不代表服务端未执行，应刷新目录并核对事务记录，不能自动重试。删除范围和并发约束见 DATA 文档。
+
+
+### 数据版本分类
+
+`GET /api/data` 的 `organization` 包含 `{schema:1, revision, folders, memberships}`。自建文件夹为 `{id:"@<32hex>", parent, name}`，parent 是来源目录路径、空字符串（根目录）或自建文件夹 ID。memberships 以录制 ID 索引，值为 `{folder, source_signature}`。读取失败时仍返回原始目录，并附 `organization_error`，禁止分类写入。
+
+`POST /api/data/organization` 需要同源校验和浏览器会话，无需运动租约。所有请求必填 `expected_revision`：
+
+- `operation:create`：`parent, name`。
+- `operation:rename`：`folder_id, name`。
+- `operation:move`：`target`，以及 `folder_id` 或 `episodes:[{id,source_signature}]`（1–100 条）。
+
+成功返回 `{ok:true, organization}`；409 的 `organization_conflict` 或 `source_changed` 返回当前 organization。参数错误为 400；写盘错误为 500。批量全量校验后一次原子保存；并发使用进程文件锁串行化，旧 revision 不覆盖新分类。来源文件只读；分类没有机器人动作副作用，也不修改采集格式和数据身份。最多 2000 个自建文件夹、32 层嵌套；本接口不删除文件夹或原件。

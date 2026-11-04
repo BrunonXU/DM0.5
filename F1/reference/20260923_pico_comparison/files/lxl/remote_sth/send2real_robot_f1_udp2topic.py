@@ -33,7 +33,7 @@ target_left = ip_config.reset_left
 target_right = ip_config.reset_right
 
 # ========================== 配置 ==========================
-# LOCAL_IP = "192.168.2.101"   # ← 确认这是你当前的 IP
+# LOCAL_IP = "192.0.2.13"   # ← 确认这是你当前的 IP
 # UDP_PORT = 8888
 
 

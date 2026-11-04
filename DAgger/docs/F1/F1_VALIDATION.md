@@ -2,6 +2,10 @@
 
 始建：2026-09-28；更新：2026-10-09。范围：软件实现、离线/ARM数值验证、真实相机零输出shadow、授权配置部署及用户现场动作记录；实际动作由用户本地启动。
 
+本文保留旧版本的验收事实，当前运行状态见 [STATUS](STATUS.md)。2026-10-23 工作区整理只改变开发机依赖的位置，不重新定义历史验收结论；新环境准备请使用 [当前导出说明](F1_HG_DAGGER.md#6000d审计人工审阅导出)。
+
+LeRobot 当前路径为 `/home/user/Libraries/third_party/lerobot`，新的 `F1_TEST_LEROBOT_ROOT` 与 `F1_LEROBOT_ROOT` 均应指向这里；下方日期记录中的原始测试命令按当时路径保留。迁移与版本保全说明见 [Libraries](../../../workspace/Libraries/README.md)。
+
 ## v15：连续领先约束（2026-10-09 已验收部署，现场手感待验证）
 
 修复v14-r2持续输入时的整臂目标硬回拉。领先门槛仍为0.03rad，改为QP内约束每个关节的新增参考增量，已接受的可行参考保持连续；任意次轴反号不再重置整臂。关节位置、腕部耦合、速度/单步、输出加速度/jerk和完整轨迹认证不放宽，G2公共实现、Windows输入和相机/4242启动保持不变。
@@ -14,7 +18,7 @@
 
 机载补记：v15已上传至 `/home/user/Bruno/DAgger/releases/20261009-f1-hgdagger-v15/DAgger`，99文件逐项核验。包SHA256 `2315717bcd9aba2792e457edacf0333b9b2563680fee33cbd67e48e0425e374f`；manifest SHA256 `9dc98bd5ff6f4b6dfa1cb92f956d19c08a5187601f5bb89c3b2af556348707c8`；源码SHA256 `8f29cc4370fa31b93207025794c7f949343f1a4fefd37aede2d8b63753f2ea31`。实际ARM的57模型/碰撞、64恢复与65平滑性验证全部通过；报告在 `results/deployments/20261009-f1-hgdagger-v15/`。与v14-r2清单比较，G2公共源码、Windows客户端、全部配置和相机/4242启动文件均未变化。
 
-最初本次开机后motor_ctl_node为0，两次只读preflight失败。用户随后现场完成4242基础启动，2026-10-09 03:32:29 UTC重新preflight通过：机器ID `90429b8a96e04ef79dbc12175b538115`，唯一同用户motor_ctl_node PID430607，原控制二进制哈希一致；未创建动作端点或切换模式。证据为部署目录 `preflight_started.log`。
+最初本次开机后motor_ctl_node为0，两次只读preflight失败。用户随后现场完成4242基础启动，2026-10-09 03:32:29 UTC重新preflight通过：机器ID `00000000000000000000000000000000`，唯一同用户motor_ctl_node PID430607，原控制二进制哈希一致；未创建动作端点或切换模式。证据为部署目录 `preflight_started.log`。
 
 已启动独立19398端口的零输出shadow，runtime为 `/home/user/Bruno/DAgger-runtime/shadow-soak-20261009-v15`。本地日志收到 `SOAK waiting for START with continuous recording`、`SOAK connected phase=0 duration=120` 后SSH超时，管理进程退出255。随后新连接也在banner阶段超时，用户确认“F1掉了”，要求先完成其余本地工作。因此本轮最终报告、进程退出/写盘状态及帧率尚未回收；这是管理连接中断，不能直接认定机载shadow通过或失败。未远程启动powered或驱动，也未修改网络和超时保护。
 
@@ -138,10 +142,10 @@ v3 现场开始前的历史状态：现场 F710/运动验收需要用户在机�
 测试命令（本次临时环境保留在 /tmp，后续可按 requirements 重建）：
 
 ```bash
-cd /home/xza_100850113/projects/DAgger
+cd /home/user/projects/DAgger
 PYTHONPATH=src:../g2_robot /tmp/f1-dagger-check/bin/python -m pytest -q tests
 PYTHONPATH=src:../g2_robot \
-F1_TEST_LEROBOT_ROOT=/home/xza_100850113/projects/third_party/lerobot \
+F1_TEST_LEROBOT_ROOT=/home/user/projects/third_party/lerobot \
 /tmp/f1-export-check/bin/python -m pytest -q tests/test_f1_recording.py
 ```
 
@@ -273,7 +277,7 @@ v5本地包已生成：`/tmp/f1-dagger-20260928-stage-v5.tar.gz`，86文件，SH
 
 ## 2026-10-08 v7 上线部署
 
-用户重新授权上线，已经原F1-09反向SSH只读核对 machine-id、192.168.31.58 Wi-Fi、工作台v22、profile、驱动二进制及声明参数。本次部署新增v7目录，无同名旧目录；旧v1–v4和工作台入口保留，不切换或终止其他任务。包SHA256 `d6990790ed43762531a9dd3f065edf3161eede885e387fe21acc34da8da82fb2`，86文件远端逐项通过。当前代码与包一致，Windows相对v4只需更新 `scripts/03_windows_f1_sender.py`。
+用户重新授权上线，已经原F1-09反向SSH只读核对 machine-id、192.0.2.3 Wi-Fi、工作台v22、profile、驱动二进制及声明参数。本次部署新增v7目录，无同名旧目录；旧v1–v4和工作台入口保留，不切换或终止其他任务。包SHA256 `d6990790ed43762531a9dd3f065edf3161eede885e387fe21acc34da8da82fb2`，86文件远端逐项通过。当前代码与包一致，Windows相对v4只需更新 `scripts/03_windows_f1_sender.py`。
 
 真实ROS零输出shadow为 `/home/user/Bruno/DAgger-runtime/shadow-smoke-20261008-v7/`，专用19397端口归属启动进程核验后才发送合成START/双臂意图。200ACK、46组观测、971控制记录；audit valid=true，所有submitted为空；HIL/SAFE_HOLD及human_arm/human_hold均存在；退出码0。此探针不是Windows手柄或物理运动验收。控制间隔中位4.088ms、最大16.279ms；三图实际10.087Hz，不能将配置30Hz当实测通过。
 

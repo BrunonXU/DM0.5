@@ -45,6 +45,10 @@ def publish_completion(runtime, run, binding, phase, errors=()):
     if phase == 'saved':
         try:
             m = json.loads((run/'journal/manifest.json').read_text())
+            from .recording import control_integrity_error
+            integrity_error = control_integrity_error(m)
+            if integrity_error:
+                raise ValueError(integrity_error)
             if not m.get('complete') or m.get('writer_error') or m.get('drop_count'):
                 raise ValueError('journal did not commit cleanly')
             result['observations'] = m['counts']['observations']
@@ -60,5 +64,10 @@ def publish_completion(runtime, run, binding, phase, errors=()):
                 result['phase'] = 'ended'
         except (OSError, ValueError, KeyError) as exc:
             result.update(phase='failed', errors=[str(exc)])
-    atomic(Path(runtime)/'last-session.json', result)
+    try:
+        atomic(Path(runtime)/'last-session.json', result)
+    except OSError as exc:
+        # This index is derived. Failure must not skip raw writer finalization
+        # or turn already committed, validated manifests into failed sources.
+        result['notification_error'] = type(exc).__name__ + ': ' + str(exc)
     return result

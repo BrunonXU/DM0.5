@@ -10,7 +10,7 @@ IDE端口面板转发8876后，使用面板中的实际本地地址；它可能�
 若拒绝连接或超时，可以在 **Windows本地PowerShell**（不要在远程6000D终端）运行独立隧道：
 
 ```powershell
-ssh -N -T -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -L 127.0.0.1:18876:127.0.0.1:8876 -p 22 xza_100850113@10.130.153.114
+ssh -N -T -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -L 127.0.0.1:18876:127.0.0.1:8876 -p 22 user@192.0.2.1
 ```
 
 按通常的SSH方式登录，保持该窗口运行；连接成功后没有输出是正常现象。

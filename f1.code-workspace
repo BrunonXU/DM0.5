@@ -1,0 +1,56 @@
+{
+  "folders": [
+    {
+      "name": "01 · F1积木任务",
+      "path": "tasks/F1_ComplexyToys"
+    },
+    {
+      "name": "02 · DAgger运行与采集",
+      "path": "DAgger"
+    },
+    {
+      "name": "03 · F1-infra工作台",
+      "path": "F1-4242"
+    },
+    {
+      "name": "04 · F1机器人档案",
+      "path": "F1"
+    },
+    {
+      "name": "05 · RLinf模型框架",
+      "path": "RLinf"
+    },
+    {
+      "name": "06 · Why&How阅读站",
+      "path": "../Tools/WhyHow"
+    },
+    {
+      "name": "07 · 服务器基础设施",
+      "path": "infra"
+    }
+  ],
+  "settings": {
+    "git.ignoreLimitWarning": true,
+    "files.exclude": {
+      "**/__pycache__": true,
+      "**/.pytest_cache": true,
+      "**/.venv*": true,
+      "**/node_modules": true,
+      "**/artifacts": true,
+      "**/results": true,
+      "**/checkpoints": true,
+      "**/wandb": true,
+      "**/foam_sort_whole_body": true,
+      "**/G2": true
+    },
+    "search.exclude": {
+      "**/artifacts/**": true,
+      "**/results/**": true,
+      "**/checkpoints/**": true,
+      "**/wandb/**": true,
+      "**/logs/**": true,
+      "**/runtime/**": true,
+      "**/reference/**": true
+    }
+  }
+}

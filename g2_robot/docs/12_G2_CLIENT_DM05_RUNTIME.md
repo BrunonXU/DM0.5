@@ -54,7 +54,7 @@ GPU 推理服务器
 笔记本只是运维入口。正式运行的 client 进程应在 G2 域控制器上，因为相机、
 关节状态和硬件控制都是机器人本地资源。client 不访问 checkpoint 文件，
 也不需要挂载服务器的`server/`目录；它只配置
-正式Sync使用`ws://10.130.153.114:7892/process_frame`的native-image binary WebSocket；
+正式Sync使用`ws://192.0.2.1:7892/process_frame`的native-image binary WebSocket；
 7892 HTTP只保留为首测回退。
 
 ## 3. 代码边界
@@ -93,7 +93,7 @@ GPU 推理服务器
 默认 endpoint：
 
 ```text
-http://10.130.153.114:7892/process_frame
+http://192.0.2.1:7892/process_frame
 ```
 
 请求是`multipart/form-data`：

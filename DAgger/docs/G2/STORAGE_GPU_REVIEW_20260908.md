@@ -49,7 +49,7 @@ Docker报告：Images263.2GB/可回收63.7GB；Containers12.47GB/可回收12.45G
 |DM0.5|2.85|26.3%|
 |G2Teleop|0.66|6.1%|
 
-DAgger代码在/home/agi/xza/DAgger约22MiB，data/logs通过符号链接落在/data/logs/xza/DAgger；DM0.5约2.9GiB几乎都是旧日志；G2Teleop约675MiB，其中日志506MiB。PI0.5/RLinf是4KiB占位目录。
+DAgger代码在/home/user/xza/DAgger约22MiB，data/logs通过符号链接落在/data/logs/xza/DAgger；DM0.5约2.9GiB几乎都是旧日志；G2Teleop约675MiB，其中日志506MiB。PI0.5/RLinf是4KiB占位目录。
 /data可读分布：.cache约23GiB、record20GiB、ota15GiB、logs9.8GiB（含DAgger7.3GiB）、dlb635MiB。前几项包含机器人系统/其他任务，未证实可删；不应一键清理。
 
 ## 三轮记录清理建议

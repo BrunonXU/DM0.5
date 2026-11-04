@@ -10,7 +10,7 @@
 - logs：16文件，77051151字节。
 - 迁移后系统盘可用2159341568字节；/data原有约1.4TB可用。
 
-用户仍从/home/agi/xza/DAgger运行，无需更改Windows。只迁移本项目data/logs，未改系统服务及其他项目。/data/logs/xza/DAgger包含需要保留的实验原始数据，不是可随意清理的缓存；尚未核对系统是否有通用日志保留策略。
+用户仍从/home/user/xza/DAgger运行，无需更改Windows。只迁移本项目data/logs，未改系统服务及其他项目。/data/logs/xza/DAgger包含需要保留的实验原始数据，不是可随意清理的缓存；尚未核对系统是否有通用日志保留策略。
 
 补充文件预检：解析实际目标卷，data/logs/telemetry要求2GiB启动余量，/tmp要求256MiB。该数值是存储余量，不能保证任意时长录制都装得下；运行中写盘失败仍停止候选。writer异常现在保留payload/journal具体错误，不再只显示笼统recording writer failed。
 

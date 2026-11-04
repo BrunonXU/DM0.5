@@ -18,7 +18,7 @@ related: []
 
 > 日期：2026-08-21  
 > 适用范围：NewLora 75K、7893五步fixed-prefix compile、G2完整Split双臂+双手RTC  
-> 客户端源码：`/home/xza_100850113/projects/g2_robot`  
+> 客户端源码：`/home/user/projects/g2_robot`  
 > 状态：实现及无GDK测试完成；G2双GDK只读Preflight和新架构Powered尚待操作者现场运行
 
 ## 1. 结论
@@ -224,7 +224,7 @@ ActionChunk
 可单独运行：
 
 ```bash
-cd /home/agi/xza/DM0.5
+cd /home/user/xza/DM0.5
 ./scripts/11_rtc_process_isolation_preflight.sh
 ```
 
@@ -242,7 +242,7 @@ cd /home/agi/xza/DM0.5
 09会自动重新执行Gate B，然后才请求人工授权：
 
 ```bash
-cd /home/agi/xza/DM0.5
+cd /home/user/xza/DM0.5
 ./scripts/09_powered_rtc.sh --duration-seconds 10
 ```
 

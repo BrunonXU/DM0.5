@@ -1,6 +1,12 @@
 # Whereweare 协作约定
 
-本项目是 Projects 的进度审阅与时间树。遵循工作区 PROJECT_RULES_AND_PREFERENCES.md。产品设计见 docs/DESIGN.md，当前验证见 docs/STATUS.md。
+**2026-10-23：用户已决定搁置本项目。** 暂停开发、主动审阅与日报／周报生成，不再要求其他项目协作先读取本服务；各项目 README、STATUS 和 recipe 是当前事实入口。
+
+源码、历史快照和运行数据库已整体移入 `/home/user/Archive/Whereweare`；投入状态为 `paused`，自动审阅关闭，本项目服务停止并取消自启。只有用户明确要求恢复后，才恢复开发、审阅或服务自启；届时先核对迁移后的来源注册表、显式 workspace 与 tracking 存储位置。搁置前的入口及使用约定仅供恢复时参考，不能作为继续执行的授权。
+
+本项目原用于 Projects 的进度审阅与时间树。遵循工作区 [PROJECT_RULES_AND_PREFERENCES.md](../PROJECT_RULES_AND_PREFERENCES.md)；搁置执行状态见 [docs/STATUS.md](docs/STATUS.md)，产品设计见 [docs/DESIGN.md](docs/DESIGN.md)。
+
+## 搁置前的协作约定（恢复后适用）
 
 - 2026-10-13 用户明确：只做桌面网页，不设计或开发手机端、手机导航与手势适配。后续设计以 docs/EXTERNAL_BRAIN_UIUX_PROPOSAL.md 和真实产品参考 docs/DESKTOP_DESIGN_REFERENCES.md 为准；被否决的生成图只保留在历史中。用户现已授权按 Linear 方向实施；整体链路常驻首页，时间线区分成果、改动、决定与验证缺口。只更新本机 Whereweare 服务。
 - 用户选择横向分叉时间树：同一天垂直对齐；主线红色，支线保留区别，归档灰色。主页只显示关键变化与短标题，逐层展开。不要恢复专注计时、统计卡片或长文首页。

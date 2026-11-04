@@ -7,8 +7,43 @@ import time
 import numpy as np
 from .config import infra_import, pico_paths
 from .contract import ARM_NAMES, FULL_NAMES, MODEL_NAMES, vector, sha256
+from .faults import TargetExpired
 
 KEYS = ('joint_command', 'left_gripper_command', 'right_gripper_command')
+
+
+class CandidateSafetyRejected(RuntimeError):
+    """A collision/CoM gate veto, before a candidate enters the output owner."""
+
+    def __init__(self, message, *, details=None):
+        super().__init__(message)
+        self.details = dict(details or {})
+
+
+class StationaryOutputTimingFault(RuntimeError):
+    """Timing guard tripped while both arms were disabled and planner stationary.
+
+    This is only a classification; runtime must verify physical safety and
+    require a fresh recovery handshake before granting any motion.
+    """
+
+
+def stationary_timing_fault(snapshot, held):
+    if not snapshot.get('timed_out') or snapshot.get('enabled') != [False, False]:
+        return False
+    gap, age = snapshot.get('output_gap_ms'), snapshot.get('target_age_ms')
+    if gap is None or age is None or not np.isfinite([gap, age]).all() or gap <= 50 or not 0 <= age <= 150:
+        return False
+    planner = snapshot.get('planner', {})
+    for name in ('velocity', 'acceleration'):
+        value = np.asarray(planner.get(name, []))
+        if value.shape != (14,) or not np.isfinite(value).all() or np.any(value != 0):
+            return False
+    for name in ('position', 'target'):
+        value = np.asarray(snapshot.get(name, []))
+        if value.shape != (14,) or not np.isfinite(value).all() or not np.allclose(value, held[:14], rtol=0, atol=1e-9):
+            return False
+    return True
 
 
 class ControlLock:
@@ -85,6 +120,7 @@ class CollisionGate:
             transform='mesh_paths_only', joint_map=cfg['joint_map']), indent=2))
         config_path = runtime/'collision.yaml'
         config_path.write_text(yaml.safe_dump(cfg))
+        self.config_path = config_path
         from com_and_collision_protect_modules import SafetyProtector
         self.protector = SafetyProtector(config_path=str(config_path), use_com_guard=True,
                                           use_collision_guard=True, verbose=False)
@@ -94,6 +130,33 @@ class CollisionGate:
         self.protector.init_safe_cmd(np.r_[mapping.to_model(full22), 0., 0.])
         initial = np.r_[vector(full22, 22)[:14], 0., 0.]
         self.check(initial, full22)
+        # Plain data only: a spawned preflight worker must not inherit ROS or
+        # native guard objects from the control process.
+        self.plan_worker_spec = dict(config=json.loads(json.dumps(config)),
+            limits=mapping.limits.tolist(), full22=vector(full22, 22).tolist(),
+            runtime=str(runtime/'plan_worker'))
+
+    def independent_copy(self, full22):
+        """Independent native collision state for the single inference worker.
+
+        Native distance-request objects cannot be deep-copied. Reconstruct from
+        the same frozen config/cache before control starts; never share guards.
+        """
+        from com_and_collision_protect_modules import CombinedSafetyGuard
+        import copy
+        other = object.__new__(type(self))
+        other.mapping, other.config_path = self.mapping, self.config_path
+        # Reuse the already verified MJCF/config, with new native working data.
+        # Re-running URDF conversion is unnecessary and can change cache paths.
+        fresh = CombinedSafetyGuard.from_config(self.protector.mjcf_path, self.protector.cfg)
+        other.protector = copy.copy(self.protector)
+        other.protector._safety_guard = fresh
+        other.protector._com_guard = fresh._com_guard
+        other.protector._collision_guard = fresh._collision_guard
+        other.protector._feedback_positions = {}
+        other.protector._last_com_result = other.protector._last_collision_result = None
+        other.protector.init_safe_cmd(np.r_[self.mapping.to_model(full22), 0., 0.])
+        return other
 
     def check(self, action, full22):
         target = vector(full22, 22)
@@ -102,8 +165,37 @@ class CollisionGate:
         self.protector.set_feedback(dict(zip(FULL_NAMES, self.mapping.to_model(full22))))
         safe, indices, _unused_model_fallback, flags = self.protector.run(np.r_[model, 0., 0.])
         if not safe:
-            raise RuntimeError('F1 collision/CoM rejected target: ' + self.protector.last_reason)
-        return dict(safe=True, arm_collision_indices=list(indices))
+            raise CandidateSafetyRejected('F1 collision/CoM rejected target: ' + self.protector.last_reason)
+        result = getattr(self.protector, 'last_collision_result', None)
+        return dict(safe=True, arm_collision_indices=list(indices),
+                    collision_pair=None if result is None else list(result.collision_pair or ()),
+                    clearance_m=None if result is None else float(result.signed_clearance))
+
+    def check_preventive(self, action, full22):
+        """Do not use the legacy penetration allowance to authorize recovery.
+
+        Zero is the proxy geometry's contact boundary, not a calibrated physical
+        stopping margin. The existing hard gate remains unchanged underneath.
+        """
+        evidence = self.check(action, full22)
+        gap = evidence['clearance_m']
+        if gap is None or not np.isfinite(gap) or gap <= 0:
+            raise CandidateSafetyRejected(
+                'F1 preventive boundary: nonpositive or unknown clearance '
+                f"(clearance_m={gap}, pair={evidence.get('collision_pair')})",
+                details=dict(evidence, reason='preventive_collision_boundary'))
+        return evidence
+
+
+def collision_gate_from_spec(spec):
+    """Initialize a pure safety worker from the same pinned model/limits."""
+    from .contract import JointMapping
+    config = spec['config']
+    root = Path(config['_infra_root'])
+    profile = dict(joint_limits_deg=dict(zip(ARM_NAMES, spec['limits'])))
+    mapping = JointMapping(json.loads((root/'configs/model_mapping.json').read_text()), profile,
+        root/'web/models/f1_wheel/urdf/f1_wheel_0602_new.urdf')
+    return CollisionGate(config, mapping, spec['runtime'], spec['full22'])
 
 
 def make_output(config):
@@ -133,6 +225,11 @@ class F1Owner:
         self.updated = None
         self.field_times = [None] * 16
         self.gripper_sent = [False, False]
+        self.state_valid_mask = tuple(getattr(source, 'state_valid_mask', (True,) * 16))
+        from .hardware import validate_mask
+        if not all(self.state_valid_mask):
+            validate_mask(self.state_valid_mask)
+        self.keys = tuple(k for k in KEYS if k != 'left_gripper_command' or self.state_valid_mask[14])
 
     def initialize(self, now):
         full, state, _ = self.source.feedback()
@@ -146,7 +243,7 @@ class F1Owner:
     def prepare(self):
         if self.powered and not self.prepared:
             try:
-                for key in KEYS:
+                for key in self.keys:
                     self.transport.prepare(key)
             except BaseException:
                 self.close()
@@ -164,8 +261,25 @@ class F1Owner:
     def approve(self, target, now, *, enabled=(True, True)):
         full, _, _ = self.source.feedback()
         target = self.mapping.check_action(target)
-        self.gate.check(target, full)
+        check = (getattr(self.gate, 'check_preventive', self.gate.check)
+                 if getattr(self, 'preventive_boundary_recovery', False) else self.gate.check)
+        check(target, full)
         self.output.push(target[:14], now, enabled=enabled)
+        self.selected, self.updated = target, now
+
+    def hold_measured_right(self, now):
+        """Flush motion and hold fresh measured right arm; preserve other targets.
+
+        Do not rewrite submitted provenance: publish() commits the new target.
+        Used only at an explicitly handled standalone IK rejection boundary.
+        """
+        full, measured, _ = self.source.feedback()
+        target = self.last_submitted.copy()
+        target[7:14] = measured[7:14]
+        target = self.mapping.check_action(target)
+        self.gate.check(target, full)
+        self.output.reset()
+        self.output.push(target[:14], now, enabled=(False, False))
         self.selected, self.updated = target, now
 
     def _output_snapshot(self, now):
@@ -207,7 +321,7 @@ class F1Owner:
         full, measured, _ = self.source.feedback()
         evidence['stage'] = 'target_validation'
         if self.updated is None or not 0 <= now-self.updated <= .15:
-            raise RuntimeError('approved target stale')
+            raise TargetExpired('approved target stale')
         # sample() holds the planner on failure, clearing its velocity and
         # acceleration. Retain pre-sample state only in fault evidence.
         output_snapshot = self._output_snapshot(now)
@@ -218,11 +332,22 @@ class F1Owner:
             evidence.update(stage='output_sample', output_fault=fault,
                             output_diagnostics=output_snapshot)
             output_snapshot['timed_out'] = bool(getattr(self.output, 'timed_out', False))
+            stationary = stationary_timing_fault(output_snapshot, self.last_submitted)
             self.hold(now)
-            raise RuntimeError('F1 output fault latched: ' + fault)
+            error = StationaryOutputTimingFault if stationary else RuntimeError
+            raise error('F1 output fault latched: ' + fault)
         command = self.mapping.check_action(np.r_[arms, self.selected[14:]])
+        # Smoothing can leave the straight waypoint path. Check the actual
+        # command too, before ANY topic is written; failures here remain hard.
+        evidence['stage'] = 'publication_collision_check'
+        if getattr(self, 'preventive_boundary_recovery', False):
+            getattr(self.gate, 'check_preventive', self.gate.check)(command, full)
         # Runtime invokes this on a single owner thread. This is publication
         # evidence, not a hardware acknowledgement or measured arrival.
+        if not self.state_valid_mask[14]:
+            command[14] = 0.  # Explicit inactive storage slot; never published.
+            evidence.update(state_valid_mask=list(self.state_valid_mask),
+                            action_valid_mask=list(self.state_valid_mask))
         evidence['attempted_command'] = command.tolist()
         if self.powered:
             evidence['stage'] = 'endpoint_check'
@@ -230,6 +355,8 @@ class F1Owner:
                 raise RuntimeError('command endpoints are not explicitly prepared')
             values = (dict(zip(ARM_NAMES, command[:14])), float(command[14]), float(command[15]))
             for index, (key, value) in enumerate(zip(KEYS, values)):
+                if key not in self.keys:
+                    continue
                 evidence['stage'] = 'exclusive_check'
                 evidence['topic_key'] = key
                 self.transport.assert_exclusive_cached(key)
@@ -255,6 +382,6 @@ class F1Owner:
         return command, measured, evidence
 
     def close(self):
-        for key in KEYS:
+        for key in self.keys:
             self.transport.release(key)
         self.prepared = False

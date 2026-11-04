@@ -29,7 +29,7 @@ from g2teleop.pink_ik import IKSafety
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_REPLAY = Path("/home/agi/xza/DM0.5/g2_sort/config/training_replay_v1.json")
+DEFAULT_REPLAY = Path("/home/user/xza/DM0.5/g2_sort/config/training_replay_v1.json")
 
 
 def parse_args() -> argparse.Namespace:
@@ -64,7 +64,7 @@ def parse_args() -> argparse.Namespace:
         "--offline-artifact-npz",
         type=Path,
         default=Path(
-            "/home/agi/xza/DM0.5/logs/diagnostics/"
+            "/home/user/xza/DM0.5/logs/diagnostics/"
             f"g2_bc_eef_causal_commands_{stamp}.npz"
         ),
         help="offline-only frozen Q-direct/Q-pink/Q-otg artifact",
@@ -73,7 +73,7 @@ def parse_args() -> argparse.Namespace:
         "--telemetry-jsonl",
         type=Path,
         default=Path(
-            "/home/agi/xza/DM0.5/logs/telemetry/shadow/"
+            "/home/user/xza/DM0.5/logs/telemetry/shadow/"
             f"g2_bc_eef_causal_commands_{stamp}.jsonl"
         ),
     )

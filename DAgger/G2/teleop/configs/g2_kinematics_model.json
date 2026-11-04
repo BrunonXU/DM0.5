@@ -6,15 +6,15 @@
   "model_location_policy": "reference_vendor_files_in_place_on_g2_do_not_export_by_default",
   "sources": {
     "arm_urdf": {
-      "path_on_g2": "/home/agi/app/share/genie_robot_description/urdf/G2_t2_crs/G2_t2_crs.urdf",
+      "path_on_g2": "/home/user/app/share/genie_robot_description/urdf/G2_t2_crs/G2_t2_crs.urdf",
       "sha256": "03a47cfd296ad5ab1b32c65b25ed9b235298d2568790a6cb14b35c0016450ec1"
     },
     "full_o10_mjcf": {
-      "path_on_g2": "/home/agi/app/share/genie_robot_description/mjcf/G2_t2_crs_o10_t2_flat.xml",
+      "path_on_g2": "/home/user/app/share/genie_robot_description/mjcf/G2_t2_crs_o10_t2_flat.xml",
       "sha256": "049561a02b7ffd5d65c773341c42d19abd5312f3f94bf6a2e85f00739b9a772b"
     },
     "o10_srdf": {
-      "path_on_g2": "/home/agi/app/share/genie_robot_description/srdf/G2_t2_crs/G2_t2_crs_o10_t2.srdf",
+      "path_on_g2": "/home/user/app/share/genie_robot_description/srdf/G2_t2_crs/G2_t2_crs_o10_t2.srdf",
       "sha256": "d8704e587a2781ee95af56c605878ba3bf8f11a3dbcf5a54a6d555387b032f28"
     }
   },

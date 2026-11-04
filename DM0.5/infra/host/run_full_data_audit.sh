@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PROJECT_ROOT="/home/xza_100850113/projects/DM0.5"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 # The official training image intentionally lacks h5py. This project image is
 # used only for H5/video preprocessing; model training remains on the pinned
 # official Dexmal image in run_full_8gpu_benchmark.sh.

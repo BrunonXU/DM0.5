@@ -8,6 +8,7 @@ const profile = JSON.parse(fs.readFileSync(path.join(root, 'configs/f1-09.json')
 const groups = {left_arm:[],right_arm:[],body:[],head:[]};
 Object.keys(profile.joint_limits_deg).forEach(n => groups[n.startsWith('arm_l')?'left_arm':n.startsWith('arm_r')?'right_arm':n.startsWith('body')?'body':'head'].push(n));
 const target = Object.assign({}, ...Object.keys(profile.joint_limits_deg).map(n => ({[n]:0})), {body_j3:-5,body_j4:-10,body_j5:-5});
+Object.assign(target,{arm_l_j1:69.97728,arm_l_j5:-.01234});
 const robot = {id:'F1-test',label:'模拟机器人',groups:groups,joint_limits_deg:profile.joint_limits_deg,capabilities:{joints:{available:true},gripper:{available:true},base:{available:true}}};
 let authenticated=false, lease=null, current=null, posts=[], mode='ready', serial=0;
 const plan = {motion_s:8.03,estimated_total_s:8.18,parts:[{label:'左臂',status:'moving'},{label:'右臂',status:'moving'},{label:'身体',status:'moving'},{label:'头部',status:'moving'}],checkpoint_count:2};
@@ -66,7 +67,7 @@ function get(url){return new Promise((resolve,reject)=>http.get(url,r=>{let body
   const until=async(expression,label)=>{for(let i=0;i<80;i++){if(await evaluate(expression))return;await wait(100);}throw Error('Timed out: '+label);};
   const click=selector=>evaluate('document.querySelector('+JSON.stringify(selector)+').click()');
   const snap=async name=>{const r=await call('Page.captureScreenshot',{format:'png'});fs.writeFileSync(path.join(output,name+'.png'),Buffer.from(r.data,'base64'));};
-  await call('Runtime.enable');await call('Page.enable');await call('Emulation.setDeviceMetricsOverride',{width:1680,height:1100,deviceScaleFactor:1,mobile:false});
+  await call('Runtime.enable');await call('Page.enable');await call('Emulation.setFocusEmulationEnabled',{enabled:true});await call('Emulation.setDeviceMetricsOverride',{width:1680,height:1100,deviceScaleFactor:1,mobile:false});
   await call('Page.navigate',{url:'http://127.0.0.1:'+port+'/#control'});
   const checks=[];
   const summary=()=>evaluate("document.querySelector('#pose-plan-summary').textContent");
@@ -74,12 +75,24 @@ function get(url){return new Promise((resolve,reject)=>http.get(url,r=>{let body
   const input=async(name,value)=>evaluate("(()=>{const el=document.querySelector('[data-target-input=\""+name+"\"]');el.value="+JSON.stringify(String(value))+";el.dispatchEvent(new Event('input',{bubbles:true}));})()");
   const waitForReview=async(before,label)=>{for(let i=0;i<80&&reviewRequests===before;i++)await wait(100);assert(reviewRequests>before,label);await wait(100);};
   await until("document.querySelector('[data-preset-index=\"0\"]')",'presets');
+  assert.strictEqual(await evaluate("document.querySelector('[data-target-input=arm_l_j1]').value"),'70.0');
+  assert.strictEqual(await evaluate("document.querySelector('[data-target-input=arm_l_j5]').value"),'0.0');
+  assert.strictEqual(await evaluate("document.querySelector('[data-joint-live=arm_l_j5]').textContent"),'0.0');
+  assert.strictEqual(await evaluate("document.querySelector('[data-gripper-live=left]').textContent"),'20');
+  await evaluate("document.querySelector('[data-target-input=arm_l_j1]').focus()");
+  await input('arm_l_j1','12.34567');await wait(1300);
+  assert.strictEqual(await evaluate("document.querySelector('[data-target-input=arm_l_j1]').value"),'12.34567');
+  await evaluate("document.activeElement.blur()");
+  assert.strictEqual(await evaluate("document.querySelector('[data-target-input=arm_l_j1]').value"),'12.3');
+  assert.strictEqual(reviewSpecs[reviewSpecs.length-1].targets.arm_l_j1,12.34567);
+  checks.push('one-decimal angles, integer grippers, normalized negative zero; polling preserves focused edits and blur preserves full planning precision');
   await click('[data-preset-index="0"]');await until("document.querySelector('#pose-plan-summary').textContent.includes('头部当前状态')",'initial head diagnostic');
+  await evaluate("document.querySelector('[data-target-input=arm_l_j1]').focus();document.activeElement.blur()");
   const reviewsBeforeExternal=reviewRequests;
   feedback.head_j2=0;latest={id:'external-head-reset',status:'succeeded',progress:1,result:{feedback_verified:true,commands_sent:true},targets:{head_j2:0}};
   await until("document.querySelector('[data-joint-live=\"head_j2\"]').textContent==='0.0'",'external recovery feedback arrives');
   await until("document.querySelector('#pose-plan-summary').textContent.includes('8.2')",'old head diagnostic replaced automatically');
-  assert(reviewRequests>reviewsBeforeExternal);assert.strictEqual(await evaluate("document.querySelector('[data-target-input=\"head_j2\"]').value"),'0');
+  assert(reviewRequests>reviewsBeforeExternal);assert.strictEqual(await evaluate("document.querySelector('[data-target-input=\"head_j2\"]').value"),'0.0');
   checks.push('external recovery automatically refreshes old diagnostic without modifying targets');await snap('review-updated');
   let count=reviewRequests;for(let i=0;i<12;i++){feedback.head_j2=i%2?.04:-.04;await wait(250);}assert.strictEqual(reviewRequests,count);feedback.head_j2=0;
   checks.push('stable feedback and sub-threshold jitter do not rerun geometry');
@@ -93,7 +106,7 @@ function get(url){return new Promise((resolve,reject)=>http.get(url,r=>{let body
   checks.push('listener readiness, command activity, capability reason and connection transitions refresh review');
   await click('[data-click="execute-current"]');await until("document.querySelector('#execute-dialog').open",'explicit authorization');
   count=reviewRequests;feedback.head_j2=2;latest={id:'external-later-result',status:'succeeded'};await wait(2500);
-  assert.strictEqual(reviewRequests,count);assert.strictEqual(await evaluate("document.querySelector('[data-target-input=\"head_j2\"]').value"),'0');
+  assert.strictEqual(reviewRequests,count);assert.strictEqual(await evaluate("document.querySelector('[data-target-input=\"head_j2\"]').value"),'0.0');
   await click('#cancel-execute');assert.strictEqual(actionPosts().length,0);
   await waitForReview(count,'refresh resumes after cancelled authorization');
   checks.push('authorization freezes targets/review; cancel sends no action and rechecks current state');
@@ -101,9 +114,12 @@ function get(url){return new Promise((resolve,reject)=>http.get(url,r=>{let body
   await evaluate("document.querySelector('#execute-code').value='mock-only';document.querySelector('#execute-form').requestSubmit()");
   await until("!document.querySelector('#execute-dialog').open&&document.body.classList.contains('control-mode')",'single complete submission');
   assert.strictEqual(actionPosts().length,1);assert.strictEqual(Object.keys(actionPosts()[0].body.targets).length,22);
+  assert.strictEqual(actionPosts()[0].body.targets.arm_l_j1,69.97728);
+  assert.strictEqual(actionPosts()[0].body.targets.arm_l_j5,-.01234);
+  checks.push('preset display and focus/blur do not round the submitted robot targets');
   count=reviewRequests;current.status='running';feedback.head_j2=1;await wait(2200);assert.strictEqual(reviewRequests,count);
   await click('#stop-button');await until("document.querySelector('#pose-plan-summary').textContent.includes('已停止')",'cancel task');
-  assert.strictEqual(await evaluate("document.querySelector('[data-target-input=\"head_j2\"]').value"),'0');
+  assert.strictEqual(await evaluate("document.querySelector('[data-target-input=\"head_j2\"]').value"),'0.0');
   await click('[data-click="execute-current"]');await until("document.querySelector('#pose-scope').textContent.includes('正在')",'explicit retry');
   assert.strictEqual(actionPosts().length,2);assert.strictEqual(posts.filter(p=>p.path==='/api/control/acquire').length,1);
   feedback=Object.assign({},target);current.status='succeeded';current.progress=1;current.result={commands_sent:true,feedback_verified:true};
@@ -134,7 +150,7 @@ function get(url){return new Promise((resolve,reject)=>http.get(url,r=>{let body
   await click('[data-group="pose"]');
   await until("document.querySelector('#pose-plan-summary').textContent.includes('8.2')",'waist review resumes after tab change');
   assert.strictEqual(await evaluate("document.querySelector('#waist-delta').value"),'2');
-  assert.strictEqual(await evaluate("document.querySelector('[data-target-input=\"body_j3\"]').value"),'-8');
+  assert.strictEqual(await evaluate("document.querySelector('[data-target-input=\"body_j3\"]').value"),'-8.0');
   await input('arm_l_j5',12);await input('body_j1',15);await input('head_j1',8);
   await click('[data-click="execute-current"]');await until("document.querySelector('#execute-dialog').open",'combined pose authorization');
   await evaluate("document.querySelector('#execute-code').value='mock-only';document.querySelector('#execute-form').requestSubmit()");
@@ -150,18 +166,18 @@ function get(url){return new Promise((resolve,reject)=>http.get(url,r=>{let body
   waistDelay=1400;await click('[data-waist-step="-2"]');await wait(850);
   assert.strictEqual(await evaluate("document.querySelector('#waist-plan-status').textContent.includes('正在计算')"),true);
   for(let i=0;i<50&&waistInFlight;i++)await wait(50);
-  await until("document.querySelector('[data-target-input=\"body_j3\"]').value==='-12'",'latest waist response wins');
+  await until("document.querySelector('[data-target-input=\"body_j3\"]').value==='-12.0'",'latest waist response wins');
   assert.strictEqual(await evaluate("document.querySelector('#waist-delta').value"),'-2');
   // Changing the page must not dereference an absent status element.
   waistDelay=500;await click('[data-waist-step="2"]');await click('[data-nav="overview"]');
   await wait(1200);await click('[data-nav="control"]');
-  await until("document.querySelector('[data-target-input=\"body_j3\"]').value==='-8'",'waist result survives page navigation');
+  await until("document.querySelector('[data-target-input=\"body_j3\"]').value==='-8.0'",'waist result survives page navigation');
   assert.strictEqual(await evaluate("document.querySelector('#waist-delta').value"),'2');
   // Re-alignment explicitly discards the pending result.
   waistDelay=900;await click('[data-waist-step="-2"]');for(let i=0;i<30&&!waistInFlight;i++)await wait(50);
   await click('[data-click="align"]');await wait(1200);
   assert.strictEqual(await evaluate("document.querySelector('#waist-delta').value"),'0');
-  assert.strictEqual(await evaluate("document.querySelector('[data-target-input=\"body_j3\"]').value"),String(target.body_j3));
+  assert.strictEqual(await evaluate("document.querySelector('[data-target-input=\"body_j3\"]').value"),target.body_j3.toFixed(1));
   checks.push('older preview cannot clear newer pending or overwrite edits; page navigation is safe; re-alignment discards old request');await snap('navigation-stable');
   assert.deepStrictEqual(exceptions,[]);
   const report={result:'passed',source:'actual local app.js with isolated fake API; model rendering stubbed; no robot or remote access',checks:checks,action_posts:actionPosts().length,authorization_posts:posts.filter(p=>p.path==='/api/control/acquire').length,review_requests:reviewRequests,console_exceptions:exceptions};

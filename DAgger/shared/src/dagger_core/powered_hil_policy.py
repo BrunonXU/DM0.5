@@ -11,6 +11,8 @@ from .hil_supervisor import HILState
 
 
 class ChunkPolicy(ObservationHIL):
+    operator_required = True
+
     def __init__(self, emit, source, infer, recorder, sink, *, require_start=True,
                  action_dim, chunk_steps, waypoint_hz,
                  input_validator, frame_advancer, **kwargs):
@@ -116,6 +118,9 @@ class ChunkPolicy(ObservationHIL):
         self.record_chunk(obs, epoch, request_id, started, response, actions)
         return epoch, request_id, obs.observation_id, response, actions.copy()
 
+    def policy_failed(self, exc, now):
+        self.disconnect(now, "policy_failed:" + str(exc))
+
     def tick(self, now):
         with self.context_lock:
             writer = getattr(self.sink, "downstream", self.sink)
@@ -125,7 +130,7 @@ class ChunkPolicy(ObservationHIL):
                 raise RuntimeError("acquisition stopped: " + self.acquisition_error)
             if not self.started:
                 return
-            if self.last_received_ns is not None and now - self.last_received_ns > self.watchdog_ns:
+            if self.operator_required and self.last_received_ns is not None and now - self.last_received_ns > self.watchdog_ns:
                 self.disconnect(now, "operator_watchdog")
             if self.acquisition_error:
                 raise RuntimeError("acquisition stopped: " + self.acquisition_error)
@@ -150,7 +155,7 @@ class ChunkPolicy(ObservationHIL):
                 try:
                     epoch, rid, oid, response, actions = future.result()
                 except Exception as exc:
-                    self.disconnect(now, "policy_failed:" + str(exc))
+                    self.policy_failed(exc, now)
                     return
                 accepted = epoch == self.supervisor.policy_epoch and self.supervisor.state in (
                     HILState.POLICY, HILState.HANDOFF_HOLD)
@@ -168,7 +173,7 @@ class ChunkPolicy(ObservationHIL):
             # Sync: no overlap of executing chunk and next inference request.
             if (not getattr(self, "policy_enabled", True)
                     or self.chunk is not None or self.ready is not None or self.real_future is not None
-                    or self.last_received_ns is None or self.supervisor.state not in (
+                    or (self.operator_required and self.last_received_ns is None) or self.supervisor.state not in (
                         HILState.POLICY, HILState.HANDOFF_HOLD)):
                 return
             with self.latest_lock:

@@ -42,7 +42,7 @@ F1Trainer覆盖默认RandomSampler，先均匀选来源、再选有效起点。S
 
 ## 使用入口
 
-6000D，工作目录`/home/xza_100850113/projects`，已有DM0.5环境中加入：
+6000D，工作目录`/home/user/projects`，已有DM0.5环境中加入：
 
 ```bash
 export PYTHONPATH="$PWD/F1/foam_sort_whole_body/models/DM0.5:$PWD/DM0.5/opendm${PYTHONPATH:+:$PYTHONPATH}"

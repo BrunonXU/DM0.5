@@ -1,6 +1,6 @@
 """HTTP-side lifecycle of our isolated LeRobot worker. No ROS or motion imports."""
 from __future__ import annotations
-import hashlib,json,math,os,socket,stat,subprocess,threading,time
+import hashlib,json,math,os,re,socket,stat,subprocess,threading,time
 from pathlib import Path
 from project_paths import installation_environment
 
@@ -37,6 +37,22 @@ class RecordingService:
             args=(Path('/proc')/str(pid)/'cmdline').read_bytes().split(b'\0')
             return b'recording.worker' in args and str(self.runtime).encode() in args
         except (OSError,KeyError,TypeError):return False
+    def saved_identity(self, saved, output):
+        if not isinstance(saved, dict) or saved.get('kind') == 'recovery': return saved
+        saved = dict(saved)
+        try:
+            if saved.get('path'):
+                path = Path(saved['path']).absolute()
+                if path.parent != Path(output).absolute(): return saved
+                manifest = small_json(confined_file(output, path.name+'/capture.json'), {})
+                if manifest.get('committed') and manifest.get('complete'):
+                    from recording.unified.catalog import identity
+                    saved['data_episode_id'] = identity(path)
+            elif re.fullmatch(r'[0-9a-f]{24}', str(saved.get('id',''))):
+                saved['data_episode_id'] = saved['id']
+        except (OSError, ValueError, TypeError): pass
+        return saved
+
     def state(self):
         output = self.output
         config = small_json(self.runtime/'recording.json', {})
@@ -53,12 +69,13 @@ class RecordingService:
         try:
             data=small_json(self.owned/'status.json',{})
             if not data:return dict(base,mode='starting') if starting else base
+            data['last_saved']=self.saved_identity(data.get('last_saved'), output)
             if not self._alive(data) or not (self.owned/'control.sock').exists():
                 if starting:return dict(base,mode='starting')
                 return dict(base,last_error='上次录制服务已停止；未提交数据保留在独立目录',last_saved=data.get('last_saved'))
             age=time.time()-float(data.get('checked_unix',0))
             if not math.isfinite(age) or age<0 or age>4:return dict(base,mode='error',last_error='录制服务状态过期',ready_reasons=['录制状态未及时更新，请查看独立录制日志'])
-            return dict(data,status_age_s=age)
+            return dict(data,status_age_s=age,status_ttl_s=4)
         except (ValueError,OSError,TypeError) as exc:return dict(base,mode='error',last_error=str(exc))
     def ensure_worker(self):
         if self.offline:raise ValueError('离线预览不能启动录制')

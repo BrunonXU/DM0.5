@@ -1,0 +1,19 @@
+[Unit]
+Description=Personal 6000D desktop for NoMachine (:8)
+ConditionPathExists=/opt/TurboVNC/bin/vncserver
+ConditionPathExists=!/tmp/.X11-unix/X8
+StartLimitIntervalSec=120
+StartLimitBurst=2
+
+[Service]
+Type=forking
+PIDFile=%h/.vnc/%H:8.pid
+ExecStart=/opt/TurboVNC/bin/vncserver :8 -geometry 1600x900 -depth 24 -localhost -securitytypes otp -wm ubuntu
+TimeoutStartSec=45
+TimeoutStopSec=30
+Restart=on-failure
+RestartSec=10
+UMask=0077
+
+[Install]
+WantedBy=default.target

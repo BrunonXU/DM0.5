@@ -69,14 +69,14 @@ NewLora checkpoint。
 LeRobot 已固定浅克隆在：
 
 ```text
-/home/xza_100850113/projects/third_party/lerobot
+/home/user/projects/third_party/lerobot
 commit 713a409faedd73bb5597481b8885f17fbee23330
 ```
 
 本地 RLinf 位于：
 
 ```text
-/home/xza_100850113/projects/RLinf
+/home/user/projects/RLinf
 commit d00fe720
 ```
 

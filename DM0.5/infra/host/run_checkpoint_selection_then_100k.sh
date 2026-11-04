@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PROJECT_ROOT="/home/xza_100850113/projects/DM0.5"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 ROUND1="${PROJECT_ROOT}/server/evaluations/validation_25k_50k_round1"
 ROUND2="${PROJECT_ROOT}/server/evaluations/validation_25k_50k_round2"
 ACTIONS="${PROJECT_ROOT}/server/evaluations/validation_25k_50k_action_finalists"

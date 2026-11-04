@@ -18,7 +18,7 @@
 
 - [录制来源清单](../../recording/UPSTREAM.json) 与 [适配差异](../../recording/LOCAL_CHANGES.patch)。
 - [Pico 来源清单](../../integrations/pico_upper/UPSTREAM.json) 与 [适配说明](../../integrations/pico_upper/docs/adaptation.md)。
-- [模型清单](../../web/models/f1_wheel/manifest.json) 与 [Three.js 许可证/资源](../../web/vendor/three/)。
+- [模型清单](../../web/models/f1_wheel/manifest.json) 与 [Three.js 许可证/资源](../../web/vendor/three)。
 
 来源清单中的原作者路径、历史 SHA、版本和许可信息应保留；不能把历史快照说成当前机器上的事实。当前打包后的实际文件由顶层 SHA256 清单核验。
 

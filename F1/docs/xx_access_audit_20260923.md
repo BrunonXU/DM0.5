@@ -4,9 +4,9 @@
 
 ## 当前访问结果
 
-当前工具执行身份为`uid=1006(xza_100850113)`，主组1008，不在xx私有组1010。工具的sandbox escalation没有将Linux身份切成root。
+当前工具执行身份为`uid=1006(user)`，主组1008，不在xx私有组1010。工具的sandbox escalation没有将Linux身份切成root。
 
-16:23检查xx主目录显示mode711，扩展ACL明确包含`user:xza_100850113:---`。对本账号，具名用户ACL优先于group/other；无法穿越该目录。`stat /home/xx_100872445/F1`、已知Pico路径及`ubuntu/ubantu/Ubuntu`路径均返回Permission denied，不能据此判断这些Ubuntu目录是否存在。
+16:23检查xx主目录显示mode711，扩展ACL明确包含`user:user:---`。对本账号，具名用户ACL优先于group/other；无法穿越该目录。`stat /home/user/F1`、已知Pico路径及`ubuntu/ubantu/Ubuntu`路径均返回Permission denied，不能据此判断这些Ubuntu目录是否存在。
 
 主目录ctime为2026-09-23 16:22:58.342354977+08:00，mtime为16:19:04.880128365。ctime表示inode元数据变更，不能单凭它确认变更操作或操作者；它不是创建时间，也不是本会话修改该目录的证据。
 
@@ -22,7 +22,7 @@ F1/PICO/pico/README.md       -rw-rw-r--  (664)
 F1/PICO/pico/config/ip_config.py  -rw-r--r-- (644)
 ```
 
-14:27输出同时显示home711且`ls /home/xx_100872445`失败，但`ls /home/xx_100872445/F1`成功。这说明当时不能枚举home，却能沿已知名字访问允许的子目录。目录x允许穿越、r允许枚举；子目录/文件other位仍开放时，仅分不同Unix组不会形成完整读隔离。
+14:27输出同时显示home711且`ls /home/user`失败，但`ls /home/user/F1`成功。这说明当时不能枚举home，却能沿已知名字访问允许的子目录。目录x允许穿越、r允许枚举；子目录/文件other位仍开放时，仅分不同Unix组不会形成完整读隔离。
 
 没有保存当时home完整getfacl，故不声称还原了每条旧ACL；上述历史权限与成功读回是证据。当前具名拒绝ACL是新核验事实，不能倒推它在此前也以相同方式生效。
 
@@ -44,10 +44,10 @@ F1/PICO/pico/config/ip_config.py  -rw-r--r-- (644)
 
 ## 是否改过xx的Ubuntu子目录
 
-本F1会话及子任务可见执行记录中，未发现向`/home/xx_100872445`写文件、修改权限、执行sudo或操作`ubuntu/ubantu`路径的记录。
+本F1会话及子任务可见执行记录中，未发现向`/home/user`写文件、修改权限、执行sudo或操作`ubuntu/ubantu`路径的记录。
 
-- 参考快照写入`/home/xza_100850113/projects/F1/reference/20260923_pico_comparison`。
-- 上肢复制脚本明确`src=/home/xx_100872445/F1/PICO/pico`、`dst=/home/xza_100850113/projects/F1/pico_upper`，只写dst。110份上游来源清单中的`modified`表示自有副本与原始SHA不同，不表示修改上游。
+- 参考快照写入`/home/user/projects/F1/reference/20260923_pico_comparison`。
+- 上肢复制脚本明确`src=/home/user/F1/PICO/pico`、`dst=/home/user/projects/F1/pico_upper`，只写dst。110份上游来源清单中的`modified`表示自有副本与原始SHA不同，不表示修改上游。
 - 实际适配与字节码缓存位于自己的F1目录；模型运行缓存位于机器人`/home/user/Bruno/F1/pico_upper/runtime`。
 - 命令扫描只找到3次chmod，均给自己的console/pico脚本加执行位；未找到setfacl/chown/sudo执行记录。
 
@@ -67,8 +67,8 @@ F1/PICO/pico/config/ip_config.py  -rw-r--r-- (644)
 | hwy_100878104 | 否 | 是 | 否 |
 | liulu | 否 | 是 | 否 |
 | nino_100904852 | 否 | 是 | 否 |
-| xx_100872445 | 否 | 否 | 否 |
-| xza_100850113 | 是 | 是 | 是 |
+| user | 否 | 否 | 否 |
+| user | 是 | 是 | 是 |
 | zxl_100881968 | 否 | 是 | 否 |
 
 除xx的具名拒绝ACL外，其余9个他人home为751，对xza仍允许穿越但不允许枚举。里面具体文件是否可读取决于沿途目录及文件的权限/ACL，不能称为整个用户空间可读，也不能称已完成全隔离。xza自己的home同样是751，其他账号是否可读其具体子路径也需单独核对。没有改动任何权限。[原始有效权限结果](../console/results/permissions_audit_20260923/current_home_access.json)。

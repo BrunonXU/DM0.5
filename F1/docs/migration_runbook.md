@@ -32,7 +32,7 @@ scope: project_handoff_not_full_system_backup
 ## 2. 目录和责任：哪些是主副本，哪些是部署副本
 
 ```text
-6000D /home/xza_100850113/projects/
+6000D /home/user/projects/
 ├── PROJECT_RULES_AND_PREFERENCES.md
 ├── F1/
 │   ├── AGENTS.md、F1系统配置.md、两份接口文档
@@ -79,7 +79,7 @@ F1 /home/user/Bruno/connect/           # 隧道配置、现场私钥、日志
 |---|---|---|
 | 原始801条录制 | `/mnt/dm05_nvme/dm05/datasets/f1_foam_sort/raw/` | 任务README记录约639GB；本页未重新统计容量。位于外部数据盘，不在代码发布包内；同级 `transfer/` 保留传输与断点证据，FTP已按用户要求停止，不自动重启 |
 | 清洗、mask、sidecar、FK、图像cache与统计 | 任务 `results/`，当前入口见[当前方案](../foam_sort_whole_body/docs/training_plan.md) | `.npz`、原图、视频、较大的JSON/JSONL等不会完整进入静态源码包；迁移要按使用清单保留，不能只拷 `.py/.md` |
-| DM0.5共享实现 | `/home/xza_100850113/projects/DM0.5/opendm/` | F1任务代码通过 `PYTHONPATH` 引用；保留共享源码版本及实际修改，不拿G2的动作统计/adapter替代F1合同 |
+| DM0.5共享实现 | `/home/user/projects/DM0.5/opendm/` | F1任务代码通过 `PYTHONPATH` 引用；保留共享源码版本及实际修改，不拿G2的动作统计/adapter替代F1合同 |
 | 基础模型 | `/mnt/dm05_nvme/dm05/model_cache/Dexmal/DM05` | 09-17完整模型检查实际使用的本地模型目录；需要单独保全并绑定指纹。模型目录不在 `F1/` 内 |
 | 共享processor复核来源 | `/mnt/dm05_nvme/dm05/checkpoints/NewLora_g2_armrel_handabs_officialaug_4gpu_75k_v1/checkpoint-75000` | CPU工程检查借用该目录的通用processor文件；不是借用G2模型adapter或归一化。完整模型检查使用DM0.5 base自己的processor |
 | 训练环境 | `opendm:g2-34d-fa2`，复现命令见[09-17脚本](../foam_sort_whole_body/results/dm05_integration_20260917/reproduce_checks.sh) | 记录现用镜像ID、架构、依赖及挂载；`DM0.5/opendm/Dockerfile` 与 `DM0.5/infra/docker/` 是构建参考，未证明重建后与现用镜像逐项一致 |
@@ -88,10 +88,10 @@ F1 /home/user/Bruno/connect/           # 隧道配置、现场私钥、日志
 
 **绝对路径是当前迁移的一项实际限制。** [机器配置](../foam_sort_whole_body/configs/machine.6000d.yaml)列了路径，但它们仍是部署元数据，现有训练器/客户端没有统一从这些YAML自动读取。工程训练清单使用6000D绝对路径，容器按相同路径挂载；部分数据脚本还有硬编码原始数据路径。最快复现可保持原目录与挂载；更换根目录时，明确修改生成新清单和受影响路径，并重新验证引用，不批量改写历史证据或旧版 manifest。
 
-可在**新服务器终端、工作目录 `/home/xza_100850113/projects`**先只读定位路径引用；输出在终端，不启动任务：
+可在**新服务器终端、工作目录 `/home/user/projects`**先只读定位路径引用；输出在终端，不启动任务：
 
 ```bash
-rg -n '/home/xza_100850113/projects|/home/user/Bruno|/mnt/dm05_nvme|/tmp/.*venv' \
+rg -n '/home/user/projects|/home/user/Bruno|/mnt/dm05_nvme|/tmp/.*venv' \
   F1/foam_sort_whole_body/configs \
   F1/foam_sort_whole_body/scripts \
   F1/foam_sort_whole_body/models \
@@ -118,7 +118,7 @@ rg -n '/home/xza_100850113/projects|/home/user/Bruno|/mnt/dm05_nvme|/tmp/.*venv'
 
 保全应以定点文件和版本清单为先，不去复制整个其他用户home或全部 `build/install`。如果目标是“重装一台裸机即可还原整机”，必须额外取得底层可恢复安装包/源码、设备标定与系统恢复方案；本项目已有 `reference/` 是证据快照，不是完整系统备份。
 
-机器相关设置尤其不能原样盲搬：CycloneDDS目前绑定 `enP3p1s0f1`；09-17恢复记录的底盘静态地址为 `192.168.127.170/24`，无网关。新机器接口名、拓扑或地址不同应核对后独立适配，保留旧配置。实际控制/反馈用CycloneDDS，motor_ctl参数探测另用Fast DDS子进程；单一DDS“能看到话题”不能代表全部链路可用。依据见[系统配置](../F1系统配置.md)和[09-17恢复记录](../foam_sort_whole_body/results/live_feedback_20260917/repair/README.md)。
+机器相关设置尤其不能原样盲搬：CycloneDDS目前绑定 `enP3p1s0f1`；09-17恢复记录的底盘静态地址为 `192.0.2.2/24`，无网关。新机器接口名、拓扑或地址不同应核对后独立适配，保留旧配置。实际控制/反馈用CycloneDDS，motor_ctl参数探测另用Fast DDS子进程；单一DDS“能看到话题”不能代表全部链路可用。依据见[系统配置](../F1系统配置.md)和[09-17恢复记录](../foam_sort_whole_body/results/live_feedback_20260917/repair/README.md)。
 
 ## 5. 静态同步工具真正做了什么
 
@@ -135,11 +135,11 @@ rg -n '/home/xza_100850113/projects|/home/user/Bruno|/mnt/dm05_nvme|/tmp/.*venv'
 
 工具对目标路径固定为 `/home/user/Bruno/F1/foam_sort_whole_body`，并核对远端 `ms-thor/user/aarch64` 身份及 `f1-d070` 主机密钥别名。新机器人更换身份后，需要经审查调整身份/目标约束，不能通过关闭校验来勉强使用。`release_manifest.example.yaml`只是填写模板，不是部署程序；其中state21/action19示例也不能代替当前模型合同。
 
-以下是**6000D终端、工作目录 `/home/xza_100850113/projects`**的本地准备例子，输出在新的 `results/deployments/<ID>/`，不连接F1。已有同名目录时换ID，不覆盖旧包：
+以下是**6000D终端、工作目录 `/home/user/projects`**的本地准备例子，输出在新的 `results/deployments/<ID>/`，不连接F1。已有同名目录时换ID，不覆盖旧包：
 
 ```bash
 python3 F1/foam_sort_whole_body/deploy/sync_project.py prepare \
-  --workspace /home/xza_100850113/projects \
+  --workspace /home/user/projects \
   --release-id migration-source-20260917-v1
 python3 F1/foam_sort_whole_body/deploy/sync_project.py check-package \
   --package-dir F1/foam_sort_whole_body/results/deployments/migration-source-20260917-v1 \

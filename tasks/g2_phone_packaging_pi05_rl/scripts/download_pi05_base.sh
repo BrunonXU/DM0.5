@@ -3,7 +3,23 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 PROJECTS_DIR="$(cd -- "${SCRIPT_DIR}/../../.." && pwd)"
-DEST_DIR="${PROJECTS_DIR}/PI0.5/checkpoints/pi05_base"
+# Fresh clones keep their submodule in Projects; this 6000D checkout keeps it in
+# the sibling Libraries worktree. An explicit OPENPI_ROOT overrides either.
+if [[ -z "${OPENPI_ROOT:-}" ]]; then
+  OPENPI_ROOT="${PROJECTS_DIR}/PI0.5"
+  if [[ ! -d "${OPENPI_ROOT}" && -d "${PROJECTS_DIR%/*}/Libraries/PI0.5" ]]; then
+    OPENPI_ROOT="${PROJECTS_DIR%/*}/Libraries/PI0.5"
+  fi
+fi
+DEST_DIR="${OPENPI_ROOT}/checkpoints/pi05_base"
+if [[ "${1:-}" == "--print-destination" ]]; then
+  printf '%s\n' "${DEST_DIR}"
+  exit 0
+fi
+if [[ $# -gt 0 ]]; then
+  echo "usage: $0 [--print-destination]" >&2
+  exit 2
+fi
 MANIFEST_PATH="${DEST_DIR}/.gcs_objects.json"
 LIST_URL="https://storage.googleapis.com/storage/v1/b/openpi-assets/o?prefix=checkpoints%2Fpi05_base%2F"
 OBJECT_BASE_URL="https://storage.googleapis.com/openpi-assets"

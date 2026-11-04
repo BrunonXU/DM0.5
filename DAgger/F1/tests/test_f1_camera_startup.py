@@ -74,7 +74,7 @@ def camera_shell(tmp_path):
     """Execute the real wrapper with fake machine files and a capture-only ros2."""
     (tmp_path/'scripts').mkdir(); (tmp_path/'configs').mkdir()
     (tmp_path/'configs/f1_camera_fastdds_internal.xml').write_bytes((ROOT/'configs/f1_camera_fastdds_internal.xml').read_bytes())
-    (tmp_path/'machine-id').write_text('90429b8a96e04ef79dbc12175b538115\n')
+    (tmp_path/'machine-id').write_text('00000000000000000000000000000000\n')
     setup = tmp_path/'setup.bash'; setup.write_text(':\n')
     capture = tmp_path/'ros2.py'
     capture.write_text('import os,sys,json\nprint(json.dumps({"launched":sys.argv[1:],"rmw":os.environ["RMW_IMPLEMENTATION"],"dds":os.environ["FASTRTPS_DEFAULT_PROFILES_FILE"]}))\n')
@@ -83,7 +83,7 @@ def camera_shell(tmp_path):
     package = tmp_path/'ament_index_python'; package.mkdir(); (package/'__init__.py').touch()
     (package/'packages.py').write_text(f'def get_package_share_directory(_name): return {str(share.parent)!r}\n')
     binary = tmp_path/'bin'; binary.mkdir()
-    ip = binary/'ip'; ip.write_text('#!/bin/sh\necho \'[{"flags":["UP"],"addr_info":[{"local":"192.168.127.170"}]}]\'\n'); ip.chmod(0o755)
+    ip = binary/'ip'; ip.write_text('#!/bin/sh\necho \'[{"flags":["UP"],"addr_info":[{"local":"192.0.2.2"}]}]\'\n'); ip.chmod(0o755)
     text = (ROOT/'scripts/60_f1_camera_internal.sh').read_text().replace('/etc/machine-id', str(tmp_path/'machine-id'))
     for path in ['/opt/ros/jazzy/setup.bash', '/home/user/workspace/f1/install/setup.bash', '/home/user/workspace/camera/OrbbecSDK_ROS2/install/setup.bash', '/home/user/workspace/camera/ros2_ws/install/setup.bash']:
         text = text.replace(path, str(setup))

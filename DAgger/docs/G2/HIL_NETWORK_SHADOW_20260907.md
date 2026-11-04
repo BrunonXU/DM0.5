@@ -21,7 +21,7 @@
 G2终端运行：
 
 ```bash
-cd /home/agi/xza/G2Teleop
+cd /home/user/xza/G2Teleop
 bash scripts/37_g2_hil_network_shadow.sh
 ```
 
@@ -30,7 +30,7 @@ bash scripts/37_g2_hil_network_shadow.sh
 Windows下载一次独立候选（可从任一PowerShell执行）：
 
 ```powershell
-scp -r agi@10.130.86.13:/home/agi/xza/G2Teleop/hil_shadow_candidate "$HOME\G2Teleop"
+scp -r agi@192.0.2.8:/home/user/xza/G2Teleop/hil_shadow_candidate "$HOME\G2Teleop"
 ```
 
 两个经典Windows PowerShell窗口分别运行：

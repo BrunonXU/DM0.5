@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import numpy as np
 import pytest
-from test_f1_numerical import setup
+from legacy_home_setup import setup, numerical_setup
 from f1dagger.clearance_home import ClearanceHomeMotion, FeedbackAlignedClearanceHome, ClearanceHomeStopped
 from f1dagger.contract import home_target
 from f1dagger.teleop import F1ArmTarget

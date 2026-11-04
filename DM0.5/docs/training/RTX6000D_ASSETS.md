@@ -76,8 +76,8 @@ GPU占用是实时状态，不能从本文推断；每次启动实验前运行`n
 | 文件系统 | ext4 |
 | 容量 | 约3.5TB |
 | 体检时可用 | 约3.3TB |
-| 物理挂载 | `/media/xza_100850113/bd6a10fd-b6fe-428e-ade2-7f3130ea902a` |
-| 项目入口 | `/home/xza_100850113/projects/DM0.5/server` |
+| 物理挂载 | `/media/user/bd6a10fd-b6fe-428e-ade2-7f3130ea902a` |
+| 项目入口 | `/home/user/projects/DM0.5/server` |
 
 物理NVMe目录通过bind mount暴露为项目内`server/`。目录说明模板保存在
 `infra/layout/nvme/`，`server/`被Git忽略。
@@ -104,9 +104,9 @@ GPU占用是实时状态，不能从本文推断；每次启动实验前运行`n
 | NVIDIA Container Toolkit | 1.19.0 |
 | NVIDIA runtime | 已注册并验证 |
 | 项目镜像标签 | `opendm:g2-34d-6ce8e7f` |
-| 项目镜像ID | `sha256:e9f4e565d67554a3ed4f0fc2aafb9304ff023232f7530ad032a38dcea74f6224` |
+| 项目镜像ID | `sha256:REDACTED_HOST_FINGERPRINT` |
 | FA2镜像标签 | `opendm:g2-34d-fa2` |
-| FA2镜像ID | `sha256:11f2e5462e7793f889a211ee04ce32d13693d81f54c857d7c06c58ee1221f9dc` |
+| FA2镜像ID | `sha256:REDACTED_HOST_FINGERPRINT` |
 | 官方镜像 | `docker.1ms.run/dexmal/opendm:latest`，ID `sha256:60a754dce047...` |
 | PyTorch | 2.11.0+cu128 |
 | 可训练attention | LLM SDPA、视觉FlashAttention2、action SDPA |

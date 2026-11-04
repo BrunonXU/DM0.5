@@ -45,7 +45,7 @@ def parse_args() -> argparse.Namespace:
         "--telemetry-jsonl",
         type=Path,
         default=Path(
-            "/home/agi/xza/DM0.5/logs/telemetry/shadow/"
+            "/home/user/xza/DM0.5/logs/telemetry/shadow/"
             f"g2_shadow_f710_ruckig_{stamp}.jsonl"
         ),
     )

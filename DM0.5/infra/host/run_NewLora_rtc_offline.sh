@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-PROJECT_ROOT="/home/xza_100850113/projects/DM0.5"
-G2_ROBOT_ROOT="/home/xza_100850113/projects/g2_robot"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+G2_ROBOT_ROOT="$(dirname "$PROJECT_ROOT")/g2_robot"
 NVME_DM05_ROOT="/mnt/dm05_nvme/dm05"
 GPU_INDEX="${NEWLORA_RTC_EVAL_GPU:-5}"
 WEIGHT="${NEWLORA_RTC_MAX_GUIDANCE_WEIGHT:-0.5}"

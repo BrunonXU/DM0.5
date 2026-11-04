@@ -216,7 +216,7 @@ def assess_zero_feedback_hand_anchor(
 
 def args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--endpoint", default="ws://10.130.153.114:7892/process_frame")
+    parser.add_argument("--endpoint", default="ws://192.0.2.1:7892/process_frame")
     parser.add_argument("--recording-mode", choices=("inference-only", "hil-record", "prebuffer-record"), default="prebuffer-record")
     parser.add_argument("--duration-seconds", type=float, default=120.)
     parser.add_argument("--capture-hz", type=float, default=30.)
@@ -236,17 +236,17 @@ def args() -> argparse.Namespace:
     parser.add_argument(
         "--last-hand-command",
         type=Path,
-        default=Path("/home/agi/xza/DM0.5/logs/runtime/last_hand_command.json"),
+        default=Path("/home/user/xza/DM0.5/logs/runtime/last_hand_command.json"),
     )
     parser.add_argument(
         "--approved-hand-home",
         type=Path,
-        default=Path("/home/agi/xza/DM0.5/g2_sort/config/hand_home_approved.json"),
+        default=Path("/home/user/xza/DM0.5/g2_sort/config/hand_home_approved.json"),
     )
     parser.add_argument(
         "--reset-pose-config",
         type=Path,
-        default=Path("/home/agi/xza/DM0.5/g2_sort/config/reset_poses.json"),
+        default=Path("/home/user/xza/DM0.5/g2_sort/config/reset_poses.json"),
     )
     stamp = time.strftime("%Y%m%d_%H%M%S")
     parser.add_argument(
@@ -258,7 +258,7 @@ def args() -> argparse.Namespace:
         "--joint-feedback-probe-json",
         type=Path,
         default=Path(
-            "/home/agi/xza/DM0.5/logs/diagnostics/"
+            "/home/user/xza/DM0.5/logs/diagnostics/"
             "joint_feedback_probe_latest.json"
         ),
     )
@@ -473,7 +473,7 @@ def main() -> int:
             "O10 ZERO-FEEDBACK FALLBACK UNAVAILABLE: "
             f"{fallback_error}. Powered startup may proceed only if live O10 "
             "feedback is finite and non-zero. Otherwise run: "
-            "cd /home/agi/xza/DM0.5 && bash scripts/03_reset_home.sh --execute",
+            "cd /home/user/xza/DM0.5 && bash scripts/03_reset_home.sh --execute",
             flush=True,
         )
 
@@ -626,7 +626,7 @@ def main() -> int:
             if fallback_record is None or fallback_assessment is None:
                 raise RuntimeError(
                     "O10 feedback is zero and no safe file fallback is available: "
-                    f"{fallback_error}. Run: cd /home/agi/xza/DM0.5 && "
+                    f"{fallback_error}. Run: cd /home/user/xza/DM0.5 && "
                     "bash scripts/03_reset_home.sh --execute"
                 )
             initial_hands = np.asarray(

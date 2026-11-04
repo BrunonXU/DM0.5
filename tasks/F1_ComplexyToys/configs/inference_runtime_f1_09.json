@@ -1,0 +1,1207 @@
+{
+  "schema": "f1_inference_catalog_v1",
+  "release": "f1-rtc-rlt-V47",
+  "robot_release": "/home/user/Bruno/DAgger-runtime/f1-rtc-rlt-V47",
+  "default_hil": "v1_dagger_stage_b_1250",
+  "robot": {
+    "site_env": "/home/user/Bruno/DAgger-runtime/f1-v18-site.env",
+    "ros": [
+      "/opt/ros/jazzy/setup.bash",
+      "/home/user/workspace/f1/install/setup.bash",
+      "/home/user/workspace/agv/install/setup.bash"
+    ],
+    "infra_root": "/home/user/Bruno/DAgger-runtime/f1-toys-20261016/full-h20/startup-read-v2/infra",
+    "pythonpath": "/home/user/Bruno/DAgger-runtime/f1-toys-20261016/python",
+    "data_root": "/home/user/Bruno/data/hil_data",
+    "control_lock": "/home/user/Bruno/F1/runtime/control.lock"
+  },
+  "contracts": {
+    "v1_dagger_rightonly_eef": {
+      "prompt": "Use the right gripper to pick up the wooden block, insert it into the matching opening of the container, release it, and return the right arm to the starting pose with the gripper open.",
+      "config": {
+        "schema": "f1_hgdagger_v1",
+        "infra_manifest": "configs/f1_infra_binding.json",
+        "capture_hz": 30.0,
+        "camera_max_age_s": 0.2,
+        "camera_max_skew_s": 0.1,
+        "policy": {
+          "chunk_steps": 20,
+          "frequency_hz": 30.0,
+          "timeout_s": 2.0,
+          "max_age_s": 2.0,
+          "transport": "eef_websocket_v2",
+          "rtc_pixel_workers": 3,
+          "rtc_masked_left_transport": true
+        },
+        "ik": {
+          "verified": true,
+          "verification_note": "v17 ARM numerics and real-feedback play shadow passed. Control modules byte-identical to v16 with smooth/20-minute/policy-shadow evidence. New onsite F710/powered acceptance pending.",
+          "safety": {
+            "max_dt_s": 0.05,
+            "max_linear_speed_m_s": 0.08,
+            "max_angular_speed_rad_s": 0.3490658503988659,
+            "max_target_translation_m": 0.2,
+            "max_target_rotation_rad": 0.3490658503988659,
+            "max_joint_speed_rad_s": 0.35,
+            "max_joint_step_rad": 0.01,
+            "singularity_hard_sigma": 0.035,
+            "singularity_soft_sigma": 0.08,
+            "singularity_min_speed_scale": 0.15,
+            "base_solver_damping": 1e-08,
+            "max_solver_damping": 0.0001
+          }
+        },
+        "acceptance": {
+          "schema": "f1_software_acceptance_v1",
+          "checked_at_utc": "2026-10-10T07:03:13.617974+00:00",
+          "release": "/home/user/Bruno/DAgger/releases/20261010-f1-hil-v17-routes/DAgger",
+          "release_manifest_sha256": "1021e2ed01f82e0b8f375e93bb640774c462e53f0a9ca6f9caa78204677c25da",
+          "base_config_sha256": "6bdb5e89c3a0f34af2ce92613cfa3f143f14e6fb621c3f5303ffc9d29e3344a2",
+          "profile_path": "/home/user/Bruno/F1/F1-4242/runtime/robot-v22.json",
+          "profile_sha256": "9d921978148c375e79a40aa3f4c0cee6f303616bac68d394c5c45b9ac0f9f5f5",
+          "reports": {
+            "v17_checks": {
+              "path": "/home/user/Bruno/DAgger-runtime/validation-v17-20261010/report.json",
+              "sha256": "a4f50124d44a61b51111328171fdde1b83cddc842050f6dbd4f8c7b52917b011"
+            },
+            "v17_numerics": {
+              "path": "/home/user/Bruno/DAgger-runtime/validation-v17-20261010/numerics/report.json",
+              "sha256": "20d006a95855969a6e4cb1e949c76e3cea6bdf4eaf253837ac247d70d0b1022c"
+            },
+            "v16_smooth": {
+              "path": "/home/user/Bruno/DAgger-runtime/validation-v16-20261010/smooth/report.json",
+              "sha256": "8ae37e8917e7dc48a79ea770aa73a0788ef224ec9652b18ba0211e232946047c"
+            },
+            "v16_20min": {
+              "path": "/home/user/Bruno/DAgger-runtime/validation-v16-20261010/soak20/soak_report.json",
+              "sha256": "7f02a7b51fcb6b350ecea245cec6570974772a376851cfdfc5fc41a3a61aa5d5"
+            },
+            "v16_policy_shadow": {
+              "path": "/home/user/Bruno/DAgger-runtime/validation-v16-20261010/policy-shadow/report.json",
+              "sha256": "51967643341ff66cf4f240c6cc06f19ee1819ad1e0d4e030f1dee3603cd54422"
+            }
+          },
+          "physical_motion_accepted": false,
+          "windows_f710_accepted": false,
+          "model_endpoint_accepted": false
+        },
+        "f710_home": {
+          "schema": "f1_upper_home_v1",
+          "robot_id": "F1-09",
+          "name": "积木demo-V1",
+          "units": "degree",
+          "source_preset_id": "4b88bb213b0f45cc9300238b68605ac5",
+          "source_preset_sha256": "ba59066e165526dbe0adcf9be1b68641325d19325e9d6aa173fe58bc5087da07",
+          "scope": "right_arm_only_preserve_left_grippers_head_body",
+          "joints": {
+            "arm_l_j1": 69.97728729248047,
+            "arm_l_j2": -91.56895446777344,
+            "arm_l_j3": -89.15641784667969,
+            "arm_l_j4": -85.88263702392578,
+            "arm_l_j5": 0.3136047422885895,
+            "arm_l_j6": -0.1630302369594574,
+            "arm_l_j7": -0.2892906069755554,
+            "arm_r_j1": -71.27658081054688,
+            "arm_r_j2": -88.8252182006836,
+            "arm_r_j3": 91.53736877441406,
+            "arm_r_j4": -85.19598388671875,
+            "arm_r_j5": -1.1886039972305298,
+            "arm_r_j6": 0.7593132257461548,
+            "arm_r_j7": -1.4709045886993408
+          },
+          "route": "direct"
+        },
+        "hardware_capabilities": {
+          "schema": "f1_hardware_capabilities_v1",
+          "left_gripper_present": false,
+          "right_gripper_present": true,
+          "left_wrist_camera_present": true
+        },
+        "manual_compute": "process_v1"
+      },
+      "health": {
+        "contract": "f1_upper_16d_v1",
+        "ready": true,
+        "protocol": "f1_eef_rtc_v2",
+        "sync": false,
+        "rtc": true,
+        "prediction_horizon": 50,
+        "execute_steps": 20,
+        "denoise_steps": 5,
+        "rtc_optimization": "compiled_suffix_precision_cudagraphs_v1_torch27_tuple_compat_native_math_v1",
+        "input_preprocessing": {
+          "implementation_sha256": "ad636507b607ff6d329ab2435dce1168cc07bdd91dda0846ad37e943eec59ba3",
+          "contract_sha256": "891b75d1cf722d3c01531063580d4bab7e677e4d2e1bb5af8012b69e50b2e666"
+        },
+        "capabilities": {
+          "cameras": [
+            "head",
+            "left_wrist",
+            "right_wrist"
+          ],
+          "state_names": [
+            "arm_l_j1",
+            "arm_l_j2",
+            "arm_l_j3",
+            "arm_l_j4",
+            "arm_l_j5",
+            "arm_l_j6",
+            "arm_l_j7",
+            "arm_r_j1",
+            "arm_r_j2",
+            "arm_r_j3",
+            "arm_r_j4",
+            "arm_r_j5",
+            "arm_r_j6",
+            "arm_r_j7",
+            "left_gripper_position",
+            "right_gripper_position"
+          ],
+          "action_names": [
+            "arm_l_j1",
+            "arm_l_j2",
+            "arm_l_j3",
+            "arm_l_j4",
+            "arm_l_j5",
+            "arm_l_j6",
+            "arm_l_j7",
+            "arm_r_j1",
+            "arm_r_j2",
+            "arm_r_j3",
+            "arm_r_j4",
+            "arm_r_j5",
+            "arm_r_j6",
+            "arm_r_j7",
+            "left_gripper_position",
+            "right_gripper_position"
+          ],
+          "units": [
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "0..100",
+            "0..100"
+          ],
+          "action_type": "absolute",
+          "frequency_hz": 30.0,
+          "chunk_steps": 20
+        },
+        "rtc_prefix_graph": {
+          "enabled": true,
+          "mode": "eager_prefix_graph_no_autocast_cache_v1",
+          "input_version": "right_only_v1",
+          "graph_ready": true,
+          "failed": false,
+          "prefix_autocast_cache": false,
+          "single_inference_worker": true,
+          "inactive_image_reuse": false
+        },
+        "image_transport": {
+          "mode": "masked_left_png_v1",
+          "constant_cameras": [
+            "left_wrist"
+          ],
+          "png_sha256": "d61b446bab0457ddc5db93d58bcffad17606477b9b4e311095d99671e82d1f46",
+          "contract_sha256": "891b75d1cf722d3c01531063580d4bab7e677e4d2e1bb5af8012b69e50b2e666"
+        }
+      }
+    },
+    "v1_three_camera_eef": {
+      "prompt": "Use the right gripper to pick up the wooden block, insert it into the matching opening of the container, release it, and return the right arm to the starting pose with the gripper open.",
+      "config": {
+        "schema": "f1_hgdagger_v1",
+        "infra_manifest": "configs/f1_infra_binding.json",
+        "capture_hz": 30.0,
+        "camera_max_age_s": 0.2,
+        "camera_max_skew_s": 0.1,
+        "policy": {
+          "chunk_steps": 20,
+          "frequency_hz": 30.0,
+          "timeout_s": 2.0,
+          "max_age_s": 2.0,
+          "transport": "eef_websocket_v2",
+          "rtc_pixel_workers": 3
+        },
+        "ik": {
+          "verified": true,
+          "verification_note": "v17 ARM numerics and real-feedback play shadow passed. Control modules byte-identical to v16 with smooth/20-minute/policy-shadow evidence. New onsite F710/powered acceptance pending.",
+          "safety": {
+            "max_dt_s": 0.05,
+            "max_linear_speed_m_s": 0.08,
+            "max_angular_speed_rad_s": 0.3490658503988659,
+            "max_target_translation_m": 0.2,
+            "max_target_rotation_rad": 0.3490658503988659,
+            "max_joint_speed_rad_s": 0.35,
+            "max_joint_step_rad": 0.01,
+            "singularity_hard_sigma": 0.035,
+            "singularity_soft_sigma": 0.08,
+            "singularity_min_speed_scale": 0.15,
+            "base_solver_damping": 1e-08,
+            "max_solver_damping": 0.0001
+          }
+        },
+        "acceptance": {
+          "schema": "f1_software_acceptance_v1",
+          "checked_at_utc": "2026-10-10T07:03:13.617974+00:00",
+          "release": "/home/user/Bruno/DAgger/releases/20261010-f1-hil-v17-routes/DAgger",
+          "release_manifest_sha256": "1021e2ed01f82e0b8f375e93bb640774c462e53f0a9ca6f9caa78204677c25da",
+          "base_config_sha256": "6bdb5e89c3a0f34af2ce92613cfa3f143f14e6fb621c3f5303ffc9d29e3344a2",
+          "profile_path": "/home/user/Bruno/F1/F1-4242/runtime/robot-v22.json",
+          "profile_sha256": "9d921978148c375e79a40aa3f4c0cee6f303616bac68d394c5c45b9ac0f9f5f5",
+          "reports": {
+            "v17_checks": {
+              "path": "/home/user/Bruno/DAgger-runtime/validation-v17-20261010/report.json",
+              "sha256": "a4f50124d44a61b51111328171fdde1b83cddc842050f6dbd4f8c7b52917b011"
+            },
+            "v17_numerics": {
+              "path": "/home/user/Bruno/DAgger-runtime/validation-v17-20261010/numerics/report.json",
+              "sha256": "20d006a95855969a6e4cb1e949c76e3cea6bdf4eaf253837ac247d70d0b1022c"
+            },
+            "v16_smooth": {
+              "path": "/home/user/Bruno/DAgger-runtime/validation-v16-20261010/smooth/report.json",
+              "sha256": "8ae37e8917e7dc48a79ea770aa73a0788ef224ec9652b18ba0211e232946047c"
+            },
+            "v16_20min": {
+              "path": "/home/user/Bruno/DAgger-runtime/validation-v16-20261010/soak20/soak_report.json",
+              "sha256": "7f02a7b51fcb6b350ecea245cec6570974772a376851cfdfc5fc41a3a61aa5d5"
+            },
+            "v16_policy_shadow": {
+              "path": "/home/user/Bruno/DAgger-runtime/validation-v16-20261010/policy-shadow/report.json",
+              "sha256": "51967643341ff66cf4f240c6cc06f19ee1819ad1e0d4e030f1dee3603cd54422"
+            }
+          },
+          "physical_motion_accepted": false,
+          "windows_f710_accepted": false,
+          "model_endpoint_accepted": false
+        },
+        "f710_home": {
+          "schema": "f1_upper_home_v1",
+          "robot_id": "F1-09",
+          "name": "积木demo-V1",
+          "units": "degree",
+          "source_preset_id": "4b88bb213b0f45cc9300238b68605ac5",
+          "source_preset_sha256": "ba59066e165526dbe0adcf9be1b68641325d19325e9d6aa173fe58bc5087da07",
+          "scope": "right_arm_only_preserve_left_grippers_head_body",
+          "joints": {
+            "arm_l_j1": 69.97728729248047,
+            "arm_l_j2": -91.56895446777344,
+            "arm_l_j3": -89.15641784667969,
+            "arm_l_j4": -85.88263702392578,
+            "arm_l_j5": 0.3136047422885895,
+            "arm_l_j6": -0.1630302369594574,
+            "arm_l_j7": -0.2892906069755554,
+            "arm_r_j1": -71.27658081054688,
+            "arm_r_j2": -88.8252182006836,
+            "arm_r_j3": 91.53736877441406,
+            "arm_r_j4": -85.19598388671875,
+            "arm_r_j5": -1.1886039972305298,
+            "arm_r_j6": 0.7593132257461548,
+            "arm_r_j7": -1.4709045886993408
+          },
+          "route": "direct"
+        },
+        "hardware_capabilities": {
+          "schema": "f1_hardware_capabilities_v1",
+          "left_gripper_present": false,
+          "right_gripper_present": true,
+          "left_wrist_camera_present": true
+        }
+      },
+      "health": {
+        "contract": "f1_upper_16d_v1",
+        "ready": true,
+        "protocol": "f1_eef_rtc_v2",
+        "sync": false,
+        "rtc": true,
+        "prediction_horizon": 50,
+        "execute_steps": 20,
+        "denoise_steps": 5,
+        "rtc_optimization": "compiled_suffix_precision_cudagraphs_v1_torch27_tuple_compat_native_math_v1",
+        "input_preprocessing": {
+          "implementation_sha256": "d9a30ce0b18c4bae95095c046b81ae1a65b28b68b201aeb40960535024ffd3a6",
+          "contract_sha256": "04d0f5503b547dab1a6d50731fdf75796850cf8fbe6a97fe3c9b33e3e58ad3f5"
+        },
+        "capabilities": {
+          "cameras": [
+            "head",
+            "left_wrist",
+            "right_wrist"
+          ],
+          "state_names": [
+            "arm_l_j1",
+            "arm_l_j2",
+            "arm_l_j3",
+            "arm_l_j4",
+            "arm_l_j5",
+            "arm_l_j6",
+            "arm_l_j7",
+            "arm_r_j1",
+            "arm_r_j2",
+            "arm_r_j3",
+            "arm_r_j4",
+            "arm_r_j5",
+            "arm_r_j6",
+            "arm_r_j7",
+            "left_gripper_position",
+            "right_gripper_position"
+          ],
+          "action_names": [
+            "arm_l_j1",
+            "arm_l_j2",
+            "arm_l_j3",
+            "arm_l_j4",
+            "arm_l_j5",
+            "arm_l_j6",
+            "arm_l_j7",
+            "arm_r_j1",
+            "arm_r_j2",
+            "arm_r_j3",
+            "arm_r_j4",
+            "arm_r_j5",
+            "arm_r_j6",
+            "arm_r_j7",
+            "left_gripper_position",
+            "right_gripper_position"
+          ],
+          "units": [
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "0..100",
+            "0..100"
+          ],
+          "action_type": "absolute",
+          "frequency_hz": 30.0,
+          "chunk_steps": 20
+        },
+        "state_input_profile": {
+          "name": "legacy_left_gripper_zero_v1",
+          "model_only_indices": [
+            14
+          ],
+          "model_only_values": [
+            0.0
+          ],
+          "physical_state_semantics": "zero_storage_placeholder_not_measurement",
+          "state_valid_mask": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            false,
+            true
+          ],
+          "cameras": "original_three_camera_contract",
+          "physical_feedback_modified": false,
+          "training_evidence": {
+            "dataset_manifest_sha256": "f9a29dc3a9b7e8a0df69097cb80e5fa5edb6b3652e4a0f29f9412d086c4f1249",
+            "arrays_sha256": "b4a60f0ccc6555544844f8f5fe0b5aaa63eaebc0d8bf32215d144825e8f40072",
+            "anchors": 13102,
+            "left_gripper_min": 0.0,
+            "left_gripper_max": 0.0
+          }
+        }
+      }
+    },
+    "rlt_b1250_sync_c16": {
+      "health": {
+        "contract": "f1_upper_16d_v1",
+        "ready": true,
+        "protocol": "f1_eef_rlt_sync_v1",
+        "sync": true,
+        "rtc": false,
+        "prediction_horizon": 16,
+        "execute_steps": 16,
+        "denoise_steps": 5,
+        "input_preprocessing": {
+          "implementation_sha256": "ad636507b607ff6d329ab2435dce1168cc07bdd91dda0846ad37e943eec59ba3",
+          "contract_sha256": "891b75d1cf722d3c01531063580d4bab7e677e4d2e1bb5af8012b69e50b2e666"
+        },
+        "capabilities": {
+          "cameras": [
+            "head",
+            "left_wrist",
+            "right_wrist"
+          ],
+          "state_names": [
+            "arm_l_j1",
+            "arm_l_j2",
+            "arm_l_j3",
+            "arm_l_j4",
+            "arm_l_j5",
+            "arm_l_j6",
+            "arm_l_j7",
+            "arm_r_j1",
+            "arm_r_j2",
+            "arm_r_j3",
+            "arm_r_j4",
+            "arm_r_j5",
+            "arm_r_j6",
+            "arm_r_j7",
+            "left_gripper_position",
+            "right_gripper_position"
+          ],
+          "action_names": [
+            "arm_l_j1",
+            "arm_l_j2",
+            "arm_l_j3",
+            "arm_l_j4",
+            "arm_l_j5",
+            "arm_l_j6",
+            "arm_l_j7",
+            "arm_r_j1",
+            "arm_r_j2",
+            "arm_r_j3",
+            "arm_r_j4",
+            "arm_r_j5",
+            "arm_r_j6",
+            "arm_r_j7",
+            "left_gripper_position",
+            "right_gripper_position"
+          ],
+          "units": [
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "0..100",
+            "0..100"
+          ],
+          "action_type": "absolute",
+          "frequency_hz": 30.0,
+          "chunk_steps": 16
+        },
+        "image_transport": {
+          "mode": "masked_left_png_v1",
+          "constant_cameras": [
+            "left_wrist"
+          ],
+          "png_sha256": "d61b446bab0457ddc5db93d58bcffad17606477b9b4e311095d99671e82d1f46",
+          "contract_sha256": "891b75d1cf722d3c01531063580d4bab7e677e4d2e1bb5af8012b69e50b2e666"
+        },
+        "reference_horizon": 50,
+        "proposal_only": true,
+        "control_mode": "rlt_hil_supervised"
+      }
+    },
+    "v41_rlt_rtc": {
+      "health": {
+        "contract": "f1_upper_16d_v1",
+        "protocol": "f1_eef_rlt_rtc_v1",
+        "ready": true,
+        "sync": false,
+        "rtc": true,
+        "prediction_horizon": 16,
+        "reference_horizon": 50,
+        "execute_steps": 16,
+        "denoise_steps": 5,
+        "reference_compute_path": "serving_graph_prefix_and_suffix",
+        "proposal_only": true,
+        "control_mode": "rlt_hil_supervised",
+        "input_preprocessing": {
+          "implementation_sha256": "ad636507b607ff6d329ab2435dce1168cc07bdd91dda0846ad37e943eec59ba3",
+          "contract_sha256": "891b75d1cf722d3c01531063580d4bab7e677e4d2e1bb5af8012b69e50b2e666"
+        },
+        "capabilities": {
+          "cameras": [
+            "head",
+            "left_wrist",
+            "right_wrist"
+          ],
+          "state_names": [
+            "arm_l_j1",
+            "arm_l_j2",
+            "arm_l_j3",
+            "arm_l_j4",
+            "arm_l_j5",
+            "arm_l_j6",
+            "arm_l_j7",
+            "arm_r_j1",
+            "arm_r_j2",
+            "arm_r_j3",
+            "arm_r_j4",
+            "arm_r_j5",
+            "arm_r_j6",
+            "arm_r_j7",
+            "left_gripper_position",
+            "right_gripper_position"
+          ],
+          "action_names": [
+            "arm_l_j1",
+            "arm_l_j2",
+            "arm_l_j3",
+            "arm_l_j4",
+            "arm_l_j5",
+            "arm_l_j6",
+            "arm_l_j7",
+            "arm_r_j1",
+            "arm_r_j2",
+            "arm_r_j3",
+            "arm_r_j4",
+            "arm_r_j5",
+            "arm_r_j6",
+            "arm_r_j7",
+            "left_gripper_position",
+            "right_gripper_position"
+          ],
+          "units": [
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "degree",
+            "0..100",
+            "0..100"
+          ],
+          "action_type": "absolute",
+          "frequency_hz": 30.0,
+          "chunk_steps": 16
+        },
+        "image_transport": {
+          "mode": "masked_left_png_v1",
+          "constant_cameras": [
+            "left_wrist"
+          ],
+          "png_sha256": "d61b446bab0457ddc5db93d58bcffad17606477b9b4e311095d99671e82d1f46",
+          "contract_sha256": "891b75d1cf722d3c01531063580d4bab7e677e4d2e1bb5af8012b69e50b2e666"
+        }
+      }
+    }
+  },
+  "modes": {
+    "rollout": {
+      "client": "/home/user/Bruno/DAgger/releases/f1-rtc-rlt-V39/DAgger",
+      "manifest_sha256": "92de4faa56038ce0b441e0c01530c9d39a493ecc7c1b0f084f4b30dc069936e6",
+      "mode": "sync",
+      "shadow": "sync-shadow",
+      "rtc_flags": [
+        "--rtc"
+      ],
+      "delay_steps": 14,
+      "min_steps": 16,
+      "default_continuous": false,
+      "log": "onsite-policy-console.log"
+    },
+    "hil": {
+      "client": "/home/user/Bruno/DAgger/releases/f1-rtc-rlt-V39/DAgger",
+      "manifest_sha256": "92de4faa56038ce0b441e0c01530c9d39a493ecc7c1b0f084f4b30dc069936e6",
+      "mode": "run",
+      "shadow": "policy-shadow",
+      "rtc_flags": [
+        "--rtc-hil",
+        "--episode-controls"
+      ],
+      "delay_steps": 14,
+      "min_steps": 16,
+      "default_continuous": true,
+      "log": "onsite-powered-console.log"
+    },
+    "rlt-hil": {
+      "client": "/home/user/Bruno/DAgger/releases/f1-rtc-rlt-V47/DAgger",
+      "manifest_sha256": "6e363efe20b0ac1d18563deab38da0d206a93707101adc651d0d3683213becb6",
+      "mode": "run",
+      "shadow": "policy-shadow",
+      "rtc_flags": [
+        "--rlt-hil",
+        "--episode-controls"
+      ],
+      "delay_steps": 14,
+      "min_steps": 16,
+      "default_continuous": true,
+      "log": "onsite-rlt-hil-console.log"
+    }
+  },
+  "machines": {
+    "h20": {
+      "activate": "/home/user/projects/infra/h20/envs/f1-jimu-pi05-v1/activate.sh",
+      "server": "/u01/user/inference-framework/components/f1-rtc-rlt-V41/h20_rtc_fast_server.py",
+      "rlinf_root": "/home/user/projects/task-releases/f1-toys-20261022-v1-dagger-r3/RLinf",
+      "dataset": "/u01/user/datasets/f1_toys_v1_dagger_right_only_20261022/dataset/train",
+      "env": {
+        "PYTHONPATH": "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src:/u01/user/envs/f1-toys-augmentation-v1",
+        "TORCH_COMPILE_DISABLE": "1",
+        "OMP_NUM_THREADS": "4",
+        "MKL_NUM_THREADS": "4",
+        "OPENBLAS_NUM_THREADS": "4",
+        "NO_ALBUMENTATIONS_UPDATE": "1",
+        "F1_RTC_PREFIX_GRAPH": "1",
+        "F1_MASKED_LEFT_TRANSPORT": "1"
+      },
+      "flags": [
+        "--rtc",
+        "--rtc-compile-suffix",
+        "--steps",
+        "5",
+        "--host",
+        "127.0.0.1"
+      ],
+      "ssh_host": "h20-train",
+      "release_root": "/u01/user/inference-framework/f1-rtc-rlt-V41",
+      "files_sha256": {
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/SOURCE_MANIFEST.json": "0f364bc394ddff37fc65f22a598d55f84484e0e0907a5cf1bd95fc52eaa5c8ec",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/h20_rtc_fast_server.py": "bbeff89854a9e0ece6fe6535812fcd2d87fd1d0f54b799c5d601bedc4a1cb799",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/acceptance_rlinf_server.py": "ea408e9e9425f8df9bff403afaebe42bffcc2963f73d8d6a22c936788df9ccfe",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/activate_rtc_fast_f1.py": "01a2c23a5ad33c130fef281f64565ba4472932f3834c45c88cfb4b32bf7f17ba",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/activate_rtc_fast_h20.py": "bb0bdc64ea1291eb1819bf5ba4fd082dae6aac3f94bd93979fe9d4efc159bc44",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/analyze_ik_recovery_onsite_20261021.py": "32e539fb84333e9389be0126f8be6c9bc418f48bf04466367b13886949586662",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/analyze_partial_timewarp_20261021.py": "6fe0201f04c6892f37a9422af028abf0b14dd59f28d00e0f6b9b87dc79a2d0d4",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/audit_execution_tolerance.py": "1e7582cbb59435aeacee741566cba76a4c65d462f3e9286c15d98cb233ac166f",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/audit_full1500_ik_20261021.py": "8dd1dfa773edbc24281e0b924808a5ef98a82425a43cd1bb677143f18caa51d1",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/audit_margin_paths.py": "960adaa0a215fbce164f322504acf53460f4a93f6c9bfa62a62145ca1ec5dbf2",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/audit_orientation_sensitivity.py": "feac4744d4dd9acbd79f17f08037fd34d999afb63125237bd90da5cfd266b7a0",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/audit_rlt_compute.py": "2d7e61ebf26ed461e567b12916507c67de435571bf820b363138568a3af655b3",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/audit_rlt_dagger.py": "0eab15576b68e037d623a019e7c7634bd68054ff024d81be513f0b58e69b06a4",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/audit_rlt_decision_dataset.py": "7aa094fdd5588aa691bb39f66613c78d3b8dee3fef9fd81a7a9fe07cdfa2b4cc",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/audit_rlt_demo_seed.py": "84733e135754a8810f80f5b024f65d8f4d366b54571d4be151199459e5e855c2",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/audit_rlt_inference.py": "54dd300b423bb081da1aeca8c42612ca5359349eab2992617389bdf816ac6f01",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/audit_rlt_online_decisions.py": "9d0397f2829597bcb882a7361f6635f53c0ba4ffa6c4bb1fbbcd1559641d69c0",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/audit_rlt_q_direction.py": "68527468fb61a59d59e5f519ab59910d5dc0375807df9db786e2fc64ff257cc4",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/audit_rlt_rtc_compute.py": "bda34cb50d0e2494e4f3df0559f430b0c08e860be3b73482512486a2edae2a86",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/audit_rlt_rtc_service.py": "665ba018e7636e8d3698e8741ca73a5b2e329f5516157983473b044c70cc3356",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/audit_rlt_shared_compute.py": "85d7eab8951fcda056cd4b91dbc126ffc33a492db1a56a86e95ad77121922382",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/audit_rlt_stage2.py": "e90cde1d2baae4842ab6c331a22c98e525bd310616a12aa94e93a5f7ec66f565",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/audit_rlt_token.py": "dc02ef612889a7b2ac526c4ad406d139afa1a6357c5ed652555dba8d92cccb89",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/audit_rtc_hil_session.py": "6350dd646e39f847373c24101a0912d37ac3268fa6d81b198118721c068d5451",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/audit_strict_recovery_candidates_20261021.py": "595b2bae7ced8fd7c069ea81cf3a83070a79ae4e75f221fb21dcd5377df45cb6",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/audit_target_context.py": "5c6cfb5726f3ce595ad2e895551376fcc0a42822d019f26ac80f9224a83c8989",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/audit_teacher_ik.py": "7a88a3105171506cc43d3aff16368565b66c70c4363f3ef52cd8d10cbddd9da1",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/audit_wrist_reach.py": "50aee0c26b98cb125e03d2e67647fad2e763507e45ec65267c33c4269f60233f",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/benchmark_pixel_threads.py": "c98de58bf4e047280b413cbd8c856b9d3067e0237ad45ef66acbb70e8d6e2fb2",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/benchmark_rlinf_codecs.py": "59ae87f57d014616d2b6e3ddfa4483019a31f64cc13e65be6c9510838a969b20",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/benchmark_rlinf_link.py": "25ba6f60be1b286a6555dffdad03f5be8f391d92e9f357f07ae4363cbe154360",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/benchmark_rlinf_offline.py": "30d5fdfcc31d379840b15cdc8b5578d49c230f14308b9ba4583f87f3b4fd5954",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/benchmark_rtc_ds.py": "c2a01250451b66415dbe99f2bfb2dca2916d1d110d14a17079d742d04f271413",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/benchmark_rtc_hosts.py": "ace42d8c44bc4efa50d97c0b0fd2b491d15ca2fb5ee90072175fdc754450c5e9",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/benchmark_transport.py": "b0f41bf43c05627ca5bf210a0174ce33f67b62099e814a6976187f34a52f3afc",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/build_hil_audio_review.py": "3f9e91858f61cc4a11d7a82445cc2695ceccaf66770273350398a6def860115f",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/calibrate_rlt_local_critic.py": "30d18ff865f1aa9626fdef2b49f1b14d7fc7f053b9043a8ab2cd5291094c2ec1",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/check_batch.py": "d88a9a88b34e66c689e1994aeacb6008106be6911bbd9b44f44f1d20cb7838d5",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/check_checkpoint_service.py": "4f5d5738a1ed42775690dd3f3e992ca80668efd8372020a8790f317a6a0d6c64",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/check_formal_dataset.py": "e2ca4c1d59b086dffc00140b074d145062a3126f44c5161703fc259158355143",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/check_full_bundle.py": "30f1b8a0dbd9b53cab2dda2db6c6f976758ccd3acfd76621205872561250626b",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/check_resume.py": "fc3476fff735d34ed5bef0ef9360baa5f0c264b902d366c99f26657b1e5cbc4c",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/check_rlt_live_boundary.py": "baf7f5437773aa9ea30eaa93a30ae0f7226845b7ee3b2e0ed7123b9f5f76e9ff",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/check_rlt_reference.py": "9560f65f49781b26a6e1c8d04e830b3b2bbfc54a7eb0212463851d42df3fb9fb",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/check_rtc_pixels.py": "bf545dae5574befe5b04de32e7d1c5208ca2e13d2b85cde6bffb9cfef65ba4ae",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/checkpoint.py": "eeeab13f0cff221500c4b8d4d61bdeea895dae1e8d8a6e370e923827f3a6acc6",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/compare_prerejection.py": "dcd36e37042d9888d98810e4bcdd58954490f706e1fee6151b91ff95a3f569bc",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/compare_rlt_joint_update.py": "419ed45c63b91faadf748b5fe14427efca68c9f2cebb4ddfb8f3603218699130",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/crosscheck_software_recovery_20261021.py": "66328e2e91e7a94f8dab9db064a0415ebdac5733624197577391e25cca49d4e0",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/deploy_continuous_episodes.py": "18624dbc03f7924e7eebac829e3974f353a591e7c80545e86f275310b6cfc76f",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/deploy_f1_episode_web.py": "4e7c810fb83ec68754b004d0ffab1966b499b9b39eaf9a6a47202d0875448dc3",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/deploy_f1_right_arm_web.py": "6dce7bb47ab9edeacaf5e92c66ec36b920ef0db5c729cc9f19778318fa0fdbb6",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/deploy_f1_sender_mismatch_web.py": "8e9ec2ad24577ab7f1fba8f8b26fa98b165b06ba3cdfd299504fa99a4b1055d4",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/deploy_inference_runtime.py": "74d630d579bd201581573ab7929fe98c7df24b6f2810630ff7a7094021b9fcaf",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/deploy_manual_finish.py": "a809f17b3b1acfcab7d587092ed15686f28a3f30ab015bc5827f0f2ee071858e",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/deploy_manual_recovery.py": "2d3e543f21a8fccc89d33ce1d17e13cf70fd6e4984ee2798b27c91d989900db4",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/deploy_rtc.py": "ca3995bbcde7e682643e916ae24f5c7dd5a30efdd35dda208d878d762deed06a",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/deploy_rtc_hil.py": "cb2b2e76e00a8c87efcce69d258e664bf64317b054f25cfd2b0f44a4120f962b",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/deploy_rtc_hil_audio.py": "ae683623a141a57a15cb1a526228b83a369a6be10df2c9d53c8b365c5b45ee5c",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/deploy_rtc_hil_audio_c.py": "e31a3f7a3f54024948566e644890ee9bbbcefa0f52eb68aedb5f16d8e6913553",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/deploy_rtc_hil_audio_c_volume.py": "e015d294d9c5fa9464b0c15eca8f873915defcf4b74f131b318b69b9caceb100",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/deploy_rtc_hil_panel.py": "bbcb2595f9e4409af09abdd8de2b335e2db606841019efdd1ff73d2b2cfda783",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/deploy_rtc_hil_right_arm.py": "850f0a2917f224dc89de6e380d6c74831e0d900bf61b57ee196f38e0074815c6",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/diagnose_rlt_actor_constant.py": "1f6f1bc9b69d2eb1d0792a42bad196b6bd85a481548c9a26516fa85eeb0de151",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/diagnose_rlt_actor_release.py": "5a02e189aafb25a0cadd7d2646c861424db69375e6e80673bcf84682258fb576",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/diagnose_rlt_critic.py": "630ebe99ff94bac3a57630a0ebb8c826fe639907a8304b6fcd401e2facbe54d7",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/diagnose_rlt_stage2.py": "7e2974339e8be4e2cc046c220871e114c80fce3490bf94ffa55831385ad704ae",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/diagnose_saved_ik.py": "168bc354fad870c19aed6fc1bb89cd0ba06d9a43148115c10d2e45dc6c7cb943",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/ensure_full_h20_rtc_tunnel.py": "89d90c3a2748890fa989a5039e9b3600f3e8353c7763bd2c487438ca36b6a4d9",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/ensure_full_rtc_tunnel.py": "9391d41c63b0c6449901096c7f88ccb975670c0c609075c7df4c7b2cfa39883f",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/ensure_h20_rtc_tunnel.py": "11e71f0f27451538b97b461ebd7ec49b51e9015db6243f5895103963193e4e24",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/ensure_ik_recovery_tunnel.py": "94085b89a64fd4b410275c606f72d6e91ee1e5290ca29218ad3f0e33dc668f90",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/ensure_rtc_tunnel.py": "15b816e99a527b5ccddc34f6fd25f56dd15680f1cd8b7da2549523269f227f32",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/evaluate_eef.py": "37d91ae195b62791268bee8ad3cf712fb0c7367b198f9afd2d442bbb8fe8ff0c",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/evaluate_release_fit.py": "5b63ea02bace8165a2bad5d8e2a411957e312232963e77f6dca3146af556ddbc",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/evaluate_rlt_arrivals.py": "20bd63423df5109ab4b4ebb63f0282a975640a431008a10db9f921d3ac4b3b22",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/evaluate_rtc_replay.py": "a085af6d8f920dcf23998864ed0a64848d33d409253ab4a3d433e946c4646c10",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/evaluate_stage_sampling.py": "567493896a0bab8c98561115f57c4e46413d943c4365ff61f1de6c92e417fb22",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/export_bundle.py": "3af9db030bf61abb847c6bb49f032a052cb64a15021328e5836743cec64821f7",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/export_eef.py": "535dd1ad7a9734669b0fa1bbaccce06041ef621390ccaf47a7d189ceac727c6b",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/finish_f1_deployment.py": "37e44faae6c38a524801352777557c75b9a797405302d99ded4fb1314a05fef6",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/h20_rtc_fast_server.py": "bbeff89854a9e0ece6fe6535812fcd2d87fd1d0f54b799c5d601bedc4a1cb799",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/hil_audio_review.template.html": "bfd330c27f4c0434360df317d037a6bff8b3f8592a4bc196f3fea7376bd3da97",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/ik_recovery_server.py": "41c07b196a2e9c214992396d12eb72e179acc356ab39dd809e9b5df583b3034f",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/infer_offline.py": "7ce6ad8dac429c9da6ffdacf4f5caaf706638cd18d9c1365359ed92d3e3f6b2b",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/inference_console.py": "b76638e623675724dc0cd386c3601430b87b007c3106689d6b57233283a16bb8",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/inference_console.sh": "38cf014e0a6fc2fe7b5baeacabccaa72ce535f72d2c7fd9a892885e9f91ea49e",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/inference_runtime.py": "0d7b476fa9ac77fce1f2c0cf116683ea116c946a63a9ea3585297600ec7fbe52",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/inference_terminal.py": "af277169c9a91b3e0ed4b5845adcb8e8719cb394d975edfcb26199d63a04f27e",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/install_full1500_h20_entry.py": "6e0b42e5c07475e95e3b48f90ca86e58c29f8b7998209c379b7c27a9648e64d5",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/install_full_250_entry.py": "838736a8166efd5e3152cc91e77eadba9056f344edd256cb40fe3ab571017445",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/install_full_h20_entries.py": "e57a45715fd7038a94e25fc231e95737bae97af9a974d97fa6192b2317b8ff16",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/install_h20_rtc_entry.py": "45534bc12c9fe0184dfe30c12dd8441c5ba6b3ce24843798c9e447071ed534a2",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/install_rtc_ds_candidates.py": "f7785b098c5c8099cefc7b8cbd55d831c8bea49f83eb80519294086c2f108f2f",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/inventory_hil_mix.py": "08796c45bd106f547ce99dfb175a216ce71c992da9bbaf45ff7ec9e28e17c604",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/migrate_rlt_reference.py": "3fbbb86e522b5d732bff7c1b8ad5eb7711ad74cc53f96d46477b96213449ecc2",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/operator_log_mirror.py": "c0f8be8f931619fd53f837da460b8a3e3a42f963f74d41a832ea0e9343d56b12",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/organize_wandb.py": "8ed666e0c8493a3ad62619a75efe16b54a1449add5b80c13b21ed12d235c53c3",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/prepare_continuous_episodes.py": "caa9fda35c2bc46bed8dec1ae78154b46b3db701776af625327991ecdc2569b7",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/prepare_eef.py": "ecf4c933c6a0b88c3e04e33473944b548dd50dc18e2a6d2babc167cf337c82eb",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/prepare_formal.py": "09ad964789075d1fa42d9a2bcbdfd3d79175d0ae412d3e3fd0627b5b15672ce5",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/prepare_full_h20_parameter_read.py": "53d10c9190c4984d281e620adb960701c0aec274ad1d93481021dffdc3d910c0",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/prepare_hil_correction.py": "f404529f385dbb7dc7dab05739470080a1af8b6c00100c3aaa75c1ba545dfbd1",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/prepare_ik_resample_20261021.py": "99d777b01cc04f334d4e4b120c2fcb044a43d515de6503ebb9a8958fdf11b163",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/prepare_manual_finish.py": "7eb7ef1629db49016a8c2cfb01af70a9224295c2e83e98895d51f40f5f735231",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/prepare_manual_recovery.py": "b62532fcfb7a9fcf2ee69c13f20700078cd63bfadf6c266a03178b9fd47ddaef",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/prepare_release_fit.py": "c299ae5fa21a2bbe10d607032a04b3f50a9503d68e5353895430f4db9d83dde1",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/prepare_rlt_dagger.py": "eca3874904fab19037ebd91aad2395a3d4b3f940fdff142524db1683c5592286",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/prepare_rlt_demo_seed.py": "5558fb4cf5baacf30a897fd93fc4a2e23ec25dda7f6b885b071a9da44b9a8055",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/prepare_rtc_replay.py": "a54615335b518d042fee35436b6836237cd5a111058fafcec30fff76ae80cd2e",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/prepare_sample.py": "7e9a7447cb8aabaf18e300056594bf2c562111ce545076fbc82b4bbaf25c82d4",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/prepare_stage_sampling.py": "fb968300f0e2c9df367bbd448d4aa99322448e40c8444078bd91889ab97adb56",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/prepare_v1_dagger.py": "ba4b63755e2949fe4d194007fad391f10e50f04d38f71a6e1873730acdf4d56c",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/probe_actual_recovery_wrapper_20261021.py": "ed86825f047b29292c838763f0b6473de8cd435ddbc2bbf28ea78d8bb6b3824e",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/probe_actual_recovery_wrapper_warm_20261021.py": "bb60758d3882e9740f592411cec4be73fe6c7ead00777e3c403e6efd9d8bbf4f",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/probe_full1500_resampling_20261021.py": "4345cb2afa827ce20aea34f0fbad15f93e31d817fbec1987f08f7e1c2caa6f63",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/probe_ik_resample_20261021.py": "4121130b14b657cd8cde6300ad31e7beece7ab3056ac8fe05da26debcd9f470a",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/probe_ik_resample_cached_20261021.py": "93d190615b3f45c0cd39c354dcd96f84f2f79a9dedcff58362d5d835b3ad6102",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/probe_prefix_arm_numerics_20261021.py": "2eabd3dd898b83b33dfa44d5a26c697c664c55ee8b1eb56dfd5dac3032b8c91e",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/probe_rtc.py": "661b0ea8d609e5a982e51495790e7c7e38a2c50d6b56768dd517be0d3f18e599",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/probe_tracking_hold_owner_20261021.py": "e84dc92682f89fa655a23e3ceb6cc21e5936ada6c4edd5ae40913f9735dea1fa",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/probe_wrapper_cache_pair_20261021.py": "a913de8a123a47460d0968852728aef3c81a1b6e8494c682e458ad39c59f0762",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/process_rlt_arrivals.py": "ba38c1f66e71b1d6203a654f07f194b7690ce92b11de7bf9b3a6d838af3e6b22",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/profile_h20_rtc.py": "ace586ef36352d6d05b6e5c3ed60adf0ad03c7d40fb592b9b4dc58d072debae9",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/profile_rtc_candidates.py": "b72c61de921ebae4cdc1e6e1eece92a338ff2f9811a234e67d4924f89a373888",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/profile_rtc_prefix.py": "b9e426f67c4987b90723e0148919cf23be7dcd1e95e42c75f29a9775167507c4",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/prototype_partial_replan_20261021.py": "46577e809141fbd42b64897e4fb483c68853657132a85fa80e063b838dfb0679",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/prototype_progress_hold_20261021.py": "d356ae76cb9125ceac521ed22c29d6f5aadaea3425c4f60bf73286774dfd3acd",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/rebuild_rlt_decisions.py": "a7aef51228c13815ab3f640534439241cc6f998051adcfbdd1b7eb4ca08a9991",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/refresh_rlt_replay_adapter.py": "797967ff7a848254b90b58720d3bf94706b59500febf2f0db1911800a73ffea1",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/replay_rlinf_acceptance.py": "c3f3a7dc3fa0512a4ef63a7038049aee6b7c701819bc0fe32c3b6fc99db841de",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/resume_v1_full_1000_to_2000.sh": "d1981a1e86f6e80c55a2c9e464c5403c66821c746619db78eaafef995c56e086",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/review_conditional_sequence_20261021.py": "a33f47c8bf8d8bdc88831b75c011afeb9b5e90fb1435b3c935cb8bec180b1925",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/review_exact_ik_20261021.py": "adc61f251353bd463f820d0d20724a99d59c6e6b5e146b8e57967c7bcda20c1f",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/review_projection_20261021.py": "20607a79a8799862f400c44b8745ca092b7872ef7275aa52282c9534a6743a84",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/review_range_20261021.py": "8093ec96a539a68c080e5c88906f0cb99447c11100d6f94371968dd64eda1fb5",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/review_recovery_20261021.py": "668946d5a46f44e9d67ab95fc0d04a2646fefcde81231c60ed08173fc975003b",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/review_rlt_placement_endpoints.py": "022e222e9bf444568fde36ed6133034246d5e17c1fe7d7e91354d6b290f48962",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/review_roi.py": "a78cab8862ab6d1f6b42843f3565cfdda76d5a8bd0419dab1cf3894a38b650af",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/rlinf_offline_candidates.py": "6b219fefeebeaf54d17394fc69741212138e3f78388cbda7ca5146438223c070",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/rlinf_prefix_candidate.py": "aa7bf473bf4bdd648452d92e548ed306d2afb9d2ab08cb34c745c087576d7a1d",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/rlt_actor_trial.py": "7bbb149829d8649d963faf7428e06af965db209451a64988fbf95fd547aff9e9",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/rlt_async_train.py": "7bf9b1fdd781af207dfa8384a9fda5544582cfa411b571ab49fe739a21880d01",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/rlt_controller_contract_trial.py": "220cf380acee14a780d7af168f566daa6e58ff1184b07ea1f1d4dc14768ce0c9",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/rlt_dagger_train.py": "f9b359563c4257a3c4c90be262c8d4fd3670d50fa484086406b0bdfa3caa39d0",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/rlt_online_preflight.py": "f90bcf28a1cfb4544ff0f1a2585c1487122c12294723ef40f2c08db4e5119aea",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/rlt_pack_priority.py": "097f8952ae073aaba771e54cfeeb0e5e11bc5c7f8c4923d9b921dfa21372c4aa",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/rlt_pipeline_preflight.py": "faf19cf781006cca1196ec0b1955025a25de40d59ffd736a8ed27d0a301a5a03",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/rlt_pipeline_status.py": "4616fac5a2de545208b5a8a618fc011b0a995b2372a04aa1cdd5edb094199833",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/rlt_reference_trial.py": "3c286ca86dc15b98ca239f1cd4c81d49cdc220839dd6dc1c951efa530227f405",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/rlt_replay_repair_check.py": "bcfbdc69f6ed9cc2d63acf8844dcc9bdae721394ed329d2298dea86e4b43fffd",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/rlt_select_actor.py": "d1d71863ac701c1bc4df3890f7dcee101b3c8e5b5a52925ebfa6d7110d9f12bc",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/rlt_sft_export.py": "cfc5fa93fa072204ac9fd33b733ffe0f9db210623ac1cb51f5d4f07b91af788c",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/rlt_stage1.py": "d9ae73a341ce3f7791d25cbf0421f869196725add98c213d830686634543cb63",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/rlt_stage2_offline.py": "d0e61f460b1426bcbb549e99cca2428770553acba21674f3e3d8ad53292a89d7",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/rlt_sync_priority.py": "da3cc36e610849aaf290fb71d2edea798c7cfd5fac314c1bcdc7effd14dfde0e",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/rlt_sync_raw.py": "c1ba5b7d13ebb9d0fee09dcee599178c2305a0c9e7a2a0cd3d9961c782d4fbc7",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/rtc_link_ab.py": "c814590262cdfeed7139ad7089ebc2e8d3639b039e54cae736989afe97c4349e",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/run_f1_ik_recovery.py": "571e020901d175d571de57a9af1e5bdaca1b5e1f2ed23b3f687a46654f39c158",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/run_f1_ik_tracking_recovery.py": "cc7321fdab295ea54f3e5802dea4976f29c6471b55910a3932c7bf452b5effb8",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/run_h20.sh": "f6368e0d31ec0ea7e40fa1d5887cd3263d9e1c7a87586f6762efdfc71be59ceb",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/run_release_fit.sh": "68bc2eebd866659988141dc123c026ea8488145b74630a7f981b61eb4188e9fa",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/run_rlinf_offline.sh": "f184228f707f25c713deb046fcb15cedae147abe9272844accbe72e887b2f8b8",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/run_rlinf_offline_followup.sh": "2688516f1ace9cd84ed8ab4bbe1dfc8d8633e53f375de442ad36dfc85be10b25",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/run_rlt_dagger.sh": "58e71b1a72e98b0896be5c40835002c98f7c697b25b9d925d0da5bb9edd541e7",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/run_rlt_objective_matrix.py": "1aa1ba15184756d37b3c67577f8c6a4093be40f101369a832f434378cdadb5b3",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/run_rlt_repaired_comparison.py": "efc266447730a27545128d5ce4e7ecb56ee8a9bf8c42139f0c72ab031761052d",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/run_rlt_stage1.sh": "1e5df47aa63a4abb9f66e064f5d4cc97e80089fa3efd35bb9ba0341c91232d9b",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/run_rlt_stage2_offline.sh": "6c024c771e3cf22b699fdfe4bd4b3b69825a9589b9950e524da762f6941e00d1",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/run_stage_sampling.sh": "9cc7ca1ae57ddaacfa2ecef6bb2086457ccbdf89d5bcd97b9d8ee3d06651e98a",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/run_v1_50k.sh": "518085d1cbda522e76dbacafb434c7d37b194fc7e8249c49ee99ce645a4bbd71",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/run_v1_50k_four_gpu.sh": "1ff00efa22981678075a30caf9ffa44420f10ea884977f0b14984f501c04d9cd",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/run_v1_dagger.sh": "2ca059e3a903756f7caa34d54e58d9b46f40fe9f99dad0a93487dbc9b77cb1e4",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/run_v1_formal.sh": "1a4092a0990dfa03078984d9e18041ad2fc7ea85b7f528962332585de78e937d",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/run_v1_full.sh": "13b02298a9e4ea54420552f1a593ac7a9ee1d8b0d604503307cb77b08382adf1",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/snapshot_rlinf_offline.py": "bda5d8c4d64636035943eda361a7b92b50b4fcd0dfbb41c047f5f236f39850af",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/stage_full1500_h20.py": "105ea02acd12405db1582a1eab14b82bb9b275c77e3bc41516518a5982ddb64d",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/stage_full_rtc_h20.py": "085f957c72ecde4c9e50dae01d4bb8e74128af058a55286260e1ed5fc48aae37",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/stage_h20.py": "4c20dc451626a23d71139a55548deb866ecdc8827494b530c80cd8553198b575",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/stage_rtc_further_f1.py": "27e220a334c204bf1bf8baf37aad0442f4cec824ce9d5703eb4a2a8b4efe7de7",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/stage_rtc_further_h20.py": "6e200f482d28f700e32a370ac6877ec04781b74dae7d2f2656d2407babfb1990",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/start_6000d.sh": "572494ae99df07421d282fd58f9b0aa456b01b3fa8f220d6261029ea0f7cee8e",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/start_6000d_full.sh": "73ae0ae2a53df7ffd2780a121da747eb2f00642b1f79e0d08dfea63f9d7ce0fd",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/start_6000d_rtc.sh": "f3369aa9cbe33c85c733c12baac284726c8de806b8ef23d1eebe2f563406a426",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/start_comparison_services.sh": "8e8a50661a22755085038dba8593267f7c0af4f286ac31430e33469ab985767d",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/start_f1_compare.sh": "a93928e9477c09aeaba6a0b0ac25edfa3aaeaa903bcc70d84b173ce3f0d64802",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/start_f1_full_250.sh": "50ff83160a2ea47d2d11edb5ea29d0d39bbfb6fbe66c58997532970385dd4331",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/start_f1_full_h20.sh": "2d3844a52bb13d8b30f6797e44b7b3c351d9ab2735117a1164920230533d04b6",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/start_f1_ik_recovery.sh": "b455f3cc43dffb53ab285ff1ee60d683e8a52ff46debbe668c7c58bcc6a1b3ae",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/start_f1_inference.py": "77dbcab7cc6e241cd2c2232cdce78daeb87baf52ad8aea77a633661cb331c896",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/start_f1_inference.sh": "7a29ee3760dbfd32182905a1b74c1a3c2c70905a36a70923105f8257e7a55ddc",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/start_f1_onsite.sh": "ba7e91f228813b6409595fc2448f6e25153c6fa69378f93414e4dda22d94cce6",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/start_f1_rtc.sh": "0592565356526179bf59a82d833119cbb21f5554a322b9990dad3101e2c924c6",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/start_f1_rtc_h20.sh": "0b47554aacc4b0b7a053eebaacd4782759aa28e39af7be8654750b057526a273",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/start_f1_rtc_hil.sh": "ff26f9338a18819d5545a28aa6e1c21e70906c5a454d31ba42cc445b430303fd",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/start_full_250_tunnel.sh": "4ec69f8c7560df216212c5b54c4895859491d190d545669cabc0f392de5a189f",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/start_h20_ik_recovery.sh": "f5b19f6e501a565c05b6227cf98506666e59bd015e3089c08dd752f883b72dae",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/start_policy_tunnel.sh": "2a106e0d1ddeda012730acfaf8436bf1d63a7893fcda7073bdf926aa9d09593b",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/summarize_prerejection.py": "3c96d601b09a423cc965bf9180bcbcb97c4bb23225342d169cb95b710ef2e974",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/summarize_rlinf_offline.py": "19345ba3a68efd8e337e2e9d2b97aadecddb15c1e675a43b9ae1eb52c31d92be",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/summarize_rtc_shadow.py": "68c44cc84df8dd8469e0fc39bf451641a449d8f4157c43a42cd98219805b8480",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/switch_full_h20_parameter_read.py": "ea5f58dc8d04848b7e18fc8b176e45ccf9255f334ba5bc58dcef52579df713b5",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/switch_rtc_fast_h20.py": "4715eb159efb87ab7b04adbce1e956c0f3f0e11f7e9aab70561b2f1cc3d0db7c",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/test_ik_recovery_server.py": "155be728b3e624092c3193f144f58eef551a6aea5d53a2085c552c9e39667840",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/test_inference_profiles.py": "fc5a3b5dae3fee49e80515ab67c38ad0f9d039e81ddbeeec75ce44d298ca112c",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/test_rlinf_offline_candidates.py": "090b4be25d6e84a9a48b926b0387305d40694e88b2a6cc569b387992e70c0e1c",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/test_rlinf_prefix_candidates.py": "b3de89a326b7848bcf16efa702dacd115d7c4025dd4d437985a9d7bbc4d933f6",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/train_entry.py": "7cd46c7f479de50fff8ebd487393ec9f3c579df7e09a6a5025bcec1cda7fff6f",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/validate_fast_kinematics.py": "d846f534a58f0d580cd6dd3577784eaad08f08bd5a8c12c81533564216952aa1",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/validate_rtc_hosts.py": "a87133adba6290c158abb52b82aa64d822af82433679865ae0cd5f81776135f9",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/validate_rtc_optimization.py": "3f1ddcd53f5d3e12e5738e4c41003e5b4b431058f8353be86cd3592b9742a19f",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/validate_rtc_shadow_entry.py": "ffd38803e0c3e72fd549b9369c91fe4a32f109cc0b574e5441a8da88f9def463",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/verify_execution_tolerance.py": "90fc0136a292fd11c339377f36dedfd11e1e6c91cb08b4390badf9ec0e76404b",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/verify_f1_ik_recovery.py": "19b7b32b9a1f6163994d285b59d776ac52e4e825f1b40217c95caa8adf155722",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/verify_ik_recovery_proposal_20261021.py": "6250d2eb086e75769161012a1d47bd71199d7344c461d24e7003227c6e8a4602",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/verify_rtc_pause_shadow.py": "c4e7b35b097f460007041bbb77090575ff50d8c6d28661b53d94add38e90b402",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/scripts/wandb_backfill.py": "c50d830b0c9de5a3f4e060e71199c5cb22d69b715cfc02a63c661e80dc72670c",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/__init__.py": "b85cfcce1433f4ebea7b17f0662e0bb93988b1dde9496e121e27f46654f8cf33",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/augmentation.py": "f0d3243bd8e52fb8f50ee425139cebfe39b51b27fc5cd80f2594bfd62875056f",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/dataset.py": "17eadda7030a37f515e118ab75dcf78fc07bbd9f7543703c0b9c5618f8b4c90d",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/eef.py": "d01f432ccb9f00e28250265032ed6ace94cd9e8d893d31fe523b71e2ebf6190a",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/full.py": "15ca57fe0e04ca0e01153f4427b726c5b79f56814adc75b50e312a2617918fae",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/inactive_image_reuse.py": "4fb6f466946c5bece4b6d74f3fb3b844822c43fae9fa84a86870296b02db3c0e",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/inference.py": "4ffc57221d6643f9c32e413aa924f7759a237e9eb2b8f97adb7817f849968080",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/inference_worker.py": "c5385c161c63a20e3d5a39d51a953c8675b525cce38e2b14051fa2e02c800538",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/input_optimization.py": "737e36343cf946fddd8248f4eb8ef60b9ab8f50756b818d317b15baa22f8ba2d",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/lora.py": "a9f858ae0226d49f6e085c2fe0fcbc1d9dd33b3586c9bbf8a291942e1b9a73c1",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/native/ccs_m6_40.MvKDCfg": "ce20b1a80974c3ed58cdac4973152625096c8ad93a779e5fd4108c26ce19bd52",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/native/fast_kinematics.py": "6fa2846f583bda69add060c9a115188a50d57b02a87c48f2e960c592edd36c7d",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/native/kinematics.py": "c9e4acd0bbcdf05c263f9ab6a1dacd24caeb91a6adf440faabedb9db1d5cdd36",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/native/provenance.json": "91de1e380a238f365c7dbd1126af5ff76e76cfde34547aecad16a6ab9354fada",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/processing.py": "ad636507b607ff6d329ab2435dce1168cc07bdd91dda0846ad37e943eec59ba3",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/resume.py": "1d831c30adc3f376fd54b4b5668de3d6fa3dd5f3f264c82e3cfea68c7544e5df",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt.py": "8ffe0110bba3f3ecbee4953a20137b584b910fe64b112eea1587ffc7b3764e70",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_action_contract.py": "18f3c3a164e05db4c506ef0a9a1ac3ef446945e4038e1d776048d5039d810051",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_admission.py": "72e2b9c3aebe9afa28249415d0fb2d6965e6de68d6b6da5600243f8c0c4405bf",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_async_workers.py": "bffa3b3262460574939a24a55578d442693174fd1810726e232c7359c9a8aef5",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_conditioning.py": "3c05649d817806940e2285aea4da081c0b0250bfaeef52b2746252c9046a6092",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_contract.py": "861e333d907fe64f2c213043a2c752dad0f2bd1fbcab247cda36a908e3d14a24",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_critic_calibration.py": "ed69db0df8195f9e2f71c38f13fc60be759a6908a2e1aded40f55dcfd5f1a171",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_data_policy.py": "c5c899833904584283bce702aae894b72f5d94453d6f71db923930faae985ad7",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_decision_dataset.py": "0055d2fbdb4a29cee8e417ab4c995c7cff394f36c4bc5b6ef7eae34083a08eaa",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_decision_replay.py": "2d25ff80a372277c6d45e375e47d6b2bfe4682578a5789d734905ea44a21c8ea",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_demo_seed.py": "6a1638d37ebd656ad6bdda0529ae1946f8f3f0c4d43881333ee384a4ab204ec1",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_evaluation.py": "904aa044e83cd2af243c4b1cfc069830c0eb7e6db808ad77f7de98e2cdd39b76",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_human_replay.py": "07b43fc7c424c6f4f60c3712f041fc069916fe200453b84c09d673686920cda3",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_inference.py": "c463e4fda737e1228cc62519de6b936fefb2bb80cf69c20eb46e6fd2b738d728",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_local_pipeline.py": "a5135e28d979efeb5c1bdd3ad3bf14a0dd1a95c63f908c3079f217ac3d4f319e",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_local_replay.py": "6d9883fe40f6a80594e952c69ff9e184932b1b70355dc2b3532e60b506fa34aa",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_online.py": "0709b568150ecc2bc6588a7fddacd8c24d825f8f95c0160deaa8b2132f4553de",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_online_bootstrap.py": "45dd2dc93bbe43888936937cc9e7985e76b0bc26126732d2990a73680ba72c41",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_prediction_index.py": "f31b3c73fdf0e55172e0973ec72946c5b40f7d511942d8b1652ca9ee961763f2",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_prefix.py": "e0425b3cfaf6dd0b8ad73af9697b21804930cc5a6203f09b21f944dc7ae96d79",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_priority.py": "70eee2ae59c9800ccfa70769f6562cfbe5e871bbb7123293fa4e9f65093b2578",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_reference.py": "de4be242d2fcd1231cdd991e00bef3756fd92d92e7d88c2deefee3e75efeb21d",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_replay.py": "93ede013e4d367fae8339efd140742018912bfca0c5cd329e7f69d457b280285",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_runner.py": "60b27b6a6bf1cd89342811c2aa566eb9bee2a9583c867d9a8383f4a2c59e7449",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_sampling.py": "8632294665826208b3a603bd1132377af2049949ebc146037cb068e9a8094afd",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_snapshots.py": "5fa4a50c21474bbd29897714dc6f50414f66c38e79a10729beab96d5254dd4a1",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_stage2.py": "440bd44bf528367a097df045eb050dfeaf73cce2b0509c6686670b2d9d874a72",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rlt_training_batch.py": "6a10c9470098e0f468c2bb8302265dc03bf24471c6d37e05d813b07ac69b186e",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rtc.py": "bfb30aca66feca84f31a132129896fdba77347cfc6d10392c90a4d28183eb555",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rtc_optimization.py": "76295fbd3c9f3f8c9580178e38cfda6f385491babc33614ba86e28da39e1ea3e",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rtc_prefix_graph.py": "feb29396e9d304dd68f8f1a7db97fc96cf9feea90402585ddfd03abe5196880d",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/rtc_prefix_optimization.py": "57f8d363d50e8e3ec2a1ca15ef9848fd2f62ba58b92ee072a00a2835c2e5656c",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/sampling.py": "a208990ebf15c0c7d211b8d1b7e1bf39c0c2352f750437bcd35cddca874da33e",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/schedules.py": "a242942f4f48ed7dc8ef76c8de22c59186b1e56df4354ba40c982bc0e6fe6650",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/server.py": "bba02771b925b6559b4619cc0b696b66486e457448bf4255b8fcd4cede7dd5a5",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/state_input_profile.py": "beb36ecef2200ae758d605d95b85b42620adf07c4d9e564070055fe310114251",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/tokenizer.py": "4399f814a97ec00355a6bf76231ef0295950bf260fc57a36eca04eb7d130dfee",
+        "/u01/user/inference-framework/components/f1-rtc-rlt-V41/src/f1_toys/validation.py": "363509a0b9089d2e9d150b140c194b45ce913244f6c583c413c7c54c7ddd1c5e"
+      },
+      "tunnel": {
+        "host": "user@192.0.2.27",
+        "port": 6622,
+        "key": "/home/user/Bruno/DAgger-runtime/f1-toys-20261016/h20-ab/id_ed25519",
+        "known_hosts": "/home/user/Bruno/DAgger-runtime/f1-toys-20261016/h20-ab/known_hosts"
+      }
+    },
+    "h20_full_legacy": {
+      "activate": "/home/user/projects/infra/h20/envs/f1-jimu-pi05-v1/activate.sh",
+      "server": "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/h20_rtc_fast_server.py",
+      "rlinf_root": "/home/user/projects/task-releases/f1-toys-20261020-v1-full-r1/RLinf",
+      "dataset": "/u01/user/datasets/f1_toys_v1_home_mask_20261020/dataset/train",
+      "env": {
+        "PYTHONPATH": "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/src",
+        "TORCH_COMPILE_DISABLE": "1",
+        "OMP_NUM_THREADS": "4",
+        "MKL_NUM_THREADS": "4",
+        "OPENBLAS_NUM_THREADS": "4",
+        "NO_ALBUMENTATIONS_UPDATE": "1"
+      },
+      "flags": [
+        "--rtc",
+        "--rtc-compile-suffix",
+        "--steps",
+        "5",
+        "--host",
+        "127.0.0.1",
+        "--state-input-profile",
+        "legacy_left_gripper_zero_v1"
+      ],
+      "ssh_host": "h20-train",
+      "release_root": "/u01/user/inference-framework/unified-ab-full-20261023-r1-legacy",
+      "files_sha256": {
+        "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/profiles.json": "0cbaa1421a31edd1577e0e2e9cbf8ca56b97f567ce246c93096b088acb80beff",
+        "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/h20_rtc_fast_server.py": "6fd09f98a1b5cd1063c1fb43948b495142ae2f57356a06b288205bd7f11c2485",
+        "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/src/f1_toys/augmentation.py": "f0d3243bd8e52fb8f50ee425139cebfe39b51b27fc5cd80f2594bfd62875056f",
+        "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/src/f1_toys/inference.py": "510b09498699ec52767578b7b01a5d92facd0cde60977dfe1d0951b47314196a",
+        "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/src/f1_toys/tokenizer.py": "4399f814a97ec00355a6bf76231ef0295950bf260fc57a36eca04eb7d130dfee",
+        "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/src/f1_toys/__init__.py": "b85cfcce1433f4ebea7b17f0662e0bb93988b1dde9496e121e27f46654f8cf33",
+        "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/src/f1_toys/rtc_optimization.py": "76295fbd3c9f3f8c9580178e38cfda6f385491babc33614ba86e28da39e1ea3e",
+        "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/src/f1_toys/resume.py": "1d831c30adc3f376fd54b4b5668de3d6fa3dd5f3f264c82e3cfea68c7544e5df",
+        "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/src/f1_toys/dataset.py": "b2ce8f871afa9765925b58cfde8ed83a2e57e1f4fcef6954e1db3c60b356f395",
+        "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/src/f1_toys/lora.py": "a9f858ae0226d49f6e085c2fe0fcbc1d9dd33b3586c9bbf8a291942e1b9a73c1",
+        "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/src/f1_toys/schedules.py": "a242942f4f48ed7dc8ef76c8de22c59186b1e56df4354ba40c982bc0e6fe6650",
+        "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/src/f1_toys/eef.py": "d01f432ccb9f00e28250265032ed6ace94cd9e8d893d31fe523b71e2ebf6190a",
+        "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/src/f1_toys/state_input_profile.py": "beb36ecef2200ae758d605d95b85b42620adf07c4d9e564070055fe310114251",
+        "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/src/f1_toys/processing.py": "d9a30ce0b18c4bae95095c046b81ae1a65b28b68b201aeb40960535024ffd3a6",
+        "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/src/f1_toys/rtc_prefix_graph.py": "feb29396e9d304dd68f8f1a7db97fc96cf9feea90402585ddfd03abe5196880d",
+        "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/src/f1_toys/validation.py": "fc4d86bd0d0533649bb2414497f2d8e761f6743f5ad79b6d505ae70215f6e719",
+        "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/src/f1_toys/rtc.py": "bfb30aca66feca84f31a132129896fdba77347cfc6d10392c90a4d28183eb555",
+        "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/src/f1_toys/full.py": "15ca57fe0e04ca0e01153f4427b726c5b79f56814adc75b50e312a2617918fae",
+        "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/src/f1_toys/server.py": "ab2b290ff8aae92af1ddcfbc71159e0c4eeebbb070b3a0ea6ff56142bf9f85d3",
+        "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/src/f1_toys/native/provenance.json": "91de1e380a238f365c7dbd1126af5ff76e76cfde34547aecad16a6ab9354fada",
+        "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/src/f1_toys/native/fast_kinematics.py": "6fa2846f583bda69add060c9a115188a50d57b02a87c48f2e960c592edd36c7d",
+        "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/src/f1_toys/native/ccs_m6_40.MvKDCfg": "ce20b1a80974c3ed58cdac4973152625096c8ad93a779e5fd4108c26ce19bd52",
+        "/home/user/projects/task-releases/f1-toys-20261023-full-restore-r1/src/f1_toys/native/kinematics.py": "c9e4acd0bbcdf05c263f9ab6a1dacd24caeb91a6adf440faabedb9db1d5cdd36"
+      },
+      "tunnel": {
+        "host": "user@192.0.2.27",
+        "port": 6622,
+        "key": "/home/user/Bruno/DAgger-runtime/f1-toys-20261016/h20-ab/id_ed25519",
+        "known_hosts": "/home/user/Bruno/DAgger-runtime/f1-toys-20261016/h20-ab/known_hosts"
+      }
+    }
+  },
+  "models": {
+    "v1_dagger_stage_b_1250": {
+      "alias": "stageb1250",
+      "label": "V1_DAgger_StageSampling_B_1250",
+      "contract": "v1_dagger_rightonly_eef",
+      "model_id": "f1-toys-eef-81444e7071723c1f",
+      "model_version": "81444e7071723c1fde8ca397a90f1bdd21868905b51c96252af0c54a3a8669d5",
+      "machine": "h20",
+      "gpu": 3,
+      "local_port": 8153,
+      "remote_port": 8138,
+      "bundle": "/u01/user/runs/f1-toys-stage-sampling-20261022-r3/bundle-B-1250",
+      "run": "/u01/user/runs/f1-rlt-rtc-V41/service",
+      "pixels": "/home/user/Bruno/DAgger-runtime/dagger-rightonly-20261022/pixels",
+      "tunnel_runtime": "/home/user/Bruno/DAgger-runtime/f1-toys-20261016/full-h20/1000",
+      "modes": {
+        "rollout": {
+          "runtime": "/home/user/Bruno/DAgger-runtime/stage-ab-20261023/B-1250/rollout/runtime",
+          "client_component": {
+            "client": "/home/user/Bruno/DAgger/releases/20261030-f1-rlt-manual-compute-r3/DAgger",
+            "manifest_sha256": "72d0e0109f171303383f53d80c9aa2234f7e10e23770f296ee1dff5f108133cf"
+          }
+        },
+        "hil": {
+          "runtime": "/home/user/Bruno/DAgger-runtime/stage-ab-20261023/B-1250/hil/runtime",
+          "client_component": {
+            "client": "/home/user/Bruno/DAgger/releases/20261030-f1-rlt-manual-compute-r3/DAgger",
+            "manifest_sha256": "72d0e0109f171303383f53d80c9aa2234f7e10e23770f296ee1dff5f108133cf"
+          }
+        },
+        "rlt-hil": {
+          "alias": "rlt400",
+          "runtime": "/home/user/Bruno/DAgger-runtime/rlt-local-20261027-r2/runtime"
+        }
+      },
+      "rlt": {
+        "head": "/u01/user/runs/f1-rlt-dagger-success-20261026-r1/bc-audit/export",
+        "encoder": "/u01/user/runs/f1-rlt-b1250-20261026-r1/evaluation/encoder",
+        "core_root": "/home/user/projects/task-releases/f1-toys-20261026-rlt-dagger-r1/RLinf",
+        "contract": "v41_rlt_rtc",
+        "model_id": "f1-toys-rlt-rtc-31512a64399152ca",
+        "model_version": "31512a64399152ca581291741b04632c6dff996cd9e5ace055021cc07141aec5",
+        "identity": {
+          "base_model_version": "81444e7071723c1fde8ca397a90f1bdd21868905b51c96252af0c54a3a8669d5",
+          "encoder_manifest_sha256": "227f148959b7f146c94c373a9fa82548faf6066d74a8baebd13481075be473c8",
+          "actor_manifest_sha256": "81e63f4f68213cabb077a9db7349fc2f5d2fd4eef98434601cad6507ba403f23",
+          "actor_version": "83bd438519da8e1b00dd351882cb9c8a3f761c83f34d2f004e573c4b9f022c9a",
+          "checkpoint_step": 400,
+          "training_phase": "bc",
+          "q_guidance_updates": 0,
+          "execution_mode": "rtc_c16_committed_prefix_v1",
+          "control_mode": "rlt_hil_supervised"
+        },
+        "runtime_manifest": {
+          "schema": "f1_rlt_supervised_rtc_runtime_v1",
+          "binding": {
+            "protocol": "f1_eef_rlt_rtc_v1",
+            "time_contract": {
+              "prediction_horizon": 16,
+              "reference_horizon": 50,
+              "execute_steps": 16,
+              "chunk_steps": 16,
+              "frequency_hz": 30,
+              "execution_mode": "rtc_c16_committed_prefix_v1",
+              "control_mode": "rlt_hil_supervised",
+              "reference_mode": "fresh_frozen_B_with_known_committed_prefix",
+              "deterministic_actor": true,
+              "rtc": true,
+              "shift_actor": false,
+              "append_reference_tail": false,
+              "prefix_contract": "known_prefix_detached_v1",
+              "decision_horizon": "explicit_next_decision_steps"
+            },
+            "base_model_version": "81444e7071723c1fde8ca397a90f1bdd21868905b51c96252af0c54a3a8669d5",
+            "actor_manifest_sha256": "81e63f4f68213cabb077a9db7349fc2f5d2fd4eef98434601cad6507ba403f23",
+            "encoder_manifest_sha256": "227f148959b7f146c94c373a9fa82548faf6066d74a8baebd13481075be473c8"
+          },
+          "source_export_deployment_ready": false,
+          "source_export_reference_mode": "fresh_frozen_B1250_unguided_5step_reference_offline_only",
+          "reference_compute_path": "serving_graph_prefix_and_suffix",
+          "critic_used_for_control": false,
+          "original_export_modified": false,
+          "rtc_supported": true,
+          "robot_acceptance": "not_established_by_model_loading"
+        },
+        "label": "B1250 RLT RTC · supervised candidate updates",
+        "snapshot_root": "/u01/user/runs/f1-rlt-rtc-V41/ready-data-r2/snapshots",
+        "allow_boundary_updates": true,
+        "rtc": true,
+        "rtc_delay_steps": 6,
+        "rtc_min_steps": 8,
+        "reference_compute_path": "serving_graph_prefix_and_suffix"
+      }
+    }
+  },
+  "archive": {
+    "schema": 1,
+    "models": {
+      "f1-toys-eef-453c88a3fbb1dcb7": {
+        "label": "V1_LoRA_2000"
+      },
+      "f1-toys-eef-ff1263050a8b6846": {
+        "label": "V1_LoRA_5000"
+      },
+      "f1-toys-eef-4a2043b6ea09823f": {
+        "label": "V1_LoRA_14000"
+      },
+      "f1-toys-eef-1d55a3e0017742b0": {
+        "label": "V1_LoRA_50000"
+      },
+      "f1-toys-eef-ce9519bdcf13e9e9": {
+        "label": "单条样本_LoRA_1000"
+      },
+      "f1-toys-eef-42f3a7078d8d4fbb": {
+        "label": "V1_FullSFT_250"
+      },
+      "f1-toys-eef-9a66d2024a181fd4": {
+        "label": "V1_FullSFT_625"
+      },
+      "f1-toys-eef-efe3e5fa54ed0fb2": {
+        "label": "V1_FullSFT_1000"
+      },
+      "f1-toys-eef-e312de43fa3875a8": {
+        "label": "V1_FullSFT_1500"
+      },
+      "f1-toys-eef-56f4e837c8ffd7e3": {
+        "label": "V1_FullSFT_2000"
+      },
+      "f1-toys-eef-3e8111bc7dc01f9c": {
+        "label": "V1_LoRA_3500"
+      },
+      "f1-toys-eef-57e4ff0c3f5e76f1": {
+        "label": "V1_LoRA_7000"
+      },
+      "f1-toys-eef-a3f21700f05dc241": {
+        "label": "V1_LoRA_1500"
+      },
+      "f1-toys-eef-df812740bc427fa5": {
+        "label": "V1_LoRA_4500"
+      },
+      "f1-toys-eef-f6ff34e26314ea58": {
+        "label": "V1_LoRA_500"
+      },
+      "f1-toys-eef-ebbb86ffeb489620": {
+        "label": "V1_DAgger_RightOnly_FullSFT_250"
+      },
+      "f1-toys-eef-9ce9cf15b4cb2327": {
+        "label": "V1_DAgger_RightOnly_FullSFT_500"
+      },
+      "f1-toys-eef-53f6b3bc6f26c96c": {
+        "label": "V1_DAgger_RightOnly_FullSFT_625"
+      },
+      "f1-toys-eef-0ff87ec17ddfae2e": {
+        "label": "V1_DAgger_RightOnly_FullSFT_1000"
+      },
+      "f1-toys-eef-ede2bbb7c49d30ed": {
+        "label": "V1_DAgger_StageSampling_A_1250"
+      },
+      "f1-toys-eef-81444e7071723c1f": {
+        "label": "V1_DAgger_StageSampling_B_1250"
+      }
+    },
+    "legacy_evaluations": [
+      "f1_hil_20261016T042636Z_01879e54"
+    ]
+  },
+  "default_rlt_hil": "v1_dagger_stage_b_1250",
+  "fault_lifecycle": "f1_fault_lifecycle_v1",
+  "terminal_supervisor": {
+    "executable": "/home/user/Bruno/DAgger-runtime/tools/tmux-3.4-1ubuntu0.2/root/usr/bin/tmux",
+    "sha256": "a7f8af89ee2e0adba9b0779f105648e1a5afec2a64e9243b137f858cda42d12a"
+  },
+  "rtc_timing_replan": true,
+  "control_version": {
+    "version": 47,
+    "name": "F1 RTC＋局部RLT V47",
+    "execution_contract": "rtc_c16_committed_prefix_v1"
+  }
+}

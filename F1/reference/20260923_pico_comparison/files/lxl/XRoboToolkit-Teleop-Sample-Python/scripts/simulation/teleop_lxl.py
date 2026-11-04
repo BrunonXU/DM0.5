@@ -11,7 +11,7 @@ from xrobotoolkit_teleop.utils.path_utils import ASSET_PATH
 def main(
     # robot_urdf_path: str = os.path.join(ASSET_PATH, "flexiv/flexiv_Rizon4s_kinematics.urdf"),
     robot_urdf_path: str = os.path.join(ASSET_PATH, "/home/user/lxl/XRoboToolkit-Teleop-Sample-Python/assets/arx/f1_wheel/urdf/f1_wheel_0602_new.urdf"),
-    # robot_urdf_path: str = os.path.join(ASSET_PATH, "/home/ps/lxl/jushenzhineng/pico4ultra/XRoboToolkit-Teleop-Sample-Python/assets/arx/tianji_urdf/urdf/Marvin M6-S-R-CCS-696-V4.0 urdf_double_arm_lxlcopy.urdf"),
+    # robot_urdf_path: str = os.path.join(ASSET_PATH, "/home/user/lxl/jushenzhineng/pico4ultra/XRoboToolkit-Teleop-Sample-Python/assets/arx/tianji_urdf/urdf/Marvin M6-S-R-CCS-696-V4.0 urdf_double_arm_lxlcopy.urdf"),
     scale_factor: float = 1.5,
 ):
     """

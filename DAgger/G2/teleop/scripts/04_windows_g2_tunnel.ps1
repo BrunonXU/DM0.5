@@ -1,5 +1,5 @@
 param(
-    [string]$G2Host = "10.130.86.13",
+    [string]$G2Host = "192.0.2.8",
     [string]$G2User = "agi",
     [int]$Port = 7904,
     [string]$IdentityFile = ""

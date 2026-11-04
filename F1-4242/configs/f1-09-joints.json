@@ -8,7 +8,7 @@
     "urdf": "radians"
   },
   "binding": {
-    "expected_machine_id": "90429b8a96e04ef79dbc12175b538115",
+    "expected_machine_id": "00000000000000000000000000000000",
     "controller_binary_sha256": "898ef58fb7118ecbf416af134e01700ed38ffdd3480293cf06fe95da14bce0c8"
   },
   "topics": {

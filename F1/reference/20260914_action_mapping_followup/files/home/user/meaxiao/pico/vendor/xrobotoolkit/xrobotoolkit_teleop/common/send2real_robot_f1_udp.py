@@ -34,7 +34,7 @@ class RealArmCommandSender:
     """
 
     def __init__(self):
-        # self.TARGET_IP = "192.168.2.101"
+        # self.TARGET_IP = "192.0.2.13"
             # 动态导入指定路径的 ip_config.py
         spec = importlib.util.spec_from_file_location("ip_config", IP_CONFIG_FILE_PATH)
         ip_config = importlib.util.module_from_spec(spec)

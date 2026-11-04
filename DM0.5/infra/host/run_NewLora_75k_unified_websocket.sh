@@ -3,7 +3,7 @@
 # Formal Sync uses run_NewLora_75k_sync_websocket.sh; formal RTC will use GPU3/7898.
 set -Eeuo pipefail
 
-PROJECT_ROOT="/home/xza_100850113/projects/DM0.5"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 NVME_MOUNT="/mnt/dm05_nvme"
 NVME_UUID="bd6a10fd-b6fe-428e-ade2-7f3130ea902a"
 NVME_DM05_ROOT="${NVME_MOUNT}/dm05"

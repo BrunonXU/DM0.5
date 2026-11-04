@@ -5,12 +5,12 @@ task: foam_sort_whole_body
 architecture: x86_64
 role: development_training_and_model_service
 paths:
-  workspace_root: /home/xza_100850113/projects
-  task_root: /home/xza_100850113/projects/F1/foam_sort_whole_body
+  workspace_root: /home/user/projects
+  task_root: /home/user/projects/F1/foam_sort_whole_body
   raw_dataset: /mnt/dm05_nvme/dm05/datasets/f1_foam_sort/raw
-  shared_model_source: /home/xza_100850113/projects/DM0.5/opendm
-  task_model_directory: /home/xza_100850113/projects/F1/foam_sort_whole_body/models/DM0.5
-  results_directory: /home/xza_100850113/projects/F1/foam_sort_whole_body/results
+  shared_model_source: /home/user/projects/DM0.5/opendm
+  task_model_directory: /home/user/projects/F1/foam_sort_whole_body/models/DM0.5
+  results_directory: /home/user/projects/F1/foam_sort_whole_body/results
 model:
   family: DM0.5
   inference_placement: 6000d_service

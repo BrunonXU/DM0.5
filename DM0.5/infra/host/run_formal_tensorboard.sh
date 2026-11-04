@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PROJECT_ROOT="/home/xza_100850113/projects/DM0.5"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 PYTHON_PACKAGES="${PROJECT_ROOT}/server/monitoring/python_packages"
 MONITOR_ROOT="${PROJECT_ROOT}/server/monitoring"
 

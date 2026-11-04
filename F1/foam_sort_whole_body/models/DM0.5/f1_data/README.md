@@ -23,7 +23,7 @@ status: reader_engineering_validation
 
 ## 数值与原图审计
 
-在6000D、`/home/xza_100850113/projects`执行；选择新的输出目录。已有结果不要覆盖。
+在6000D、`/home/user/projects`执行；选择新的输出目录。已有结果不要覆盖。
 
 ```bash
 PYTHONPATH=F1/foam_sort_whole_body/models/DM0.5 \

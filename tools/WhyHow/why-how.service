@@ -1,0 +1,15 @@
+[Unit]
+Description=Why&How local teaching and Markdown reader
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/user/Artifacts/Why&How
+ExecStart=/usr/bin/python3 /home/user/Artifacts/Why&How/server.py --host 0.0.0.0 --port 4243
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+UMask=0027
+
+[Install]
+WantedBy=default.target

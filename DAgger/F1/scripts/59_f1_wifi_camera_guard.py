@@ -9,14 +9,14 @@ from pathlib import Path
 import subprocess
 import time
 
-MACHINE_ID = '90429b8a96e04ef79dbc12175b538115'
+MACHINE_ID = '00000000000000000000000000000000'
 TAG = 'f1-dagger-camera-wifi-20260928'
 # These are the three camera sockets identified by the on-site header capture.
 CAMERAS = {52404: 35219, 57993: 38221, 59332: 32374}
 TABLE = 'f1_dagger_wifi_camera_20260928'
 RULESET = f"""create table ip {TABLE}
 add chain ip {TABLE} output {{ type route hook output priority mangle; policy accept; }}
-add rule ip {TABLE} output oifname "wlan0" ip saddr 192.168.31.58 ip daddr 239.255.0.1 udp sport {{ 52404, 57993, 59332 }} udp dport 7401 counter ip ttl set 0 comment "{TAG}"
+add rule ip {TABLE} output oifname "wlan0" ip saddr 192.0.2.3 ip daddr 239.255.0.1 udp sport {{ 52404, 57993, 59332 }} udp dport 7401 counter ip ttl set 0 comment "{TAG}"
 """
 
 
@@ -89,7 +89,7 @@ def main():
         p.error('observation file must exist in DAgger runtime')
     sockets = subprocess.check_output(['ss', '-unap'], text=True)
     for port, pid in CAMERAS.items():
-        if not any(f'192.168.31.58:{port} ' in line and f'pid={pid},' in line for line in sockets.splitlines()):
+        if not any(f'192.0.2.3:{port} ' in line and f'pid={pid},' in line for line in sockets.splitlines()):
             raise RuntimeError(f'Camera socket changed: {port}/{pid}; repeat capture before applying')
     if fresh_observation(path, time.monotonic_ns()-2_000_000_000) is None:
         raise RuntimeError('Start shadow and wait for fresh three-camera/state observations first')

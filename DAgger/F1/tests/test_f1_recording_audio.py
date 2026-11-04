@@ -99,3 +99,119 @@ def test_blocked_audio_does_not_block_save_or_next_episode(tmp_path):
         assert r.last_saved['phase']=='saved' and not release.is_set()
     finally:release.set();assert r.close()
     assert errors
+
+
+def test_prompt_wave_has_no_added_silence(tmp_path):
+    import array
+    dest=tmp_path/'prompt.wav';prepare_wave('resumed',53,dest,lead_s=0,tail_s=0)
+    with wave.open(str(dest)) as w:
+        assert w.getnframes()==round(.62*16000)
+        samples=array.array('h',w.readframes(w.getnframes()))
+        assert any(samples[:160])  # Real cue starts in the first 10ms, not after 400ms.
+
+
+def test_prompt_new_state_discards_pending_old_cues_without_blocking(tmp_path):
+    from f1dagger.recording_audio import POLICY_CUE_LEVELS
+    class Player:
+        def __init__(self):self.token=0;self.entered=threading.Event();self.release=threading.Event();self.calls=[]
+        def warmup(self):self.entered.set();assert self.release.wait(3)
+        def cancel(self):self.token+=1;return self.token
+        def current(self,token):return token==self.token
+        def play(self,kind,volume,token):
+            if token==self.token:self.calls.append(kind)
+    player=Player();a=RecordingAudio(tmp_path/'levels.json',prompt=True,prompt_player=player,cue_levels=POLICY_CUE_LEVELS)
+    try:
+        assert player.entered.wait(1)
+        start=time.monotonic();a.notify('takeover');a.notify('resumed')
+        assert time.monotonic()-start<.05
+        player.release.set();a.jobs.join()
+        assert player.calls==['resumed']
+    finally:player.release.set();a.close();a.close()
+
+
+def test_prompt_interrupt_terminates_only_its_audio_process(tmp_path):
+    from f1dagger.recording_audio import PromptPlayer
+    entered=threading.Event()
+    class Process:
+        returncode=None
+        def poll(self):return self.returncode
+        def terminate(self):self.returncode=-15
+        def wait(self,timeout):return self.returncode
+    process=Process()
+    def spawn(*a,**k):entered.set();return process
+    player=PromptPlayer(popen=spawn);token=player.cancel()
+    thread=threading.Thread(target=lambda:player.play('takeover',18,token));thread.start()
+    assert entered.wait(1);player.cancel();thread.join(1)
+    assert not thread.is_alive() and process.returncode==-15
+
+
+def test_failed_prompt_warmup_still_handles_later_notifications(tmp_path):
+    class Player:
+        def warmup(self):raise OSError('no sound card')
+        def cancel(self):return 1
+        def current(self,token):return True
+        def play(self,*args):calls.append(args)
+    calls=[];errors=[];a=RecordingAudio(tmp_path/'levels.json',prompt=True,prompt_player=Player(),report=errors.append)
+    try:
+        a.notify('started');a.jobs.join();assert calls and errors
+    finally:a.close()
+
+
+
+def test_started_cue_queued_after_writer_ready_before_recording_visible(tmp_path):
+    snapshots=[]
+    class CueOrder(Cues):
+        def notify(self,kind):
+            snapshots.append((kind,r.phase,r.active is not None,r.begin_ns))
+            super().notify(kind)
+    cues=CueOrder();r=recorder(tmp_path,audio=cues)
+    try:
+        r.start(time.monotonic_ns());wait_for(lambda:r.phase=='recording')
+        assert snapshots[0][0:3]==('started','starting',True)
+        assert snapshots[0][3] is not None
+        r.finish(time.monotonic_ns());wait_for(lambda:r.phase=='idle')
+        assert r.last_saved['phase']=='saved' and cues.events==['started','saved']
+    finally:assert r.close()
+
+
+def test_failed_open_never_announces_started(tmp_path):
+    cues=Cues()
+    r=recorder(tmp_path,audio=cues,factory=lambda run:(_ for _ in ()).throw(OSError('disk unavailable')))
+    r.start(time.monotonic_ns());wait_for(lambda:r.phase=='failed')
+    assert cues.events==[] and not r.close()
+
+
+def test_audio_admission_failure_does_not_fail_recording_or_commit(tmp_path):
+    class BrokenAudio:
+        def notify(self,kind):raise OSError('audio unavailable')
+        def close(self):raise OSError('audio teardown unavailable')
+    r=recorder(tmp_path,audio=BrokenAudio())
+    try:
+        r.start(time.monotonic_ns());wait_for(lambda:r.phase=='recording')
+        assert r.writer_error is None and 'audio unavailable' in r.diagnostics()['audio_error']
+        r.finish(time.monotonic_ns());wait_for(lambda:r.phase=='idle')
+        assert r.last_saved['phase']=='saved' and r.error is None
+    finally:assert r.close()
+
+
+def test_success_ack_is_not_cancelled_by_immediate_auto_return(tmp_path):
+    from f1dagger.recording_audio import POLICY_CUE_LEVELS
+    class Player:
+        def __init__(self):self.token=0;self.entered=threading.Event();self.release=threading.Event();self.calls=[]
+        def warmup(self):self.entered.set();assert self.release.wait(2)
+        def cancel(self):self.token+=1;return self.token
+        def current(self,token):return token==self.token
+        def play(self,kind,volume,token):
+            if self.current(token):self.calls.append(kind)
+    player=Player();a=RecordingAudio(tmp_path/'levels.json',prompt=True,prompt_player=player,cue_levels=POLICY_CUE_LEVELS)
+    try:
+        assert player.entered.wait(1);a.notify('local_success');a.notify('resumed')
+        player.release.set();a.jobs.join();assert player.calls==['local_success']
+        a.notify('resumed');a.jobs.join();assert player.calls==['local_success','resumed']
+    finally:player.release.set();a.close()
+
+
+def test_early_start_supersedes_warmup_silence():
+    from f1dagger.recording_audio import PromptPlayer
+    calls=[];player=PromptPlayer(popen=lambda *a,**k:calls.append(a))
+    player.cancel();player.warmup();assert not calls

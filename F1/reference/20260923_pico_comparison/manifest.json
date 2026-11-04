@@ -8,8 +8,8 @@
   "coverage": "Accessible F1 sources only; account root and private runtime directories are not listable",
   "files": [
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/VERSION",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/VERSION",
+      "source_path": "/home/user/F1/PICO/pico/VERSION",
+      "resolved_source_path": "/home/user/F1/PICO/pico/VERSION",
       "snapshot_path": "files/meaxiao/VERSION",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789740249139929394,
@@ -18,8 +18,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/README.md",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/README.md",
+      "source_path": "/home/user/F1/PICO/pico/README.md",
+      "resolved_source_path": "/home/user/F1/PICO/pico/README.md",
       "snapshot_path": "files/meaxiao/README.md",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789869725875216967,
@@ -28,8 +28,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/pyproject.toml",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/pyproject.toml",
+      "source_path": "/home/user/F1/PICO/pico/pyproject.toml",
+      "resolved_source_path": "/home/user/F1/PICO/pico/pyproject.toml",
       "snapshot_path": "files/meaxiao/pyproject.toml",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789740249267931050,
@@ -38,8 +38,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/start.sh",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/start.sh",
+      "source_path": "/home/user/F1/PICO/pico/start.sh",
+      "resolved_source_path": "/home/user/F1/PICO/pico/start.sh",
       "snapshot_path": "files/meaxiao/start.sh",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789453606260946471,
@@ -48,8 +48,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/stop.sh",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/stop.sh",
+      "source_path": "/home/user/F1/PICO/pico/stop.sh",
+      "resolved_source_path": "/home/user/F1/PICO/pico/stop.sh",
       "snapshot_path": "files/meaxiao/stop.sh",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789454601900765324,
@@ -58,8 +58,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/config/ip_config.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/config/ip_config.py",
+      "source_path": "/home/user/F1/PICO/pico/config/ip_config.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/config/ip_config.py",
       "snapshot_path": "files/meaxiao/config/ip_config.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1788933377704249156,
@@ -68,8 +68,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/config/robot.env",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/config/robot.env",
+      "source_path": "/home/user/F1/PICO/pico/config/robot.env",
+      "resolved_source_path": "/home/user/F1/PICO/pico/config/robot.env",
       "snapshot_path": "files/meaxiao/config/robot.env",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1788778098002611733,
@@ -78,8 +78,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/config/control.json",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/config/control.json",
+      "source_path": "/home/user/F1/PICO/pico/config/control.json",
+      "resolved_source_path": "/home/user/F1/PICO/pico/config/control.json",
       "snapshot_path": "files/meaxiao/config/control.json",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789741510751619498,
@@ -88,8 +88,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/config/collection.yaml",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/config/collection.yaml",
+      "source_path": "/home/user/F1/PICO/pico/config/collection.yaml",
+      "resolved_source_path": "/home/user/F1/PICO/pico/config/collection.yaml",
       "snapshot_path": "files/meaxiao/config/collection.yaml",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789538891529798498,
@@ -98,8 +98,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/docs/AUTO_TRANSFER.md",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/docs/AUTO_TRANSFER.md",
+      "source_path": "/home/user/F1/PICO/pico/docs/AUTO_TRANSFER.md",
+      "resolved_source_path": "/home/user/F1/PICO/pico/docs/AUTO_TRANSFER.md",
       "snapshot_path": "files/meaxiao/docs/AUTO_TRANSFER.md",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789454374877577380,
@@ -108,8 +108,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/docs/DATA_REVIEW.md",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/docs/DATA_REVIEW.md",
+      "source_path": "/home/user/F1/PICO/pico/docs/DATA_REVIEW.md",
+      "resolved_source_path": "/home/user/F1/PICO/pico/docs/DATA_REVIEW.md",
       "snapshot_path": "files/meaxiao/docs/DATA_REVIEW.md",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789721937374492405,
@@ -118,8 +118,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/scripts/env.sh",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/scripts/env.sh",
+      "source_path": "/home/user/F1/PICO/pico/scripts/env.sh",
+      "resolved_source_path": "/home/user/F1/PICO/pico/scripts/env.sh",
       "snapshot_path": "files/meaxiao/scripts/env.sh",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789453606122944422,
@@ -128,8 +128,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/scripts/preflight.sh",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/scripts/preflight.sh",
+      "source_path": "/home/user/F1/PICO/pico/scripts/preflight.sh",
+      "resolved_source_path": "/home/user/F1/PICO/pico/scripts/preflight.sh",
       "snapshot_path": "files/meaxiao/scripts/preflight.sh",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789740248864925838,
@@ -138,8 +138,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/scripts/check_lerobot_v3.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/scripts/check_lerobot_v3.py",
+      "source_path": "/home/user/F1/PICO/pico/scripts/check_lerobot_v3.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/scripts/check_lerobot_v3.py",
       "snapshot_path": "files/meaxiao/scripts/check_lerobot_v3.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789559151680917464,
@@ -148,8 +148,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/vendor/f1_bridge/lerobot_recorder.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/vendor/f1_bridge/lerobot_recorder.py",
+      "source_path": "/home/user/F1/PICO/pico/vendor/f1_bridge/lerobot_recorder.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/vendor/f1_bridge/lerobot_recorder.py",
       "snapshot_path": "files/meaxiao/vendor/f1_bridge/lerobot_recorder.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789454507424806064,
@@ -158,8 +158,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/vendor/f1_bridge/send2real_robot_f1_udp2topic.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/vendor/f1_bridge/send2real_robot_f1_udp2topic.py",
+      "source_path": "/home/user/F1/PICO/pico/vendor/f1_bridge/send2real_robot_f1_udp2topic.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/vendor/f1_bridge/send2real_robot_f1_udp2topic.py",
       "snapshot_path": "files/meaxiao/vendor/f1_bridge/send2real_robot_f1_udp2topic.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789482300030873110,
@@ -168,8 +168,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/vendor/f1_bridge/bridge_main.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/vendor/f1_bridge/bridge_main.py",
+      "source_path": "/home/user/F1/PICO/pico/vendor/f1_bridge/bridge_main.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/vendor/f1_bridge/bridge_main.py",
       "snapshot_path": "files/meaxiao/vendor/f1_bridge/bridge_main.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1788941479612386959,
@@ -178,8 +178,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/__init__.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/__init__.py",
+      "source_path": "/home/user/F1/PICO/pico/src/pico_f1/__init__.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/src/pico_f1/__init__.py",
       "snapshot_path": "files/meaxiao/src/pico_f1/__init__.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789740249404932822,
@@ -188,8 +188,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/config.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/config.py",
+      "source_path": "/home/user/F1/PICO/pico/src/pico_f1/config.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/src/pico_f1/config.py",
       "snapshot_path": "files/meaxiao/src/pico_f1/config.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789740248711923860,
@@ -198,8 +198,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/sample_history.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/sample_history.py",
+      "source_path": "/home/user/F1/PICO/pico/src/pico_f1/sample_history.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/src/pico_f1/sample_history.py",
       "snapshot_path": "files/meaxiao/src/pico_f1/sample_history.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789110453876062697,
@@ -208,8 +208,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/camera_sync.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/camera_sync.py",
+      "source_path": "/home/user/F1/PICO/pico/src/pico_f1/camera_sync.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/src/pico_f1/camera_sync.py",
       "snapshot_path": "files/meaxiao/src/pico_f1/camera_sync.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789110848696628617,
@@ -218,8 +218,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/alignment_archive.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/alignment_archive.py",
+      "source_path": "/home/user/F1/PICO/pico/src/pico_f1/alignment_archive.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/src/pico_f1/alignment_archive.py",
       "snapshot_path": "files/meaxiao/src/pico_f1/alignment_archive.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789110170611091227,
@@ -228,8 +228,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/session_pose.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/session_pose.py",
+      "source_path": "/home/user/F1/PICO/pico/src/pico_f1/session_pose.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/src/pico_f1/session_pose.py",
       "snapshot_path": "files/meaxiao/src/pico_f1/session_pose.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1788926469748170099,
@@ -238,8 +238,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/lerobot_v3.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/lerobot_v3.py",
+      "source_path": "/home/user/F1/PICO/pico/src/pico_f1/lerobot_v3.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/src/pico_f1/lerobot_v3.py",
       "snapshot_path": "files/meaxiao/src/pico_f1/lerobot_v3.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789110903092397148,
@@ -248,8 +248,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/episode_analysis.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/episode_analysis.py",
+      "source_path": "/home/user/F1/PICO/pico/src/pico_f1/episode_analysis.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/src/pico_f1/episode_analysis.py",
       "snapshot_path": "files/meaxiao/src/pico_f1/episode_analysis.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789374273781509294,
@@ -258,8 +258,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/dashboard_server.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/dashboard_server.py",
+      "source_path": "/home/user/F1/PICO/pico/src/pico_f1/dashboard_server.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/src/pico_f1/dashboard_server.py",
       "snapshot_path": "files/meaxiao/src/pico_f1/dashboard_server.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789444890227913309,
@@ -268,8 +268,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/dashboard_central.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/dashboard_central.py",
+      "source_path": "/home/user/F1/PICO/pico/src/pico_f1/dashboard_central.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/src/pico_f1/dashboard_central.py",
       "snapshot_path": "files/meaxiao/src/pico_f1/dashboard_central.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789453606958956834,
@@ -278,8 +278,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/collection.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/collection.py",
+      "source_path": "/home/user/F1/PICO/pico/src/pico_f1/collection.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/src/pico_f1/collection.py",
       "snapshot_path": "files/meaxiao/src/pico_f1/collection.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789721853206402673,
@@ -288,8 +288,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/collection_control.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/collection_control.py",
+      "source_path": "/home/user/F1/PICO/pico/src/pico_f1/collection_control.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/src/pico_f1/collection_control.py",
       "snapshot_path": "files/meaxiao/src/pico_f1/collection_control.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789869422242049723,
@@ -298,8 +298,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/transfer.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/transfer.py",
+      "source_path": "/home/user/F1/PICO/pico/src/pico_f1/transfer.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/src/pico_f1/transfer.py",
       "snapshot_path": "files/meaxiao/src/pico_f1/transfer.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789869422394051799,
@@ -308,8 +308,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/arm_clutch.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/arm_clutch.py",
+      "source_path": "/home/user/F1/PICO/pico/src/pico_f1/arm_clutch.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/src/pico_f1/arm_clutch.py",
       "snapshot_path": "files/meaxiao/src/pico_f1/arm_clutch.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789462664629895704,
@@ -318,8 +318,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/precision.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/precision.py",
+      "source_path": "/home/user/F1/PICO/pico/src/pico_f1/precision.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/src/pico_f1/precision.py",
       "snapshot_path": "files/meaxiao/src/pico_f1/precision.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789533123578159443,
@@ -328,8 +328,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/trajectory.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/trajectory.py",
+      "source_path": "/home/user/F1/PICO/pico/src/pico_f1/trajectory.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/src/pico_f1/trajectory.py",
       "snapshot_path": "files/meaxiao/src/pico_f1/trajectory.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789480569611147589,
@@ -338,8 +338,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/arm_output.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/arm_output.py",
+      "source_path": "/home/user/F1/PICO/pico/src/pico_f1/arm_output.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/src/pico_f1/arm_output.py",
       "snapshot_path": "files/meaxiao/src/pico_f1/arm_output.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789533123869162874,
@@ -348,8 +348,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/chassis.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/chassis.py",
+      "source_path": "/home/user/F1/PICO/pico/src/pico_f1/chassis.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/src/pico_f1/chassis.py",
       "snapshot_path": "files/meaxiao/src/pico_f1/chassis.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789354015258832552,
@@ -358,8 +358,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/braking.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/braking.py",
+      "source_path": "/home/user/F1/PICO/pico/src/pico_f1/braking.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/src/pico_f1/braking.py",
       "snapshot_path": "files/meaxiao/src/pico_f1/braking.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789740248438920329,
@@ -368,8 +368,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/buttons.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/buttons.py",
+      "source_path": "/home/user/F1/PICO/pico/src/pico_f1/buttons.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/src/pico_f1/buttons.py",
       "snapshot_path": "files/meaxiao/src/pico_f1/buttons.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789110078774786688,
@@ -378,8 +378,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/torso.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/torso.py",
+      "source_path": "/home/user/F1/PICO/pico/src/pico_f1/torso.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/src/pico_f1/torso.py",
       "snapshot_path": "files/meaxiao/src/pico_f1/torso.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1788869554259944846,
@@ -388,8 +388,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/xr_readiness.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/src/pico_f1/xr_readiness.py",
+      "source_path": "/home/user/F1/PICO/pico/src/pico_f1/xr_readiness.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/src/pico_f1/xr_readiness.py",
       "snapshot_path": "files/meaxiao/src/pico_f1/xr_readiness.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789533214934244733,
@@ -398,8 +398,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/tests/test_sample_history.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/tests/test_sample_history.py",
+      "source_path": "/home/user/F1/PICO/pico/tests/test_sample_history.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/tests/test_sample_history.py",
       "snapshot_path": "files/meaxiao/tests/test_sample_history.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789092038154458270,
@@ -408,8 +408,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/tests/test_camera_sync.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/tests/test_camera_sync.py",
+      "source_path": "/home/user/F1/PICO/pico/tests/test_camera_sync.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/tests/test_camera_sync.py",
       "snapshot_path": "files/meaxiao/tests/test_camera_sync.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789110903223399000,
@@ -418,8 +418,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/tests/test_alignment_archive.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/tests/test_alignment_archive.py",
+      "source_path": "/home/user/F1/PICO/pico/tests/test_alignment_archive.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/tests/test_alignment_archive.py",
       "snapshot_path": "files/meaxiao/tests/test_alignment_archive.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789110499694707185,
@@ -428,8 +428,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/tests/test_lerobot_v3.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/tests/test_lerobot_v3.py",
+      "source_path": "/home/user/F1/PICO/pico/tests/test_lerobot_v3.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/tests/test_lerobot_v3.py",
       "snapshot_path": "files/meaxiao/tests/test_lerobot_v3.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789110903478402603,
@@ -438,8 +438,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/tests/test_episode_analysis.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/tests/test_episode_analysis.py",
+      "source_path": "/home/user/F1/PICO/pico/tests/test_episode_analysis.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/tests/test_episode_analysis.py",
       "snapshot_path": "files/meaxiao/tests/test_episode_analysis.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789374324775236640,
@@ -448,8 +448,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/tests/test_transfer.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/tests/test_transfer.py",
+      "source_path": "/home/user/F1/PICO/pico/tests/test_transfer.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/tests/test_transfer.py",
       "snapshot_path": "files/meaxiao/tests/test_transfer.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789869422890058572,
@@ -458,8 +458,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/tests/test_collection.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/tests/test_collection.py",
+      "source_path": "/home/user/F1/PICO/pico/tests/test_collection.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/tests/test_collection.py",
       "snapshot_path": "files/meaxiao/tests/test_collection.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789722258189694501,
@@ -468,8 +468,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/pico/tests/test_precision.py",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/pico/tests/test_precision.py",
+      "source_path": "/home/user/F1/PICO/pico/tests/test_precision.py",
+      "resolved_source_path": "/home/user/F1/PICO/pico/tests/test_precision.py",
       "snapshot_path": "files/meaxiao/tests/test_precision.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789533215359249818,
@@ -478,8 +478,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf/ip_config.py",
-      "resolved_source_path": "/home/xx_100872445/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf/ip_config.py",
+      "source_path": "/home/user/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf/ip_config.py",
+      "resolved_source_path": "/home/user/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf/ip_config.py",
       "snapshot_path": "files/lxl/ip_config.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1785823935000000000,
@@ -488,8 +488,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf/remote_sth/all_remote_lxl.py",
-      "resolved_source_path": "/home/xx_100872445/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf/remote_sth/all_remote_lxl.py",
+      "source_path": "/home/user/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf/remote_sth/all_remote_lxl.py",
+      "resolved_source_path": "/home/user/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf/remote_sth/all_remote_lxl.py",
       "snapshot_path": "files/lxl/remote_sth/all_remote_lxl.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1785824001000000000,
@@ -498,8 +498,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf/remote_sth/init_f1.py",
-      "resolved_source_path": "/home/xx_100872445/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf/remote_sth/init_f1.py",
+      "source_path": "/home/user/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf/remote_sth/init_f1.py",
+      "resolved_source_path": "/home/user/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf/remote_sth/init_f1.py",
       "snapshot_path": "files/lxl/remote_sth/init_f1.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1785824001000000000,
@@ -508,8 +508,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf/remote_sth/tianji_camera_record_get_from_udp.py",
-      "resolved_source_path": "/home/xx_100872445/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf/remote_sth/tianji_camera_record_get_from_udp.py",
+      "source_path": "/home/user/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf/remote_sth/tianji_camera_record_get_from_udp.py",
+      "resolved_source_path": "/home/user/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf/remote_sth/tianji_camera_record_get_from_udp.py",
       "snapshot_path": "files/lxl/remote_sth/tianji_camera_record_get_from_udp.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1785824001000000000,
@@ -518,8 +518,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf/remote_sth/send2real_robot_f1_udp2topic.py",
-      "resolved_source_path": "/home/xx_100872445/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf/remote_sth/send2real_robot_f1_udp2topic.py",
+      "source_path": "/home/user/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf/remote_sth/send2real_robot_f1_udp2topic.py",
+      "resolved_source_path": "/home/user/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf/remote_sth/send2real_robot_f1_udp2topic.py",
       "snapshot_path": "files/lxl/remote_sth/send2real_robot_f1_udp2topic.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1785824001000000000,
@@ -528,8 +528,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf/XRoboToolkit-Teleop-Sample-Python/scripts/simulation/teleop_lxl.py",
-      "resolved_source_path": "/home/xx_100872445/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf/XRoboToolkit-Teleop-Sample-Python/scripts/simulation/teleop_lxl.py",
+      "source_path": "/home/user/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf/XRoboToolkit-Teleop-Sample-Python/scripts/simulation/teleop_lxl.py",
+      "resolved_source_path": "/home/user/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf/XRoboToolkit-Teleop-Sample-Python/scripts/simulation/teleop_lxl.py",
       "snapshot_path": "files/lxl/XRoboToolkit-Teleop-Sample-Python/scripts/simulation/teleop_lxl.py",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1785824001000000000,
@@ -538,8 +538,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/本体平台/0804_fix_urdf/make/lxl/start_all_pico1.sh",
-      "resolved_source_path": "/home/xx_100872445/F1/本体平台/0804_fix_urdf/make/lxl/start_all_pico1.sh",
+      "source_path": "/home/user/F1/本体平台/0804_fix_urdf/make/lxl/start_all_pico1.sh",
+      "resolved_source_path": "/home/user/F1/本体平台/0804_fix_urdf/make/lxl/start_all_pico1.sh",
       "snapshot_path": "files/lxl/start_all_pico1.sh",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1785824587000000000,
@@ -548,8 +548,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/PICO/deployment/start_all_pico1.sh",
-      "resolved_source_path": "/home/xx_100872445/F1/PICO/deployment/start_all_pico1.sh",
+      "source_path": "/home/user/F1/PICO/deployment/start_all_pico1.sh",
+      "resolved_source_path": "/home/user/F1/PICO/deployment/start_all_pico1.sh",
       "snapshot_path": "files/historical_repair/start_all_pico1.sh",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1788429309343067456,
@@ -558,8 +558,8 @@
       "is_symlink": false
     },
     {
-      "source_path": "/home/xx_100872445/F1/reset/README.md",
-      "resolved_source_path": "/home/xx_100872445/F1/reset/README.md",
+      "source_path": "/home/user/F1/reset/README.md",
+      "resolved_source_path": "/home/user/F1/reset/README.md",
       "snapshot_path": "files/reset/README.md",
       "captured_at": "2026-09-23T06:34:20.619055+00:00",
       "source_mtime_ns": 1789642668185552610,

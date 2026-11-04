@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Source AFTER the original ROS/f1/agv setup. These two older agv packages omit State.
-if [[ "$(cat /etc/machine-id)" != f8181edeb110424bbd1963cf717dfeee ]]; then
+if [[ "$(cat /etc/machine-id)" != 00000000000000000000000000000001 ]]; then
   echo '4F-F1消息配置与本机身份不匹配' >&2; return 2
 fi
 for f1_message_pkg in driver server; do

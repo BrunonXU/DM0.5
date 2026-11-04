@@ -666,7 +666,7 @@ OTG本身满足2rad/s²和20rad/s³硬上界，但20rad/s³上限在X/Y/Z平移�
 启动入口只有一个参数不同：
 
 ```bash
-cd /home/agi/xza/G2Teleop
+cd /home/user/xza/G2Teleop
 
 # A：无OTG timing基线
 bash scripts/18_g2_powered_f710_timing_ab.sh direct
@@ -683,7 +683,7 @@ acceleration或synchronization。第二人持续持物理急停；任何持续�
 日志回传后在6000D执行：
 
 ```bash
-cd /home/xza_100850113/projects/G2Teleop
+cd /home/user/projects/G2Teleop
 PYTHONPATH=src python3 scripts/19_analyze_f710_timing_ab.py \
   /path/to/direct.jsonl /path/to/otg.jsonl
 ```
@@ -796,7 +796,7 @@ tick，输入削顶0、workspace触发0。Pink位置残差最大约0.486/0.482mm
 以下入口从2026-09-02起仅生成离线冻结产物，不再是Powered入口：
 
 ```bash
-cd /home/agi/xza/G2Teleop
+cd /home/user/xza/G2Teleop
 bash scripts/20_g2_bc_eef_chain_replay.sh
 ```
 

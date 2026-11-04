@@ -252,7 +252,7 @@ def main(argv=None):
         if profile.get('expected_machine_id') and Path('/etc/machine-id').read_text().strip() != profile['expected_machine_id']:
             raise ReplayError('底盘归位配置与本机machine-id不符')
         if args.align_yaw:
-            if profile.get('expected_machine_id') != 'f8181edeb110424bbd1963cf717dfeee':
+            if profile.get('expected_machine_id') != '00000000000000000000000000000001':
                 raise ReplayError('朝向恢复候选只绑定4F-F1')
             profile['home_align_yaw'] = True
             report['yaw_policy'] = YAW_POLICY

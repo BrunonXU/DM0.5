@@ -17,9 +17,9 @@
     "controls": "D-pad select then release; RB arm deadman; A speed toggle; RT hand toggle independent of RB; Y same-owner global Home"
   },
   "powered_acceptance": {
-    "main_log": "/home/agi/xza/DM0.5/logs/telemetry/powered/g2_powered_f710_20260904_132248.jsonl",
+    "main_log": "/home/user/xza/DM0.5/logs/telemetry/powered/g2_powered_f710_20260904_132248.jsonl",
     "main_log_sha256": "355d60291eabcff20bb7849f49478d393b17e44956955830a409e6a1695a2fd3",
-    "feedback_log": "/home/agi/xza/DM0.5/logs/telemetry/feedback/g2_powered_f710_20260904_132248.jsonl",
+    "feedback_log": "/home/user/xza/DM0.5/logs/telemetry/feedback/g2_powered_f710_20260904_132248.jsonl",
     "feedback_log_sha256": "d2096451f3250fe20a332ad3f3e3c33a47081dedb250275e0b55da9edb5c18a2",
     "runtime_profile": "pink_singularity_guard_v2_rolling_envelope_no_otg",
     "dispatch_samples": 12687,
@@ -39,8 +39,8 @@
     "operator_result": "smooth; rolling-envelope disconnect feeling fixed"
   },
   "approved_external_config_sha256": {
-    "/home/agi/xza/DM0.5/g2_sort/config/hand_home_approved.json": "330cc7ce1775ca51f918f68e9c61e9098c282e7dbb7a18966e3baabb15caea05",
-    "/home/agi/xza/DM0.5/g2_sort/config/reset_poses.json": "02706fa84b767486fd58e027285371f8c45a62a17cf3de6b44108f78058505c4"
+    "/home/user/xza/DM0.5/g2_sort/config/hand_home_approved.json": "330cc7ce1775ca51f918f68e9c61e9098c282e7dbb7a18966e3baabb15caea05",
+    "/home/user/xza/DM0.5/g2_sort/config/reset_poses.json": "02706fa84b767486fd58e027285371f8c45a62a17cf3de6b44108f78058505c4"
   },
   "workspace_file_sha256": {
     "scripts/windows_g2_tunnel.cmd": "ec1384015e7a01293043b84d43f206f9a7cd96ea6d9cf8b56f1ce0735b39650e",

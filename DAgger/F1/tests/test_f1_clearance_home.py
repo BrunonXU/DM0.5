@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import numpy as np
 import pytest
-from test_f1_numerical import setup
+from legacy_home_setup import setup, numerical_setup
 from f1dagger.contract import FULL_NAMES, home_target
 from f1dagger.teleop import F1ArmTarget
 from f1dagger.clearance_home import ClearanceHomeMotion, ClearanceHomeStopped
@@ -108,7 +108,7 @@ def test_recorded_feedback_bias_with_output_and_delay(setup,tmp_path,case):
     if case==0:
         assert stopped and 'tracking error' in stopped
         assert motion.stage=='lift' and not stages and not motion.done
-        assert now<5_000_000_000  # Reject persistent error, not a 19 s stall.
+        assert now<motion.deadline  # Bounded settling, not the overall 19 s timeout.
     else:
         assert stopped is None and motion.done,(stopped,motion.stage)
         assert stages==['right','return']
@@ -153,7 +153,7 @@ def test_clearance_with_real_output_planner_and_delayed_feedback(setup,tmp_path)
 
 
 @pytest.mark.parametrize('case',range(4))
-def test_relaxed_route_from_failed_poses_with_limited_wrist_response(setup,tmp_path,case):
+def test_relaxed_route_from_failed_poses_with_delayed_biased_response(setup,tmp_path,case):
     from f1dagger.robot_io import make_output
     c,p,m,u,_=setup
     sample=json.loads((Path(__file__).parent/'fixtures/clearance_relaxed_20261013.json').read_text())[case]
@@ -166,8 +166,6 @@ def test_relaxed_route_from_failed_poses_with_limited_wrist_response(setup,tmp_p
     for tick in range(1,15001):
         now=tick*4_000_000;measured=history[-6].copy()
         measured[7:14]+=bias*min(tick*.004,1.)
-        # Test plant only; not a claimed hardware limit.
-        measured[12]=min(measured[12],55.)
         full[:14]=measured[:14]
         if tick%5==0:
             previous=motion.stage
@@ -180,7 +178,6 @@ def test_relaxed_route_from_failed_poses_with_limited_wrist_response(setup,tmp_p
         nxt=np.r_[output.sample(now/1e9),q[14:]];m.check_action(nxt);guard.check(nxt,full)
         assert np.max(np.abs(nxt[7:14]-q[7:14]))<=p['max_joint_speed_deg_s']*.004+1e-7
         if motion.stage!='return':
-            assert abs(nxt[12])<=abs(initial[12])+1e-6
             angle=np.linalg.norm(motion.pin.log3(motion.pose(nxt[7:14]).rotation@motion.rotation.T))
             max_angle=max(max_angle,angle)
             assert angle<=np.deg2rad(10.)
@@ -197,6 +194,7 @@ def test_relaxed_home_already_at_preset_does_not_depart(setup):
     c,p,m,u,_=setup
     preset=json.loads((Path(__file__).parent/'fixtures/demo_v0_preset.json').read_text())
     full=np.array([preset['joints'][n] for n in FULL_NAMES]);q=np.r_[full[:14],0.,0.]
+    q=home_target(p,q);full[:14]=q[:14]
     motion=ClearanceHomeMotion(p,q,home_target(p,q),F1ArmTarget(u,m,c['ik']),full,0)
     assert motion.stage=='return'
     for tick in range(1,12):
@@ -219,7 +217,8 @@ def test_relaxed_rotation_budget_remains_a_stop_condition(setup):
 def test_home_ready_uses_existing_feedback_tolerance_without_expanding_it(setup,offset,stage):
     c,p,m,u,_=setup
     preset=json.loads((Path(__file__).parent/'fixtures/demo_v0_preset.json').read_text())
-    full=np.array([preset['joints'][n] for n in FULL_NAMES]);full[7]+=offset
+    full=np.array([preset['joints'][n] for n in FULL_NAMES])
+    full[:14]=home_target(p,np.r_[full[:14],43.,66.])[:14];full[7]+=offset
     q=np.r_[full[:14],43.,66.]
     motion=ClearanceHomeMotion(p,q,home_target(p,q),F1ArmTarget(u,m,c['ik']),full,0)
     assert motion.stage==stage

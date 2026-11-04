@@ -15,6 +15,10 @@ CAMERAS = ('head', 'left_wrist', 'right_wrist')
 MODEL_NAMES = tuple(f'arm_{side}_joint{i}' for side in ('L', 'R') for i in range(1, 8)) + tuple(f'head_joint{i}' for i in range(1, 4)) + tuple(f'body_joint{i}' for i in range(5, 0, -1))
 
 
+class ArmLimitRejected(ValueError):
+    """A well-formed arm target violates the bound hardware workspace."""
+
+
 def vector(value, size, name='vector'):
     result = np.asarray(value, dtype=float)
     if result.shape != (size,) or not np.isfinite(result).all():
@@ -57,10 +61,10 @@ class JointMapping:
     def check_action(self, action):
         q = vector(action, 16, 'action16')
         if np.any(q[:14] < self.limits[:, 0]) or np.any(q[:14] > self.limits[:, 1]):
-            raise ValueError('arm target outside F1 HAL limits')
+            raise ArmLimitRejected('arm target outside F1 HAL limits')
         for offset in (0, 7):
             if 1.025 * abs(q[offset + 5]) + abs(q[offset + 6]) > 110.5 + 1e-7:
-                raise ValueError('F1 coupled wrist limit exceeded')
+                raise ArmLimitRejected('F1 coupled wrist limit exceeded')
         if np.any(q[14:] < 0) or np.any(q[14:] > 100):
             raise ValueError('gripper outside 0..100')
         return q
@@ -85,8 +89,13 @@ def home_target(profile, last_submitted):
         preset = presets[0]
     result = vector(last_submitted, 16)
     result[:14] = vector([preset['joints'][name] for name in ARM_NAMES], 14, 'home arm targets')
+    route = preset.get('route')
+    if route is not None and (route != 'direct' or 'clearance' in preset
+            or preset.get('scope') != 'right_arm_only_preserve_left_grippers_head_body'):
+        raise ValueError('invalid F1 F710 Home route/scope')
     if 'clearance' in preset:
         clearance_config(preset)
+    if preset.get('scope') == 'right_arm_only_preserve_left_grippers_head_body':
         result[:7] = vector(last_submitted, 16)[:7]
     return result
 

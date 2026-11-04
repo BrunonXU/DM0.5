@@ -11,7 +11,7 @@
 - 关节名映射来源：`F1/pico_upper/vendor/f1_safety/src/python/f1_safety_config.yaml`，SHA-256 `83ad2c6bad9686c32c126efdfdfea4b943773c67ed48a4bc9f44e2121c025422`。
 - 2026-09-23 经已有 SSH 只读核对，F1-09 的 `Bruno/F1/pico_upper/current` 中上述两份文件哈希与这里一致。同次 `/api/state` 已有 22 个新鲜实测轴。此检查确认工程模型来源一致，不表示厂家控制器正在加载该 URDF，也不替代零位、机构尺寸、夹爪和相机外参的实物验收。
 - 31 个 link、30 个 joint；31 份原始 STL 和 1 份 URDF，共 **28,300,673 字节 / 565,196 个三角面**，逐字节未改。来源、原路径、原始哈希与现有哈希见 [`web/models/f1_wheel/manifest.json`](../web/models/f1_wheel/manifest.json)。未访问其他用户当前目录。
-- 三维依赖固定为 Three.js **0.170.0 / r170**，MIT 许可证原文及下载来源 / 哈希位于 [`web/vendor/three/`](../web/vendor/three/)。仅把 STLLoader、OrbitControls 的 `three` 导入改为本地相对路径。
+- 三维依赖固定为 Three.js **0.170.0 / r170**，MIT 许可证原文及下载来源 / 哈希位于 [`web/vendor/three/`](../web/vendor/three)。仅把 STLLoader、OrbitControls 的 `three` 导入改为本地相对路径。
 - 模型快照没有独立的公开分发许可证；当前仅作已获许可的内部复用，不将其声明为 MIT。Three.js 的 MIT 许可证只覆盖其自身代码。
 
 ## 度数与坐标

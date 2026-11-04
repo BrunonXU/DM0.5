@@ -1,8 +1,7 @@
-"""Bounded, original-time publication replay under the console's action lease.
+"""Target-faithful replay with bounded monitoring and recoverable scheduling jitter.
 
 No source filtering/resampling, background resume, or implicit initial movement.
 """
-from bisect import bisect_left, bisect_right
 import json
 import math
 import os
@@ -16,13 +15,13 @@ from .replay_compare import compare
 
 def limits(profile):
     maximum = number(profile.get('max_replay_task_s', 600), '回放总时限')
-    gap = number(profile.get('body_max_command_gap_s', .025), '命令节拍预算')
-    if not 1 <= maximum <= 1800 or not 0 < gap <= .025:
-        raise ValueError('回放时限/节拍配置无效')
-    return maximum, gap
+    reschedule_after = number(profile.get('replay_reschedule_after_s', .025), '回放顺延触发间隔')
+    if not 1 <= maximum <= 1800 or not 0 < reschedule_after <= .025:
+        raise ValueError('回放时限/顺延配置无效')
+    return maximum, reschedule_after
 
 
-def check_values(profile, q):
+def check_values(profile, q, mask=(True,)*16):
     for name, value in zip(ARMS, q[:14]):
         low, high = profile['joint_limits_deg'][name]
         if not low <= value <= high:
@@ -30,7 +29,7 @@ def check_values(profile, q):
     for offset in (0, 7):
         if 1.025*abs(q[offset+5])+abs(q[offset+6]) > 110.5+1e-7:
             raise ValueError('回放目标超过 F1 耦合腕部限位')
-    if any(not 0 <= v <= 100 for v in q[14:]):
+    if any(not 0 <= q[i] <= 100 for i in (14, 15) if mask[i]):
         raise ValueError('回放夹爪目标超出 0–100')
 
 
@@ -42,19 +41,22 @@ def validate(profile, segment):
         raise ValueError('录制机器人身份与本机不符')
     if not rec.profile_sha256 or rec.profile_sha256 != profile.get('profile_sha256'):
         raise ValueError('录制绑定的机器人配置与当前配置不一致，不能自动套用')
-    maximum, gap = limits(profile)
+    maximum, reschedule_after = limits(profile)
     if segment.duration + profile['settle_timeout_s'] > maximum:
         raise ValueError('所选片段超过回放总任务预算，请缩短区间')
     rows = segment.commands
-    max_speed, max_acceleration = 0., 0.
+    max_speed, max_acceleration, max_recorded_gap = 0., 0., 0.
     previous_velocity, previous_dt = None, None
     for i, row in enumerate(rows):
         check_values(profile, row.values)
         if not i:
             continue
         dt = (row.publications[0][1]-rows[i-1].publications[0][1])/1e9
-        if dt > gap:
-            raise ValueError('原始手臂命令间隔超过现有节拍预算；不会补帧或跳过')
+        if dt <= 0:
+            raise ValueError('原始手臂命令发布时间必须严格递增')
+        # Recorded spacing is part of the source timeline, not scheduler delay.
+        # No interpolation, repeated keepalive targets, or gap compression.
+        max_recorded_gap = max(max_recorded_gap, dt)
         velocity = [(x-y)/dt for x, y in zip(row.values[:14], rows[i-1].values[:14])]
         max_speed = max(max_speed, *map(abs, velocity))
         if previous_velocity is not None:
@@ -70,24 +72,60 @@ def validate(profile, segment):
             raise ValueError('片段内身体或头部发生移动，16D 回放不能静默忽略')
     return dict(max_discrete_command_speed_deg_s=max_speed,
                 max_discrete_command_acceleration_deg_s2=max_acceleration,
+                max_recorded_command_gap_ms=max_recorded_gap*1000,
+                reschedule_after_ms=reschedule_after*1000,
                 basis='publication_samples_diagnostic_only_not_motor_derivatives')
 
 
-def live_check(a, segment, *, start=False, cached=False):
+def start_deviations(profile, segment, actual):
+    """Measured initial errors; force-start never substitutes target feedback."""
+    arms, grippers = [], []
+    for i, (value, target) in enumerate(zip(actual, segment.commands[0].values)):
+        if not segment.recording.valid_mask[i]:
+            continue
+        error = value-target
+        if i < 14:
+            tolerance = profile['joint_tolerance_deg']
+            arms.append(dict(name=ARMS[i], actual=value, target=target,
+                             error_deg=error, tolerance_deg=tolerance,
+                             outside_tolerance=abs(error) > tolerance))
+        else:
+            tolerance = profile['gripper_tolerance']
+            grippers.append(dict(side=('left', 'right')[i-14], actual=value, target=target,
+                                 error=error, tolerance=tolerance,
+                                 outside_tolerance=abs(error) > tolerance))
+    return dict(arms=arms, grippers=grippers,
+                max_arm_error_deg=max(abs(row['error_deg']) for row in arms),
+                misaligned_arms=[row['name'] for row in arms if row['outside_tolerance']])
+
+
+def check_start(profile, segment, actual, *, force_start=False):
+    deviations = start_deviations(profile, segment, actual)
+    mismatches = [] if force_start else list(deviations['misaligned_arms'])
+    mismatches += [row['side']+'夹爪' for row in deviations['grippers'] if row['outside_tolerance']]
+    if mismatches:
+        raise ValueError('回放起点尚未对齐: ' + ', '.join(mismatches))
+    return deviations
+
+
+def live_check(a, segment, *, start=False, cached=False, force_start=False):
     if not all(a.profile.get(k) for k in ('joints_enabled', 'limits_verified', 'gripper_verified')):
         raise ValueError('本机双臂/夹爪控制合同尚未启用')
     guard = a.transport.assert_exclusive_cached if cached else a.transport.assert_exclusive
-    for key in KEYS:
+    for key in segment.recording.command_keys:
         guard(key)
     snap = a._common()
     actual = []
     for name in ARMS:
         item = a._fresh(snap['joints'].get(name), name)
         actual.append(number(item['position'], name))
-    for side in ('left', 'right'):
+    for i, side in enumerate(('left', 'right'), 14):
+        if not segment.recording.valid_mask[i]:
+            actual.append(None)
+            continue
         item = a._fresh(snap['grippers'].get(side), side)
         actual.append(number(item['position'], side))
-    check_values(a.profile, actual)
+    check_values(a.profile, actual, segment.recording.valid_mask)
     mismatches = []
     for name, target in zip(CONTEXT, segment.context):
         value = number(a._fresh(snap['joints'].get(name), name)['position'], name)
@@ -96,12 +134,7 @@ def live_check(a, segment, *, start=False, cached=False):
     if mismatches:
         raise ValueError('身体/头部与录制上下文不一致: ' + ', '.join(mismatches))
     if start:
-        for i, (value, target) in enumerate(zip(actual, segment.commands[0].values)):
-            tolerance = a.profile['joint_tolerance_deg'] if i < 14 else a.profile['gripper_tolerance']
-            if abs(value-target) > tolerance:
-                mismatches.append(ARMS[i] if i < 14 else ('left', 'right')[i-14]+'夹爪')
-        if mismatches:
-            raise ValueError('回放起点尚未对齐: ' + ', '.join(mismatches))
+        check_start(a.profile, segment, actual, force_start=force_start)
     return snap, actual
 
 
@@ -119,15 +152,24 @@ def prepare_schedule(segment):
         for key, ns in row.publications:
             value = dict(zip(ARMS, row.values[:14])) if key == KEYS[0] else row.values[14 if key == KEYS[1] else 15]
             schedule.append(((ns-segment.begin)/1e9, key, i, value))
-    for key in KEYS[1:]:
+    for key in segment.recording.command_keys[1:]:
         if key not in dict(segment.commands[0].publications):
             schedule.append((0., key, 0, segment.commands[0].values[14 if key == KEYS[1] else 15]))
     return sorted(schedule, key=lambda x: x[0])
 
 def execute(a, spec, cancel, on_progress=None):
     segment = spec.get('_segment')
+    # Only ReplayService creates this private field from a validated request;
+    # display metadata and arbitrary truthy values cannot enable the exception.
+    force_start = spec.get('_force_start', False)
+    if type(force_start) is not bool:
+        raise ValueError('强行回放标记必须为布尔值')
     validate(a.profile, segment)
     schedule = prepare_schedule(segment)
+    maximum, reschedule_after = limits(a.profile)
+    continuity_limit = number(a.profile['feedback_max_age_s'], '反馈监控连续性时限')
+    if continuity_limit <= 0:
+        raise ValueError('反馈监控连续性时限无效')
     if not a._action_lock.acquire(blocking=False):
         raise ValueError('已有动作正在执行')
     a._active_cancel = cancel
@@ -137,13 +179,16 @@ def execute(a, spec, cancel, on_progress=None):
     dispatch_lateness = []
     start = None
     result = dict(status='cancelled', commands_sent=False, feedback_verified=False,
-                  physical_stop_confirmed=False, replay=segment.summary())
+                  physical_stop_confirmed=False, replay=segment.summary(), force_start=force_start)
     rows = segment.commands
-    times = [(r.publications[0][1]-segment.begin)/1e9 for r in rows]
-    maximum, gap = limits(a.profile)
+    gripper_indices = segment.recording.gripper_indices
+    gripper_sides = tuple(('left', 'right')[i-14] for i in gripper_indices)
+    timeline_shift, last_monitor_at = 0., 0.
+    reschedules = []
     final = dict(targets=dict(zip(ARMS, rows[-1].values[:14])),
-                 grippers=dict(zip(('left', 'right'), rows[-1].values[14:])),
-                 parts=[dict(id=p, label=p) for p in ('left_arm', 'right_arm', 'left_gripper', 'right_gripper')])
+                 grippers={('left', 'right')[i-14]:rows[-1].values[i] for i in gripper_indices},
+                 parts=[dict(id=p, label=p) for p in ('left_arm', 'right_arm') +
+                        tuple(s+'_gripper' for s in gripper_sides)])
 
     def hold():
         for key in tuple(sent):
@@ -163,106 +208,139 @@ def execute(a, spec, cancel, on_progress=None):
             except Exception:
                 pass
 
-    grip_changed = {j:[] for j in (14, 15)}
-    for j in grip_changed:
-        changed = 0
-        for i, row in enumerate(rows):
-            if i and row.values[j] != rows[i-1].values[j]:
-                changed = i
-            grip_changed[j].append(times[changed])
+    grip_changed_at = {j:0. for j in gripper_indices}
+    grip_targets = {j:rows[0].values[j] for j in gripper_indices}
+
+    def check_continuity(elapsed):
+        if elapsed > maximum:
+            raise ValueError('回放超过总任务时限，已停止')
+        if elapsed-last_monitor_at > continuity_limit:
+            raise ValueError('回放程序长时间未能检查机器人状态，已停止；请检查设备负载后重新开始')
 
     def monitor(elapsed, row_index):
-        nonlocal last_progress, max_error
+        nonlocal last_progress, max_error, last_monitor_at
+        check_continuity(a.clock()-start)
         snap, actual = live_check(a, segment, cached=True)
-        # Same feedback-age window and tolerances as ordinary pose following,
-        # with extrema across every source knot (paths may reverse direction).
-        for j, name in enumerate(ARMS):
-            age = snap['joints'][name]['age_s']
-            left = max(0, bisect_left(times, max(0., elapsed-age-a.profile['feedback_max_age_s']))-1)
-            values = [r.values[j] for r in rows[left:row_index+1]] or [rows[0].values[j]]
-            tolerance = a.profile['joint_tolerance_deg']
-            if not min(values)-tolerance <= actual[j] <= max(values)+tolerance:
-                raise ValueError('回放实际关节未跟上命令: ' + name)
+        check_continuity(a.clock()-start)
+        last_monitor_at = a.clock()-start
+        # Arm following error is evidence for the post-run comparison, not a
+        # stop condition. live_check still enforces fresh feedback and limits.
         # A gripper event gets its existing actuator timeout; never demand an
         # instantaneous jump or repeatedly resend a held close/open command.
-        for j in (14, 15):
-            if elapsed-grip_changed[j][row_index] > a.profile['gripper_timeout_s']:
-                if abs(actual[j]-rows[row_index].values[j]) > a.profile['gripper_tolerance']:
+        for j in gripper_indices:
+            if elapsed-grip_changed_at[j] > a.profile['gripper_timeout_s']:
+                if abs(actual[j]-grip_targets[j]) > a.profile['gripper_tolerance']:
                     raise ValueError('回放夹爪未在已有时限内到位')
         error = max(abs(x-y) for x, y in zip(actual[:14], rows[row_index].values[:14]))
         max_error = max(max_error, error)
         if elapsed-last_progress >= .02:
             observed = snap.get('snapshot_monotonic_s', a.clock())-start
-            items = [snap['joints'][n] for n in ARMS]+[snap['grippers'][s] for s in ('left','right')]
-            sample = dict(elapsed_s=observed, feedback_times_s=[observed-v['age_s'] for v in items], sequence=rows[row_index].sequence,
+            items = [snap['joints'][n] for n in ARMS]+[
+                snap['grippers'][s] if s in gripper_sides else None for s in ('left','right')]
+            sample = dict(elapsed_s=observed, feedback_times_s=[observed-v['age_s'] if v else None for v in items], sequence=rows[row_index].sequence,
                           actual=actual, target=list(rows[row_index].values), max_arm_error_deg=error)
             samples.append(sample); last_progress = elapsed
             if on_progress and (len(samples) == 1 or len(samples) % 5 == 0):
-                on_progress(dict(phase='replay' if elapsed < segment.duration else 'settling',
-                                 elapsed_s=elapsed, estimated_total_s=segment.duration,
-                                 progress=min(1., elapsed/segment.duration),
+                trajectory_elapsed = max(0., elapsed-timeline_shift)
+                on_progress(dict(phase='replay' if trajectory_elapsed < segment.duration else 'settling',
+                                 elapsed_s=elapsed, estimated_total_s=segment.duration+timeline_shift,
+                                 progress=min(1., trajectory_elapsed/segment.duration),
                                  command_index=row_index+1, command_count=len(rows),
                                  max_arm_error_deg=error, episode_id=spec['replay']['episode_id']))
         return snap
 
+    def schedule_delay(elapsed, due, phase):
+        nonlocal max_late, timeline_shift
+        check_continuity(elapsed)
+        late = elapsed-(due+timeline_shift)
+        max_late = max(max_late, late)
+        if late > reschedule_after:
+            # Pause the remaining schedule instead of catching up through old
+            # targets or treating ordinary host scheduling jitter as bad data.
+            timeline_shift += late
+            reschedules.append(dict(source_time_s=due, elapsed_s=elapsed,
+                                    shift_s=late, total_shift_s=timeline_shift, phase=phase))
+            if segment.duration+timeline_shift+a.profile['settle_timeout_s'] > maximum:
+                raise ValueError('回放顺延后超过总任务时限，已停止')
+        return late
+
     try:
         if cancel.is_set():
             return result
-        live_check(a, segment, start=True)
-        for key in KEYS:
+        live_check(a, segment, start=True, force_start=force_start)
+        for key in segment.recording.command_keys:
             if cancel.is_set():
                 return result
             a.transport.prepare(key); prepared.append(key)
-        live_check(a, segment, start=True)
+        _, actual = live_check(a, segment, start=True, force_start=force_start)
+        result['start_deviations'] = start_deviations(a.profile, segment, actual)
         if cancel.is_set():
             return result
-        last_sent = {}
+        last_command_index = 0
         start = a.clock()
         for due, key, i, value in schedule:
-            while not cancel.is_set() and a.clock()-start+1e-9 < due:
-                cancel.wait(min(.01, due-(a.clock()-start)))
+            while not cancel.is_set() and a.clock()-start+1e-9 < due+timeline_shift:
+                cancel.wait(min(.01, due+timeline_shift-(a.clock()-start)))
+                if not cancel.is_set() and a.clock()-start+1e-9 < due+timeline_shift:
+                    # A recorded pause must not pause feedback/exclusivity checks.
+                    # Monitor only the last sent arm target, never a future row.
+                    monitor(a.clock()-start, last_command_index)
             if cancel.is_set():
                 break
             elapsed = a.clock()-start
-            late = elapsed-due; max_late = max(max_late, late)
-            if late > gap or elapsed > maximum:
-                raise ValueError('回放下发超过节拍预算，停止而不跳帧追赶')
-            if key == KEYS[0] and key in last_sent and elapsed-last_sent[key] > gap:
-                raise ValueError('回放命令间隔超过已有节拍预算')
-            monitor(elapsed, max(0, i-1))
+            late = schedule_delay(elapsed, due, 'schedule')
+            monitor(elapsed, last_command_index)
             if cancel.is_set():
                 break
             dispatched = a.clock()-start
             # Recorded DDS call times can be only tens of microseconds apart.
             # They are deadlines to measure, not a second, variable timeout.
-            # Use the unchanged absolute lateness and inter-arm gap budgets.
-            if dispatched-due > gap or (key == KEYS[0] and key in last_sent and dispatched-last_sent[key] > gap):
-                raise ValueError('回放检查耗时超过命令节拍，已停止')
-            dispatch_lateness.append((dispatched-due)*1000)
+            late = max(late, schedule_delay(dispatched, due, 'after_monitor'))
+            dispatch_lateness.append(late*1000)
             sent.add(key)
             a.transport.publish(key, value)
-            last_sent[key] = a.clock()-start; output_count += 1
+            output_count += 1
+            if key == KEYS[0]:
+                last_command_index = i
+            else:
+                j = 14 if key == KEYS[1] else 15
+                if value != grip_targets[j]:
+                    grip_targets[j], grip_changed_at[j] = value, dispatched
+            # Also catch a blocked publish, including the final event. A command
+            # already handed to transport cannot be retracted by this check.
+            schedule_delay(a.clock()-start, due, 'publish_return')
         else:
             arrival = None
-            deadline = min(start+maximum, start+segment.duration+a.profile['settle_timeout_s'])
+            at_target_since = None
+            result['commands_completed'] = True
+            deadline = min(start+maximum, start+segment.duration+timeline_shift+a.profile['settle_timeout_s'])
             while not cancel.is_set():
                 now = a.clock(); elapsed = now-start
                 if now > deadline:
-                    raise ValueError('命令已结束，但尚未确认实测到位')
+                    raise ValueError('命令已结束，但尚未确认夹爪到位或收到足够的新反馈')
                 snap = monitor(elapsed, len(rows)-1)
                 items, parts = feedback(a, snap, final)
-                if all(p['status'] == 'at_target' for p in parts):
-                    receipts = {n:(v.get('receipt_seq'), now-v['age_s']) for n, v in items.items()}
-                    if any(seq is None for seq, _ in receipts.values()):
-                        raise ValueError('缺少新反馈序号，不能确认回放完成')
-                    if arrival is None:
-                        arrival = receipts
-                    elif all(seq != arrival[n][0] and at-arrival[n][1] >= .15 for n, (seq, at) in receipts.items()):
-                        result.update(status='succeeded', feedback_verified=True,
-                                      arrival_feedback=arrival_feedback(a, final, items, now))
-                        return result
-                else:
-                    arrival = None
+                receipts = {n:(v.get('receipt_seq'), now-v['age_s']) for n, v in items.items()}
+                if any(seq is None for seq, _ in receipts.values()):
+                    raise ValueError('缺少新反馈序号，不能确认回放完成')
+                at_target = all(p['status'] == 'at_target' for p in parts)
+                grippers_at_target = all(p['status'] == 'at_target' for p in parts if p['id'].endswith('_gripper'))
+                if not at_target:
+                    at_target_since = None
+                elif at_target_since is None:
+                    at_target_since = receipts
+                if arrival is None:
+                    arrival = receipts
+                elif grippers_at_target and all(seq != arrival[n][0] and at-arrival[n][1] >= .15 for n, (seq, at) in receipts.items()):
+                    verified = at_target_since is not None and all(
+                        seq != at_target_since[n][0] and at-at_target_since[n][1] >= .15
+                        for n, (seq, at) in receipts.items())
+                    result.update(status='succeeded', feedback_verified=verified,
+                                  final_target_reached=at_target, post_run_feedback_observed=True,
+                                  final_feedback=arrival_feedback(a, final, items, now))
+                    if verified:
+                        result['arrival_feedback'] = result['final_feedback']
+                    return result
                 cancel.wait(.01)
         hold()
         return result
@@ -283,6 +361,10 @@ def execute(a, spec, cancel, on_progress=None):
                 pass
         a._active_cancel = None; a._action_lock.release()
         result['dispatch_timing'] = dict(samples=len(dispatch_lateness), max_lateness_ms=max(dispatch_lateness,default=0.), mean_lateness_ms=sum(dispatch_lateness)/max(1,len(dispatch_lateness)), scope='application_dispatch_not_motor_delivery')
+        result['playback_timing'] = dict(mode='preserve_targets_shift_remaining_schedule',
+                total_shift_s=timeline_shift, reschedule_count=len(reschedules),
+                reschedules=reschedules, monitor_continuity_limit_s=continuity_limit,
+                comparison_time_basis='wall_time_unchanged; no_posthoc_alignment')
         comparison = compare(segment, samples, max_gap_s=a.profile['feedback_max_age_s'], execution_status=result['status'])
         if spec.get('_report_path'):
             path = Path(spec['_report_path'])
@@ -293,5 +375,10 @@ def execute(a, spec, cancel, on_progress=None):
                     json.dump(dict(result=result, request=spec['replay'], comparison=comparison, samples=samples), f, ensure_ascii=False)
                     f.flush(); os.fsync(f.fileno())
                 os.replace(temporary, path)
+                try:
+                    from replay_reports import record_latest
+                    record_latest(path, spec['replay'], result)
+                except Exception as exc:
+                    result['report_index_error'] = str(exc)
             except OSError as exc:
                 result['report_error'] = str(exc)

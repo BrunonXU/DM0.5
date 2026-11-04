@@ -22,7 +22,7 @@ def test_session_video_roundtrip(tmp_path,monkeypatch,tilde_runtime,failure):
     http=Server(('127.0.0.1',0),app,[]);url='http://127.0.0.1:'+str(http.server_port);http.allowed.add(url.split('//')[1]);thread=threading.Thread(target=http.serve_forever,daemon=True);thread.start()
     before={str(p):digest(p) for p in run.rglob('*') if p.is_file()}
     try:
-        client=worker.Client(dict(robot_url=url,access_token_file=str(app.token_path)))
+        client=worker.Client(dict(robot_url=url))
         job=client.post('/api/hil/media/claim',dict(kind='session_preview'))['job'];assert job['renderer']==PREVIEW_VERSION
         assert client.post('/api/hil/media/claim',dict(kind='session_preview'))['job'] is None
         assert app.hil_data.catalog()[0]['preview_status']=='transferring'
@@ -109,3 +109,66 @@ def test_cleanup_confined_and_receipt_required(tmp_path):
     worker.retry_cleanup(cache)
     assert not root.exists() and (outside/'keep.jpg').read_bytes()==b'original'
     assert json.loads(receipt.read_text())['cache_removed']
+
+
+def test_bulk_transfer_resume_limits_and_durable_lease(tmp_path, monkeypatch):
+    """More than two blocks, interrupted download, persisted lease, no raw edits."""
+    import base64
+    import hil_media
+    from hil_service import HILService
+    root=tmp_path/'dagger';run=fixture_run(root,'demonstration')
+    data=bytes(range(256))*9001
+    (run/'payload/head.pack').write_bytes(data)
+    (tmp_path/'hil.json').write_text(json.dumps(dict(schema='f1_hil_panel_v1',runtime=str(root))))
+    media=hil_media.HILMedia(HILService(tmp_path),lambda:False)
+    job=media.claim('session_preview')['job'];token=job['lease'];key=job['id']
+    assert job['transfer']['source_block_bytes']==1024*1024
+    saved=[];save=media.save
+    def track(j):saved.append(j['lease_until']);save(j)
+    monkeypatch.setattr(media,'save',track)
+    client=object.__new__(worker.Client);client.download_bytes=0
+    requests=[]
+    def transfer(op,j,**kw):
+        requests.append(kw['count'])
+        return media.source(j['id'],j['lease'],**kw)
+    client.transfer=transfer
+    out=tmp_path/'download.pack';out.write_bytes(data[:19])
+    client.download(job,'payload/head.pack',out)
+    assert out.read_bytes()==data and client.download_bytes==len(data)-19
+    assert len(requests)==3 and not saved
+    persisted=media.load(key);persisted['lease_until']=hil_media.time.time()+60;save(persisted)
+    restarted=hil_media.HILMedia(HILService(tmp_path),lambda:False)
+    assert base64.b64decode(restarted.source(key,token,'payload/head.pack',0,1)['data'])==data[:1]
+    assert restarted.load(key)['lease_until']>hil_media.time.time()+110
+    with pytest.raises(ValueError,match='range'):media.source(key,token,'payload/head.pack',0,1024*1024+1)
+    with pytest.raises(ValueError,match='lease'):media.source(key,'wrong','payload/head.pack',0,1)
+    persisted=restarted.load(key);persisted['lease_until']=hil_media.time.time()-1;save(persisted)
+    with pytest.raises(ValueError,match='lease'):media.source(key,token,'payload/head.pack',0,1)
+    assert (run/'payload/head.pack').read_bytes()==data
+
+
+@pytest.mark.parametrize('upload',[False,True])
+def test_transfer_pauses_if_capture_starts_during_throttle(tmp_path,monkeypatch,upload):
+    import base64
+    import hil_media
+    from hil_service import HILService
+    root=tmp_path/'dagger';fixture_run(root,'demonstration')
+    (tmp_path/'hil.json').write_text(json.dumps(dict(schema='f1_hil_panel_v1',runtime=str(root))))
+    busy=[False];media=hil_media.HILMedia(HILService(tmp_path),lambda:busy[0])
+    job=media.claim('session_preview')['job']
+    monkeypatch.setattr(hil_media.time,'monotonic',lambda:100.)
+    media.last_transfer=100.
+    monkeypatch.setattr(hil_media.time,'sleep',lambda _:busy.__setitem__(0,True))
+    with pytest.raises(ValueError,match='transfer_paused_active_session'):
+        if upload:media.command('upload',dict(id=job['id'],lease=job['lease'],name='head.mp4',offset=0,data=base64.b64encode(b'payload').decode()))
+        else:media.source(job['id'],job['lease'],'payload/head.pack',0,1024*1024)
+    assert not list((root/'videos').rglob('*.partial'))
+
+
+def test_worker_legacy_block_fallback_and_response_offset(tmp_path):
+    client=object.__new__(worker.Client);client.download_bytes=0
+    assert client.block_size({},'source')==131072
+    with pytest.raises(ValueError):client.block_size({'transfer':{'source_block_bytes':2**30}},'source')
+    client.transfer=lambda *a,**kw:dict(data='YQ==',size=1,offset=99)
+    with pytest.raises(ValueError,match='source range response'):client.download({},'payload/head.pack',tmp_path/'bad.pack')
+    assert (tmp_path/'bad.pack').stat().st_size==0

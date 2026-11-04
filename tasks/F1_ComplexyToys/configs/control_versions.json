@@ -1,0 +1,206 @@
+{
+  "schema": "f1_control_versions_v1",
+  "product": "F1 shared RTC HIL local RLT control",
+  "highest_registered_version": 47,
+  "versions": [
+    {
+      "version": 33,
+      "release": "20261021-f1-hil-v33-continuous-episodes",
+      "status": "historical",
+      "note": "Highest existing integer control version found in real F1 release inventory; subsequent date-named frozen releases retain original names."
+    },
+    {
+      "version": 34,
+      "name": "F1 RTC＋局部RLT V34",
+      "release": "f1-rtc-rlt-V34",
+      "status": "previous_deployed_preserved",
+      "technologies": [
+        "RTC",
+        "HG-DAgger",
+        "local RLT",
+        "endpoint completion"
+      ],
+      "evidence": "../inference/artifacts/20261102-framework-repair/f1-inventory.json",
+      "activation_receipt": "../inference/artifacts/20261102-framework-repair/deployment/robot-activation.json",
+      "superseded_by": 37
+    },
+    {
+      "version": 35,
+      "name": "F1 SSH＋手柄会话 V35",
+      "release": "f1-ssh-session-V35",
+      "component": "windows_operator_launcher",
+      "status": "superseded_uninstalled_candidate",
+      "technologies": [
+        "owned process shutdown",
+        "session-bound graceful finish",
+        "durable diagnostic sync"
+      ],
+      "robot_control_release": "f1-rtc-rlt-V34",
+      "evidence": "../inference/artifacts/20261102-operator-session-V35/upload.json",
+      "superseded_by": 36
+    },
+    {
+      "version": 36,
+      "name": "F1 SSH＋手柄会话 V36",
+      "release": "f1-ssh-session-V36",
+      "component": "windows_operator_launcher",
+      "status": "onsite_attempt_confirmed_incomplete_logs",
+      "technologies": [
+        "owned process shutdown",
+        "session-bound graceful finish",
+        "durable diagnostic sync"
+      ],
+      "robot_control_release": "f1-rtc-rlt-V34",
+      "evidence": "../inference/artifacts/20261102-operator-session-V35/V36-upload.json",
+      "superseded_by": 37
+    },
+    {
+      "version": 37,
+      "name": "F1 SSH＋RTC／局部RLT V37",
+      "release": "f1-rtc-rlt-V37",
+      "operator_package": "f1-ssh-session-V37",
+      "status": "previous_deployed_preserved",
+      "technologies": [
+        "independent control SSH",
+        "nonblocking terminal",
+        "persistent PCM prompts"
+      ],
+      "activation_receipt": "../inference/artifacts/20261102-session-audio-V37/deployment/robot-activation.json",
+      "evidence": "../inference/artifacts/20261102-session-audio-V37/windows-upload.json",
+      "operator_status": "onsite_encoding_and_locked_log_regression_superseded_V38",
+      "superseded_by": 39
+    },
+    {
+      "version": 38,
+      "name": "F1 SSH＋手柄会话 V38",
+      "release": "f1-ssh-session-V38",
+      "component": "windows_operator_launcher",
+      "robot_control_release": "f1-rtc-rlt-V42",
+      "status": "onsite_use_confirmed",
+      "technologies": [
+        "native Unicode console",
+        "incremental UTF-8 decoding",
+        "per-file log sync isolation"
+      ],
+      "evidence": "../inference/artifacts/20261102-session-unicode-V38/upload.json",
+      "onsite_evidence": "../inference/experiments/20261102-latest-rollout-audit.md"
+    },
+    {
+      "version": 39,
+      "name": "F1 RTC＋局部RLT V39",
+      "release": "f1-rtc-rlt-V39",
+      "status": "previous_deployed_preserved",
+      "evidence": "../inference/experiments/20261102-rlt-repair-V39.md",
+      "activation_receipt": "../inference/artifacts/20261102-rlt-repair-V39/deployment/robot-activation.json",
+      "superseded_by": 41
+    },
+    {
+      "version": 40,
+      "name": "F1 RTC＋局部RLT V40",
+      "release": "f1-rtc-rlt-V40",
+      "status": "offline_candidate_not_deployed",
+      "evidence": "../training/experiments/20261102-rlt-decision-V40.md"
+    },
+    {
+      "version": 41,
+      "name": "F1 RTC＋局部RLT V41",
+      "release": "f1-rtc-rlt-V41",
+      "status": "previous_deployed_preserved",
+      "evidence": "../training/experiments/20261102-rlt-rtc-V41.md",
+      "activation_receipt": "../training/artifacts/20261103-rlt-rtc-V41-deployment/robot-activation.json",
+      "superseded_by": 42
+    },
+    {
+      "version": 42,
+      "name": "F1 RTC＋局部RLT V42",
+      "release": "f1-rtc-rlt-V42",
+      "status": "previous_deployed_preserved",
+      "evidence": "../inference/experiments/20261103-rlt-rtc-V42.md",
+      "activation_receipt": "../inference/artifacts/20261103-rlt-rtc-V42/deployment/robot-activation.json",
+      "server_component_release": "f1-rtc-rlt-V41",
+      "operator_package": "f1-ssh-session-V38",
+      "superseded_by": 43
+    },
+    {
+      "version": 43,
+      "name": "F1 RTC＋局部RLT V43",
+      "release": "f1-rtc-rlt-V43",
+      "operator_package": "f1-ssh-session-V43",
+      "status": "robot_rlt_hil_deployed_windows_package_uploaded",
+      "technologies": [
+        "verified runtime version display",
+        "packaged Windows launcher version",
+        "local actor snapshot identity display"
+      ],
+      "previous_control_release": "f1-rtc-rlt-V42",
+      "evidence": "../inference/experiments/20261103-terminal-identity-V43.md",
+      "activation_receipt": "../inference/artifacts/20261103-v42-two-rollouts/version/deployment/robot-activation.json",
+      "actual_components_receipt": "../inference/artifacts/20261103-v42-two-rollouts/version/deployment/actual-components.json",
+      "server_component_release": "f1-rtc-rlt-V41",
+      "operator_status": "uploaded_not_onsite_installed",
+      "client_manifest_sha256": "5e08bdcfe1643762c71f51b3193bc5bbe3483bad815f329dc9a8fdcb26d679bb"
+    },
+    {
+      "version": 44,
+      "name": "F1 RTC＋局部RLT V44",
+      "release": "f1-rtc-rlt-V44",
+      "operator_package": "f1-operator-V44",
+      "status": "staged_shadow_verified_not_activated",
+      "evidence": "../inference/experiments/20261103-continuity-validation-V44.md",
+      "superseded_by": 45
+    },
+    {
+      "version": 45,
+      "name": "F1 RTC＋局部RLT V45",
+      "release": "f1-rtc-rlt-V45",
+      "operator_package": "f1-operator-V45",
+      "status": "robot_rlt_hil_deployed_windows_package_uploaded",
+      "evidence": "../inference/experiments/20261103-continuity-validation-V44.md",
+      "client_manifest_sha256": "55ec01909b7536271779e5fc6b336a8fb4531433f7bf99e91a545908e60e7755",
+      "previous_control_release": "f1-rtc-rlt-V43",
+      "operator_status": "onsite_verified_20261103T082126Z",
+      "activation_receipt": "../inference/artifacts/20261103-continuity-validation-V44/deployment-V45/robot-activation.json"
+    },
+    {
+      "version": 46,
+      "name": "F1 RTC＋局部RLT V46",
+      "release": "f1-rtc-rlt-V46",
+      "operator_package": "f1-operator-V46",
+      "status": "robot_rlt_hil_deployed_windows_package_uploaded",
+      "evidence": "../inference/experiments/20261103-continuity-validation-V44.md#onsite-v45",
+      "changes": [
+        "receiver freshness challenge for policy/startup wait",
+        "v4 explicit success/failure rating before handoff/Home",
+        "Doubao offline voice builder; credentials pending"
+      ],
+      "client_manifest_sha256": "db527fff724289ba091545e0cd5fd0c6bc9ad77d26c7eb8bb4704bfd5eb26fd5",
+      "arm_tests": 175,
+      "local_tests": 176,
+      "operator_status": "uploaded_installation_pending",
+      "previous_control_release": "f1-rtc-rlt-V45",
+      "activation_receipt": "../inference/artifacts/20261103-continuity-validation-V44/deployment-V46/robot-activation.json",
+      "activation_authorization": "User explicitly confirmed formal V46 activation on 2026-11-03"
+    },
+    {
+      "version": 47,
+      "name": "F1 RTC＋局部RLT V47",
+      "release": "f1-rtc-rlt-V47",
+      "status": "robot_rlt_hil_deployed",
+      "operator_package": "f1-operator-V46",
+      "changes": [
+        "four short Doubao offline prompts",
+        "keep transient jitter and RB confirmation silent"
+      ],
+      "local_tests": 38,
+      "arm_tests": 38,
+      "client_manifest_sha256": "6e363efe20b0ac1d18563deab38da0d206a93707101adc651d0d3683213becb6",
+      "activation_receipt": "../inference/artifacts/20261103-voice-V47/robot-activation.json",
+      "evidence": "../inference/experiments/20261104-voice-V47.md"
+    }
+  ],
+  "current_deployed_release": "f1-rtc-rlt-V47",
+  "previous_deployed_release": "f1-rtc-rlt-V46",
+  "current_operator_package": "f1-operator-V45",
+  "latest_operator_package": "f1-operator-V46",
+  "training_component": "f1-rlt-learner-V47"
+}

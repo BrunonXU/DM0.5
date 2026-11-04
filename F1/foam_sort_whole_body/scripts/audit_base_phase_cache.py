@@ -421,7 +421,7 @@ def write_aggregates(args, rows, selected, results, identity, started, finished=
         lines.append(f"|{interval['priority']}|{interval['episode']}|{interval['kind']}|{interval['start_s']:.3f}–{interval['end_s']:.3f}|{interval['supervision']['before_tail_duration_s']:.3f}|{interval['minimum_consistent_rois']}|")
     lines += ["", "## 证据和复现", "", "`summary.json`保存覆盖与统计，`coverage.json`列每份状态；`episode_summaries.csv`和`review_intervals.csv/jsonl`便于筛选。"
               "逐来源`sources/<episode>.json`保存输入hash、尾界校验和区间；`.pairs.jsonl`保留每对图像hash、准确时间、完整ROI指标、HAL峰峰值、base区间覆盖及监督mask统计。", "",
-              "6000D，工作目录`/home/xza_100850113/projects`：", "", "```bash",
+              "6000D，工作目录`/home/user/projects`：", "", "```bash",
               "/tmp/f1-foam-audit-venv/bin/python F1/foam_sort_whole_body/scripts/audit_base_phase_cache.py --workers 2", "```", "",
               "方法正例/合成验证见`../motion_method/index.html`；18项合成验证和13对既有正例均通过，不代表775来源的检出精度或训练验收。", "",
               "未读取原MCAP图像二次抽帧；仅读既有cache、原signals和派生mask，并复核原source的size/mtime。未SSH、ROS、训练或真机动作。"]

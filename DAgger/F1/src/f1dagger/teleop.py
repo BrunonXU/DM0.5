@@ -17,6 +17,10 @@ class ArmBoundaryHold(RuntimeError):
 class F1ArmTarget(ArmTargetIntegrator):
     def __init__(self, urdf, mapping, ik_config):
         import pinocchio as pin
+        from pathlib import Path
+        from .config import infra_import
+        # The same manifest-bound planner used by the 4242 pose executor.
+        self.home_plan_type = infra_import(Path(urdf).resolve().parents[4], 'robot.motion_plan').SmoothBodyPlan
         self.mapping = mapping
         model = pin.buildModelFromUrdf(str(urdf))
         names = {'left': list(MODEL_NAMES[:7]), 'right': list(MODEL_NAMES[7:14])}
@@ -103,6 +107,23 @@ class F1ArmTarget(ArmTargetIntegrator):
         the URDF/Pink model at 50 Hz. Only the virtual controller is reset;
         the caller's actual full-body feedback remains unchanged.
         """
+        self.accept_safe_candidate(full, command)
+        side = self.side
+        offset = 0 if side == 'left' else 7
+        arm = command[offset:offset+7]
+        self.last_target_limit_reason = reason
+        self.seed_diagnostics = self._seed_details(side, full, arm, 'last_submitted')
+        raise ArmBoundaryHold(reason, dict(details, side=side,
+            last_submitted_arm_deg=arm.tolist(),
+            measured_arm_deg=full[offset:offset+7].tolist(),
+            seed_source='last_submitted'))
+
+    def accept_safe_candidate(self, full, command):
+        """Discard rejected IK/filter lead while retaining the reduced model.
+
+        The selected command is a controller reference, never sensor feedback.
+        Output planner velocity/acceleration remains owned by the output owner.
+        """
         side, ik = self.side, self.ik
         offset = 0 if side == 'left' else 7
         arm = command[offset:offset+7]
@@ -118,12 +139,7 @@ class F1ArmTarget(ArmTargetIntegrator):
         ik.posture_task.set_target(q)
         self.ik_virtual_q = q.copy()
         self.virtual_q = q.copy()
-        self.last_target_limit_reason = reason
-        self.seed_diagnostics = self._seed_details(side, full, arm, 'last_submitted')
-        raise ArmBoundaryHold(reason, dict(details, side=side,
-            last_submitted_arm_deg=arm.tolist(),
-            measured_arm_deg=full[offset:offset+7].tolist(),
-            seed_source='last_submitted'))
+        self.seed_diagnostics = self._seed_details(side, full, arm, 'approved_reference')
 
     def target(self, packet, full22, last_submitted, dt):
         full = vector(full22, 22)
@@ -134,7 +150,8 @@ class F1ArmTarget(ArmTargetIntegrator):
             self.begin(packet.active_side, full, command)
         elif np.max(np.abs(full[14:] - self.fixed_reference)) > .5:
             self.release()
-            raise RuntimeError('body/head reference changed; release and re-clutch')
+            from .faults import ManualReferenceChanged
+            raise ManualReferenceChanged('body/head reference changed; release and re-clutch')
         # Anchor to the last feasible virtual configuration each tick. Clear
         # only reversed filter components so input reverses on the next solve;
         # the output planner retains physical velocity/acceleration for braking.

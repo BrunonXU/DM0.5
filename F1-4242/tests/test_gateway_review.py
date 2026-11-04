@@ -47,8 +47,8 @@ def test_recording_post_requires_login_and_same_origin_but_no_motion_lease(http_
     called = []
     monkeypatch.setattr(app.recording, 'command', lambda operation: called.append(operation) or {'mode': 'idle'})
     _, _, cookie = request('/api/session')
-    assert request('/api/recording/start', {}, cookie)[0] == 401
-    assert request('/api/login', {'token': app.token}, cookie)[0] == 200
+    assert request('/api/recording/start', {}, cookie, origin=False)[0] == 403
+    assert request('/api/login', {}, cookie)[0] == 200
     assert request('/api/recording/start', {}, cookie, origin=False)[0] == 403
     assert called == []
     assert request('/api/recording/start', {}, cookie)[0] == 200

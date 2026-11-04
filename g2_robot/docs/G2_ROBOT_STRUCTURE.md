@@ -7,9 +7,9 @@
 当前开机姿态待操作者在G2运行采集。用户要求后续开关手迁移Servo，尚未在本次修改执行路径。
 
 最近核对：2026-09-07（右食指名称修正诊断候选）<br>
-G2当前部署目录：`/home/agi/xza/DM0.5`<br>
-6000D机器人端源码：`/home/xza_100850113/projects/g2_robot`<br>
-6000D模型训练/验证/服务：`/home/xza_100850113/projects/DM0.5`
+G2当前部署目录：`/home/user/xza/DM0.5`<br>
+6000D机器人端源码：`/home/user/projects/g2_robot`<br>
+6000D模型训练/验证/服务：`/home/user/projects/DM0.5`
 
 2026-09-08 复位排查同步：仅更新 `robot_control.py` 的启动拒绝诊断与
 `config/hand_home_approved.json`。健康门禁仍要求 mode=5/error_code=0；失败额外输出
@@ -37,13 +37,13 @@ G2当前部署目录：`/home/agi/xza/DM0.5`<br>
 ├── tests/                          # 无GDK纯逻辑测试
 └── docs/                           # G2操作、接口和状态文档
 
-G2 /home/agi/xza/DM0.5
+G2 /home/user/xza/DM0.5
 └── g2_robot的现场部署副本；logs只在G2产生并保留
 ```
 
-`/home/agi/DM0.5`只保留历史日志/旧目录，不再作为代码入口，也不与当前目录合并，
+`/home/user/DM0.5`只保留历史日志/旧目录，不再作为代码入口，也不与当前目录合并，
 避免覆盖现场证据。模型checkpoint和服务代码不复制到G2；正式Sync通过内网访问GPU7的
-`ws://10.130.153.114:7892/process_frame`；原正式端口保持不变，只升级传输与所在GPU。
+`ws://192.0.2.1:7892/process_frame`；原正式端口保持不变，只升级传输与所在GPU。
 
 ## 当前数据合同
 
@@ -258,7 +258,7 @@ G2已有binary协议、原生图片和WebSocket backend的同版本实现，本�
 - `cli.py`: `ed57e32af93408c9b4fe8e3b27badb962ccb9eaa5e161ebeeeb4702582641310`。
 
 同步后Shell语法通过，G2现有`websockets 16.0`可完成到
-`ws://10.130.153.114:7896/process_frame`的握手。检查未读取相机、未构造Robot/Servo、未发送
+`ws://192.0.2.1:7896/process_frame`的握手。检查未读取相机、未构造Robot/Servo、未发送
 任何动作。真实三相机与公司内网分布仍需Bruno在G2手动运行只读Shadow。
 
 ## 2026-08-25 binary正式Sync入口同步快照
@@ -301,7 +301,7 @@ Python、SHA256和WebSocket握手均通过，未初始化GDK、Servo或机器人
 ## 2026-08-26 RTC WebSocket与10Hz客户端准备快照
 
 在不启动7893服务、不初始化GDK/Servo且不发送动作的前提下，RTC客户端入口已改为默认连接
-原正式`ws://10.130.153.114:7893/process_frame`，并在完整Split RTC中显式传入双手10Hz。
+原正式`ws://192.0.2.1:7893/process_frame`，并在完整Split RTC中显式传入双手10Hz。
 `d=16,s=20`暂时保持旧候选；必须等GPU3/7893 WebSocket部署后先跑Shadow，以真实RTC
 observation age重新标定，不能直接按Sync E2E换算。RTC手部仍使用边界/内部cap分离的
 `rtc_cap_v2`，没有盲目移植Sync V1的整段追赶状态机。
@@ -362,7 +362,7 @@ smoke和固定arms-only隔离诊断继续保持短时，不作为完整任务评
 
 ## 2026-08-20 RTC同步快照
 
-已将本轮RTC客户端修复逐文件同步到`/home/agi/xza/DM0.5`，未复制日志、模型或整个
+已将本轮RTC客户端修复逐文件同步到`/home/user/xza/DM0.5`，未复制日志、模型或整个
 仓库。G2端SHA256：
 
 - `app.py`: `ad4744bcc7b9b9ddb3cecdb7f9cbaace2c7934775cd90022ca86be01dc3916c4`；
@@ -447,7 +447,7 @@ timing-ab验证dispatch时基，再决定是否进行OTG配对。
 ## 2026-09-02 G2Teleop共同轨迹因果回放同步快照
 
 本轮只把G2Teleop的`eef_replay.py`、`control_telemetry.py`、20/21/22三个脚本和控制架构文档
-逐文件scp到`/home/agi/xza/G2Teleop`。两端SHA逐项一致，远端Python编译和Shell语法通过；没有
+逐文件scp到`/home/user/xza/G2Teleop`。两端SHA逐项一致，远端Python编译和Shell语法通过；没有
 复制整个仓库、厂商模型、训练数据或旧日志。
 
 脚本20已移除`--execute`以及全部GDK/controller路径，只在G2原位MJCF上生成同一100Hz时钟的
@@ -538,7 +538,7 @@ endpoint；加上第1秒的一次open准备，全程O10恰为11次调用且无�
 本地zero-output及G2Teleop无loopback回归为`82 passed, 2 skipped`。运行文件与文档随后已逐文件
 同步；G2端Python/Shell语法、6项纯逻辑测试和zero-output复核通过，
 产物SHA、10个任务窗及11次调用均与6000D一致；该复核没有导入GDK、初始化Robot或发送任何命令。
-Powered仍未执行，唯一人工入口为`/home/agi/xza/G2Teleop/scripts/29_g2_o10_event_arm_hold.sh`。
+Powered仍未执行，唯一人工入口为`/home/user/xza/G2Teleop/scripts/29_g2_o10_event_arm_hold.sh`。
 
 14:18入口29运行至artifact time 71.24秒后由操作者Ctrl-C停止，状态`operator_ctrl_c`、覆盖率
 78.1%，因此不是完整通过。已执行1次准备和前8个任务endpoint，现场确认全部丝滑；最后79.7与
@@ -552,7 +552,7 @@ arms-only控制器加显式one-shot O10，无在线Pink/Ruckig、网络、模型
 拒绝门，手臂起点连续性保护独立保留。本地Python/Shell、zero-output及回归为
 `83 passed, 2 skipped`。运行文件与文档已逐项同步；G2端Python/Shell、7项纯逻辑测试和
 zero-output复核通过，未导入GDK或发送命令。Powered尚未执行，唯一人工入口为
-`/home/agi/xza/G2Teleop/scripts/30_g2_qdirect_o10_event_replay.sh`。
+`/home/user/xza/G2Teleop/scripts/30_g2_qdirect_o10_event_replay.sh`。
 
 14:34首次入口30尝试因Servo状态`mode=5,error_code=2`在Controller构造时退出，零命令发送。状态
 恢复后的14:34:48轮运行到总时间27.33秒/artifact 25.33秒后由操作者Ctrl-C停止，覆盖率29.3%，
@@ -569,7 +569,7 @@ event endpoint虽然丝滑，但按O10内部默认速度快速完成，未保留
 渐进动作能否同时保持丝滑，不预设结果。本地zero-output和回归为`84 passed, 2 skipped`。运行文件
 与文档随后已逐文件同步；G2端Python/Shell、8项纯逻辑测试和zero-output复核通过，确认
 58个变化样本/59次总调用；没有导入GDK或发送机器人命令。唯一人工入口为
-`/home/agi/xza/G2Teleop/scripts/31_g2_qdirect_o10_raw5_replay.sh`，尚未Powered。
+`/home/user/xza/G2Teleop/scripts/31_g2_qdirect_o10_raw5_replay.sh`，尚未Powered。
 
 14:58入口31随后自然完成，总时间93.22秒，arm/O10分别为9323/59次，主/feedback零drop；现场
 评价双手“分段丝滑，没什么问题”。dispatch P95/max为10.567/15.194ms，约73ms lag对齐后的
@@ -624,7 +624,7 @@ arm jerk weight 10、C2 spline及`stationary_minjerk_v1/0.0035rad`，但硬件�
 `unified-34`。
 
 6000D完整无GDK回归为`155 passed, 1 skipped`，Shell语法和diff检查通过。运行代码、入口、
-测试和脚本文档已逐文件同步到`/home/agi/xza/DM0.5`，随后逐文件拉回`/tmp`并通过`cmp`核对。
+测试和脚本文档已逐文件同步到`/home/user/xza/DM0.5`，随后逐文件拉回`/tmp`并通过`cmp`核对。
 同步与核对没有通过SSH执行GDK、Robot、Servo或Powered动作；真机测试仍必须由操作者在G2现场
 运行入口15并握住物理急停。
 

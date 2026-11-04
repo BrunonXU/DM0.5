@@ -1,0 +1,23 @@
+{
+  "schema": "f1_anchor_action_index_config_v1",
+  "fps": 30,
+  "horizon": 50,
+  "required_cameras": ["head", "right_wrist"],
+  "max_observation_age_ns": 50000000,
+  "max_camera_age_ns": 200000000,
+  "max_state_age_ns": 250000000,
+  "max_command_age_ns": 50000000,
+  "max_control_gap_ns": 50000000,
+  "metadata": {
+    "task": "F1_ComplexyToys",
+    "date": "2026-10-14",
+    "status": "offline_candidate_not_training_approved",
+    "threshold_basis": "Explicit conservative baseline from existing freshness limits; not optimized or exposure-calibrated task quality thresholds.",
+    "observation_selection": "latest_past_whole_observation_baseline",
+    "action_selection": "complete_window_from_published_control_log",
+    "frequency_override": "Changing fps does not change any max_*_ns limit.",
+    "image_mask": {"head": true, "left_wrist": false, "right_wrist": true},
+    "roi_status": "not_applied_coordinate_review_pending",
+    "training_ready": false
+  }
+}

@@ -11,13 +11,13 @@ POLICY_TRANSPORT="${G2_PREFLIGHT_POLICY_TRANSPORT:-${NEWLORA_RTC_TRANSPORT:-webs
 if [[ -n "${G2_PREFLIGHT_POLICY_ENDPOINT:-}" ]]; then
   POLICY_ENDPOINT="$G2_PREFLIGHT_POLICY_ENDPOINT"
 elif [[ "$POLICY_TRANSPORT" == "websocket-binary" ]]; then
-  POLICY_ENDPOINT="${NEWLORA_RTC_ENDPOINT:-ws://10.130.153.114:7893/process_frame}"
+  POLICY_ENDPOINT="${NEWLORA_RTC_ENDPOINT:-ws://192.0.2.1:7893/process_frame}"
 else
   if [[ "$POLICY_TRANSPORT" != "http-multipart-json" ]]; then
     echo "STOP: POLICY_TRANSPORT必须是http-multipart-json或websocket-binary" >&2
     exit 2
   fi
-  POLICY_ENDPOINT="${NEWLORA_RTC_ENDPOINT:-http://10.130.153.114:7893/process_frame}"
+  POLICY_ENDPOINT="${NEWLORA_RTC_ENDPOINT:-http://192.0.2.1:7893/process_frame}"
 fi
 
 assert_no_controller_process

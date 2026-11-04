@@ -1,7 +1,7 @@
 """LXL rosbag catalog with source-bound, independent review sidecars.
 
 Uses the meaxiao review boundary (raw dataset immutable, source identity and
-annotations outside it), adapted to the existing MCAP format. No collectors,
+annotations in an independent, portable sidecar), adapted to the existing MCAP format. No collectors,
 UDP commands, upload jobs, bag readers, or dataset conversion are started here.
 Explicit selected deletion is isolated in data_delete.py.
 """
@@ -17,10 +17,18 @@ import threading
 import time
 from datetime import datetime, timezone
 from core import atomic_json, utc
+from data_organization import DataOrganization
+import data_annotations
 
 
 def iso(timestamp):
     return datetime.fromtimestamp(timestamp, timezone.utc).isoformat()
+
+
+class ReviewConflict(ValueError):
+    def __init__(self, code, message, review):
+        super().__init__(message)
+        self.code, self.review = code, review
 
 
 class DataService:
@@ -33,6 +41,9 @@ class DataService:
         self.proc_root = Path(proc_root)
         self.extra_catalog = extra_catalog
         self.preview_root = Path(runtime).resolve() / 'data_previews'
+        self.organization = DataOrganization(runtime)
+        from data_archives import DataArchives
+        self.archives = DataArchives(runtime)
         self.lock = threading.RLock()
         self.cached = None
         self.cache_at = 0
@@ -68,7 +79,7 @@ class DataService:
                         visited += 1
                         if visited > 20_000:
                             raise ValueError('目录条目过多，需缩小数据根目录')
-                        if entry.is_symlink() or entry.name.startswith(".f1-delete-"):
+                        if entry.is_symlink() or entry.name.startswith(".f1-delete-") or data_annotations.reserved(entry.name):
                             continue
                         p = Path(entry.path)
                         if entry.is_file(follow_symlinks=False):
@@ -128,18 +139,33 @@ class DataService:
                 pass
         return None
 
-    def _review(self, eid, signature):
-        pending = {'status': 'pending', 'notes': '', 'updated_at': None, 'stale': False}
+    def _review(self, eid, signature, recording=None):
+        pending = {'status': 'pending', 'notes': '', 'updated_at': None, 'stale': False, 'revision': 'none'}
+        row = None
+        if recording:
+            try:
+                row = data_annotations.load(recording)
+            except (OSError, ValueError, TypeError, KeyError, AttributeError) as exc:
+                return dict(pending, annotation_error=str(exc), revision='unreadable')
         p = self.review_root / (eid + '.json')
         try:
-            if p.is_symlink() or not p.exists():
-                return pending
-            row = json.loads(p.read_text())
+            if row is None:
+                if p.is_symlink() or not p.exists():
+                    return pending
+                row = json.loads(p.read_text())
+            revision = hashlib.sha256(json.dumps(row, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
+            row['revision'] = revision
             if row.get('source_signature') != signature:
-                return dict(pending, stale=True, previous_review=row)
+                return dict(pending, stale=True, previous_review=row, revision=revision)
             return row
         except (OSError, ValueError):
             return pending
+
+    def _save_annotation(self, recording, review):
+        # The per-recording file is authoritative. Legacy runtime records are
+        # retained as pre-migration backups and are read only when no sidecar exists.
+        data_annotations.save(recording, review)
+        self.cache_at = 0
 
     def _episode(self, directory):
         files = []
@@ -161,8 +187,9 @@ class DataService:
                     format='rosbag2_mcap' if any(row['name'].endswith('.mcap') for row in files) else 'rosbag2',
                     size_bytes=sum(row['size_bytes'] for row in files), file_count=len(files),
                     modified_at=max(row['modified_at'] for row in files), files=files,
-                    source_signature=signature, review=self._review(eid, signature),
+                    source_signature=signature,
                     preview_url=self._preview(directory, meta['metadata_sha256']), **meta)
+        row['review'] = self._review(eid, signature, row)
         preview = self.preview_root / eid / 'manifest.json'
         try:
             if preview.is_file() and not preview.is_symlink() and preview.stat().st_size < 100_000:
@@ -203,7 +230,7 @@ class DataService:
     def catalog(self, refresh=False):
         with self.lock:
             if not refresh and self.cached is not None and time.monotonic() - self.cache_at < 3:
-                return copy.deepcopy(self.cached)
+                return self._with_organization(copy.deepcopy(self.cached))
             available = self.root.is_dir() and self._confined(self.root)
             episodes = []
             error = None
@@ -222,7 +249,16 @@ class DataService:
                     extra = self.extra_catalog()
                     for original in extra:
                         row = dict(original)
-                        row['review'] = self._review(row['id'], row['source_signature'])
+                        row['review'] = self._review(row['id'], row['source_signature'], row)
+                        if row.get('capture_mode') == 'rlt':
+                            from data_rlt_assessment import assess
+                            try:
+                                row['rlt_assessment'] = assess(row)
+                            except Exception as exc:
+                                row['rlt_assessment'] = dict(split='pending', quality='unreadable',
+                                    outcome_label='待核查', confirmation_label='待核查',
+                                    usage_label='待审核', source_signature=row['source_signature'],
+                                    notes_summary='数据状态读取失败：' + str(exc))
                         episodes.append(row)
                 except Exception as exc:
                     error = '独立录制目录暂不可用，LXL目录仍可查看：' + str(exc)
@@ -231,7 +267,21 @@ class DataService:
                                        'total_bytes': sum(row['size_bytes'] for row in episodes)},
                            'recording': self.recording(), 'checked_at': utc(), 'error': error}
             self.cache_at = time.monotonic()
-            return copy.deepcopy(self.cached)
+            return self._with_organization(copy.deepcopy(self.cached))
+
+    def _with_organization(self, result):
+        try:
+            local_ids = {row['id'] for row in result['episodes']}
+            result['archives'] = [row for row in self.archives.read() if row['id'] not in local_ids]
+        except (OSError, ValueError, TypeError, KeyError) as exc:
+            result['archives'] = []
+            result['archives_error'] = '服务器归档索引暂不可用：' + str(exc)
+        try:
+            result['organization'] = self.organization.read()
+        except (OSError, ValueError, TypeError, KeyError) as exc:
+            result['organization'] = None
+            result['organization_error'] = '版本目录暂不可用：' + str(exc)
+        return result
 
     def episode(self, eid, refresh=False):
         if not isinstance(eid, str) or not re.fullmatch('[a-f0-9]{24}', eid):
@@ -241,24 +291,52 @@ class DataService:
                 return row
         raise ValueError('数据条目不存在')
 
-    def save_review(self, eid, status, notes, reviewer, expected_source_signature=None):
+    def save_review(self, eid, status, notes, reviewer, expected_source_signature=None, expected_review_revision=None):
         if status not in ('pending', 'approved', 'rejected'):
             raise ValueError('审核状态须为 pending、approved 或 rejected')
         if not isinstance(notes, str) or len(notes) > 4000:
             raise ValueError('审核备注不得超过 4000 字符')
         with self.lock:
             row = self.episode(eid, refresh=True)
-            if not isinstance(expected_source_signature, str) or expected_source_signature != row['source_signature']:
-                raise ValueError('来源已变化或缺少来源签名，请刷新数据并重新审核')
-            review = {'episode_id': eid, 'status': status, 'notes': notes, 'updated_at': utc(),
-                      'reviewer': reviewer, 'source_relative_path': row['relative_path'],
-                      'source_signature': row['source_signature'],
-                      'metadata_sha256': row['metadata_sha256'], 'stale': False,
-                      'scope': '人工内容审核；不等于监督合同、训练质量或完整性验收'}
-            # Only our runtime receives writes, never the source bag directory.
-            self.review_root.mkdir(parents=True, exist_ok=True)
-            if self.review_root.is_symlink() or not self.review_root.resolve().is_relative_to(self.review_root.parent):
-                raise ValueError('审核目录路径无效')
-            atomic_json(self.review_root / (eid + '.json'), review)
-            self.cache_at = 0
-            return review
+            with data_annotations.lock(row):
+                current = self._review(eid, row['source_signature'], row)
+                if current.get('annotation_error'):
+                    raise ValueError(current['annotation_error'])
+                if not isinstance(expected_source_signature, str) or expected_source_signature != row['source_signature']:
+                    raise ReviewConflict('SOURCE_CHANGED', '来源已变化或缺少来源签名，请刷新数据并重新审核', current)
+                if expected_review_revision is None:
+                    raise ReviewConflict('REVIEW_REFRESH_REQUIRED', '请刷新页面后重新保存审核', current)
+                if expected_review_revision != current['revision']:
+                    raise ReviewConflict('REVIEW_CONFLICT', '审核已被更新，请核对最新结论后重新确认', current)
+                review = {'episode_id': eid, 'status': status, 'notes': notes, 'updated_at': utc(),
+                          'reviewer': reviewer, 'source_relative_path': row['relative_path'],
+                          'source_signature': row['source_signature'],
+                          'metadata_sha256': row['metadata_sha256'], 'stale': False,
+                          'scope': '人工内容审核；不等于监督合同、训练质量或完整性验收'}
+                self._save_annotation(row, review)
+                return self._review(eid, row['source_signature'], row)
+
+    def save_notes(self, eid, notes, editor, expected_source_signature=None, expected_review_revision=None):
+        """Edit the source-bound annotation without submitting a content review."""
+        if not isinstance(notes, str) or len(notes) > 4000:
+            raise ValueError('备注不得超过 4000 字符')
+        with self.lock:
+            row = self.episode(eid, refresh=True)
+            with data_annotations.lock(row):
+                current = self._review(eid, row['source_signature'], row)
+                if current.get('annotation_error'):
+                    raise ValueError(current['annotation_error'])
+                if not isinstance(expected_source_signature, str) or expected_source_signature != row['source_signature']:
+                    raise ReviewConflict('SOURCE_CHANGED', '来源已变化，请重新读取录制后编辑备注', current)
+                if expected_review_revision is None:
+                    raise ReviewConflict('REVIEW_REFRESH_REQUIRED', '请重新读取录制后保存备注', current)
+                if expected_review_revision != current['revision']:
+                    raise ReviewConflict('REVIEW_CONFLICT', '备注或审核记录已被更新，请核对最新内容', current)
+                # A stale opinion stays in previous_review; it is never approved for
+                # the changed source merely because somebody writes a new note.
+                saved = {key: value for key, value in current.items() if key != 'revision'}
+                saved.update(episode_id=eid, notes=notes, notes_updated_at=utc(), notes_editor=editor,
+                             source_relative_path=row['relative_path'], source_signature=row['source_signature'],
+                             metadata_sha256=row.get('metadata_sha256'), stale=False)
+                self._save_annotation(row, saved)
+                return self._review(eid, row['source_signature'], row)

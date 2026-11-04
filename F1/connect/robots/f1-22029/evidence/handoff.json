@@ -1,5 +1,0 @@
-{
-  "returncode": 0,
-  "stdout": "ms-thor\nactive\nStopped verified manual tunnel PID 1274951\n",
-  "stderr": "Created symlink /home/user/.config/systemd/user/f1-6000d-tunnel.service \u2192 /home/user/Bruno/connect/systemd/f1-6000d-tunnel.service.\nCreated symlink /home/user/.config/systemd/user/default.target.wants/f1-6000d-tunnel.service \u2192 /home/user/Bruno/connect/systemd/f1-6000d-tunnel.service.\n"
-}

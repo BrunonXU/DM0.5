@@ -2,7 +2,7 @@
 
 > 历史/专项证据：本文结论对应文内日期与轮次。当前实现及下一步统一见 [当前进度](RECORDING_AND_PROGRESS.md)，按序查阅 [文档索引](00_INDEX.md)。
 
-G2真实入口/home/agi/xza/DM0.5/scripts/03_reset_home.sh，其6000D源码位于g2_robot/scripts/03_reset_home.sh（不是训练项目DM0.5/scripts）。加载g2_sort/config/hand_home_approved.json。远端与本地记录一致。
+G2真实入口/home/user/xza/DM0.5/scripts/03_reset_home.sh，其6000D源码位于g2_robot/scripts/03_reset_home.sh（不是训练项目DM0.5/scripts）。加载g2_sort/config/hand_home_approved.json。远端与本地记录一致。
 
 右小指外展0.000775rad、屈曲0.011716rad；左小指-0.000050/0.011527rad。右无名指PIP0.019622rad，小指与它差约0.45度；配置本来为四指近伸直的Home。没有证据支持单凭该差异造成显著单指异常。最新152050开头原始右四指状态约0.32–0.34rad（未认证），不是本次复位后的证据，不能用它宣称复位到位或失败。
 

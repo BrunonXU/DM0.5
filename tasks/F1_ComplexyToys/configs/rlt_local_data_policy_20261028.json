@@ -1,0 +1,28 @@
+{
+  "schema": "f1_rlt_data_policy_v1",
+  "default": "quarantine",
+  "revision": "20261028-initial-episodes-r1",
+  "episodes": {
+    "f1_hil_20261028T014106Z_07cc5960": {
+      "split": "exclude",
+      "reason": "User-confirmed right-arm execution fault; all joint feedback stationary",
+      "source_receipt_sha256": "c086db13767180dd1c2915de95074afd9e3a6be93107c421041954a62fad3006"
+    },
+    "f1_hil_20261028T024204Z_ab0a159f": {
+      "split": "train",
+      "reason": "User-confirmed assisted placement; source-bound terminal review",
+      "source_receipt_sha256": "67c0a5549a5ca700615dbec7393a0ff608b441d7588ed3d2e61f9cf42320ed38"
+    },
+    "f1_hil_20261028T031108Z_844ed006": {
+      "split": "validation",
+      "reason": "Human UP confirmed success; development holdout from fresh BC400; prospective evaluation still required",
+      "source_receipt_sha256": "ca921cfe0efc78421807860e47e2bb73b16a986a272cf21c435389318da57cae"
+    }
+  },
+  "future": {
+    "not_before_utc": "20261028T040000Z",
+    "base_model_version": "81444e7071723c1fde8ca397a90f1bdd21868905b51c96252af0c54a3a8669d5",
+    "encoder_manifest_sha256": "227f148959b7f146c94c373a9fa82548faf6066d74a8baebd13481075be473c8",
+    "validation_modulus": 5
+  }
+}

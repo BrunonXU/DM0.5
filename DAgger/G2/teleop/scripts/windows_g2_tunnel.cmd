@@ -8,7 +8,7 @@ if exist "%PROJECT_ROOT%\..\..\docs\G2" for %%I in ("%PROJECT_ROOT%\..\..\artifa
 if not exist "%LOG_DIR%" mkdir "%LOG_DIR%"
 set "SSH_LOG=%LOG_DIR%\windows_tunnel_ssh.log"
 
-set "G2_HOST=10.130.86.13"
+set "G2_HOST=192.0.2.8"
 set "G2_USER=agi"
 set "G2_PORT=7904"
 

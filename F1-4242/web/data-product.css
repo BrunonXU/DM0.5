@@ -1,0 +1,202 @@
+/* Approved desktop data workspace. Keep the shared navigation and topbar intact. */
+body[data-page=data] #main {
+  background:#fff;
+  padding:28px 36px 36px;
+  max-width:none;
+  min-height:calc(100vh - 140px);
+}
+body[data-page=data] #main .data-refinements {
+  --ink:#202123;
+  --muted:#6b6b70;
+  --line:#e8e8eb;
+  --surface:#fff;
+  --green:#216a42;
+  --green-light:#e8f6ed;
+  --orange:#8b5a17;
+  --orange-light:#fff1dc;
+  --red:#b54747;
+  --red-light:#fbeceb;
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  font-size:15px;
+  line-height:1.5;
+  color:var(--ink);
+}
+body[data-page=data] #main .data-refinements :is(h1,h2,h3,button,input,select,textarea) {font-family:inherit}
+body[data-page=data] #main .data-refinements .page-heading {align-items:flex-start;margin-bottom:28px;gap:24px}
+body[data-page=data] #main .data-refinements .page-heading h1 {font-size:28px;font-weight:600;line-height:1.3;letter-spacing:-.4px}
+body[data-page=data] #main .data-refinements .page-heading p {margin-top:8px;font-size:15px;line-height:1.5;color:var(--muted)}
+body[data-page=data] #main .data-refinements .page-heading .eyebrow {display:none}
+body[data-page=data] #main .data-refinements #data-header-actions {display:flex;align-items:center;gap:10px}
+body[data-page=data] #main .data-refinements .button {
+  min-height:38px;
+  border:1px solid transparent;
+  border-radius:20px;
+  padding:8px 15px;
+  background:#f2f2f3;
+  color:var(--ink);
+  font-size:14px;
+  font-weight:400;
+  box-shadow:none;
+}
+body[data-page=data] #main .data-refinements .button:hover:enabled {background:#e9e9eb}
+body[data-page=data] #main .data-refinements .button.primary {background:#202123;border-color:#202123;color:#fff}
+body[data-page=data] #main .data-refinements .button.primary:hover:enabled {background:#3b3c3f}
+body[data-page=data] #main .data-refinements .button.danger {color:#a63b3b;background:#fbefee}
+body[data-page=data] #main .data-refinements .button:disabled {opacity:.42}
+body[data-page=data] #main .data-refinements :is(button,a,input,select,textarea):focus-visible {outline:2px solid #666;outline-offset:3px}
+body[data-page=data] #main .data-refinements .card {background:#fff;border-color:var(--line);box-shadow:none}
+body[data-page=data] #main .data-refinements .card.data-library {padding:0;border:0;border-radius:0;overflow:visible;margin-bottom:28px}
+body[data-page=data] #main .data-refinements .explorer-toolbar {display:none}
+body[data-page=data] #main .data-refinements .data-browse-toolbar {display:flex;align-items:center;justify-content:space-between;gap:24px;margin:0 0 28px}
+body[data-page=data] #main .data-refinements .data-browse-mode {
+  display:inline-flex;
+  align-items:center;
+  flex-wrap:nowrap;
+  flex:none;
+  gap:3px;
+  padding:4px;
+  margin:0;
+  border-radius:15px;
+  background:#f0f0f2;
+}
+body[data-page=data] #main .data-refinements .data-browse-mode .button {min-width:100px;min-height:36px;padding:7px 18px;border-radius:12px;background:transparent;color:#626268}
+body[data-page=data] #main .data-refinements .data-browse-mode [aria-pressed=true] {background:#fff!important;border-color:#e9e9eb!important;color:#202123!important;font-weight:500}
+body[data-page=data] #main .data-refinements .data-folder-search {position:relative;display:block;flex:0 1 380px;min-width:220px;margin:0;font-size:14px}
+body[data-page=data] #main .data-refinements .data-folder-search input {
+  width:100%;max-width:none;min-height:44px;margin:0;
+  padding:11px 17px;border:1px solid transparent;border-radius:16px;
+  background:#f1f1f3;color:var(--ink);font-size:14px;line-height:1.5;
+}
+body[data-page=data] #main .data-refinements .data-folder-search input::placeholder {color:#74747b}
+body[data-page=data] #main .data-refinements .data-folder-search input:focus {background:#fff;border-color:#bcbcc1}
+body[data-page=data] #main .data-refinements .data-folder-search:has(svg) input {padding-left:43px}
+body[data-page=data] #main .data-refinements .data-folder-search>svg {position:absolute;left:16px;top:13px;width:18px;height:18px;color:#737379;pointer-events:none}
+body[data-page=data] #main .data-refinements .data-filter-bar {gap:14px;margin:0 0 24px;grid-template-columns:minmax(220px,1fr) repeat(2,155px)}
+body[data-page=data] #main .data-refinements .data-filter-bar label {font-size:13px;color:var(--muted)}
+body[data-page=data] #main .data-refinements .data-filter-bar :is(input,select) {font-size:14px;min-height:40px;border-radius:14px;border-color:var(--line);background:#fff;padding:9px 13px}
+body[data-page=data] #main .data-refinements .data-filter-bar .data-folder-search input {background:#f1f1f3;border-color:transparent}
+body[data-page=data] #main .data-refinements .data-browser-toolbar {border:0;min-height:36px;gap:12px;padding:0;margin:0 0 22px;align-items:center}
+body[data-page=data] #main .data-refinements .data-breadcrumb {font-size:14px;color:#76767d;gap:6px}
+body[data-page=data] #main .data-refinements .data-breadcrumb .button {background:transparent;border-color:transparent;font-size:14px;padding:6px 8px;min-height:32px;color:#626269}
+body[data-page=data] #main .data-refinements .data-breadcrumb .button:last-child {color:#202123;font-weight:500}
+body[data-page=data] #main .data-refinements .data-library-body {padding-top:0}
+body[data-page=data] #main .data-refinements .data-list-view .data-library-body {display:block}
+body[data-page=data] #main .data-refinements .data-time-view .data-organization-sidebar {display:none}
+body[data-page=data] #main .data-refinements .data-list-view:not(.data-time-view) .data-organization-sidebar {display:grid;grid-template-columns:1fr 1fr;gap:36px;margin-top:30px;padding:24px 0 0;border-left:0;border-top:1px solid var(--line)}
+body[data-page=data] #main .data-refinements .data-library .folder-item {border:1px solid #e8e8eb;background:#fff;border-radius:16px;padding:18px 16px;min-height:102px;gap:4px 14px}
+body[data-page=data] #main .data-refinements .data-library .folder-item:hover {background:#f8f8f9;border-color:#d9d9dd}
+body[data-page=data] #main .data-refinements .data-library .folder-name {font-size:16px;font-weight:500;min-height:0;color:var(--ink)}
+body[data-page=data] #main .data-refinements .data-library .folder-meta {font-size:13px;color:var(--muted)}
+body[data-page=data] #main .data-refinements .data-folder-summary,
+body[data-page=data] #main .data-refinements .rlt-summary {background:#f7f7f8;border-radius:14px;color:#626269;padding:13px 17px;font-size:13px;gap:10px 22px;margin-bottom:18px}
+body[data-page=data] #main .data-refinements .data-folder-summary strong,
+body[data-page=data] #main .data-refinements .rlt-summary strong {color:var(--ink);font-size:15px;font-weight:500}
+body[data-page=data] #main .data-refinements .rlt-filter-bar {gap:6px;margin:0 0 20px}
+body[data-page=data] #main .data-refinements .rlt-filter-bar .button {font-size:13px;padding:6px 13px;min-height:32px;background:transparent}
+body[data-page=data] #main .data-refinements .rlt-filter-bar [aria-pressed=true] {background:#eeeeF0!important;color:#202123!important;border-color:transparent!important;font-weight:500}
+body[data-page=data] #main .data-refinements .recording-list-heading {display:flex;align-items:center;gap:14px;margin:0 0 16px;min-height:40px;flex-wrap:wrap}
+body[data-page=data] #main .data-refinements .recording-list-heading h3 {font-size:19px;font-weight:500;line-height:1.4;letter-spacing:-.15px;margin:0;color:var(--ink)}
+body[data-page=data] #main .data-refinements .recording-list-heading>span {font-size:14px;color:var(--muted)}
+body[data-page=data] #main .data-refinements .recording-list-title {display:flex;align-items:baseline;gap:14px;min-width:0}
+body[data-page=data] #main .data-refinements .recording-list-title>span {font-size:14px;font-weight:400;color:var(--muted)}
+body[data-page=data] #main .data-refinements .recording-list-controls {display:flex;align-items:center;gap:18px;margin-left:auto;font-size:14px;color:#424248}
+body[data-page=data] #main .data-refinements .recording-list-controls label {display:flex;align-items:center;gap:8px}
+body[data-page=data] #main .data-refinements .recording-list-controls select {max-width:185px;min-height:38px;border:1px solid transparent;border-radius:17px;padding:8px 12px;background:#f2f2f3;color:#303035;font-size:14px}
+body[data-page=data] #main .data-refinements .recording-list-controls .recording-sort {white-space:nowrap;color:#515158;font-size:13px}
+body[data-page=data] #main .data-refinements .recording-table-wrap {border:1px solid #e5e5e9;border-radius:19px;background:#fff;overflow:visible}
+body[data-page=data] #main .data-refinements .data-recording-table {width:100%;border:0;border-collapse:separate;border-spacing:0;table-layout:fixed;background:transparent}
+body[data-page=data] #main .data-refinements .recording-col-time {width:26%}
+body[data-page=data] #main .data-refinements .recording-col-source {width:10%}
+body[data-page=data] #main .data-refinements .recording-col-outcome {width:17%}
+body[data-page=data] #main .data-refinements .recording-col-usage {width:17%}
+body[data-page=data] #main .data-refinements .recording-col-notes {width:22%}
+body[data-page=data] #main .data-refinements .recording-col-action {width:8%}
+body[data-page=data] #main .data-refinements .data-recording-table th {
+  padding:14px 12px;border:0;border-bottom:1px solid #e8e8eb;
+  background:#fafafa;color:#424248;font-size:13px;font-weight:500;line-height:1.5;text-align:left;
+}
+body[data-page=data] #main .data-refinements .data-recording-table th:first-child {border-top-left-radius:18px;padding-left:20px}
+body[data-page=data] #main .data-refinements .data-recording-table th:last-child {border-top-right-radius:18px;padding-right:20px}
+body[data-page=data] #main .data-refinements .data-recording-table td {
+  padding:16px 12px;height:84px;border:0;border-bottom:1px solid #ededf0;
+  color:var(--ink);font-size:15px;font-weight:400;line-height:1.5;vertical-align:middle;overflow-wrap:anywhere;
+}
+body[data-page=data] #main .data-refinements .data-recording-table td:first-child {padding-left:20px}
+body[data-page=data] #main .data-refinements .data-recording-table td:last-child {padding-right:18px}
+body[data-page=data] #main .data-refinements .data-recording-table tbody tr:last-child td {border-bottom:0}
+body[data-page=data] #main .data-refinements .data-recording-table tbody tr:last-child td:first-child {border-bottom-left-radius:18px}
+body[data-page=data] #main .data-refinements .data-recording-table tbody tr:last-child td:last-child {border-bottom-right-radius:18px}
+body[data-page=data] #main .data-refinements .data-recording-table tr:hover td {background:#fafafa}
+body[data-page=data] #main .data-refinements .data-recording-table .delete-selected td {background:#f0f1f3}
+body[data-page=data] #main .data-refinements .recording-row-name {gap:13px;min-width:0;align-items:center}
+body[data-page=data] #main .data-refinements .recording-file-icon {width:68px;height:46px;border:0;border-radius:8px;background:#efeff1;color:#8b8b91;flex:none}
+body[data-page=data] #main .data-refinements .recording-file-icon svg {width:20px;height:20px}
+body[data-page=data] #main .data-refinements .recording-row-open {font-size:15px;line-height:1.5;color:var(--ink)}
+body[data-page=data] #main .data-refinements .recording-row-open strong {font-size:15px;font-weight:500;line-height:1.5;color:#29292e;white-space:nowrap;letter-spacing:0;font-variant-numeric:tabular-nums}
+body[data-page=data] #main .data-refinements .recording-row-open small {font-size:13px;font-weight:400;line-height:1.5;color:var(--muted);margin-top:3px}
+body[data-page=data] #main .data-refinements .recording-source {font-size:14px;color:#38383e}
+body[data-page=data] #main .data-refinements .recording-row-check {width:21px;height:21px;border:1px solid #bdbdc3;border-radius:6px}
+body[data-page=data] #main .data-refinements .recording-row-check[aria-checked=true] {background:#29292e;border-color:#29292e;color:#fff}
+body[data-page=data] #main .data-refinements .data-recording-table td .pill {font-size:14px;font-weight:400;line-height:1.4;padding:0;gap:8px;border-radius:16px;background:transparent;color:#303036;white-space:normal}
+body[data-page=data] #main .data-refinements .data-recording-table .pill:before {content:'';display:inline-block;flex:none;width:7px;height:7px;border-radius:50%;background:#9999a0}
+body[data-page=data] #main .data-refinements .data-recording-table .pill.good:before {background:#32975a}
+body[data-page=data] #main .data-refinements .data-recording-table .pill.warn:before {background:#c58b26}
+body[data-page=data] #main .data-refinements .data-recording-table .pill.bad:before {background:#cf6161}
+body[data-page=data] #main .data-refinements .data-recording-table .pill.info:before {background:#5c8ebd}
+body[data-page=data] #main .data-refinements .recording-outcome-detail,
+body[data-page=data] #main .data-refinements .recording-use-detail,
+body[data-page=data] #main .data-refinements .rlt-use-detail {display:block;font-size:13px;font-weight:400;line-height:1.5;color:#6b6b73;margin-top:4px;overflow-wrap:anywhere}
+body[data-page=data] #main .data-refinements .recording-outcome-detail {padding-left:15px}
+body[data-page=data] #main .data-refinements .data-recording-table .recording-usage .pill {background:#f0f0f2;color:#4c4c53;padding:5px 11px;font-size:13px;font-weight:500;line-height:1.3}
+body[data-page=data] #main .data-refinements .data-recording-table .recording-usage .pill:before {display:none}
+body[data-page=data] #main .data-refinements .data-recording-table .recording-usage .pill.good {color:#216a42;background:#e8f6ed}
+body[data-page=data] #main .data-refinements .data-recording-table .recording-usage .pill.warn {color:#875515;background:#fff1dc}
+body[data-page=data] #main .data-refinements .data-recording-table .recording-usage .pill.info {color:#246a9f;background:#eaf3fd}
+body[data-page=data] #main .data-refinements .rlt-recording-meta {font-size:13px;color:var(--muted);margin-top:7px}
+body[data-page=data] #main .data-refinements .rlt-recording-meta .pill {font-size:12px!important}
+body[data-page=data] #main .data-refinements .data-note-trigger {padding:3px 0;gap:8px;line-height:1.6;font-size:14px;color:#3c3c43}
+body[data-page=data] #main .data-refinements .data-note-trigger.empty {color:#77777e}
+body[data-page=data] #main .data-refinements .data-note-summary {display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;white-space:normal;overflow:hidden;overflow-wrap:anywhere}
+body[data-page=data] #main .data-refinements .data-note-pencil {width:13px;height:13px;color:#a0a0a6}
+body[data-page=data] #main .data-refinements .data-note-tooltip {font-size:14px;color:#424248;border-color:#e5e5e9;border-radius:14px;background:#fff;line-height:1.6}
+body[data-page=data] #main .data-refinements .data-recording-table .button {min-height:34px;min-width:64px;padding:7px 13px;border-color:transparent;border-radius:20px;background:#f1f1f3;font-size:13px;line-height:1.4}
+body[data-page=data] #main .data-refinements .data-recording-table .button:hover:enabled {background:#e6e6e9}
+body[data-page=data] #main .data-refinements .rlt-table-boundary {font-size:13px;color:var(--muted);margin-top:15px;line-height:1.6}
+body[data-page=data] #main .data-refinements .data-folder-pagination {font-size:13px;color:var(--muted);margin-top:17px;padding-top:0;border:0;gap:16px}
+body[data-page=data] #main .data-refinements .data-folder-pagination>div {gap:8px}
+body[data-page=data] #main .data-refinements .data-folder-pagination .button {min-height:32px;min-width:32px;padding:6px 10px;border:0;background:transparent;color:#55555e;font-size:13px}
+body[data-page=data] #main .data-refinements .data-folder-pagination .button:hover:enabled {background:#f1f1f3}
+body[data-page=data] #main .data-refinements .data-folder-pagination .button[aria-current=page] {background:#27272b;color:#fff;border-radius:50%}
+body[data-page=data] #main .data-refinements .data-select-actions {display:flex;gap:8px;align-items:center}
+body[data-page=data] #main .data-refinements .data-selection-summary {font-size:14px;color:#55555d;border-color:var(--line);background:#f8f8f9}
+body[data-page=data] #main .data-refinements .data-organization-sidebar {border-color:var(--line)}
+body[data-page=data] #main .data-refinements .data-library .storage-heading h2 {font-size:17px;font-weight:500;color:var(--ink)}
+body[data-page=data] #main .data-refinements .data-library .data-storage {background:transparent}
+body[data-page=data] #main .data-refinements #data-library-view>details.card {border-radius:18px;font-size:14px;padding:19px 22px;color:#5d5d65}
+
+/* Compact desktop workstations retain the same six-column layout. */
+@media (max-width:1450px) {
+  body[data-page=data] #main {padding:24px 26px 32px}
+  body[data-page=data] #main .data-refinements .data-recording-table th {padding:13px 9px}
+  body[data-page=data] #main .data-refinements .data-recording-table td {padding:15px 9px;font-size:14px}
+  body[data-page=data] #main .data-refinements .data-recording-table :is(th,td):first-child {padding-left:16px}
+  body[data-page=data] #main .data-refinements .data-recording-table :is(th,td):last-child {padding-right:14px}
+  body[data-page=data] #main .data-refinements .recording-file-icon {width:56px;height:42px}
+  body[data-page=data] #main .data-refinements .recording-row-name {gap:10px}
+  body[data-page=data] #main .data-refinements .recording-row-open strong {font-size:14px}
+  body[data-page=data] #main .data-refinements .recording-row-open small {font-size:12px}
+  body[data-page=data] #main .data-refinements .data-recording-table td .pill {font-size:13px}
+  body[data-page=data] #main .data-refinements .recording-outcome-detail,
+  body[data-page=data] #main .data-refinements .recording-use-detail,
+  body[data-page=data] #main .data-refinements .rlt-use-detail {font-size:12px}
+  body[data-page=data] #main .data-refinements .data-note-trigger {font-size:13px}
+  body[data-page=data] #main .data-refinements .data-recording-table .button {min-width:56px;padding:7px 10px}
+}
+@media (max-width:1300px) {
+  body[data-page=data] #main {padding:22px 22px 30px}
+  body[data-page=data] #main .data-refinements .data-recording-table td {padding-left:8px;padding-right:8px}
+  body[data-page=data] #main .data-refinements .recording-file-icon {width:50px;height:38px}
+  body[data-page=data] #main .data-refinements .recording-row-name {gap:8px}
+  body[data-page=data] #main .data-refinements .recording-list-controls {gap:12px}
+  body[data-page=data] #main .data-refinements .data-folder-search {flex-basis:320px}
+}

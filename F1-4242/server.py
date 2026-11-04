@@ -5,8 +5,8 @@ import argparse,copy,subprocess,hashlib,http.cookies,json,mimetypes,os,secrets,s
 from http.server import BaseHTTPRequestHandler,ThreadingHTTPServer
 from pathlib import Path
 from core import ActionManager,ControlLease,EventLog,OfflineAdapter,PresetStore,finite,utc
-from control_auth import ControlCode,AuthThrottled
-from data_service import DataService
+from data_service import DataService, ReviewConflict
+from data_organization import OrganizationConflict
 from data_delete import DataDeletion
 from recording_service import RecordingService
 from teleop_service import TeleopService
@@ -17,7 +17,7 @@ from replay_service import ReplayService
 from startup_service import StartupService
 from robot.adapter import ActionRejected
 from preview_service import PreviewService,byte_range
-from project_paths import installation_environment, profile_path, read_profile
+from project_paths import console_allowed_hosts, installation_environment, profile_path, read_profile
 
 ROOT=Path(__file__).resolve().parent
 class App:
@@ -28,7 +28,6 @@ class App:
         self.profile=profile;self.runtime=Path(runtime);self.runtime.mkdir(parents=True,exist_ok=True)
         self.events=EventLog(self.runtime/'events.jsonl');self.presets=PresetStore(self.runtime/'presets.json',profile)
         self.health_cache={};self.health_at=0
-        self.control_code=ControlCode(self.runtime/'control_code.json')
         self.recording=RecordingService(self.runtime,ROOT,offline)
         self.teleop=TeleopService(self.runtime,ROOT,offline)
         self.hil=HILService(self.runtime,offline=offline)
@@ -39,12 +38,6 @@ class App:
         self.data=DataService(profile.get('data_path',str(self.runtime/'raw_data')),self.runtime,self.web_root,extra_catalog=lambda:self.recording.catalog()+self.hil_data.catalog()+self.capture_data.catalog()+self.capture_data.datasets())
         self.preview=PreviewService(self.runtime,self.data,self.recording)
         self.sessions={};self.session_lock=threading.RLock();self.op_lock=threading.RLock();self.closed=threading.Event()
-        self.token_path=self.runtime/'access.token'
-        if not self.token_path.exists():
-            fd=os.open(self.token_path,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
-            with os.fdopen(fd,'w') as f:f.write(secrets.token_urlsafe(24)+'\n')
-        self.token=self.token_path.read_text().strip()
-        if not self.token:raise ValueError('Empty access token')
         self.contract={'ok':False,'scope':'offline_preview'}
         self.adapter=OfflineAdapter('本地开发预览，未连接ROS')
         if not offline:
@@ -138,14 +131,15 @@ class App:
         key=cookies.get('f1_console_session');sid=key.value if key else ''
         with self.session_lock:
             if sid not in self.sessions:
-                sid=secrets.token_urlsafe(24);self.sessions[sid]={'authenticated':False,'created':time.monotonic()}
+                # A browser identity isolates leases; it is not a password gate.
+                sid=secrets.token_urlsafe(24);self.sessions[sid]={'authenticated':True,'created':time.monotonic()}
             return sid,self.sessions[sid]
     def state(self,sid):
         s=self.adapter.snapshot();s.update(robot_id=self.profile['id'],control=self.lease.snapshot(sid),action=self.actions.latest(),authenticated=self.sessions[sid]['authenticated'],capabilities=self.capabilities())
         s['system_health']=self.health();s['services']=s['system_health'].get('services',{})
         s['pico']={'mode':'upper_body_only','start_script':str(Path(installation_environment(self.runtime)['PICO_UPPER_ROOT'])/'start.sh'),'status':'运行中' if s['services'].get('pico_upper',{}).get('running') else '未运行','version':'meaxiao 1.4.4 / upper-v2','commands':{k:str(Path(installation_environment(self.runtime)['PICO_UPPER_ROOT'])/(k+'.sh')) for k in ('check','start','stop')},'reason':'PCService已运行' if s['services'].get('pico_pc_service',{}).get('running') else 'PCService未运行；现场单独启动后再试遥操'}
         s['data']={'local_path':self.profile.get('data_path'),'mode':'isolated_lerobot_upper16','recording_control_enabled':not self.recording.offline,'transfer_configured':False,'review_enabled':True,'message':'LXL原始记录只读；新采集使用独立LeRobot上肢分支，未配置上传'}
-        s['control']['code_configured']=self.control_code.configured()
+        s['control']['password_required']=False
         s['control']['owner_label']=self.sessions.get(self.lease.owner,{}).get('owner') if self.lease.owner else s['control'].get('owner')
         return s
     def capabilities(self):
@@ -191,18 +185,32 @@ class Handler(BaseHTTPRequestHandler):
         try:self.wfile.write(b)
         except (BrokenPipeError,ConnectionResetError):pass
     def send_file(self,path,content_type):
-        size=path.stat().st_size
-        try:start,end,partial=byte_range(self.headers.get('Range'),size)
-        except ValueError:
-            self.send_response(416);self.send_header('Content-Range',f'bytes */{size}');self.send_header('Content-Length','0');self.end_headers();return
-        self.send_response(206 if partial else 200);self.send_header('Content-Type',content_type)
-        length=end-start+1 if size else 0
-        self.send_header('Content-Length',str(length));self.send_header('Accept-Ranges','bytes');self.send_header('Cache-Control','private, no-cache')
-        self.send_header('X-Content-Type-Options','nosniff');self.send_header('X-Frame-Options','DENY')
-        if partial:self.send_header('Content-Range',f'bytes {start}-{end}/{size}')
-        self.end_headers()
+        # Resolve/authorize the source before this method; keep the opened file
+        # stable across replacement so validators and body describe one version.
         with path.open('rb') as source:
-            source.seek(start)
+            stat=os.fstat(source.fileno());size=stat.st_size
+            identity=f'{stat.st_dev}:{stat.st_ino}:{size}:{stat.st_mtime_ns}:{stat.st_ctime_ns}'
+            etag='"'+hashlib.sha256(identity.encode()).hexdigest()+'"'
+            validators={'ETag':etag,'Cache-Control':'private, no-cache','Accept-Ranges':'bytes'}
+            condition=self.headers.get('If-None-Match')
+            if condition and any(tag.strip().removeprefix('W/') in ('*',etag) for tag in condition.split(',')):
+                self.send_response(304)
+                for key,value in validators.items():self.send_header(key,value)
+                self.end_headers();return
+            requested=self.headers.get('Range')
+            # A stale/weak/date If-Range falls back to a full current body. Never
+            # combine bytes from different derived-video versions in the cache.
+            if self.headers.get('If-Range') not in (None,etag):requested=None
+            try:start,end,partial=byte_range(requested,size)
+            except ValueError:
+                self.send_response(416);self.send_header('Content-Range',f'bytes */{size}');self.send_header('Content-Length','0');self.end_headers();return
+            self.send_response(206 if partial else 200);self.send_header('Content-Type',content_type)
+            length=end-start+1 if size else 0
+            self.send_header('Content-Length',str(length))
+            for key,value in validators.items():self.send_header(key,value)
+            self.send_header('X-Content-Type-Options','nosniff');self.send_header('X-Frame-Options','DENY')
+            if partial:self.send_header('Content-Range',f'bytes {start}-{end}/{size}')
+            self.end_headers();source.seek(start)
             try:
                 while length:
                     chunk=source.read(min(length,256*1024))
@@ -218,7 +226,7 @@ class Handler(BaseHTTPRequestHandler):
         if not self.prepare():return
         app=self.server.app;path=urllib.parse.urlsplit(self.path).path
         try:
-            if path=='/api/session':data={'authenticated':self.session_data['authenticated'],'control_code_configured':app.control_code.configured()}
+            if path=='/api/session':data={'authenticated':True,'password_required':False}
             elif path=='/api/robot':data={'robot':dict(app.profile,capabilities=app.capabilities())}
             elif path=='/api/state':data=app.state(self.sid)
             elif path=='/api/replay/review':
@@ -243,6 +251,10 @@ class Handler(BaseHTTPRequestHandler):
                 data={'plan':app.adapter.plan({'kind':'waist_height','delta_m':delta})}
             elif path=='/api/presets':data={'presets':app.presets.all()}
             elif path=='/api/events':data={'events':app.events.list()}
+            elif path=='/api/replay/reports':
+                query=urllib.parse.parse_qs(urllib.parse.urlsplit(self.path).query)
+                if query.get('limit',['1']) != ['1']:raise ValueError('只支持最近一条报告')
+                data={'reports':app.replay.recent(query.get('episode_id',[''])[0])}
             elif path.startswith('/api/replay/reports/'):
                 data={'report':app.replay.report(path.rsplit('/',1)[-1])}
             elif path=='/api/dev/revision':data={'revision':app.revision()}
@@ -278,7 +290,7 @@ class Handler(BaseHTTPRequestHandler):
             elif path in ('/api/data','/api/data/catalog'):data=app.data.catalog()
             elif path=='/api/data/recording':data={'recording':app.data.recording()}
             elif path.startswith('/api/data/episodes/'):data={'episode':app.data.episode(path.rsplit('/',1)[-1])}
-            elif path=='/api/system':data={'robot':app.profile['id'],'version':app.profile['version'],'runtime':str(app.runtime),'data_mode':'isolated_lerobot_upper16','upstream_ui':'http://'+app.profile.get('ip','127.0.0.1')+'/','motion_capabilities':app.capabilities(),'access_script':'./access.sh','hot_reload':True,'contract':app.contract,'ros_distro':'Jazzy','mode':'以本机动作能力检查为准'}
+            elif path=='/api/system':data={'robot':app.profile['id'],'version':app.profile['version'],'runtime':str(app.runtime),'data_mode':'isolated_lerobot_upper16','upstream_ui':'http://'+app.profile.get('ip','127.0.0.1')+'/','motion_capabilities':app.capabilities(),'password_required':False,'hot_reload':True,'contract':app.contract,'ros_distro':'Jazzy','mode':'以本机动作能力检查为准'}
             elif path.startswith('/api/actions/'):data={'action':app.actions.get(path.rsplit('/',1)[-1])}
             elif path.startswith('/api/cameras/') and path.endswith('.jpg'):
                 name=path.rsplit('/',1)[-1][:-4];frame=getattr(app.adapter,'preview_camera',app.adapter.camera)(name)
@@ -304,24 +316,10 @@ class Handler(BaseHTTPRequestHandler):
         except (ValueError,json.JSONDecodeError) as exc:self.send(400,{'ok':False,'error':str(exc)});return
         app=self.server.app;path=urllib.parse.urlsplit(self.path).path
         if path=='/api/login':
-            try:
-                if 'control_code' in body:
-                    valid=app.control_code.verify(body.get('control_code'),self.client_address[0])
-                else:
-                    valid=isinstance(body.get('token'),str) and secrets.compare_digest(body['token'],app.token)
-                if not valid:self.send(401,{'ok':False,'error':'控制码或访问码不正确'});return
-                self.session_data['authenticated']=True
-                self.send(200,{'ok':True,'authenticated':True});return
-            except AuthThrottled as exc:
-                self.send(429,{'ok':False,'error':str(exc),'retry_after_s':exc.retry_after});return
-            except ValueError as exc:
-                self.send(409,{'ok':False,'error':str(exc)});return
-            except Exception:
-                self.send(500,{'ok':False,'error':'认证暂不可用'});return
+            # Compatibility endpoint for existing workers: no credentials required.
+            self.send(200,{'ok':True,'authenticated':True,'password_required':False});return
         if path=='/api/control/acquire':
             try:
-                if not app.control_code.verify(body.get('control_code'),self.client_address[0]):
-                    self.send(401,{'ok':False,'error':'控制码不正确'});return
                 owner=body.get('owner','现场操作者')
                 if not isinstance(owner,str) or not 1<=len(owner.strip())<=80 or any(ord(ch)<32 for ch in owner):
                     raise ValueError('操作者名称须为 1–80 字符')
@@ -330,13 +328,10 @@ class Handler(BaseHTTPRequestHandler):
                     self.session_data.update(authenticated=True,owner=owner.strip())
                     app.events.add('control_acquired','浏览器取得研发控制权',owner=owner.strip())
                 self.send(200,{'ok':True,'authenticated':True,'lease_id':token,'expires_in_s':app.lease.ttl});return
-            except AuthThrottled as exc:
-                self.send(429,{'ok':False,'error':str(exc),'retry_after_s':exc.retry_after});return
             except ValueError as exc:
                 self.send(409,{'ok':False,'error':str(exc)});return
             except Exception:
-                self.send(500,{'ok':False,'error':'控制码验证暂不可用'});return
-        if not self.session_data['authenticated']:self.send(401,{'ok':False,'error':'请先输入控制码取得控制权，或使用本机访问码登录'});return
+                self.send(500,{'ok':False,'error':'控制会话暂不可用'});return
         if path in ('/api/replay/start','/api/replay/align'):
             try:
                 data=app.replay.start(self.sid,body,align=path.endswith('/align'))
@@ -391,17 +386,39 @@ class Handler(BaseHTTPRequestHandler):
                 self.send(200,{'ok':True,'recording':recording})
             except ValueError as exc:self.send(409,{'ok':False,'error':str(exc),'recording':app.recording.state()})
             return
+        if path=='/api/data/organization':
+            try:
+                result=app.data.organization.command(body,lambda:app.data.catalog(refresh=True))
+                app.events.add('data_organization_saved','已保存版本分类',operation=body.get('operation'))
+                self.send(200,{'ok':True,'organization':result})
+            except OrganizationConflict as exc:
+                self.send(409,{'ok':False,'error':str(exc),'code':exc.code,'organization':exc.organization})
+            except (ValueError,TypeError,KeyError) as exc:
+                self.send(400,{'ok':False,'error':str(exc)})
+            except OSError:
+                self.send(500,{'ok':False,'error':'版本目录保存失败，请重新读取核对'})
+            return
         if path=='/api/data/delete':
             try:
                 result=app.data_delete.delete(body,self.session_data.get('owner','已登录操作者'))
                 self.send(200,result)
             except (ValueError,OSError) as exc:self.send(409,{'ok':False,'error':str(exc)})
             return
+        if path=='/api/data/notes':
+            try:
+                row=app.data.save_notes(body.get('episode_id'),body.get('notes',''),self.session_data.get('owner','已登录操作者'),body.get('expected_source_signature'),body.get('expected_review_revision'))
+                app.events.add('data_notes_saved','已保存录制备注',episode_id=row['episode_id'])
+                self.send(200,{'ok':True,'review':row})
+            except ReviewConflict as exc:self.send(409,{'ok':False,'error':str(exc),'code':exc.code,'review':exc.review})
+            except ValueError as exc:self.send(400,{'ok':False,'error':str(exc)})
+            except Exception as exc:self.send(500,{'ok':False,'error':str(exc)})
+            return
         if path=='/api/data/reviews':
             try:
-                row=app.data.save_review(body.get('episode_id'),body.get('status'),body.get('notes',''),self.session_data.get('owner','已登录操作者'),body.get('expected_source_signature'))
+                row=app.data.save_review(body.get('episode_id'),body.get('status'),body.get('notes',''),self.session_data.get('owner','已登录操作者'),body.get('expected_source_signature'),body.get('expected_review_revision'))
                 app.events.add('data_review_saved','已保存独立数据审核',episode_id=row['episode_id'],status=row['status'])
                 self.send(200,{'ok':True,'review':row})
+            except ReviewConflict as exc:self.send(409,{'ok':False,'error':str(exc),'code':exc.code,'review':exc.review})
             except ValueError as exc:self.send(409,{'ok':False,'error':str(exc)})
             except Exception as exc:self.send(500,{'ok':False,'error':str(exc)})
             return
@@ -415,7 +432,7 @@ class Handler(BaseHTTPRequestHandler):
                 elif path=='/api/logout':
                     app.replay.invalidate(self.sid)
                     if app.lease.owner==self.sid:app.lease.stopping=True;app.actions.stop()
-                    self.session_data['authenticated']=False;data={'authenticated':False}
+                    data={'authenticated':True,'password_required':False}
                 elif path in ('/api/control/heartbeat','/api/control/release','/api/stop'):
                     app.lease.require(self.sid,body.get('lease_id'),renew=path.endswith('heartbeat'))
                     if path.endswith('heartbeat'):data={'expires_in_s':app.lease.ttl}
@@ -468,11 +485,11 @@ def main():
         ros_logs.mkdir(parents=True,exist_ok=True)
         os.environ['ROS_LOG_DIR']=str(ros_logs)
     app=App(profile,args.runtime,args.control_lock,args.offline,args.web_root)
-    allowed=[f'{h}:{args.port}' for h in ('127.0.0.1','localhost',profile['ip'])]
+    allowed=console_allowed_hosts(profile,args.port)
     server=Server((args.host,args.port),app,allowed)
     def terminate(*_):threading.Thread(target=server.shutdown,daemon=True).start()
     signal.signal(signal.SIGTERM,terminate);signal.signal(signal.SIGINT,terminate)
-    print(f'F1 console serving on port {args.port}; state-only until explicit authenticated request',flush=True)
+    print(f'F1 console serving on port {args.port}; state-only until an explicit operator request',flush=True)
     try:server.serve_forever(poll_interval=.2)
     finally:app.close();server.server_close()
 if __name__=='__main__':main()

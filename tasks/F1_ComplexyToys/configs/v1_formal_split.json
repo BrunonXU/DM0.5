@@ -1,0 +1,69 @@
+{
+  "schema": "f1_episode_split_v1",
+  "status": "frozen_for_authorized_training",
+  "method": "chronological list positions 3,8,13 held out; episode isolation, same task/object, not independent collection sessions",
+  "train": [
+    {
+      "episode": "f1_hil_20261014T091553Z_88a4ad17",
+      "manifest_sha256": "2d4ba160e2c47360f12ede61e65c6ef7a800b6c468ce0b92194c8936f1901a04"
+    },
+    {
+      "episode": "f1_hil_20261016T024951Z_b2e7b6ad",
+      "manifest_sha256": "50a6e544cfa3b26e4725f7038c51787cd45f4027d3b8fb36f9c8d267eaaf8787"
+    },
+    {
+      "episode": "f1_hil_20261016T053019Z_a8f084d1",
+      "manifest_sha256": "f6690da0e3a31a1c7cc735a24e07510cee6aaff4baa3ae69fc146873b6092a1a"
+    },
+    {
+      "episode": "f1_hil_20261016T053124Z_718bf641",
+      "manifest_sha256": "033b2ee647b25b1ffd40b4eba89581d61815570b52da48d36f012ee38486889f"
+    },
+    {
+      "episode": "f1_hil_20261016T053209Z_412d3d05",
+      "manifest_sha256": "fd7bc2c27682e1674de9273bc19ee0ec98cc85bd702c9fa9f221d9203955e3b0"
+    },
+    {
+      "episode": "f1_hil_20261016T055209Z_d20afd61",
+      "manifest_sha256": "bde73fa15912406ae6c4e02d3960368abb2bcc507cef6f2843074a283a0ad6c6"
+    },
+    {
+      "episode": "f1_hil_20261016T055332Z_c5df8cbb",
+      "manifest_sha256": "f532020b0f3deaef6843c43973b93a3f55da5e5508f29c227de5a2a634f3e3fe"
+    },
+    {
+      "episode": "f1_hil_20261016T055423Z_08a49364",
+      "manifest_sha256": "1ed9400845f9f395e793da0ca48949d2dbe65d71273ceedb3da82ce564357005"
+    },
+    {
+      "episode": "f1_hil_20261016T055457Z_65e6693a",
+      "manifest_sha256": "3f28eee5b0e658a4bde0ebe3d1cb2182d70d5a130fa92b2963df41c9ee0b44c8"
+    },
+    {
+      "episode": "f1_hil_20261016T055541Z_b7be55ac",
+      "manifest_sha256": "ff6b55e18ea5d092f291df725ba1b7694e7b787b21ba9435ac73373284944785"
+    },
+    {
+      "episode": "f1_hil_20261016T055657Z_1bf7acf4",
+      "manifest_sha256": "74464166bea0de9b4e05230eb52f1612f0896352be4133b3e5e87db961a619fa"
+    },
+    {
+      "episode": "f1_hil_20261016T055737Z_fa14b5c2",
+      "manifest_sha256": "8c5a9f6c637b3ec7349d7e50babdaaa043655240a5a80075b452284d37cc9a6e"
+    }
+  ],
+  "validation": [
+    {
+      "episode": "f1_hil_20261016T031632Z_e36e25f9",
+      "manifest_sha256": "dff661c1999689625bc36ac593c03c88b7fc1db697e5c37b87e5b72c3a8e95ec"
+    },
+    {
+      "episode": "f1_hil_20261016T055255Z_dd1a0b90",
+      "manifest_sha256": "fe997267685a3101fab9f8b1fb18b24b993c848747db88d1562e61b263b5ed07"
+    },
+    {
+      "episode": "f1_hil_20261016T055624Z_bc330ec8",
+      "manifest_sha256": "9a191deeca839455972f0658583fea775615d5ea33cc4179e7991d5cb9354188"
+    }
+  ]
+}

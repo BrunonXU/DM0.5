@@ -47,7 +47,7 @@ arms-only真机日志已经证明，剩余的1--2次“回退”不是C0/C1接�
 ## 2. 当前约400--500ms从哪里来
 
 证据日志：
-`/home/agi/xza/DM0.5/logs/telemetry/powered/`
+`/home/user/xza/DM0.5/logs/telemetry/powered/`
 `g2_powered_rtc_arms_only_10s_20260820_154052.jsonl`，11个请求。
 
 | 阶段 | mean | P50 | P95 | 说明 |
@@ -274,7 +274,7 @@ mean为135.71ms。容器无重启，30次均返回HTTP 200；7893 RTC容器身�
 无长尾编译。
 
 随后从G2运行30请求Shadow，使用真实在线三路相机和状态、零硬件动作，日志为：
-`/home/agi/xza/DM0.5/logs/telemetry/shadow/g2_shadow_20260820_170208.jsonl`。
+`/home/user/xza/DM0.5/logs/telemetry/shadow/g2_shadow_20260820_170208.jsonl`。
 30/30成功、零timeout，端到端P50/P95/max约为330/365/378ms，未出现19秒尖峰。
 因此5步eager通过网络与在线输入门；Powered仍应先从有限10秒开始，不直接continuous。
 

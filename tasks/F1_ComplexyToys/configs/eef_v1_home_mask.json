@@ -1,0 +1,71 @@
+{
+  "schema": "f1_toys_eef_contract_v2",
+  "contract": "f1_upper_16d_v1",
+  "head_resolution": [
+    1280,
+    720
+  ],
+  "head_roi_xyxy_normalized": [
+    0.24,
+    0.04,
+    0.96,
+    1.0
+  ],
+  "roi_basis": "User-selected A after historical review 20261016",
+  "image_size": 224,
+  "cameras": [
+    "head",
+    "left_wrist",
+    "right_wrist"
+  ],
+  "active_action_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "state_dim": 16,
+  "model_action_dim": 32,
+  "fps": 30,
+  "horizon": 50,
+  "max_token_len": 200,
+  "train_image_augmentation": true,
+  "mask_inactive_action_inputs": true,
+  "prompt": "Use the right gripper to pick up the wooden block, insert it into the matching opening of the container, release it, and return the right arm to the starting pose with the gripper open.",
+  "prompt_status": "User requested learned automatic V1 Home on 2026-10-20; new candidate only, not deployed.",
+  "normalization": "state physical/minmax; delta xyz mean/std; rotation6D identity; gripper fixed",
+  "left_output": "inherit controller last valid submitted target; never zero HAL targets",
+  "action_semantics": "inv(FK(current raw feedback)) @ FK(submitted future action); fixed anchor H50",
+  "kinematics_sha256": "ce20b1a80974c3ed58cdac4973152625096c8ad93a779e5fd4108c26ce19bd52",
+  "rotation6d": "first_two_matrix_rows",
+  "augmentation": {
+    "head": [
+      "area95pct_square_p0.5",
+      "rotate2deg_p0.5",
+      "color_p0.5"
+    ],
+    "wrists": [
+      "color_p0.5"
+    ]
+  },
+  "supervision_authorization": "User authorized Home and partial-window preprocessing; training awaits final recipe confirmation.",
+  "temporal_supervision": {
+    "version": 1,
+    "valid_steps": "contiguous actual published prefix, 1..50",
+    "padding": "zero storage only; excluded from noise, attention keys/queries and loss",
+    "loss_reduction": "mean over valid timesteps per anchor, then mean over anchors",
+    "statistics": "train only, valid timesteps only"
+  },
+  "home_supervision": {
+    "preset": "积木demo-V1",
+    "require_feedback_completion": true,
+    "review_sha256": "ee328ce919e38adb8265460fb7cf969c4210afbac4067039a8efe61bc0b3ddd1",
+    "goal": "right EEF return plus open right gripper; not exact redundant joint posture"
+  }
+}

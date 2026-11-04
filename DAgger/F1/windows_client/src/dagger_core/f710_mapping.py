@@ -58,6 +58,13 @@ class MappedIntent:
     home_reset: bool = False
     hil_toggle_id: int = 0
     hil_button_pressed: bool = False
+    episode_end_id: int | None = None
+    episode_end_pressed: bool | None = None
+    policy_switch_id: int | None = None
+    policy_switch_pressed: bool | None = None
+    operator_protocol: str | None = None
+    home_end_id: int | None = None
+    local_result: str | None = None
 
 
 class F710Mapper:

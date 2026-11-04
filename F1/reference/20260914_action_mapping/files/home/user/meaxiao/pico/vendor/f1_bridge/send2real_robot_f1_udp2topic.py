@@ -32,7 +32,7 @@ LOCAL_IP = ip_config.local_ip
 UDP_PORT = ip_config.port1
 
 # ========================== 配置 ==========================
-# LOCAL_IP = "192.168.2.101"   # ← 确认这是你当前的 IP
+# LOCAL_IP = "192.0.2.13"   # ← 确认这是你当前的 IP
 # UDP_PORT = 8888
 
 

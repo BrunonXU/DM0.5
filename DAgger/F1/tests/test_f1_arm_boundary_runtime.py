@@ -144,7 +144,7 @@ def test_true_disconnect_after_boundary_never_auto_recovers_on_reverse():
         now[0]+=20_000_000
         loop.step(now[0],disconnected='operator_disconnected')
         assert e.supervisor.state is HILState.SAFE_HOLD
-        assert e.supervisor.hold_reason == 'operator_disconnected'
+        assert e.supervisor.hold_reason == 'input_wait_reconnect'
         loop.arm.target=lambda p,f,last,dt:np.r_[last[0]-.1,last[1:]]
         step(3,1,deadman=True,axes=(-.5,0.,0.))
         assert e.supervisor.state is HILState.SAFE_HOLD
@@ -152,8 +152,23 @@ def test_true_disconnect_after_boundary_never_auto_recovers_on_reverse():
         step(4,1,deadman=False)
         assert e.supervisor.state is HILState.SAFE_HOLD
         step(5,2,deadman=False)
+        assert e.supervisor.state is HILState.SAFE_HOLD
+        # A closed sender session, including its START, cannot authorize motion.
+        # A replacement session must establish a new baseline and fresh proof.
+        from f1dagger.input_recovery import RecoveryChallenges
+        proofs=RecoveryChallenges()
+        e.recovery_proof=proofs.age
+        e.source.feedback=lambda:(np.zeros(22),np.zeros(16),(now[0],)*16)
+        o.source.feedback=lambda:(np.zeros(22),o.last_submitted.copy(),(now[0],)*16)
+        step(0,2,session_id='replacement')
+        proof=proofs.issue('replacement',now[0]+1)
+        step(1,2,session_id='replacement',controls_neutral=True,recovery_token=proof)
+        assert e.supervisor.state is HILState.SAFE_HOLD
+        proof=proofs.issue('replacement',now[0]+1)
+        step(2,2,session_id='replacement',deadman=True,axes=(-.5,0.,0.),recovery_token=proof)
         assert e.supervisor.state is HILState.HIL_LATCHED
-        step(6,2,deadman=True,axes=(-.5,0.,0.))
+        assert records[-1]['source'] == 'input_recovery_anchor'
+        step(3,2,session_id='replacement',deadman=True,axes=(-.5,0.,0.),recovery_token=proof)
         assert o.last_submitted[0] == -.1
     finally:
         e.close()
@@ -169,9 +184,10 @@ def test_slow_boundary_processing_still_triggers_real_dispatch_watchdog():
         loop.arm.target=boundary
         step(2,1,deadman=True)
         assert e.supervisor.state is HILState.SAFE_HOLD
-        assert e.supervisor.hold_reason == 'operator_watchdog_before_publication'
+        assert e.supervisor.hold_reason == 'input_wait_release_rb'
+        assert e.input_pause is not None
         assert o.last_submitted[0] == 0.
-        assert records[-1]['source'] == 'hold'
+        assert records[-1]['source'] == 'input_pause_hold'
     finally:
         e.close()
 
@@ -186,7 +202,8 @@ def test_input_expiry_while_at_boundary_keeps_watchdog_fault_latched():
         now[0]+=210_000_000
         loop.step(now[0])
         assert e.supervisor.state is HILState.SAFE_HOLD
-        assert e.supervisor.hold_reason == 'operator_watchdog'
+        assert e.supervisor.hold_reason == 'input_wait_release_rb'
+        assert e.input_pause is not None
         step(3,1,deadman=True,axes=(-.5,0.,0.))
         assert e.supervisor.state is HILState.SAFE_HOLD
         assert o.last_submitted[0] == 0.

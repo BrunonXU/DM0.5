@@ -29,8 +29,8 @@ from g2dagger.real_observation_source import TimestampedG2Source
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--client-root", type=Path, default=Path("/home/agi/xza/DM0.5"))
-    parser.add_argument("--endpoint", default="ws://10.130.153.114:7892/process_frame")
+    parser.add_argument("--client-root", type=Path, default=Path("/home/user/xza/DM0.5"))
+    parser.add_argument("--endpoint", default="ws://192.0.2.1:7892/process_frame")
     parser.add_argument("--output", type=Path)
     parser.add_argument("--mode", choices=("inference-only", "hil-record", "prebuffer-record"), default="prebuffer-record")
     parser.add_argument("--capture-hz", type=float, default=10.)

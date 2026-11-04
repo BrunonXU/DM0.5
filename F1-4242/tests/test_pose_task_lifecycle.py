@@ -34,7 +34,7 @@ def test_long_task_keeps_lock_until_output_stops_and_never_resumes(http_app, mon
 
     monkeypatch.setattr(app.adapter, 'execute', execute)
     _, _, cookie = request('/api/session')
-    _, auth, cookie = request('/api/control/acquire', {'control_code':'fixture-control-code'}, cookie)
+    _, auth, cookie = request('/api/control/acquire', {}, cookie)
     lease = auth['lease_id']
     spec = {'kind':'pose', 'targets':{'body_j3':-5, 'head_j2':0}, 'lease_id':lease}
     external = ControlLease(app.lease.path)

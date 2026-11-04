@@ -96,7 +96,7 @@ JSONL，使用ffprobe核对帧数并完整解码。原始图像与timestamp side
 以下命令不导入GDK；每次选择新的输出目录，已有文件拒绝覆盖：
 
 ```bash
-cd /home/agi/xza/G2Teleop
+cd /home/user/xza/G2Teleop
 PYTHONPATH=src python3 scripts/33_hil_mock_episode.py /tmp/hil_new --recording-mode prebuffer-record
 PYTHONPATH=src python3 scripts/34_audit_hil_episode.py /tmp/hil_new --payload-dir /tmp/hil_new_payload
 PYTHONPATH=src python3 scripts/35_recording_sink_mock.py /tmp/prebuffer_new
@@ -111,7 +111,7 @@ changed-only手意图的执行语义交接；视频、三路时间戳、34D反�
 
 ## G2同步与纯逻辑复核
 
-本轮20个明确文件已直接scp至`agi@10.130.86.13:/home/agi/xza/G2Teleop`（随后两个时间顺序文件
+本轮20个明确文件已直接scp至`agi@192.0.2.8:/home/user/xza/G2Teleop`（随后两个时间顺序文件
 同步最终修正版）；未同步任何Powered控制入口。G2 Python 3.12.3纯逻辑回归**31 passed**，
 33预录Mock和34 journal/payload关联审计均通过。远端输出在`/tmp/hil_recording_20260907_final`
 与`/tmp/hil_recording_20260907_final_payload`，本地完整终端证据为

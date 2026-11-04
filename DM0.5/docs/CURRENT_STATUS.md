@@ -27,7 +27,7 @@ related: [robot/G2_SMOOTH_TELEOP_ROOT_CAUSE_AND_NEXT_STEPS.md, robot/G2_DM05_CON
 - 每个100Hz控制tick顺序调用两次 `Robot.joint_servo_control(..., enable_low_latency=False)`：左臂7D+左手10D、右臂7D+右手10D。手名按动态反馈顺序配对，trim后校验已知关节集合，再作为Servo发送名；原始反馈名写日志。右食指尾空格已被运动控制端证实拒绝，禁止继续原样发送。不使用连续 `move_ee_pos`，不使用手部changed-only/deadband/preview。
 - 模型仍输出30Hz语义的50×34绝对关节目标；Sync执行前20点约0.667秒，然后重新观测推理。手部线性插值到100Hz；仍有120ms边界融合和物理位置裁剪。双臂保留jerk weight 10、C2 spline、3.5mrad minimum-jerk候选。因此没有改权重，但不是“所有后处理清零”或“50点全部执行”；任务成功率是否保持尚无严格A/B结论。
 - Control进程唯一拥有Robot，Policy进程唯一拥有Camera/图像/网络，以34D shared-memory state ring交换状态；不得增加第二个Robot owner。
-- 已记录的服务布局：Sync GPU7/7892、RTC GPU3/7893，服务器10.130.153.114；native JPEG/PNG binary WebSocket、75K、5步Euler、fixed-prefix compile。部署记录不是当前存活证明。
+- 已记录的服务布局：Sync GPU7/7892、RTC GPU3/7893，服务器192.0.2.1；native JPEG/PNG binary WebSocket、75K、5步Euler、fixed-prefix compile。部署记录不是当前存活证明。
 - 完整证据和SDK链接见[根因主文档](robot/G2_SMOOTH_TELEOP_ROOT_CAUSE_AND_NEXT_STEPS.md)。旧频率/preview/滤波研究仍有历史价值，但“手部只能10Hz、20/30/50Hz均不可用”不能跨接口套用到100Hz Servo。
 
 ## 已验证与不能声称的部分

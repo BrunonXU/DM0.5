@@ -1,5 +1,5 @@
 {
-  "robot_url": "http://192.168.31.58:4242",
+  "robot_url": "http://192.0.2.3:4242",
   "access_token_file": "/etc/f1-hil-worker/f1-09.access-token",
   "cache": "/srv/f1-hil-video/f1-09"
 }

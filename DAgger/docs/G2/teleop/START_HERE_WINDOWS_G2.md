@@ -21,7 +21,7 @@ cd "$HOME\G2Teleop"
 **终端 3 · G2 本机现场终端：**
 
 ```bash
-cd /home/agi/xza/G2Teleop
+cd /home/user/xza/G2Teleop
 bash scripts/12_g2_powered_f710.sh
 ```
 
@@ -49,7 +49,7 @@ bash scripts/12_g2_powered_f710.sh
 `04_windows_g2_tunnel.ps1`。已验证的 Python 固定为：
 
 ```text
-C:\Users\100850113\.venv\Scripts\python.exe
+C:\Users\user\.venv\Scripts\python.exe
 ```
 
 ## 启动顺序
@@ -67,7 +67,7 @@ C:\Users\100850113\.venv\Scripts\python.exe
 
 ```powershell
 cd $HOME\G2Teleop
-scp agi@10.130.86.13:/home/agi/xza/G2Teleop/scripts/02_windows_f710_buttons_readonly.py .\scripts\
+scp agi@192.0.2.8:/home/user/xza/G2Teleop/scripts/02_windows_f710_buttons_readonly.py .\scripts\
 & "$HOME\.venv\Scripts\python.exe" scripts\02_windows_f710_buttons_readonly.py
 ```
 
@@ -168,7 +168,7 @@ Ruckig OTG已完成Shadow和第一次Powered实验，但第一次Powered仍明�
 Pink/OTG lag HOLD，因此尚未成为默认基线。第一次同步代码到G2后只需安装一次：
 
 ```bash
-cd /home/agi/xza/G2Teleop
+cd /home/user/xza/G2Teleop
 bash scripts/16_install_ruckig_g2.sh
 ```
 
@@ -177,7 +177,7 @@ wheel，因此会在本机源码构建；默认清华PyPI源，不使用sudo。�
 `Ruckig 0.19.4 G2 smoke PASS`。随后先运行100Hz零输出Shadow：
 
 ```bash
-cd /home/agi/xza/G2Teleop
+cd /home/user/xza/G2Teleop
 bash scripts/17_g2_ruckig_otg_shadow.sh
 ```
 
@@ -191,7 +191,7 @@ Ruckig输出与acceleration/jerk约束利用率，不会伪装成Powered数据�
 普通`bash scripts/12_g2_powered_f710.sh`仍运行无OTG基线；旧的实验OTG入口必须显式写：
 
 ```bash
-cd /home/agi/xza/G2Teleop
+cd /home/user/xza/G2Teleop
 bash scripts/12_g2_powered_f710.sh --enable-ruckig-otg
 ```
 
@@ -208,7 +208,7 @@ bash scripts/12_g2_powered_f710.sh --enable-ruckig-otg
 同一Home下先A后B，每轮结束都回Home：
 
 ```bash
-cd /home/agi/xza/G2Teleop
+cd /home/user/xza/G2Teleop
 
 # A：无OTG
 bash scripts/18_g2_powered_f710_timing_ab.sh direct
@@ -225,7 +225,7 @@ bash scripts/18_g2_powered_f710_timing_ab.sh otg
 Powered receiver。在 G2 本机执行：
 
 ```bash
-cd /home/agi/xza/G2Teleop
+cd /home/user/xza/G2Teleop
 bash scripts/12_g2_powered_f710.sh
 ```
 
@@ -252,7 +252,7 @@ Powered receiver 的硬边界：
 - O10反馈非零时使用严格反馈；反馈全零时只允许使用6小时内、schema/来源/关节顺序/限位
   全部通过校验的DM0.5最后成功`move_ee_pos`命令作为HOLD。唯一年龄豁免是：过期记录的20D
   必须与人工批准Home逐值完全相同；普通旧抓握命令仍拒绝，并提示执行
-  `cd /home/agi/xza/DM0.5 && bash scripts/03_reset_home.sh --execute`。
+  `cd /home/user/xza/DM0.5 && bash scripts/03_reset_home.sh --execute`。
 
 Powered启动默认低速4cm/s、10deg/s；A单击在1/2倍速度切换，松开A不切回。
 20cm/20度为rolling envelope的单段积分包络，越界前同tick连续rebase，正常持续运动无需松RB。
@@ -269,10 +269,10 @@ RB期间或与RB同帧的十字键选择被丢弃，不会延迟应用。
 打印的主日志路径在G2重试：
 
 ```bash
-cd /home/agi/xza/G2Teleop
+cd /home/user/xza/G2Teleop
 bash scripts/13_g2_push_telemetry.sh \
-  --main /home/agi/xza/DM0.5/logs/telemetry/powered/g2_powered_f710_YYYYMMDD_HHMMSS.jsonl \
-  --feedback /home/agi/xza/DM0.5/logs/telemetry/feedback/g2_powered_f710_YYYYMMDD_HHMMSS.jsonl
+  --main /home/user/xza/DM0.5/logs/telemetry/powered/g2_powered_f710_YYYYMMDD_HHMMSS.jsonl \
+  --feedback /home/user/xza/DM0.5/logs/telemetry/feedback/g2_powered_f710_YYYYMMDD_HHMMSS.jsonl
 ```
 
 2026-09-01已修复长反馈日志在Ctrl-C封口时的64KB尾部边界缺陷：尾读若从JSONL记录中间开始，

@@ -88,7 +88,7 @@ base与腰部，不能只把14D手臂塞进完整模型。`scripts/06_export_h5_
 明确授权，现已传入G2：
 
 ```text
-/home/agi/xza/G2Teleop/data_staging/dm05_fk_samples_3ep_75.json
+/home/user/xza/G2Teleop/data_staging/dm05_fk_samples_3ep_75.json
 sha256 d11f1315469229d859809339d9290cd466aa7e42af732b17cce143069d42ce77
 ```
 
@@ -157,7 +157,7 @@ solver         proxqp
 G2没有`ensurepip/python3.12-venv`，禁止为此安装APT包。实际部署使用：
 
 ```text
-/home/agi/xza/G2Teleop/vendor_ik
+/home/user/xza/G2Teleop/vendor_ik
 ```
 
 `pip --target --no-deps`只安装Pink、qpsolvers、ARM64 ProxQP及两个纯Python辅助包；运行时用
@@ -175,7 +175,7 @@ G2没有`ensurepip/python3.12-venv`，禁止为此安装APT包。实际部署使
 严格全量报告位于G2：
 
 ```text
-/home/agi/xza/G2Teleop/logs/pink_ik_replay_sorting_all50_strict.json
+/home/user/xza/G2Teleop/logs/pink_ik_replay_sorting_all50_strict.json
 rows_sha256 175c06db6eb047c2539dd5fff8d9aa334896a06e12ce73dcd5bf40795240264e
 ```
 

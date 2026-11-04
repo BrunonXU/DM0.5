@@ -1,0 +1,25 @@
+{
+  "schema": "f1_anchor_action_index_config_v1",
+  "fps": 30,
+  "horizon": 50,
+  "required_cameras": [
+    "head",
+    "left_wrist",
+    "right_wrist"
+  ],
+  "max_observation_age_ns": 50000000,
+  "max_camera_age_ns": 200000000,
+  "max_state_age_ns": 250000000,
+  "max_command_age_ns": 50000000,
+  "max_control_gap_ns": 50000000,
+  "metadata": {
+    "purpose": "V1 completed Home plus valid-prefix supervision; final training recipe pending",
+    "alignment": "host monotonic availability/receipt; not exposure synchronization",
+    "threshold_status": "Existing explicit baseline, independent of FPS; not optimized task thresholds",
+    "future_images_required": false,
+    "action_source": "latest completed valid publication, never measured feedback",
+    "padding": "Contiguous real prefix only; masked tail never supplies labels"
+  },
+  "allow_partial_windows": true,
+  "min_action_steps": 1
+}

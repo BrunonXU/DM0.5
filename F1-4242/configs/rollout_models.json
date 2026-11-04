@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "models": {
+    "f1-toys-eef-453c88a3fbb1dcb7": {
+      "label": "V1_LoRA_2000"
+    },
+    "f1-toys-eef-ff1263050a8b6846": {
+      "label": "V1_LoRA_5000"
+    },
+    "f1-toys-eef-4a2043b6ea09823f": {
+      "label": "V1_LoRA_14000"
+    },
+    "f1-toys-eef-1d55a3e0017742b0": {
+      "label": "V1_LoRA_50000"
+    },
+    "f1-toys-eef-ce9519bdcf13e9e9": {
+      "label": "单条样本_LoRA_1000"
+    },
+    "f1-toys-eef-42f3a7078d8d4fbb": {
+      "label": "V1_FullSFT_250"
+    },
+    "f1-toys-eef-9a66d2024a181fd4": {
+      "label": "V1_FullSFT_625"
+    },
+    "f1-toys-eef-efe3e5fa54ed0fb2": {
+      "label": "V1_FullSFT_1000"
+    },
+    "f1-toys-eef-e312de43fa3875a8": {
+      "label": "V1_FullSFT_1500"
+    },
+    "f1-toys-eef-56f4e837c8ffd7e3": {
+      "label": "V1_FullSFT_2000"
+    },
+    "f1-toys-eef-3e8111bc7dc01f9c": {
+      "label": "V1_LoRA_3500"
+    },
+    "f1-toys-eef-57e4ff0c3f5e76f1": {
+      "label": "V1_LoRA_7000"
+    },
+    "f1-toys-eef-a3f21700f05dc241": {
+      "label": "V1_LoRA_1500"
+    },
+    "f1-toys-eef-df812740bc427fa5": {
+      "label": "V1_LoRA_4500"
+    },
+    "f1-toys-eef-f6ff34e26314ea58": {
+      "label": "V1_LoRA_500"
+    },
+    "f1-toys-eef-ebbb86ffeb489620": {
+      "label": "V1_DAgger_RightOnly_FullSFT_250"
+    },
+    "f1-toys-eef-9ce9cf15b4cb2327": {
+      "label": "V1_DAgger_RightOnly_FullSFT_500"
+    },
+    "f1-toys-eef-53f6b3bc6f26c96c": {
+      "label": "V1_DAgger_RightOnly_FullSFT_625"
+    },
+    "f1-toys-eef-0ff87ec17ddfae2e": {
+      "label": "V1_DAgger_RightOnly_FullSFT_1000"
+    },
+    "f1-toys-eef-ede2bbb7c49d30ed": {
+      "label": "V1_DAgger_StageSampling_A_1250"
+    },
+    "f1-toys-eef-81444e7071723c1f": {
+      "label": "V1_DAgger_StageSampling_B_1250"
+    }
+  },
+  "legacy_evaluations": [
+    "f1_hil_20261016T042636Z_01879e54"
+  ]
+}

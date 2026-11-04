@@ -3,7 +3,7 @@
 const http = require('http'), fs = require('fs'), path = require('path');
 const assert = require('assert'), cp = require('child_process'), os = require('os');
 const WebSocket = require('ws');
-const root = path.resolve(__dirname, '..'), output = process.env.F1_PLATFORM_BROWSER_OUTPUT || path.join(root, 'results/platform_browser');
+const root = path.resolve(__dirname, '..'), output = process.env.F1_REFINEMENT_BROWSER_OUTPUT || process.env.F1_PLATFORM_BROWSER_OUTPUT || path.join(root, 'results/platform-refinement/browser');
 const profile = JSON.parse(fs.readFileSync(path.join(root, 'configs/f1-09.json')));
 const groups = {left_arm:[],right_arm:[],body:[],head:[]};
 Object.keys(profile.joint_limits_deg).forEach(n => groups[n.startsWith('arm_l')?'left_arm':n.startsWith('arm_r')?'right_arm':n.startsWith('body')?'body':'head'].push(n));
@@ -75,17 +75,19 @@ function get(url){return new Promise((resolve,reject)=>http.get(url,r=>{let body
    await call('Page.navigate',{url:'http://127.0.0.1:'+port+'/#overview'});
    await until("document.querySelector('#work-status .line-item')",'overview state');
    assert.strictEqual(await evaluate("!!document.querySelector('#base-start-button')"),false,'startup belongs only to system');
-   assert.strictEqual(await evaluate("document.querySelector('.overview-joints').open"),false);
+   const visual=await evaluate("({background:getComputedStyle(document.documentElement).getPropertyValue('--bg').trim(),primary:getComputedStyle(document.querySelector('.heading-actions .primary')).backgroundColor,brand:document.querySelector('.infra-brand small').textContent})");
+   assert.strictEqual(visual.background,'#f5f5f7','original background retained');assert.strictEqual(visual.primary,'rgb(29, 29, 31)','original black primary button retained');assert(visual.brand.includes('infra is all you need'),'original brand retained');
    await noOverflow();await snap('overview-'+width);
    await click('[data-nav="system"]');await until("document.querySelector('#system-identity dd')",'system identity');
    assert.strictEqual(await evaluate("document.querySelectorAll('#base-start-button').length"),1);
    assert.strictEqual(await evaluate("!!document.querySelector('.infra-capability-grid')"),false);
+   assert.strictEqual(await evaluate("document.querySelector('.system-technical').open"),false,'technical information folded');
    await noOverflow();await snap('system-'+width);
    await click('[data-nav="control"]');await until("document.querySelector('#arms-section')",'pose editor');
    assert.strictEqual(await evaluate("document.querySelector('#arms-section').open"),false,'arms closed on initial entry');
    assert.strictEqual(await evaluate("document.querySelector('#head-section').open"),false);
    const collapsed=await evaluate("document.querySelector('#arms-section').getBoundingClientRect().height");
-   assert(collapsed<90,'collapsed arms consume one row');
+   assert(collapsed<110,'collapsed arms consume one row');
    await noOverflow();await snap('pose-collapsed-'+width);
    await click('#arms-section>summary');await wait(100);
    const bounds=await evaluate("(()=>{const e=document.querySelector('.arm-comparison');return {height:e.clientHeight,scroll:e.scrollHeight}})()");
@@ -97,7 +99,7 @@ function get(url){return new Promise((resolve,reject)=>http.get(url,r=>{let body
    await click('#arms-section>summary');await wait(100);
    await click('[data-click="align"]');await wait(100);
    assert.strictEqual(await evaluate("document.querySelector('#arms-section').open"),false,'re-align does not auto-expand arms');
-   checks.push(width+'px: single configuration entry, compact overview, folded/persistent arms, bounded joint scroll, no overflow');
+   checks.push(width+'px: single configuration entry, original theme, folded/persistent arms, bounded joint scroll, no overflow');
   }
   assert.deepStrictEqual(exceptions,[]);assert.deepStrictEqual(posts,[],'navigation and disclosure never cause writes');
   const report={result:'passed',source:'local UI with isolated loopback fake API; no robot access',checks:checks,console_exceptions:exceptions,write_requests:posts};

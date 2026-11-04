@@ -123,7 +123,7 @@
   "base_speed_limits_source": "task_replay_ceiling_not_hardware_maximum; this release is straight-line foam trajectories only",
   "verification_scope": "current_controller_binary_and_ros_modes_plus_explicit_task_software_policy; live_start_state_and_ownership_rechecked_at_execute",
   "robot_name": "4F-F1",
-  "expected_machine_id": "f8181edeb110424bbd1963cf717dfeee",
+  "expected_machine_id": "00000000000000000000000000000001",
   "robot_id": "F1_D071",
   "check_recording_types": true
 }

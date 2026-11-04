@@ -573,10 +573,10 @@ P99或最大值恶化，对机器人Sync没有价值。
 - 正式7892 compile HTTP：`logs/http_7892_5step_compile_30_20260820.json`
 - 正式7892 eager HTTP：`logs/http_7892_5step_eager_30_20260820.json`
 - 真实G2 eager Powered：
-  `/home/xza_100850113/projects/g2_robot/logs/telemetry/powered/`
+  `/home/user/projects/g2_robot/logs/telemetry/powered/`
   `g2_powered_split_sync_60s_20260820_170722.jsonl`
 - 真实G2 fixed-prefix compile Powered：
-  `/home/xza_100850113/projects/g2_robot/logs/telemetry/powered/`
+  `/home/user/projects/g2_robot/logs/telemetry/powered/`
   `g2_powered_split_sync_30s_20260820_174436.jsonl`
 - 当前跨系统状态：`../CURRENT_STATUS.md`；G2现场原始状态仍保留在
-  `/home/xza_100850113/projects/g2_robot/docs/Bruno.md`
+  `/home/user/projects/g2_robot/docs/Bruno.md`

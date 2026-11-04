@@ -15,7 +15,7 @@ camera_side="$2"
 camera_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 camera_profile="${F1_CAMERA_FASTDDS_PROFILE:-${camera_root}/configs/f1_camera_fastdds_internal.xml}"
 camera_profile="$(realpath -e -- "$camera_profile")"
-if [[ "$(cat /etc/machine-id)" != '90429b8a96e04ef79dbc12175b538115' ]]; then
+if [[ "$(cat /etc/machine-id)" != '00000000000000000000000000000000' ]]; then
   echo 'This camera profile is bound to F1-09; refusing another machine.' >&2
   exit 1
 fi
@@ -68,7 +68,7 @@ if actual != expected or len(transports) != 2:
     raise SystemExit('Expected only the internal UDPv4 and original SHM transports')
 udp = next(t for t in transports if t.findtext('d:type', namespaces=ns) == 'UDPv4')
 addresses = [x.text for x in udp.findall('d:interfaceWhiteList/d:address', ns)]
-if sorted(addresses) != ['127.0.0.1', '192.168.127.170']:
+if sorted(addresses) != ['127.0.0.1', '192.0.2.2']:
     raise SystemExit('Camera UDP whitelist differs from the verified internal addresses')
 participants = tree.findall('.//d:participant', ns)
 if len(participants) != 1 or participants[0].get('is_default_profile') != 'true':
@@ -79,7 +79,7 @@ if rtps is None or rtps.findtext('d:useBuiltinTransports', namespaces=ns) != 'fa
 if sorted(x.text for x in rtps.findall('d:userTransports/d:transport_id', ns)) != sorted(expected):
     raise SystemExit('Camera participant must use both internal UDPv4 and SHM')
 links = json.loads(subprocess.check_output(['ip', '-j', '-4', 'addr', 'show', 'dev', 'enP3p1s0f1'], text=True))
-if not any('UP' in row.get('flags', []) and any(a.get('local') == '192.168.127.170' for a in row.get('addr_info', [])) for row in links):
+if not any('UP' in row.get('flags', []) and any(a.get('local') == '192.0.2.2' for a in row.get('addr_info', [])) for row in links):
     raise SystemExit('Verified internal interface/address is not up; do not fall back to Wi-Fi')
 launch_path = Path(get_package_share_directory(package)) / 'launch' / launch
 if not launch_path.is_file():

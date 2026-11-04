@@ -7,7 +7,7 @@ type: operations
 
 # 4F-F1开机、推理录包与重复试验
 
-只适用于 **4F-F1（亦称F1-4F，软件F1_D071）**。machine-id为`f8181edeb110424bbd1963cf717dfeee`；旧F1_D070同样叫ms-thor，不能按hostname套脚本。机械/标定差异见[本机身份记录](4F-F1.md)，最新结果看[任务当前方案](../../foam_sort_whole_body/docs/training_plan.md)。
+只适用于 **4F-F1（亦称F1-4F，软件F1_D071）**。machine-id为`00000000000000000000000000000001`；旧F1_D070同样叫ms-thor，不能按hostname套脚本。机械/标定差异见[本机身份记录](4F-F1.md)，最新结果看[任务当前方案](../../foam_sort_whole_body/docs/training_plan.md)。
 
 ## 哪些是系统同事提供的
 
@@ -31,7 +31,7 @@ type: operations
 1. **6000D终端**，进入新机，不用旧机22022：
 
 ```bash
-cd /home/xza_100850113/projects
+cd /home/user/projects
 ssh -F F1/connect/robots/f1-22029/client_ssh_config f1-22029
 ```
 
@@ -60,7 +60,7 @@ bash /home/user/workspace/start_all.sh
 3. **6000D另一终端**，检查模型并建立/补齐转发（不启动机器人动作）：
 
 ```bash
-cd /home/xza_100850113/projects
+cd /home/user/projects
 python3 F1/foam_sort_whole_body/deploy/launch_inference_ab.py status --checkpoints 5k 20k 25k
 bash F1/connect/robots/f1-22029/inference_forward.sh
 ```

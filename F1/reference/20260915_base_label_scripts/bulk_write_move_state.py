@@ -21,7 +21,7 @@ from mcap_ros2.decoder import DecoderFactory
 
 ROOTS = [Path(r'd:\all_data'), Path(r'd:\all_data_1'), Path(r'd:\all_data_2'), Path(r'd:\all_data_3')]
 OUTPUT_ROOTS = {root: root.with_name(root.name + '_derived') for root in ROOTS}
-TIMINGS = Path(r'C:\Users\100591958\AppData\Local\Temp\all_episode_motion_timings.json')
+TIMINGS = Path(r'C:\Users\user\AppData\Local\Temp\all_episode_motion_timings.json')
 REPORT = Path(r'd:\move_state_bulk_report.json')
 LOG = Path(r'd:\move_state_bulk_progress.jsonl')
 TOPIC = '/move/State'

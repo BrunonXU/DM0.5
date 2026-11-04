@@ -5,7 +5,34 @@ Every candidate still goes through the existing owner/limits/collision gate.
 """
 import numpy as np
 from .contract import clearance_config, vector
-from .teleop import HomeMotion
+
+
+class WorkbenchHomeMotion:
+    """4242's exact synchronized quintic plan, sampled by the existing owner.
+
+    No HTTP call or second publisher: commit advances time only after approval.
+    The owner still applies its continuous output and collision checks.
+    """
+    def __init__(self, profile, start, goal, plan_type):
+        self.goal = vector(goal, 16)
+        start = vector(start, 16)
+        names = range(14)
+        self.planner = plan_type(dict(enumerate(start[:14])), dict(enumerate(self.goal[:14])),
+            dict.fromkeys(names, profile['max_joint_speed_deg_s']),
+            dict.fromkeys(names, profile['max_joint_acceleration_deg_s2']),
+            profile.get('max_pose_task_s', 60.)-.3)
+        self.elapsed, self.pending = 0., None
+
+    def propose(self, dt):
+        if not np.isfinite(dt) or dt <= 0:
+            raise ValueError('invalid Home interval')
+        self.pending = min(self.elapsed+dt, self.planner.duration)
+        sample = self.planner.sample(self.pending)
+        return np.r_[[sample[i] for i in range(14)], self.goal[14:]]
+
+    def commit(self):
+        if self.pending is not None:
+            self.elapsed, self.pending = self.pending, None
 
 
 class ClearanceHomeStopped(RuntimeError):
@@ -49,16 +76,16 @@ class ClearanceHomeMotion:
         self.stationary_since = None
         self.stationary_command = None
         self.stationary_feedback = None
+        self.feedback_wait_ns = int(profile['settle_timeout_s']*1e9)
+        self.return_wait_since = None
         self.relaxed = route['schema'] == 'f1_right_clearance_v2'
         if self.relaxed:
             self.rotation_budget = np.deg2rad(route['max_rotation_deg'])
-            # The clearance is a position task with a soft orientation
-            # preference. Never bend wrist J6 farther out than its starting
-            # command; this is a task constraint, not a guessed hardware limit.
+            # Cartesian clearance needs coordinated motion of all seven joints.
+            # Use the existing hardware joint/coupled-wrist limits; bounding J6
+            # by its starting angle makes low-wrist-angle lift poses infeasible.
+            # This does not add a wrist-rotation stage or change the pose budget.
             self.ik.frame_task.cost[3:] = .003
-            wrist = arm.ik_virtual_q[5]
-            self.ik.arm_limits.b[5] = abs(wrist)
-            self.ik.arm_limits.b[12] = abs(wrist)
             # A freshly initialized owner starts at measured feedback, which
             # need not equal the saved nominal goal to 0.01 degree. Use the
             # existing physical arrival tolerance for BOTH references here;
@@ -66,7 +93,10 @@ class ClearanceHomeMotion:
             if (np.max(np.abs(self.start[7:14]-self.goal[7:14])) <= profile['joint_tolerance_deg']
                     and np.max(np.abs(full[7:14]-self.goal[7:14])) <= profile['joint_tolerance_deg']):
                 self.stage = 'return'
-                self.joint_motion = HomeMotion(profile, self.start, self.goal)
+                self.joint_motion = self._joint_motion(self.start, self.goal)
+
+    def _joint_motion(self, start, goal):
+        return WorkbenchHomeMotion(self.profile, start, goal, self.arm.home_plan_type)
 
     def pose(self, hardware_arm):
         q = np.deg2rad(vector(hardware_arm, 7)*self.arm.mapping.signs[7:14])
@@ -79,6 +109,8 @@ class ClearanceHomeMotion:
                 and (self.relaxed or np.linalg.norm(self.pin.log3(pose.rotation@(self.rotation if rotation is None else rotation).T)) <= self.orientation_tolerance_rad))
 
     def _arrived(self, measured, submitted):
+        if np.max(np.abs(measured[7:14]-submitted[7:14])) > self.profile['joint_tolerance_deg']:
+            return False
         if self.stage == 'return':
             return (np.max(np.abs(measured[7:14]-self.goal[7:14])) <= self.profile['joint_tolerance_deg']
                     and np.max(np.abs(submitted[7:14]-self.goal[7:14])) <= .01)
@@ -94,7 +126,8 @@ class ClearanceHomeMotion:
 
         Recompute from command minus feedback, never integrate tracking error.
         Moving/delayed feedback cannot build a deferred correction. A tracking
-        error outside the existing Home joint tolerance stops this Home.
+        error outside the existing Home joint tolerance first waits for the
+        workbench settling budget. Never compensate while still out of tolerance.
         """
         command, actual = submitted[7:14], measured[7:14]
         command_pose = self.pose(command)
@@ -110,8 +143,13 @@ class ClearanceHomeMotion:
             return
         error = command-actual
         if np.max(np.abs(error)) > self.profile['joint_tolerance_deg']:
+            if now-self.stationary_since < self.feedback_wait_ns:
+                return True
+            joint = int(np.argmax(np.abs(error)))
             raise ClearanceHomeStopped('clearance Home '+self.stage+' tracking error: '
-                +str(float(np.max(np.abs(error))))+' deg exceeds existing joint tolerance')
+                +str(float(np.max(np.abs(error))))+' deg exceeds existing joint tolerance after settling wait; '
+                +f'right J{joint+1} submitted={command[joint]:.6f} deg measured={actual[joint]:.6f} deg '
+                +f'stationary_wait_s={(now-self.stationary_since)/1e9:.3f}')
         actual_pose = self.pose(actual)
         nominal = self.lift if self.stage == 'lift' else self.clear
         # Replace, rather than add to, the previous compensation. The measured
@@ -132,7 +170,7 @@ class ClearanceHomeMotion:
             self.deadline = now + int((10+self.route['right_m']/self.arm.NOMINAL_LINEAR_SPEED_M_S*6)*1e9)
         elif self.stage == 'right':
             self.stage = 'return'
-            self.joint_motion = HomeMotion(self.profile, submitted, self.goal)
+            self.joint_motion = self._joint_motion(submitted, self.goal)
             distance = float(np.max(np.abs(self.goal[7:14]-submitted[7:14])))
             self.deadline = now + int((10+distance/self.profile['max_joint_speed_deg_s']*3)*1e9)
         else:
@@ -145,12 +183,20 @@ class ClearanceHomeMotion:
 
     def propose(self, dt, full, submitted, measured, stamps, now):
         full, submitted, measured = vector(full, 22), vector(submitted, 16), vector(measured, 16)
+        # An invalid actual publication remains a global fault, not a local
+        # rejected candidate that the operator could resume from.
+        self.arm.mapping.check_action(submitted)
         if not np.isfinite(dt) or not 0 < dt <= self.arm.safety.max_dt_s:
             raise RuntimeError('invalid clearance control interval')
         if np.max(np.abs(full[14:]-self.fixed)) > .5:
             raise RuntimeError('body/head reference changed during clearance Home')
         if now > self.deadline:
             raise ClearanceHomeStopped('clearance Home '+self.stage+' feedback timeout')
+        if self.stage == 'return' and np.max(np.abs(submitted[7:14]-self.goal[7:14])) <= .01:
+            if self.return_wait_since is None:
+                self.return_wait_since = now
+            elif now-self.return_wait_since > self.feedback_wait_ns:
+                raise ClearanceHomeStopped('clearance Home return feedback timeout after settling wait')
         if self.relaxed and self.stage != 'return':
             for action in (submitted, measured):
                 if np.linalg.norm(self.pin.log3(self.pose(action[7:14]).rotation@self.rotation.T)) > self.rotation_budget:
@@ -168,7 +214,9 @@ class ClearanceHomeMotion:
             self.pending = 'joint'
             return self.joint_motion.propose(dt)
         if self.settled_since is None:
-            self._correct_settled_feedback(submitted, measured, stamps, now)
+            if self._correct_settled_feedback(submitted, measured, stamps, now):
+                self.pending = None
+                return submitted.copy()
         arm, ik = self.arm, self.ik
         q = arm.ik_virtual_q
         ik.arm_limits.set_publication(np.deg2rad(submitted[7:14]*arm.mapping.signs[7:14]), arm.max_otg_ik_lag_rad)
@@ -187,10 +235,20 @@ class ClearanceHomeMotion:
         arm.last_candidate = candidate
         result = self.start.copy()
         result[7:14] = np.rad2deg(candidate.q)*arm.mapping.signs[7:14]
+        self._check_clearance_candidate(result)
         if self.relaxed and np.linalg.norm(self.pin.log3(self.pose(result[7:14]).rotation@self.rotation.T)) > self.rotation_budget:
             raise ClearanceHomeStopped('clearance Home orientation budget exceeded')
         self.pending = candidate.q.copy()
         return arm.mapping.check_action(result)
+
+    def _check_clearance_candidate(self, result):
+        right = vector(result, 16)[7:14]
+        limits = self.arm.mapping.limits[7:14]
+        wrist = float(1.025*abs(right[5])+abs(right[6]))
+        if np.any(right < limits[:, 0]) or np.any(right > limits[:, 1]) or wrist > 110.5+1e-7:
+            # Reject before owner approval; no clipping or limit widening.
+            raise ClearanceHomeStopped('clearance Home '+self.stage+' candidate outside joint/wrist limits; '
+                +'right_deg='+repr(right.tolist())+' wrist_sum_deg='+repr(wrist))
 
     def commit(self):
         if isinstance(self.pending, str):
@@ -233,7 +291,7 @@ class FeedbackAlignedClearanceHome(ClearanceHomeMotion):
         arm.mapping.check_action(anchor)
         self.anchor = anchor
         self.fixed = full[14:].copy()
-        self.joint_motion = HomeMotion(profile, start, anchor)
+        self.joint_motion = self._joint_motion(start, anchor)
         self.stage, self.done, self.pending = 'align', False, None
         self.settled_since = None
         distance = float(np.max(np.abs(anchor[7:14]-start[7:14])))
@@ -255,7 +313,7 @@ class FeedbackAlignedClearanceHome(ClearanceHomeMotion):
         self.command_translation = (self.lift if self.stage == 'lift' else self.clear).copy()
         self.command_rotation = self.rotation.copy()
         if self.stage == 'return':
-            self.joint_motion = HomeMotion(self.profile, submitted, self.goal)
+            self.joint_motion = self._joint_motion(submitted, self.goal)
             distance = float(np.max(np.abs(self.goal[7:14]-submitted[7:14])))
             self.deadline = now + int((10+distance/self.profile['max_joint_speed_deg_s']*3)*1e9)
         else:
@@ -289,3 +347,34 @@ class FeedbackAlignedClearanceHome(ClearanceHomeMotion):
             self.settled_since = None
         self.pending = 'joint'
         return self.joint_motion.propose(dt)
+
+
+class DirectWorkbenchHomeMotion(ClearanceHomeMotion):
+    """Right-arm-only 4242 Home, after the operator has cleared the workspace.
+
+    There is no Cartesian waypoint, IK initialization or separate wrist stage.
+    Keep the same publication history, guarded owner and measured-arrival checks
+    as the return stage of the previous Home route.
+    """
+    def __init__(self, profile, start, goal, arm, full, now):
+        preset = profile.get('f710_home', {})
+        if (preset.get('route') != 'direct' or 'clearance' in preset
+                or preset.get('scope') != 'right_arm_only_preserve_left_grippers_head_body'):
+            raise ValueError('invalid direct right-arm Home route')
+        self.profile, self.arm = profile, arm
+        self.start, self.goal = vector(start, 16), vector(goal, 16)
+        self.goal[:7], self.goal[14:] = self.start[:7], self.start[14:]
+        arm.mapping.check_action(self.start)
+        arm.mapping.check_action(self.goal)
+        self.fixed = vector(full, 22)[14:].copy()
+        self.stage, self.done, self.pending = 'return', False, None
+        self.joint_motion = self._joint_motion(self.start, self.goal)
+        self.settled_since = self.return_wait_since = None
+        self.feedback_wait_ns = int(profile['settle_timeout_s']*1e9)
+        self.relaxed = False
+        distance = float(np.max(np.abs(self.goal[7:14]-self.start[7:14])))
+        self.deadline = now + int((10+distance/profile['max_joint_speed_deg_s']*3)*1e9)
+
+    def retry_context(self):
+        # A fresh Y starts a fresh direct joint plan, never a saved lift/right.
+        return None

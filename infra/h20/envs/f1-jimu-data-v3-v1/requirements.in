@@ -1,0 +1,22 @@
+# Separate CPU data inspection/preprocessing environment, Python 3.11.14.
+# Do not install OpenPI in this environment: its NumPy<2 bound conflicts
+# with LeRobot v3's rerun-sdk>=0.24 transitive requirement.
+torch @ https://download.pytorch.org/whl/cu128/torch-2.7.1%2Bcu128-cp311-cp311-manylinux_2_28_x86_64.whl#sha256=c301dc280458afd95450af794924c98fe07522dd148ff384739b810e3e3179f2
+torchvision @ https://download.pytorch.org/whl/cu128/torchvision-0.22.1%2Bcu128-cp311-cp311-manylinux_2_28_x86_64.whl#sha256=92568ac46b13a8c88b61589800b1b9c4629be091ea7ce080fc6fc622e11e0915
+torchcodec==0.3.0
+lerobot==0.4.3
+numpy==2.2.6
+datasets==4.1.1
+pyarrow==21.0.0
+pandas==2.2.3
+accelerate==1.10.1
+gymnasium==1.1.1
+av==15.1.0
+huggingface-hub==0.35.3
+diffusers==0.35.2
+draccus==0.10.0
+opencv-python-headless==4.12.0.88
+wandb>=0.24,<0.25
+pytest>=8.3,<9
+pip>=25,<26
+imageio[ffmpeg]>=2.36,<3

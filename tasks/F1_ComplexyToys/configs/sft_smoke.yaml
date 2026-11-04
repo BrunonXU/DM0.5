@@ -1,0 +1,80 @@
+defaults:
+  - model/pi0_5_rlinf@actor.model
+  - hybrid_engines/fsdp@actor.fsdp_config
+  - override hydra/job_logging: stdout
+  - _self_
+
+hydra:
+  run:
+    dir: .
+  output_subdir: null
+  searchpath:
+    - file://${oc.env:RLINF_ROOT}/examples/sft/config
+
+cluster:
+  num_nodes: 1
+  component_placement:
+    actor: ${oc.env:F1_TOYS_GPU_INDEX}
+
+runner:
+  task_type: sft
+  logger:
+    log_path: ${oc.env:F1_TOYS_RUN}
+    project_name: f1_complexytoys
+    experiment_name: v1_roi_right_smoke
+    logger_backends: [tensorboard, wandb]
+    wandb_proxy: http://127.0.0.1:18096
+  max_epochs: -1
+  max_steps: 3
+  val_check_interval: -1
+  save_interval: 3
+  resume_dir: null
+
+data:
+  train_data_paths: ${oc.env:F1_TOYS_DATASET}
+  num_workers: 0
+  allow_smoke_only: true
+
+actor:
+  group_name: F1ToysSFT
+  training_backend: fsdp
+  micro_batch_size: 1
+  global_batch_size: 1
+  seed: 20261015
+  model:
+    model_path: /u01/user/models/pi05-base-e1b61876289b52fa-openpi-rlinf-fp32
+    precision: fp32
+    num_action_chunks: 50
+    action_dim: 16
+    openpi:
+      config_name: pi05_f1_toys
+      task: sft
+      train_image_augmentation: false
+      mask_inactive_action_inputs: true
+      action_loss_mask: [false, false, false, false, false, false, false, true, true, true, true, true, true, true, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]
+  optim:
+    lr: 1.0e-6
+    adam_beta1: 0.9
+    adam_beta2: 0.95
+    adam_eps: 1.0e-8
+    weight_decay: 0.0
+    clip_grad: 1.0
+    total_training_steps: 10
+    lr_warmup_steps: 0
+    lr_scheduler: constant
+    min_lr: 1.0e-6
+  fsdp_config:
+    strategy: fsdp
+    sharding_strategy: no_shard
+    use_orig_params: true
+    gradient_checkpointing: true
+    gradient_checkpointing_use_reentrant: false
+    mixed_precision:
+      param_dtype: bf16
+      reduce_dtype: fp32
+      buffer_dtype: fp32
+
+reward:
+  use_reward_model: false
+critic:
+  use_critic_model: false

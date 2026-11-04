@@ -58,7 +58,7 @@ RTC日志则有真实的反向速度和轨迹错位，下面按发生顺序拆�
 ## 3. 第一层修复验证：C0为0仍然明显往回拉
 
 远端post-fix日志：
-`/home/agi/xza/DM0.5/logs/telemetry/powered/`
+`/home/user/xza/DM0.5/logs/telemetry/powered/`
 `g2_powered_rtc_continuous_19700101_080200.jsonl`。文件名1970来自当次G2时钟异常，
 实际mtime为2026-08-18 15:44:30。
 
@@ -272,7 +272,7 @@ wrapper、反归一化和switch投影贯通。
 - hard-prefix arm/hand MAE为0.04266/0.000671。
 
 RTC客户端的`app.py`、`control_loop.py`、`trajectory_smoothing.py`、对应测试、09入口和
-运维文档已逐文件同步到G2 `/home/agi/xza/DM0.5`。同步后在G2仅执行无GDK检查：
+运维文档已逐文件同步到G2 `/home/user/xza/DM0.5`。同步后在G2仅执行无GDK检查：
 Python编译、shell语法通过，`tests/test_g2_client_runtime.py`为`48 passed`；未启动GDK、
 Servo、Shadow或Powered进程。
 

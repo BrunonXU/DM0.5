@@ -15,7 +15,7 @@ if ! [[ "$REQUESTS" =~ ^[1-9][0-9]*$ ]]; then
 fi
 
 POLICY_TRANSPORT=websocket-binary
-POLICY_ENDPOINT="${NEWLORA_SYNC_ENDPOINT:-ws://10.130.153.114:7892/process_frame}"
+POLICY_ENDPOINT="${NEWLORA_SYNC_ENDPOINT:-ws://192.0.2.1:7892/process_frame}"
 
 assert_no_controller_process
 check_policy_endpoint

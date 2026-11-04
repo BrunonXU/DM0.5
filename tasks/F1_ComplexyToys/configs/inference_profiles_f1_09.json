@@ -1,0 +1,74 @@
+{
+  "schema": "f1_rtc_profiles_v1",
+  "runtime": "/home/user/Bruno/DAgger-runtime/rtc-framework-20261021/runtime",
+  "profiles": [
+    {
+      "model": "full625",
+      "recovery": "standard",
+      "model_id": "f1-toys-eef-9a66d2024a181fd4",
+      "endpoint": "http://127.0.0.1:8152",
+      "client_version": "rtc-v6-param-read-r2-shadow-off-20261022",
+      "ensure": [
+        "python3",
+        "/home/user/Bruno/DAgger-runtime/f1-toys-20261016/full-h20/ensure_full_h20_rtc_tunnel.py",
+        "625"
+      ],
+      "launch": [
+        "bash",
+        "/home/user/Bruno/DAgger/start_f1_toys_full_h20.sh",
+        "625"
+      ]
+    },
+    {
+      "model": "full1000",
+      "recovery": "standard",
+      "model_id": "f1-toys-eef-efe3e5fa54ed0fb2",
+      "endpoint": "http://127.0.0.1:8153",
+      "client_version": "rtc-v6-param-read-r2-shadow-off-20261022",
+      "ensure": [
+        "python3",
+        "/home/user/Bruno/DAgger-runtime/f1-toys-20261016/full-h20/ensure_full_h20_rtc_tunnel.py",
+        "1000"
+      ],
+      "launch": [
+        "bash",
+        "/home/user/Bruno/DAgger/start_f1_toys_full_h20.sh",
+        "1000"
+      ]
+    },
+    {
+      "model": "full1500",
+      "recovery": "standard",
+      "model_id": "f1-toys-eef-e312de43fa3875a8",
+      "endpoint": "http://127.0.0.1:8154",
+      "client_version": "rtc-v6-param-read-r2-shadow-off-20261022",
+      "ensure": [
+        "python3",
+        "/home/user/Bruno/DAgger-runtime/f1-toys-20261016/full-h20/ensure_full_h20_rtc_tunnel.py",
+        "1500"
+      ],
+      "launch": [
+        "bash",
+        "/home/user/Bruno/DAgger/start_f1_toys_full_h20.sh",
+        "1500"
+      ]
+    },
+    {
+      "model": "full2000",
+      "recovery": "standard",
+      "model_id": "f1-toys-eef-56f4e837c8ffd7e3",
+      "endpoint": "http://127.0.0.1:8155",
+      "client_version": "rtc-v6-param-read-r2-shadow-off-20261022",
+      "ensure": [
+        "python3",
+        "/home/user/Bruno/DAgger-runtime/f1-toys-20261016/full-h20/ensure_full_h20_rtc_tunnel.py",
+        "2000"
+      ],
+      "launch": [
+        "bash",
+        "/home/user/Bruno/DAgger/start_f1_toys_full_h20.sh",
+        "2000"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,187 @@
+/* Approved desktop workspaces: original F1 typography/cards, neutral shared nav. */
+body[data-page=hil]:has(.hil-horizontal){--bg:#f5f5f7;--surface:#fff;--sidebar:#f7f7f7;--line:#e8e8ed;--ink:#1d1d1f;--muted:#6e6e73;background:var(--bg)}
+body .app-shell .sidebar{width:240px;padding:32px 18px 22px}
+body .sidebar .infra-brand{margin:19px 10px 30px}
+body .sidebar .infra-name{font-size:30px;font-weight:720;letter-spacing:-.8px}
+body .sidebar .infra-brand small{display:block;font-size:12px;letter-spacing:.25px;margin-top:4px}
+body .sidebar .sidebar-label{margin:3px 13px 16px;font-size:13px;letter-spacing:0}
+body .app-shell .sidebar .nav-toggle{top:17px;right:16px}
+body .sidebar .nav-item{height:53px;padding:14px 16px;font-size:17px;gap:14px}
+body .sidebar .sidebar-bottom{padding:20px 10px 0;font-size:13px}
+body .app-shell>.workspace{margin-left:240px;width:calc(100% - 240px)}
+body .workspace>.topbar{min-height:76px;padding:14px 32px;background:var(--bg);border-bottom:0;font-size:15px}
+body .topbar .button,body .topbar .pill,body .topbar .robot-label{font-size:13px}
+body .topbar .button{min-height:36px;padding:8px 11px}
+body .topbar-actions{gap:11px}
+body .workspace-footer{display:flex}
+body.nav-collapsed .app-shell .sidebar{width:76px;padding:62px 10px 20px}
+body.nav-collapsed .app-shell>.workspace{margin-left:76px;width:calc(100% - 76px)}
+body.nav-collapsed .sidebar .infra-brand{display:none}
+body.nav-collapsed .app-shell .sidebar .nav-toggle{top:14px;right:14px}
+body.nav-collapsed .sidebar .nav-item{padding:14px;justify-content:center}
+body.control-mode .workspace>.topbar{background:#a64136}
+body:not([data-page=data]) .workspace>main{padding:25px 32px 30px;max-width:1800px}
+body:not([data-page=data]) .page-heading h1{font-size:32px;font-weight:700;letter-spacing:-.7px}
+body:not([data-page=data]) .page-heading{margin-bottom:22px}
+body:not([data-page=data]) .card{border:0;border-radius:20px;padding:23px;background:#fff}
+body:not([data-page=data]) .button{font-size:14px;min-height:39px;padding:9px 14px;border-radius:10px}
+body:not([data-page=data]) .button.small{font-size:13px;min-height:33px;padding:6px 11px}
+body:not([data-page=data]) .card-header h2{font-size:21px;font-weight:650}
+.workbench-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.workbench-startup{display:flex;align-items:center;justify-content:space-between;gap:25px;min-height:122px;margin-bottom:18px}
+.workbench-startup h2{font-size:24px;letter-spacing:-.5px}
+.workbench-startup p{font-size:15px;color:var(--muted);margin-top:7px;max-width:620px}
+.workbench-startup.ready h2::before{content:'✓';display:inline-grid;place-items:center;width:30px;height:30px;margin-right:12px;border-radius:50%;background:#edf1ea;color:#4c6656;font-size:18px}
+.workbench-startup .workbench-actions{flex-shrink:0}
+.start-all-label{font-size:12px;padding-left:10px;margin-left:5px;border-left:1px solid #ffffff55;color:#ddd}
+.workbench-entries{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin-bottom:22px}
+.workbench-entries a{display:flex;align-items:center;gap:13px;background:white;border-radius:14px;padding:14px 17px;text-decoration:none}
+.workbench-entries a:hover{background:#ededf2}
+.workbench-entries strong{font-size:15px;font-weight:600}
+.workbench-entries span{font-size:12px;color:var(--muted);margin-left:10px}
+.workbench-entries a>svg{width:21px;height:21px;color:#777}
+.workbench-entries a>svg:last-child{margin-left:auto;width:18px}
+body[data-page=overview] .camera-section{position:relative;margin-bottom:20px}
+body[data-page=overview] .camera-section-heading{margin-bottom:14px}
+body[data-page=overview] .camera-tools{position:absolute;top:-2px;right:0}
+body[data-page=overview] .camera-section-heading .live-label{display:none}
+body[data-page=overview] .camera-grid{grid-template-columns:1fr 1.5fr 1fr;gap:13px}
+body[data-page=overview] .camera-placeholder{height:170px;min-height:0;aspect-ratio:auto}
+body[data-page=overview] .camera-title{font-size:14px;padding:10px 13px}
+body[data-page=overview] .camera-title span:last-child{font-size:12px}
+body[data-page=overview] .camera-section.camera-expanded .camera-placeholder{height:310px}
+.workbench-bottom{display:grid;grid-template-columns:1.2fr 1fr;gap:20px;align-items:start}
+body[data-page=overview] .workbench-bottom>.card{padding:18px 21px}
+.workbench-bottom .card-header{margin-bottom:10px}
+.workbench-bottom .health-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 16px}
+.workbench-bottom .health-item{background:transparent;border:0;border-bottom:1px solid #eee;border-radius:0;padding:10px 0;min-height:0}
+.workbench-bottom .health-top{justify-content:flex-start;gap:9px;font-size:14px;margin-bottom:3px}
+.device-dot{display:inline-block;width:10px;height:10px;flex:0 0 10px;border-radius:50%;background:#aaa}
+.device-dot.good{background:#59966e;box-shadow:0 0 0 3px #59966e12}
+.device-dot.warn{background:#bd9254}
+.workbench-bottom .health-status{font-size:12px;color:var(--muted);margin-left:19px}
+.workbench-bottom .health-item p{display:none}
+.workbench-feedback{border-top:1px solid var(--line);margin-top:16px;padding-top:12px}
+.workbench-feedback>summary{font-size:13px;color:var(--muted);cursor:pointer}
+.workbench-events .event{padding:10px 0;font-size:13px;grid-template-columns:62px minmax(0,1fr)}
+.workbench-events .event p{font-size:13px}
+.workbench-events .event-list{max-height:220px!important;overflow:auto}
+.workbench-events .empty-state{border:0;background:none;text-align:left;padding:12px 0}
+.workbench-events .empty-state svg,.workbench-events .empty-state p{display:none}
+.workbench-events .empty-state h3{font-size:14px;font-weight:400;color:var(--muted)}
+.workbench-events #work-status .line-item{font-size:13px}
+.workbench-status-link{background:none;border:0;padding:5px 0;color:var(--muted);font-size:12px}
+#health-summary{font-size:12px;font-weight:400}
+.workbench-tabs{display:flex;align-items:center;gap:4px;padding:4px;border-radius:12px;background:#e9e9ef;width:max-content;max-width:100%}
+.workbench-tabs [role=tab]{border:0;border-radius:9px;background:transparent;color:#6e6e73;font-size:15px;padding:10px 20px;min-height:40px;white-space:nowrap}
+.workbench-tabs [role=tab][aria-selected=true]{background:white;color:#1d1d1f;font-weight:600;box-shadow:0 1px 3px #00000008}
+.workbench-tabs [role=tab]:hover:not([aria-selected=true]){background:#dedee5}
+.workbench-drawer{position:fixed;inset:0 0 0 auto;margin:0;width:470px;max-width:90vw;height:100dvh;max-height:100dvh;padding:30px;border:0;border-left:1px solid var(--line);border-radius:0;background:white;color:var(--ink);box-shadow:-15px 0 70px #00000018;overflow:auto}
+.workbench-drawer::backdrop{background:#20202533}
+.workbench-drawer-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;gap:20px}
+.workbench-drawer h2{font-size:24px;font-weight:650}
+.workbench-drawer h3{font-size:17px;font-weight:600}
+.workbench-drawer .workbench-tabs{margin-bottom:24px;width:100%}
+.workbench-drawer .workbench-tabs button{flex:1;font-size:14px;padding:10px 14px}
+.workbench-drawer .button{font-size:14px;padding:9px 13px;min-height:38px;border-radius:10px}
+.workbench-drawer .system-definition{grid-template-columns:100px minmax(0,1fr);gap:17px;font-size:14px;margin:18px 0 26px}
+.workbench-drawer .system-definition dd{margin:0;overflow-wrap:anywhere}
+.workbench-drawer .line-item{gap:16px;font-size:14px;padding:13px 0}
+.workbench-drawer .line-item .label,.workbench-drawer .line-item .value{font-size:14px}
+.workbench-drawer .line-item .value{max-width:250px;overflow-wrap:anywhere;text-align:right}
+.workbench-drawer .section-note{font-size:13px;line-height:1.8}
+.workbench-related{margin-top:28px;padding-top:22px;border-top:1px solid var(--line)}
+.workbench-state{padding:18px;background:#f5f5f7;border-radius:12px;margin:16px 0}
+.workbench-state p{font-size:14px;color:var(--muted);margin-top:8px}
+.workbench-disclosure>summary{cursor:pointer;font-size:14px;font-weight:600;padding:12px 0}
+.workbench-code{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:10px;background:#f5f5f7}
+.workbench-code>div{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--line);font-size:12px;color:var(--muted)}
+.workbench-code pre{margin:0;border:0;border-radius:0;background:transparent;font-size:12px;line-height:1.9;padding:16px}
+.workbench-start-confirm{width:520px;background:#fff;border:0;border-radius:20px;padding:30px}
+.workbench-start-confirm h2{font-size:24px}
+.workbench-start-confirm p{font-size:15px}
+.workbench-check{display:flex;gap:10px;align-items:flex-start;font-size:14px;margin-top:22px;line-height:1.6}
+.workbench-check input{margin-top:5px;accent-color:#292929}
+.pico-workspace-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}
+.pico-persistent-state{display:flex;align-items:center;justify-content:space-between;gap:16px;background:#fff;border:1px solid #e6e6eb;border-radius:12px;padding:12px 18px;margin-bottom:20px;font-size:14px;color:var(--muted)}
+.pico-live-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(340px,1fr);gap:24px;align-items:start}
+.pico-record-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(350px,1fr);gap:24px;align-items:start}
+.pico-workspace [data-camera-preview]{margin:0;position:relative}
+.pico-workspace .camera-section-heading{margin-bottom:16px}
+.pico-workspace .camera-section-heading h2{font-size:20px}
+.pico-workspace .camera-section-heading .live-label{display:none}
+.pico-workspace .camera-tools{position:absolute;right:0;top:-3px}
+.pico-workspace .camera-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pico-workspace [data-live-camera=head]{grid-column:1/-1;grid-row:1}
+.pico-workspace .camera-placeholder{height:144px;aspect-ratio:auto}
+.pico-workspace [data-live-camera=head] .camera-placeholder{height:285px}
+.pico-workspace .camera-title{font-size:14px;padding:9px 12px}
+.pico-workspace .camera-title span:last-child{font-size:11px}
+.pico-workspace .camera-expanded [data-live-camera=head] .camera-placeholder{height:380px}
+.pico-workspace .camera-expanded [data-live-camera]:not([data-live-camera=head]) .camera-placeholder{height:190px}
+.pico-workspace .card p{font-size:15px}
+.pico-workspace .section-note,.pico-workspace .card .section-note{font-size:13px}
+.pico-workspace .card-header{align-items:flex-start;gap:14px;margin-bottom:16px}
+.pico-workspace .card-header p{font-size:13px}
+.pico-workspace .pill{font-size:12px}
+.pico-workspace details>summary{font-size:14px;cursor:pointer}
+.pico-workspace .notice{font-size:14px;padding:14px}
+.pico-workspace [data-pico-session-slot=connect]:not(:empty){margin-bottom:20px}
+.pico-workspace #pico-versions{align-items:start;gap:20px}
+.pico-workspace #recorder-card{margin:0}
+.pico-workspace .recorder-layout{display:flex;flex-direction:column-reverse;gap:20px}
+.pico-workspace .recorder-info .field-label{font-size:13px}
+.pico-workspace .recording-metrics strong{font-size:38px}
+.pico-workspace .recording-metrics span{font-size:13px}
+.pico-workspace .read-only-field{font-size:14px}
+.pico-workspace .data-table{font-size:14px}
+.pico-workspace .data-table td,.pico-workspace .data-table th{padding:14px 13px}
+.pico-workspace .recording-last-saved{flex-wrap:wrap}
+/* Existing horizontal HIL interactions keep their DOM and handlers. */
+.hil-horizontal{font-family:inherit!important}
+body[data-page=hil] .hil-featurebar{background:#e9e9ef;border:0;border-radius:12px;padding:4px;gap:4px}
+body[data-page=hil] .hil-featurebar [role=tab]{background:transparent;border:0;border-radius:9px;color:#6e6e73;padding:10px 18px;font-size:15px}
+body[data-page=hil] .hil-featurebar [role=tab][aria-selected=true]{background:#fff;color:#1d1d1f;box-shadow:0 1px 3px #00000008}
+body[data-page=hil] .hil-workspace-heading h1{font-size:30px}
+body[data-page=hil] .hil-overview,body[data-page=hil] .hil-command-grid,body[data-page=hil] .hil-teaching,body[data-page=hil] .hil-diagnostic-card{background:#fff;border-color:#e8e8ed;border-radius:20px}
+body[data-page=hil] .hil-route-card{border:1px solid #e8e8ed;border-radius:16px;background:#fff}
+body[data-page=hil] .hil-route-card h3{font-size:24px}
+body[data-page=hil] .hil-home{margin-top:100px}
+body[data-page=hil] .hil-home h1{font-size:30px}
+body[data-page=hil] .hil-session{padding:12px 0 0;margin-top:18px;border-radius:0;border-top:1px solid var(--line);background:transparent}
+body[data-page=hil] .hil-command-header{background:#f5f5f7}
+body[data-page=hil] .hil-step-content pre{background:#fafafa}
+body[data-page=hil] .hil-command-tabs button[aria-pressed=true]{background:#f1f1f3;border-color:#dedee5}
+body[data-page=hil] .camera-card{background:white}
+.pico-workspace .read-only-field{background:#f5f5f7}
+@media(min-width:1700px){
+ body:not([data-page=data]) .workspace>main{padding:30px 36px}
+ body[data-page=overview] .camera-placeholder{height:235px}
+ .workbench-startup{min-height:134px}
+ .workbench-bottom .health-item{padding:13px 0}
+ .workbench-drawer{width:520px;padding:36px}
+ .pico-workspace [data-live-camera=head] .camera-placeholder{height:355px}
+ .pico-workspace .camera-placeholder{height:174px}
+}
+@media(max-width:1320px){
+ body .app-shell .sidebar{width:216px;padding-left:16px;padding-right:16px}
+ body .app-shell>.workspace{margin-left:216px;width:calc(100% - 216px)}
+ body .sidebar .infra-name{font-size:28px}
+ body .sidebar .nav-item{font-size:16px;padding:13px;height:51px}
+ body:not([data-page=data]) .workspace>main{padding:23px 25px}
+ body .workspace>.topbar{padding-left:25px;padding-right:25px}
+ body .topbar-actions{gap:7px}
+ body .topbar .button{font-size:12px;padding:7px 9px}
+ .workbench-startup{min-height:108px}
+ .workbench-startup h2{font-size:22px}
+ .workbench-startup p{font-size:14px}
+ .workbench-entries span{display:block;margin-left:0}
+ body[data-page=overview] .camera-placeholder{height:138px}
+ .workbench-bottom{gap:16px;grid-template-columns:1.2fr 1fr}
+ .workbench-bottom .health-top{font-size:13px}
+ .workbench-drawer{width:440px;padding:26px}
+ .pico-live-grid,.pico-record-grid{gap:20px;grid-template-columns:minmax(0,1.15fr) minmax(330px,1fr)}
+ .pico-workspace [data-live-camera=head] .camera-placeholder{height:240px}
+ .pico-workspace .camera-placeholder{height:115px}
+ .workbench-tabs [role=tab]{padding:9px 16px}
+}

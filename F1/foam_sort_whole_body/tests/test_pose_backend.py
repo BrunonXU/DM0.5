@@ -77,7 +77,7 @@ class PoseBackendTests(unittest.TestCase):
                 self.backend.check_body_parameters(missing)
         for key, value in (("_controller_binary_sha256", "different"),
                            ("enable_udp_motors", 1), ("enable_udp_motors", False),
-                           ("udp_motor_host", "localhost"), ("udp_motor_host", "192.168.1.1"),
+                           ("udp_motor_host", "localhost"), ("udp_motor_host", "192.0.2.21"),
                            ("udp_motor_send_port", 50002), ("udp_motor_send_port", 50001.0)):
             wrong = dict(params); wrong[key] = value
             with self.subTest(key=key, value=value), self.assertRaises(ValueError):

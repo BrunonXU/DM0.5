@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "created_date": "2026-11-04",
+  "purpose": "Source pins only; Python dependencies and runtime compatibility are not yet verified.",
+  "repositories": [
+    {
+      "name": "RPent",
+      "url": "https://github.com/RLinf/RPent.git",
+      "commit": "886b3b274d3dd30bbc15615ea512d65ae90bc8b3",
+      "path": "third_party/RPent",
+      "role": "toolkit, robot contract, evidence and memory storage",
+      "license": "Apache-2.0; third-party components retain their own terms",
+      "pin_basis": "PyRUA-Lean pinned quickstart RPENT_COMMIT",
+      "reference": "https://github.com/DAGroup-PKU/PyRUA-Lean/blob/e8f01dca744421d70684adbbc1713fd4d92f8aca/docs/getting-started/quickstart.md"
+    },
+    {
+      "name": "PyRUA-Lean",
+      "url": "https://github.com/DAGroup-PKU/PyRUA-Lean.git",
+      "commit": "e8f01dca744421d70684adbbc1713fd4d92f8aca",
+      "path": "third_party/PyRUA-Lean",
+      "role": "Python robot API, code-cell execution, planner runtime and audit",
+      "license": "Apache-2.0; third-party components retain their own terms",
+      "pin_basis": "main snapshot researched on 2026-11-04",
+      "package_version": "0.2.0"
+    },
+    {
+      "name": "ASPIRE",
+      "url": "https://github.com/NVlabs/ASPIRE.git",
+      "commit": "fa00f0ef2bc1d91d594b9aa502c22133c9f538f7",
+      "path": "third_party/ASPIRE",
+      "role": "reference only: failure analysis, independent verification, experience promotion",
+      "license": "Apache-2.0; model and third-party component licenses differ",
+      "pin_basis": "main snapshot researched on 2026-11-04"
+    }
+  ],
+  "runtime_validation": "not_run",
+  "transitive_dependency_lock": "not_created",
+  "upgrade_candidates": [
+    {
+      "name": "RPent",
+      "commit": "0fa63c5a191df7665b03a1569d7a46d85df6b175",
+      "status": "reference only; do not replace selected compatibility candidate automatically"
+    }
+  ]
+}

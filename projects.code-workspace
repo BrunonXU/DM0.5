@@ -1,0 +1,27 @@
+{
+  "folders": [
+    {
+      "name": "Projects · 当前F1",
+      "path": "."
+    },
+    {
+      "name": "Archive · 历史项目",
+      "path": "../Archive"
+    },
+    {
+      "name": "Tools · 独立工具",
+      "path": "../Tools"
+    },
+    {
+      "name": "Libraries · 上游依赖",
+      "path": "../Libraries"
+    },
+    {
+      "name": "Artifacts · 部署与产物",
+      "path": "../Artifacts"
+    }
+  ],
+  "settings": {
+    "git.ignoreLimitWarning": true
+  }
+}

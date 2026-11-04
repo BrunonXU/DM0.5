@@ -22,7 +22,7 @@ normal/100Hz/单次34D，沿用入口19平滑参数和进程隔离；停止其�
 由操作者在G2终端执行，确认工作区清空、急停在手、不存在另一Robot owner；不通过SSH远程执行：
 
 ```bash
-cd /home/agi/xza/DM0.5 || exit 1
+cd /home/user/xza/DM0.5 || exit 1
 ./scripts/19_powered_sync_dual_side_17d.sh --duration-seconds 60
 ```
 
@@ -46,11 +46,11 @@ static为双侧当前位置保持1秒；index为指定食指+0.20rad往返4秒�
 提供相同轨迹的双17D对照。每轮独立输入ok；报告位于 `logs/diagnostics/layout_*.json`。
 本入口仅受控候选，不能以返回0或完成提示替代动作对应与接收端日志验收。
 
-- G2项目目录：`/home/agi/xza/DM0.5`
-- 6000D：`10.130.153.114`
+- G2项目目录：`/home/user/xza/DM0.5`
+- 6000D：`192.0.2.1`
 - 当前模型：75K checkpoint
-- 正式Sync接口：`ws://10.130.153.114:7892/process_frame`，GPU7，native JPEG/PNG + binary WebSocket
-- 正式RTC接口：`ws://10.130.153.114:7893/process_frame`，GPU3，native JPEG/PNG + binary WebSocket；服务已运行，仍需新配置Shadow/Powered门
+- 正式Sync接口：`ws://192.0.2.1:7892/process_frame`，GPU7，native JPEG/PNG + binary WebSocket
+- 正式RTC接口：`ws://192.0.2.1:7893/process_frame`，GPU3，native JPEG/PNG + binary WebSocket；服务已运行，仍需新配置Shadow/Powered门
 - 模型合同：三路RGB + 34D state → `50×34` absolute action，约30Hz时间语义
 - 当前硬件下发：Split
   - 双臂前14D：100Hz `joint_servo_control`
@@ -83,11 +83,11 @@ Split中的每个100Hz逻辑tick先生成完整有限34D目标，硬件适配层
 首次部署或覆盖脚本后，终端执行：
 
 ```
-cd /home/agi/xza/DM0.5 || exit 1
+cd /home/user/xza/DM0.5 || exit 1
 chmod +x scripts/*.sh scripts/lib/*.sh
 ```
 
-脚本会自动`source /home/agi/app/env.sh`；不需要操作者单独执行。Python内部仍会调用
+脚本会自动`source /home/user/app/env.sh`；不需要操作者单独执行。Python内部仍会调用
 `gdk_init()`并在结束时调用`gdk_release()`。
 
 ## 3. 每次上机固定顺序
@@ -318,7 +318,7 @@ Powered终端按键无需按Enter：
 SSH终端丢失时，在另一个G2终端执行：
 
 ```
-cd /home/agi/xza/DM0.5 || exit 1
+cd /home/user/xza/DM0.5 || exit 1
 ./scripts/stop_runtime.sh
 ```
 
@@ -387,11 +387,11 @@ logs/
 在`g2_robot`根目录执行：
 
 ```bash
-cd /home/xza_100850113/projects/g2_robot || exit 1
+cd /home/user/projects/g2_robot || exit 1
 ./scripts/pull_new_g2_logs.sh
 ```
 
-该脚本递归检查G2的`/home/agi/xza/DM0.5/logs/`，把新增日志拉到6000D当前仓库的
+该脚本递归检查G2的`/home/user/xza/DM0.5/logs/`，把新增日志拉到6000D当前仓库的
 `logs/`并保持相对目录结构。日常默认跳过大体积`gdk_native`：平滑分析使用
 `telemetry/powered`或`telemetry/shadow` JSONL即可。出现DDS、mode、Servo/GDK
 发送失败或原生崩溃时，再执行：
@@ -436,4 +436,4 @@ command-only，页面仍可分析模型和实际命令。
 `logs/`、`.pytest_cache`、`__pycache__`、旧tar包或SHA文件。所有真机命令仍由
 Bruno在G2终端手动执行，6000D不得远程启动GDK动作。
 
-6000D终端在`g2_robot`根目录只对本次核准的具体文件逐个执行`scp`，目标固定为`agi@10.130.86.13:/home/agi/xza/DM0.5/`。禁止递归覆盖整个目录，也不远程删除G2文件。
+6000D终端在`g2_robot`根目录只对本次核准的具体文件逐个执行`scp`，目标固定为`agi@192.0.2.8:/home/user/xza/DM0.5/`。禁止递归覆盖整个目录，也不远程删除G2文件。

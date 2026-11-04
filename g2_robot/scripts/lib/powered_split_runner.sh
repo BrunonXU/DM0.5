@@ -12,9 +12,9 @@ run_powered_split() {
   local POLICY_TRANSPORT="${NEWLORA_SYNC_TRANSPORT:-http-multipart-json}"
   local POLICY_ENDPOINT
   if [[ "$POLICY_TRANSPORT" == "websocket-binary" ]]; then
-    POLICY_ENDPOINT="${NEWLORA_SYNC_ENDPOINT:-ws://10.130.153.114:7892/process_frame}"
+    POLICY_ENDPOINT="${NEWLORA_SYNC_ENDPOINT:-ws://192.0.2.1:7892/process_frame}"
   elif [[ "$POLICY_TRANSPORT" == "http-multipart-json" ]]; then
-    POLICY_ENDPOINT="${NEWLORA_SYNC_ENDPOINT:-${POLICY_ENDPOINT:-http://10.130.153.114:7892/process_frame}}"
+    POLICY_ENDPOINT="${NEWLORA_SYNC_ENDPOINT:-${POLICY_ENDPOINT:-http://192.0.2.1:7892/process_frame}}"
   else
     echo "STOP: NEWLORA_SYNC_TRANSPORT必须是http-multipart-json或websocket-binary" >&2
     return 2

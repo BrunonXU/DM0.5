@@ -1,0 +1,26 @@
+# Design input, not a working HARNESS launcher. No API call is made by this file.
+# Adapter must explicitly map these values to the pinned PyRUA CLI.
+schema_version = 1
+
+[planner]
+provider = "openai"
+runtime = "codex"
+wire_api = "responses"
+base_url = "https://api.openai.com/v1"
+model = "gpt-6-astra"
+reasoning_effort = "medium"
+api_key_env = "HARNESS_OPENAI_API_KEY"
+credentials_file = "API.MD"
+# Future local credential loader: read only in planner process; never send the file
+# to an LLM, echo it, pass it in CLI arguments, or inherit it in code-cell workers.
+
+[execution]
+mode = "offline"
+allow_robot_actions = false
+allow_training = false
+# Real skill gateway, registry and credential loader are still to be implemented.
+
+[memory]
+read_scope = "verified_snapshot"
+candidate_scope = "inbox"
+automatic_promotion = false

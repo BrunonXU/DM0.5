@@ -22,7 +22,7 @@ state ring读取、OpenCV、JPEG、7893和JSON，不创建Robot，图片不进�
 下一步在G2终端执行：
 
 ```bash
-cd /home/agi/xza/DM0.5
+cd /home/user/xza/DM0.5
 ./scripts/11_rtc_process_isolation_preflight.sh
 ```
 
@@ -143,7 +143,7 @@ C0 seam、C1速度跳变和方向反转数。更新已同步G2；G2端无GDK测�
 G2本机下一条命令（固定约10秒，只发送14D双臂，完全不发送双手）：
 
 ```bash
-cd /home/agi/xza/DM0.5
+cd /home/user/xza/DM0.5
 ./scripts/10_powered_rtc_arms_only_10s.sh
 ```
 

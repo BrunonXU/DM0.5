@@ -5,9 +5,9 @@
 # 方法：统一加载env.sh，并把GDK原生日志固定到logs/gdk_native。
 set -Eeuo pipefail
 
-G2_APP_DIR="${G2_APP_DIR:-/home/agi/app}"
-G2_PROJECT_DIR="${G2_PROJECT_DIR:-/home/agi/xza/DM0.5}"
-POLICY_ENDPOINT="${POLICY_ENDPOINT:-http://10.130.153.114:7892/process_frame}"
+G2_APP_DIR="${G2_APP_DIR:-/home/user/app}"
+G2_PROJECT_DIR="${G2_PROJECT_DIR:-/home/user/xza/DM0.5}"
+POLICY_ENDPOINT="${POLICY_ENDPOINT:-http://192.0.2.1:7892/process_frame}"
 G2_RUNTIME_PID_FILE="${G2_RUNTIME_PID_FILE:-/tmp/g2_dm05_runtime.pid}"
 G2_LOG_ROOT="${G2_LOG_ROOT:-$G2_PROJECT_DIR/logs}"
 G2_SHADOW_LOG_DIR="$G2_LOG_ROOT/telemetry/shadow"

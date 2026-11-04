@@ -1,18 +1,26 @@
 # Whereweare
 
+**2026-10-23：按用户决定搁置。** 暂停本项目开发、主动进度审阅和日报／周报生成；不再作为 Projects 的日常进度入口。当前项目事实直接读取各项目的 README、STATUS 与 recipe。
+
+源码、历史快照和运行数据库已整体迁到 `/home/user/Archive/Whereweare` 保留，项目投入状态已设为 `paused`，自动审阅关闭，本项目服务已停止并取消自启，4343 入口暂不可用。恢复开发、审阅或服务自启须由用户明确要求；具体执行状态见 [STATUS](docs/STATUS.md)。
+
+下文保留搁置前的功能与操作说明，不能据此自动启动服务、扫描或发布新报告。迁移后的服务单元已修正源码与 runtime 路径；来源注册表仍保留搁置时的历史配置。恢复前需要先核对跨目录来源与 tracking 存储位置，不能直接照旧命令启动；管理说明见 [Archive](../workspace/Archive/README.md)。
+
+## 搁置前的功能说明（历史）
+
 项目进度的审阅入口：从本地 docs 提炼关键变化、现状和下一步，显示到横向时间树。主线红色、同一天垂直对齐；点击线名或节点查看详情。产品方向见 [DESIGN](docs/DESIGN.md)，实际实现与验证见 [STATUS](docs/STATUS.md)。
 
 项目已从 Projects-Hub 更名；旧目录是兼容软链，保留原服务名与 4343 入口，数据未另建副本。
 
 已实施：[桌面界面与外置大脑方案](docs/EXTERNAL_BRAIN_UIUX_PROPOSAL.md)；先看[真实产品参考与官方截图](docs/DESKTOP_DESIGN_REFERENCES.md)。仅做桌面网页，旧生成视觉稿已否决。整体链路常驻首页，三线展示真实变化；回顾只读打开，显式生成，报告独立于项目快照。暂停/完成决定保留历史。自动审阅在「更新状态」中开启，默认关闭；手动更新与模型审阅均使用high。
 
-## 启动
+## 恢复后启动
 
 在存放 Projects 的 Linux 开发机终端执行（Python 3.10+，运行不需安装第三方包）：
 
 ```bash
-cd /home/xza_100850113/projects/Whereweare
-bash run.sh --host 127.0.0.1 --port 4343
+cd /home/user/Archive/Whereweare
+bash run.sh --workspace /home/user/projects --host 127.0.0.1 --port 4343
 ```
 
 在同一台机器打开 **http://127.0.0.1:4343/**。前台日志显示在上述终端；数据库及索引默认保存在本目录 `runtime/`。网页关闭后，只要服务仍运行，文档同步就会继续。节点和分叉关系持久保存。
@@ -27,10 +35,10 @@ bash run.sh --workspace /path/to/Projects --runtime /path/to/projects-hub-runtim
 
 ## 作为独立服务运行
 
-下面的安装器只管理 `projects-hub.service`，默认绑定本机 4343；会拒绝覆盖来源不明的同名服务。在存放 Projects 的 Linux 开发机终端执行：
+以下是迁移前的安装方式；恢复前须先为安装器核对并显式配置工作区路径，当前不执行。安装器只管理 `projects-hub.service`，默认绑定本机 4343；会拒绝覆盖来源不明的同名服务。在存放 Projects 的 Linux 开发机终端执行：
 
 ```bash
-cd /home/xza_100850113/projects/Whereweare
+cd /home/user/Archive/Whereweare
 python3 deploy/install_user_service.py --install
 systemctl --user status projects-hub.service
 ```
@@ -41,7 +49,7 @@ systemctl --user status projects-hub.service
 systemctl --user disable --now projects-hub.service
 ```
 
-## 每天使用
+## 恢复后的日常使用
 
 1. 看时间树上的重要变化；进入某条线查看具体进展、阻塞与下一步。
 2. 在项目详情选择主线／支线、暂时归档或恢复，选择会持久保存。
@@ -76,7 +84,7 @@ python3 review.py status
 - 默认仅监听本机。当前没有多用户账户和公网认证，应通过已有可信访问通道使用。
 - 文档索引保留最近变更供详情与协作入口读取；没有日期的旧路线不显示成已发生的历史事件。
 
-## 后续 Agent 协作入口
+## 恢复后的 Agent 协作入口
 
 服务运行时读取 `GET /api/briefing`，或在本目录运行：
 

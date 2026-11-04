@@ -1,0 +1,10 @@
+[Unit]
+Description=Check personal company share after graphical login
+
+[Timer]
+OnActiveSec=15
+OnUnitInactiveSec=120
+AccuracySec=5
+Unit=hq-share-autoconnect.service
+
+# Started by the graphical-login hook, deliberately not by default.target.

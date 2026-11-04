@@ -34,6 +34,22 @@ def test_preview_retains_exceptional_actual_but_does_not_create_outputs():
     assert not transport.prepared and not transport.sent
 
 
+def test_j2_boundary_recovery_does_not_bypass_invalid_j1_origin():
+    from robot.pose_review import review
+    a, clock, transport = recovery_setup(-27.56555938720703)
+    a.store.update_joints(joints(['head_j1'], [-134.1064453125]))
+    spec = pose(head_j1=.001723, head_j2=-15., head_j3=-.004631, arm_l_j1=10.)
+    report = review(a, spec)
+    assert not report['executable']
+    assert len(report['issues']) == 1
+    issue = report['issues'][0]
+    assert issue['code'] == 'origin_out_of_range' and issue['joint'] == 'head_j1'
+    assert issue['current'] == -134.1064453125 and issue['limits'] == [-40, 40]
+    with pytest.raises(ActionRejected, match='head_j1'):
+        a.execute(spec, Event(clock))
+    assert not transport.prepared and not transport.sent
+
+
 def test_explicit_ack_is_required_before_preparing_or_publishing():
     for ack in (None, False, 1, 'true'):
         a, clock, transport = recovery_setup()

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 用途：在6000D递归拉取G2上本地尚不存在的日志，保留logs相对目录结构。
-# 输入：固定只读来源agi@10.130.86.13:/home/agi/xza/DM0.5/logs/；可选
+# 输入：固定只读来源agi@192.0.2.8:/home/user/xza/DM0.5/logs/；可选
 # --include-gdk-native用于底层故障排查。
 # 输出：当前仓库logs/下新增文件；默认跳过大体积GDK native日志，同名文件不覆盖。
 # 方法：优先rsync --ignore-existing；任一端无rsync时退回ssh find +逐文件scp。
@@ -9,8 +9,8 @@ set -Eeuo pipefail
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 LOCAL_LOG_ROOT="$REPO_ROOT/logs"
-G2_HOST="agi@10.130.86.13"
-G2_LOG_ROOT="/home/agi/xza/DM0.5/logs"
+G2_HOST="agi@192.0.2.8"
+G2_LOG_ROOT="/home/user/xza/DM0.5/logs"
 include_gdk_native=false
 
 case "${1:-}" in

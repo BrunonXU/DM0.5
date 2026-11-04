@@ -18,7 +18,7 @@ from g2teleop.eef_replay import load_causal_command_artifact, load_frozen_replay
 
 
 DEFAULT_FEEDBACK_PROBE = Path(
-    "/home/agi/xza/DM0.5/logs/diagnostics/joint_feedback_probe_latest.json"
+    "/home/user/xza/DM0.5/logs/diagnostics/joint_feedback_probe_latest.json"
 )
 SETUP_AT_S = 1.0
 Q_DIRECT_SETUP_LEAD_S = 2.0
@@ -61,7 +61,7 @@ def parse_args() -> argparse.Namespace:
         "--telemetry-jsonl",
         type=Path,
         default=Path(
-            "/home/agi/xza/DM0.5/logs/telemetry/powered/"
+            "/home/user/xza/DM0.5/logs/telemetry/powered/"
             f"g2_o10_event_replay_{stamp}.jsonl"
         ),
     )

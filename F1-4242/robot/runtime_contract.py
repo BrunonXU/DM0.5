@@ -66,6 +66,40 @@ def verify_process(expected_sha256, *, proc_root=Path('/proc'), uid=None):
             'evidence': 'same_user_unique_running_proc_exe_not_installed_file_only'}
 
 
+def _read_only_parameter_call(node, executor, kind, name, request, deadline):
+    """Retry only an unanswered read, at most three sends within one deadline."""
+    for attempts in range(1, 4):
+        if time.monotonic() >= deadline:
+            raise RuntimeError(name+'响应超时')
+        client = node.create_client(kind, name)
+        future = None
+        try:
+            while not client.service_is_ready():
+                if time.monotonic() >= deadline:
+                    raise RuntimeError(name+'发现超时')
+                executor.spin_once(timeout_sec=min(0.03, max(0.0, deadline-time.monotonic())))
+            if time.monotonic() >= deadline:
+                raise RuntimeError(name+'响应超时')
+            future = client.call_async(request)
+            retry_at = min(deadline, time.monotonic()+1.0) if attempts < 3 else deadline
+            while not future.done() and time.monotonic() < retry_at:
+                executor.spin_once(timeout_sec=min(0.03, max(0.0, retry_at-time.monotonic())))
+            if time.monotonic() >= deadline:
+                raise RuntimeError(name+'响应超时')
+            if future.done():
+                response = future.result()
+                if response is None:
+                    raise RuntimeError(name+'没有响应')
+                return response, attempts
+            # List/GetParameters are reads. A fresh client gives the retry fresh
+            # DDS endpoints; never reuse a request whose reply did not arrive.
+        finally:
+            if future is not None and not future.done():
+                future.cancel()
+            node.destroy_client(client)
+    raise RuntimeError(name+'响应超时')
+
+
 def read_motor_parameters(expected, timeout_s=6.0):
     """List then get exactly the requested declared parameters via current RMW."""
     if not isinstance(expected, dict) or not expected:
@@ -86,27 +120,11 @@ def read_motor_parameters(expected, timeout_s=6.0):
         executor = SingleThreadedExecutor(context=context)
         executor.add_node(node)
         deadline = started+timeout_s
+        request_attempts = {}
         def call(kind, name, request):
-            client = node.create_client(kind, name)
-            future = None
-            try:
-                while not client.service_is_ready():
-                    if time.monotonic() >= deadline:
-                        raise RuntimeError(name+'发现超时')
-                    executor.spin_once(timeout_sec=0.03)
-                future = client.call_async(request)
-                while not future.done():
-                    if time.monotonic() >= deadline:
-                        raise RuntimeError(name+'响应超时')
-                    executor.spin_once(timeout_sec=0.03)
-                response = future.result()
-                if response is None:
-                    raise RuntimeError(name+'没有响应')
-                return response
-            finally:
-                if future is not None and not future.done():
-                    future.cancel()
-                node.destroy_client(client)
+            response, attempts = _read_only_parameter_call(node, executor, kind, name, request, deadline)
+            request_attempts[name] = attempts
+            return response
         listed = call(ListParameters, '/motor_ctl/list_parameters', ListParameters.Request())
         declared = list(listed.result.names)
         missing = [name for name in expected if name not in declared]
@@ -132,7 +150,7 @@ def read_motor_parameters(expected, timeout_s=6.0):
             values[name] = actual
         return {'service': '/motor_ctl/get_parameters', 'declared_names': declared,
                 'requested_names': request.names, 'values': values, 'elapsed_s':time.monotonic()-started,
-                'rmw': os.environ.get('RMW_IMPLEMENTATION'),
+                'rmw': os.environ.get('RMW_IMPLEMENTATION'), 'request_attempts':request_attempts,
                 'scope': 'declared_ros_parameters_not_sdk_current_mode_or_execution_ack'}
     finally:
         if executor is not None:

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Frozen source actions, single canonical 34D normal Servo; no model or sender.
 set -Eeuo pipefail
-DM="${G2_PROJECT_DIR:-/home/agi/xza/DM0.5}"
+DM="${G2_PROJECT_DIR:-/home/user/xza/DM0.5}"
 EXECUTE=false
 for argument in "$@"; do
   case "$argument" in

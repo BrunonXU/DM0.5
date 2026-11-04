@@ -15,7 +15,7 @@
 
 F1经专用SSH密钥发送小型start/renew/stop请求，数据本身仍由6000d主动拉取。
 强制命令将每把密钥绑定到真实机器人ID；仅允许固定协议，拒绝Shell、任意命令、PTY和转发。
-目前控制入口为本账号独立Tailnet的100.71.200.77:22222，转到6000d已有SSH；
+目前控制入口为本账号独立Tailnet的192.0.2.33:22222，转到6000d已有SSH；
 不是公网HTTP服务，也不修改其他用户的Tailscale实例。
 
 SSH与Tailnet属于唤醒所需的连接基础设施，stop不关闭它们。
@@ -62,9 +62,9 @@ provenance.json逐条记录：
 
 ~~~bash
 # 6000d；默认检查mm，可用--root指定其他子数据集
-cd /home/xx_100872445/F1/PICO/pico
+cd /home/user/F1/PICO/pico
 .venv/bin/python scripts/audit_transfer.py
-PYTHONPATH=src .venv/bin/python scripts/check_lerobot_v3.py /media/xx_100872445/069dd146-6f88-4f29-b859-245b1c012179/pico/mocap_data/mm/mocap_data
+PYTHONPATH=src .venv/bin/python scripts/check_lerobot_v3.py /media/user/069dd146-6f88-4f29-b859-245b1c012179/pico/mocap_data/mm/mocap_data
 ~~~
 
 源码中的config/control.json继续管理运动、滤波和录制帧率等设置；

@@ -3,7 +3,7 @@
 ## 推荐：分析运行在 6000d（localhost + 登录密钥）
 
 网页与分析运行在6000d，**直接读取自动传输服务发布的最终合并数据集**；不再从F1建立单机镜像。
-默认读取 `/media/xx_100872445/069dd146-6f88-4f29-b859-245b1c012179/pico/mocap_data/mm/mocap_data`。
+默认读取 `/media/user/069dd146-6f88-4f29-b859-245b1c012179/pico/mocap_data/mm/mocap_data`。
 场景会话补丁后，由F1的start自动启动网页（collection.yaml中central.dashboard=true），没有独立查看模式时最后一台F1的stop会关闭网页。
 
 机器人关机后单独查看：在6000d项目目录执行 `./dashboard_start.sh`，后台保持原18976网页；关闭用 `./dashboard_stop.sh`。可用 `--root /绝对路径/子集/mocap_data` 选择已保存子集。独立模式不会被机器人退出/租约超时关闭，也不启动接收或运动服务；若关闭独立模式时仍有采集会话需要网页，则保留自动网页。Windows沿用原SSH转发和登录密钥。
@@ -16,18 +16,18 @@ systemctl --user status pico-dashboard-central --no-pager
 6000d 本机浏览器打开 **http://127.0.0.1:18976/**。在自己的6000d终端读取登录密钥：
 
 ```bash
-cat /home/xx_100872445/F1/PICO/private_review_D070/access.token
+cat /home/user/F1/PICO/private_review_D070/access.token
 ```
 
 把密钥填入网页登录框；不要发到聊天、截图、URL或共享日志。密钥文件权限600、数据根目录700。
 数据、视频、日志及标注 API 均需认证，浏览器会话 Cookie 为 HttpOnly、SameSite=Strict。
 
-Windows 日常访问推荐一次性安装自动重连脚本，见 [README 的 Windows 自动隧道步骤](../README.md#2-windows-一次性安装自动隧道推荐)。脚本使用已验证的 `10.130.153.114:22`，登录 Windows 后运行，不依赖 VS Code；支持暂停/恢复/卸载，不改变6000d网页随采集会话启停的规则。尚需用户在Windows本机安装，不是服务器端自动完成。
+Windows 日常访问推荐一次性安装自动重连脚本，见 [README 的 Windows 自动隧道步骤](../README.md#2-windows-一次性安装自动隧道推荐)。脚本使用已验证的 `192.0.2.1:22`，登录 Windows 后运行，不依赖 VS Code；支持暂停/恢复/卸载，不改变6000d网页随采集会话启停的规则。尚需用户在Windows本机安装，不是服务器端自动完成。
 
 如果临时手动转发，而未启用上述自动隧道，则在**个人电脑终端**执行：
 
 ```bash
-ssh -N -o ExitOnForwardFailure=yes -L 127.0.0.1:18976:127.0.0.1:18976 xx_100872445@<6000d的SSH地址或别名>
+ssh -N -o ExitOnForwardFailure=yes -L 127.0.0.1:18976:127.0.0.1:18976 user@<6000d的SSH地址或别名>
 ```
 
 然后仍打开 `http://127.0.0.1:18976/`。这里隧道目的地是6000d，**不是F1_D070**。

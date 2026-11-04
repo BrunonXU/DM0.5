@@ -170,7 +170,7 @@ tracking error和时序排除闭环与deadline。`q_model`先反转指向模型/
 在6000D运行：
 
 ```bash
-cd /home/xza_100850113/projects/g2_robot
+cd /home/user/projects/g2_robot
 ./scripts/update_motion_dashboard.sh
 ./scripts/serve_motion_dashboard.sh --port 8765
 ```

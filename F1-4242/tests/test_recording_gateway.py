@@ -47,8 +47,8 @@ def test_media_is_confined_and_sources_do_not_need_robot_control(tmp_path):
             response=conn.getresponse();assert response.status==206;assert response.getheader('Content-Range')=='bytes 2-5/10';assert response.read()==b'2345'
             conn.request('GET',f'/api/data/video/{eid}/head.mp4',headers={'Range':'bytes=99-'})
             response=conn.getresponse();assert response.status==416;response.read()
-            conn.request('POST','/api/recording/start',body='{}',headers={'Origin':f'http://127.0.0.1:{server.server_port}','X-F1-Request':'1','Content-Type':'application/json'})
-            response=conn.getresponse();assert response.status==401;response.read()
+            conn.request('POST','/api/recording/start',body='{}',headers={'Origin':'http://wrong-origin.invalid','X-F1-Request':'1','Content-Type':'application/json'})
+            response=conn.getresponse();assert response.status==403;response.read()
             assert app.recording.child is None and app.lease.fd is None
             (output/'escape.mp4').symlink_to(tmp_path/'outside')
             with pytest.raises(ValueError):confined_file(output,'escape.mp4')

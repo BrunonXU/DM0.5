@@ -1,0 +1,92 @@
+{
+  "schema": "f1_ikfk_demo_freeze_v1",
+  "version": "f1_ikfk_demo_v1",
+  "created_utc": "2026-09-16T11:07:24.015740+00:00",
+  "decision": "User accepts current solver as demo baseline with known limitations; defer branch-planning improvements and further coverage expansion.",
+  "scope": "arm FK/IK mathematical baseline; not a robot deployment or formal training-data approval",
+  "files": [
+    {
+      "source_path": "/home/user/projects/F1/foam_sort_whole_body/robot/kinematics.py",
+      "snapshot_path": "snapshot/kinematics.py",
+      "sha256": "c9e4acd0bbcdf05c263f9ab6a1dacd24caeb91a6adf440faabedb9db1d5cdd36"
+    },
+    {
+      "source_path": "/home/user/projects/F1/reference/20260916_kinematics/files/home/user/workspace/f1/install/motor_ctl/share/motor_ctl/ccs_m6_40.MvKDCfg",
+      "snapshot_path": "snapshot/ccs_m6_40.MvKDCfg",
+      "sha256": "ce20b1a80974c3ed58cdac4973152625096c8ad93a779e5fd4108c26ce19bd52"
+    }
+  ],
+  "solver_options": {
+    "position_tolerance_mm": 0.01,
+    "rotation_tolerance_deg": 0.001,
+    "max_iterations": 80,
+    "fallback_max_iterations": 150,
+    "fallback_reference_weight": 1e-10
+  },
+  "contract": {
+    "state_dim": 19,
+    "physical_action_dim": 23,
+    "model_action_dim": 32,
+    "horizon": 50,
+    "execute_steps": 20,
+    "data_hz": 30,
+    "joint_unit": "degree",
+    "translation_unit": "m",
+    "rotation6d": "first_two_matrix_rows",
+    "frame": "native_per_arm_FK_reference",
+    "anchor": "one observation FK anchor for the whole chunk",
+    "reference": "current feedback, then previous accepted solution",
+    "lower_deg": [
+      -178.0,
+      -94.0,
+      -178.0,
+      -145.0,
+      -178.0,
+      -60.0,
+      -90.0
+    ],
+    "upper_deg": [
+      178.0,
+      120.0,
+      178.0,
+      60.0,
+      178.0,
+      60.0,
+      90.0
+    ],
+    "wrist_constraint": "1.025*abs(J6)+abs(J7)<=110.5 degrees",
+    "on_ik_rejection": "no joint command; prefix API rejects the whole requested prefix"
+  },
+  "environment_verified_on_6000d": {
+    "python": "3.12.13",
+    "numpy": "2.4.6",
+    "scipy": "1.18.0"
+  },
+  "known_limitations": {
+    "tested_recordings": 72,
+    "additional64_calls": 146600,
+    "additional64_rejections": 76,
+    "rejected_h50_blocks": 3,
+    "rejections_in_first20": 9,
+    "joint_jump_review_flags": 8,
+    "robot_runtime_verified": false,
+    "collision_checking": false,
+    "multi_branch_lookahead_implemented": false,
+    "whole_body_rejection_handling_integrated": false
+  },
+  "source_evidence": {
+    "results/kinematics_validation_20260916/report.json": "51e08c71239d4cd0380d00a34bb65bd2f9c498afd704643196a8903707cea354",
+    "results/continuous_ik_20260916/full_v4/report.json": "7bab4ada1e6f6c7341a54a04211957503ff0616e900b54b9c9cb8c9d7c0053aa",
+    "results/continuous_ik_20260916/full_v4/independent_verification.json": "fc111d2ecb57da601ff3b9010c34d837abb4e5136460280fd295ffc70bcb23e2",
+    "results/ik_coverage64_20260916/report.json": "053b9617f40f98017904bbc6385b418d827bf0c86174640f6d87392994eba55e",
+    "results/ik_coverage64_20260916/diagnosis.json": "5a4ffe8af5bfbcacc0ad6e8fd783220ed84104bac0cc0ca2490cfdd1ea18547f"
+  },
+  "checks": {
+    "solver_unchanged_from_full_v4_and_coverage64": true,
+    "snapshot_hash_match": true,
+    "frozen_import_and_two_arm_fk_match": true
+  },
+  "production_code_changed": false,
+  "robot_commands_sent": 0,
+  "training_approved": false
+}

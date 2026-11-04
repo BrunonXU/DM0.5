@@ -1,0 +1,138 @@
+{
+  "cluster": {
+    "num_nodes": 1,
+    "component_placement": {
+      "actor": {
+        "node_group": "f1_cpu",
+        "placement": "0"
+      },
+      "rollout": {
+        "node_group": "f1_cpu",
+        "placement": "0"
+      },
+      "env": {
+        "node_group": "f1_cpu",
+        "placement": "0"
+      }
+    },
+    "node_groups": [
+      {
+        "label": "f1_cpu",
+        "node_ranks": "0",
+        "ignore_hardware": true,
+        "env_configs": [
+          {
+            "node_ranks": "0",
+            "env_vars": [
+              {
+                "PYTHONPATH": "${oc.env:F1_RLT_TASK_SRC}:${f1.core_root}"
+              },
+              {
+                "CUDA_VISIBLE_DEVICES": ""
+              },
+              {
+                "OMP_NUM_THREADS": "2"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "actor": {
+    "sync_weight_no_wait": false
+  },
+  "runner": {
+    "max_epochs": 10000,
+    "max_steps": 10000,
+    "weight_sync_interval": 10,
+    "val_check_interval": -1,
+    "save_interval": 25,
+    "logger": {
+      "logger_backends": [
+        "wandb"
+      ],
+      "project_name": "f1_complexytoys",
+      "wandb_entity": "robotics-example",
+      "experiment_name": "b1250-local-online-r5",
+      "log_path": "/u01/user/runs/f1-local-iteration-20261028-r1/online-r5"
+    },
+    "resume_dir": "/u01/user/runs/f1-local-iteration-20261028-r1/online-r5/b1250-local-online-r5/checkpoints/global_step_3"
+  },
+  "f1": {
+    "core_root": "/home/user/projects/vendor/RLinf-d00fe72060a5",
+    "initial_head": "/u01/user/runs/f1-rlt-dagger-success-20261026-r1/bc-audit/export",
+    "raw_root": "/u01/user/datasets/f1-rlt-local-v2/raw",
+    "cache_root": "/u01/user/runs/f1-local-iteration-20261028-r1/replay-r3",
+    "snapshot_root": "/u01/user/runs/f1-rlt-local-v2/snapshots",
+    "feature_endpoint": "ws://127.0.0.1:8138/rlt/features",
+    "cpu_threads": 4,
+    "max_replay_transitions": 10000,
+    "min_replay_transitions": 32,
+    "publish_updates": true,
+    "q_guidance_audit": null,
+    "training": {
+      "seed": 20261026,
+      "model": {
+        "z_dim": 2048,
+        "proprio_dim": 8,
+        "action_dim": 10,
+        "chunk_len": 16,
+        "ref_chunk_len": 50,
+        "fixed_std": 0.002
+      },
+      "learning_rate": 0.0001,
+      "clip_grad": 10.0,
+      "tau": 0.005,
+      "actor_update_interval": 1,
+      "batch_size": 64,
+      "reference_dropout_prob": 0.5,
+      "bc_weight": 5.0,
+      "q_weight": 0.1,
+      "enable_q_guidance": false
+    },
+    "replay": {
+      "gamma_per_step": 0.999,
+      "action_norm_stats": {
+        "mean": [
+          0.0009015661944367909,
+          -5.049396813364019e-05,
+          0.0010192114100583795
+        ],
+        "std": [
+          0.02858230413965713,
+          0.01953874114280076,
+          0.018747437711294036
+        ],
+        "rotation": "identity",
+        "gripper": "(g-50)/50",
+        "scope": "training split anchored windows only"
+      },
+      "feature_identity": {
+        "model_id": "f1-toys-rlt-sync-9fde4ada0b512888",
+        "model_version": "9fde4ada0b5128882e01664cb75594c2c9c43a156cf78d9c338c78a70a83b43a",
+        "rlt": {
+          "actor_manifest_sha256": "81e63f4f68213cabb077a9db7349fc2f5d2fd4eef98434601cad6507ba403f23",
+          "actor_version": "83bd438519da8e1b00dd351882cb9c8a3f761c83f34d2f004e573c4b9f022c9a",
+          "base_model_version": "81444e7071723c1fde8ca397a90f1bdd21868905b51c96252af0c54a3a8669d5",
+          "checkpoint_step": 400,
+          "control_mode": "rlt_hil_supervised",
+          "encoder_manifest_sha256": "227f148959b7f146c94c373a9fa82548faf6066d74a8baebd13481075be473c8",
+          "execution_mode": "sync_c16_hold_then_execute",
+          "q_guidance_updates": 0,
+          "training_phase": "bc"
+        }
+      },
+      "validation_episodes": [
+        "f1_hil_20261028T031108Z_844ed006"
+      ],
+      "reviews_root": "/u01/user/datasets/f1-rlt-local-v2/reviews"
+    },
+    "updates_per_transition": 4,
+    "demo_fraction": 0.0,
+    "data_policy": "/u01/user/staging/f1-local-iteration-20261028-r3/configs/rlt_local_data_policy_20261028.json",
+    "evaluation_interval": 10,
+    "kinematic_gate": true,
+    "promoted_checkpoint_root": "/u01/user/runs/f1-local-iteration-20261028-r1/promoted-checkpoints"
+  }
+}

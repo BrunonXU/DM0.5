@@ -1,0 +1,21 @@
+# Local credentials: never stage, publish, or include in generated guides.
+/API.MD
+/api.md
+/.env
+/.env.*
+!/configs/*.example.env
+/configs/*.local.*
+/secrets/
+
+# Independent, pinned upstream checkouts; configs/upstreams.lock.json is tracked.
+/third_party/
+
+# Local environments and generated evidence (keep references in agent/experiments).
+/.venv/
+/.cache/
+/artifacts/
+/runs/
+/models/
+/weights/
+__pycache__/
+*.py[cod]

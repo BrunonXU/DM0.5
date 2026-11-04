@@ -88,7 +88,7 @@ v1按每批原录制的采集时间排序，后10%作验证，固定720训练/81
 
 ## 3. 脚本、依赖与产物
 
-全部离线审计在6000D运行，工作目录为 `/home/xza_100850113/projects/F1/foam_sort_whole_body`。Python 3.10+独立环境依赖见[requirements-audit.txt](../../requirements-audit.txt)：`mcap==1.4.0`、`mcap-ros2-support==0.5.7`、`numpy==2.2.6`、`PyYAML==6.0.3`、`Pillow==12.3.0`。视频渲染另用`ffmpeg/ffprobe`；Bash包装器用`flock`，无需在6000D安装F1整套ROS。
+全部离线审计在6000D运行，工作目录为 `/home/user/projects/F1/foam_sort_whole_body`。Python 3.10+独立环境依赖见[requirements-audit.txt](../../requirements-audit.txt)：`mcap==1.4.0`、`mcap-ros2-support==0.5.7`、`numpy==2.2.6`、`PyYAML==6.0.3`、`Pillow==12.3.0`。视频渲染另用`ffmpeg/ffprobe`；Bash包装器用`flock`，无需在6000D安装F1整套ROS。
 
 历史解释器为`/tmp/f1-foam-audit-venv/bin/python`，跨重启须检查；可用`F1_AUDIT_PYTHON`指定已验证环境。F1现场复用自己的系统Python/ROS/消息overlay，不复制6000D的venv。
 
@@ -117,7 +117,7 @@ v1按每批原录制的采集时间排序，后10%作验证，固定720训练/81
 
 ```bash
 set -euo pipefail
-cd /home/xza_100850113/projects/F1/foam_sort_whole_body
+cd /home/user/projects/F1/foam_sort_whole_body
 export F1_AUDIT_PYTHON=/tmp/f1-foam-audit-venv/bin/python
 test -x "$F1_AUDIT_PYTHON"
 export F1_PIPELINE_RUN="$PWD/results/reproduce_20260915"

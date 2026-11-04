@@ -20,9 +20,9 @@ related: [../../../core/TRAINING_AND_DEPLOYMENT_CONTRACT.md]
 - [Validation v1实验报告](VALIDATION_REPORT.md)
 - [75K部署与视觉门历史快照](CHECKPOINT_75K_DEPLOYMENT_AND_VISUAL_GATE.md)
 - [70K/75K视觉增强配对测试](VISUAL_AUG_PAIRED_REPORT.md)
-- RTC、compile与真机实验已移到 [`../../../robot/experiments/`](../../../robot/experiments/)；
-  通用运行时原理见 [`../../../robot/`](../../../robot/)，真机事故见
-  [`../../../robot/incidents/`](../../../robot/incidents/)。
+- RTC、compile与真机实验已移到 [`../../../robot/experiments/`](../../../robot/experiments)；
+  通用运行时原理见 [`../../../robot/`](../../../robot)，真机事故见
+  [`../../../robot/incidents/`](../../../robot/incidents)。
 
 ## Motivation
 

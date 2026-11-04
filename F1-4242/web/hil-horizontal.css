@@ -1,0 +1,130 @@
+/* HIL v4: approved desktop layout. Other workspaces and policy HIL keep their styles. */
+body[data-page=hil]:has(.hil-horizontal){--bg:#fff;--surface:#fff;--sidebar:#f4f3ef;--line:#e6e2d9;--ink:#292925;--muted:#827d72;background:#fff}
+body:has(.hil-horizontal) .sidebar{width:208px;padding:26px 16px;border:0}
+body:has(.hil-horizontal) .infra-brand{margin:4px 12px 40px}
+body:has(.hil-horizontal) .infra-brand small,body:has(.hil-horizontal) .workspace-footer{display:none}
+body:has(.hil-horizontal) .sidebar .nav-toggle{top:70px;right:15px}
+body:has(.hil-horizontal) .sidebar-label{font-size:12px;margin:10px 14px 14px}
+body:has(.hil-horizontal) .nav-item{font-size:15px;padding:14px 16px;border-radius:8px}
+body:has(.hil-horizontal) .nav-item.active{background:#e7e5df;color:#292925}
+body:has(.hil-horizontal) .nav-item.active:after{display:none}
+body:has(.hil-horizontal) .workspace{margin-left:208px;width:calc(100% - 208px)}
+body:has(.hil-horizontal) .topbar{min-height:68px;padding:16px 34px;border-bottom:1px solid #eeece6;background:white;font-size:14px}
+body:has(.hil-horizontal) .topbar .button,body:has(.hil-horizontal) .topbar .pill,body:has(.hil-horizontal) .robot-label{font-size:13px}
+body:has(.hil-horizontal) main{padding:26px 34px 34px;max-width:1800px}
+body.nav-collapsed:has(.hil-horizontal) .sidebar{width:76px;padding:62px 10px 20px}
+body.nav-collapsed:has(.hil-horizontal) .workspace{margin-left:76px;width:calc(100% - 76px)}
+body.nav-collapsed:has(.hil-horizontal) .sidebar .nav-toggle{top:14px}
+#hil-root.hil-horizontal{font-size:15px;line-height:1.6;min-width:0}
+.hil-horizontal h1,.hil-horizontal h2,.hil-horizontal h3{font-family:inherit;letter-spacing:0;color:var(--ink)}
+.hil-horizontal h1{font-size:30px;font-weight:650}.hil-horizontal h2{font-size:18px}.hil-horizontal h3{font-size:16px}
+.hil-horizontal .button,.hil-workspace-dialog .button{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:41px;padding:9px 15px;border:1px solid #dedcd4;border-radius:8px;background:white;color:#4b4a43;font-size:14px;line-height:1.5;box-shadow:none}
+.hil-horizontal .button:hover,.hil-workspace-dialog .button:hover{background:#f5f4ef;text-decoration:none}
+.hil-horizontal .button.primary,.hil-workspace-dialog .button.primary{background:#292925;border-color:#292925;color:white}
+.hil-horizontal svg:not(.f710-pad),.hil-workspace-dialog svg{width:18px;height:18px;flex:none}
+.hil-horizontal .card{box-shadow:none;border:1px solid var(--line);border-radius:12px}
+.hil-horizontal .hil-workspace-heading{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+.hil-horizontal .hil-back{border:0;padding:0;min-height:32px;width:28px;font-size:24px;color:var(--muted)}
+.hil-execution{font-size:13px;padding:4px 9px;background:#f4f3ef;border-radius:5px;color:var(--muted)}
+.hil-featurebar{display:flex;justify-content:space-between;align-items:center;gap:20px;padding-bottom:16px;border-bottom:1px solid var(--line);margin-bottom:26px}
+.hil-featurebar [role=tablist]{display:flex;gap:10px}
+.hil-horizontal .hil-featurebar [role=tab]{min-height:48px;background:#faf9f6;padding:12px 20px;font-size:15px}
+.hil-horizontal .hil-featurebar [aria-selected=true]{background:#292925;color:#fff;border-color:#292925}
+.hil-section-heading{display:flex;justify-content:space-between;align-items:center;gap:20px;margin:0 0 16px}
+.hil-shortcuts{display:flex;gap:10px}
+#hil-persistent-status{font-size:13px;color:var(--muted);margin:-8px 0 24px;padding:0;overflow-wrap:anywhere}
+#hil-persistent-status::before{content:'●';font-size:9px;margin-right:8px}
+#hil-persistent-status.hil-status-warning{padding:12px 16px;background:#faf3e5;border-radius:8px;color:#885e24}
+.hil-horizontal .hil-overview{display:grid;grid-template-columns:minmax(0,1fr) minmax(120px,.9fr) minmax(0,1.2fr);column-gap:24px;row-gap:5px;background:#f8f7f3;border:1px solid #efede7;padding:22px 28px;margin:0 0 26px;min-height:120px;align-items:center}
+.hil-horizontal .hil-overview.tone-fault{background:#fff5f1;border-color:#edd0c6}
+.hil-horizontal .hil-overview.tone-waiting{background:#fbf8f1}
+.hil-horizontal .hil-title{grid-column:1;grid-row:1;display:block}
+.hil-horizontal .hil-overview h2{font-size:24px;margin:0;color:var(--ink)}
+.hil-horizontal .hil-title .hil-mode{display:none}
+.hil-horizontal .hil-context{grid-column:1;grid-row:2;font-size:14px;color:var(--muted);gap:8px;margin:0;flex-wrap:wrap}
+.hil-record-count{grid-column:2;grid-row:1/3;border-left:1px solid #e1ddd2;padding-left:26px;font-size:14px}
+.hil-record-count strong{font-size:38px;font-weight:500;line-height:1.3;font-variant-numeric:tabular-nums}.hil-record-count small{display:block;font-size:13px;color:var(--muted);margin-top:6px}
+.hil-horizontal .hil-overview .hil-next,.hil-live-instruction{grid-column:3;grid-row:1/3;margin:0;padding-left:24px;border-left:1px solid #e1ddd2;font-size:14px;line-height:1.9}
+.hil-horizontal .hil-overview:not(:has(.hil-record-count)) .hil-next,.hil-horizontal .hil-overview:not(:has(.hil-record-count)) .hil-live-instruction{grid-column:2/4}
+.hil-horizontal kbd{font:11px ui-monospace,monospace;padding:3px 6px;border:1px solid #dcd7cb;border-radius:4px;background:white}
+.hil-horizontal .hil-overview>.notice,.hil-horizontal .hil-writer-error,.hil-horizontal .hil-session-mismatch,.hil-horizontal .hil-intervention{grid-column:1/-1;overflow-wrap:anywhere}
+.hil-horizontal .hil-session-mismatch{padding:10px 14px;background:#fbedd9;border-radius:6px;margin-bottom:10px}
+.hil-horizontal .hil-session-mismatch a{display:inline-block;border:1px solid #d5b98a;padding:4px 10px;margin-left:12px;border-radius:6px}
+.hil-horizontal [data-home-reason]>summary,.hil-horizontal .hil-writer-error>summary{display:inline-block;padding:7px 12px;border:1px solid #d8c8b2;border-radius:6px;cursor:pointer;margin:8px 0}
+.hil-horizontal .camera-section{position:relative;margin:0}
+.hil-horizontal .camera-section-heading{margin-bottom:16px;min-height:42px}
+.hil-camera-actions{display:flex;gap:10px}
+.hil-horizontal .camera-tools{display:none}
+.hil-horizontal [data-camera-preview] .camera-grid{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,4.35fr) minmax(0,3fr);gap:16px;align-items:stretch}
+.hil-horizontal .camera-card{border-radius:10px;background:#f7f5ef}
+.hil-horizontal [data-camera-preview] .camera-placeholder{height:240px;aspect-ratio:auto}
+.hil-horizontal .camera-title{padding:12px 14px;font-size:14px;min-height:45px}
+.hil-horizontal [data-camera-age]{display:none}
+.hil-horizontal .hil-show-camera-info [data-camera-age]{display:inline;font-size:12px}
+.hil-horizontal .hil-show-camera-info .camera-title{flex-wrap:wrap}
+.hil-zoom-hint{position:absolute;bottom:10px;right:10px;z-index:1;display:grid;place-items:center;width:32px;height:32px;border-radius:7px;background:#fffef6e8;color:#46453f;pointer-events:none;font-size:24px!important}
+#hil-camera-info{font-size:13px;color:var(--muted);padding:12px 0}
+.hil-horizontal .hil-health{margin:0;padding:14px 0 0;border:0;gap:22px;display:flex;flex-wrap:wrap}
+.hil-horizontal .hil-health-item{display:inline-flex!important;align-items:center;font-size:12px!important;gap:6px;margin:0!important}
+.hil-horizontal .hil-health-item b{font-weight:400}.hil-horizontal .health-dot{width:6px;height:6px}
+.hil-horizontal .hil-session{margin:24px 0 0;border:0;border-top:1px solid var(--line);border-radius:0;padding:16px 0 0;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}
+.hil-horizontal .hil-session[data-active=true]>.hil-command-title{display:none}
+.hil-horizontal .hil-session-help{font-size:13px;order:2;width:100%}
+.hil-horizontal .hil-session-help summary{display:inline-block;border:1px solid var(--line);padding:6px 12px;border-radius:6px;cursor:pointer}
+.hil-horizontal .hil-session-help p{max-width:900px;margin-top:12px}
+.hil-horizontal .hil-last-saved{display:flex;width:100%;align-items:center;justify-content:space-between;gap:15px;font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.hil-command-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:26px}
+.hil-horizontal .hil-command-tabs button{justify-content:flex-start;text-align:left;gap:16px;padding:18px 20px;min-height:90px;background:white}
+.hil-horizontal .hil-command-tabs button[aria-pressed=true]{background:#f5f3ee;border-color:#c8bfad}
+.hil-horizontal .hil-step-number{background:#eeece4;color:#8f8878;font-size:14px;width:32px;height:32px;font-weight:500}
+.hil-horizontal [aria-pressed=true] .hil-step-number{background:#292925;color:white}
+.hil-command-tabs strong{font-size:16px;font-weight:600}.hil-command-tabs small{display:block;margin-top:4px;font-size:13px}
+.hil-horizontal .hil-step{border:1px solid var(--line);border-radius:12px;padding:0;margin-bottom:20px;overflow:hidden}
+.hil-horizontal .hil-step>summary{display:none}
+.hil-command-header{display:flex;align-items:center;gap:16px;padding:14px 20px;background:#f5f3ed;border-bottom:1px solid var(--line)}
+.hil-command-header>span{font:12px ui-monospace,monospace;color:var(--muted)}.hil-command-header button{margin-left:auto}
+.hil-horizontal .hil-step-content{padding:0}
+.hil-horizontal .hil-step-content pre{margin:0;padding:28px 24px;background:#faf9f6;border-radius:0;font-size:14px;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere;font-family:ui-monospace,Consolas,monospace}
+.hil-horizontal .hil-step-content p{padding:14px 22px;font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin:0}
+.hil-command-navigation{display:flex;justify-content:flex-end;gap:12px}
+.hil-horizontal .hil-teaching{margin:0;padding:24px;border:1px solid var(--line);border-radius:12px}
+.hil-horizontal .hil-teaching>summary{display:none}
+.hil-horizontal .hil-teaching-grid{margin:0;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px}
+.hil-horizontal .f710-pad{margin-top:24px;max-height:375px}
+.hil-horizontal .hil-teaching-stage{height:280px;min-height:0;border-radius:12px}
+.hil-horizontal .hil-lesson-copy{min-height:130px}
+.hil-horizontal .hil-lesson-copy h3{font-size:23px;margin:10px 0}.hil-horizontal .hil-lesson-copy p{font-size:15px;line-height:1.8}
+.hil-horizontal .hil-lesson-footer{font-size:12px;gap:12px;padding-top:14px}
+.hil-diagnostic-columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);gap:28px;align-items:start}
+.hil-diagnostic-card{border:1px solid var(--line);border-radius:12px;overflow:hidden;min-width:0}
+.hil-diagnostic-card>h3{padding:18px 22px;border-bottom:1px solid var(--line);font-weight:600}
+.hil-diagnostic-card dl,#hil-diagnostic-health{margin:0;padding:0 22px}
+.hil-diagnostic-card dl>div,#hil-diagnostic-health>div{display:flex;align-items:start;justify-content:space-between;gap:20px;padding:13px 0;border-bottom:1px solid var(--line);font-size:14px}
+.hil-diagnostic-card dl>div:last-child,#hil-diagnostic-health>div:last-child{border:0}
+.hil-diagnostic-card dt{color:var(--muted);flex:none}.hil-diagnostic-card dd{margin:0;text-align:right;overflow-wrap:anywhere;min-width:0}
+.hil-diagnostic-group{border-top:1px solid var(--line)}
+.hil-diagnostic-group>summary,.hil-horizontal .hil-recent>summary{cursor:pointer;display:flex;justify-content:space-between;gap:15px;padding:18px 22px;font-size:15px;list-style:none}
+.hil-diagnostic-group>summary:hover{background:#faf9f6}.hil-diagnostic-group[open]>summary span{transform:rotate(45deg)}
+.hil-diagnostic-card pre{font:12px/1.8 ui-monospace,monospace;white-space:pre-wrap;overflow-wrap:anywhere;max-height:380px;overflow:auto;padding:18px 22px;margin:0;background:#faf9f6}
+.hil-horizontal #hil-events{padding:0 22px;max-height:300px;overflow:auto}.hil-horizontal #hil-events>.section-note{display:none}
+.hil-horizontal .hil-event{padding:18px 0;gap:18px}.hil-horizontal .hil-event span{overflow-wrap:anywhere;min-width:0}
+.hil-horizontal .hil-recent{margin-top:24px}.hil-horizontal #hil-clips,.hil-horizontal #hil-player{padding:0 22px}
+.hil-home{max-width:1060px;margin:110px auto 0}.hil-home h1{font-size:28px;margin-bottom:30px}
+.hil-horizontal .hil-route-card{padding:26px 24px;min-height:210px;border-radius:13px;background:white;display:flex;flex-direction:column}
+.hil-horizontal .hil-route-card h3{font-size:22px;margin:0 0 12px}
+.hil-horizontal .hil-route-card p{font-size:15px;color:var(--muted)}
+.hil-horizontal .hil-route-tag{margin-top:auto;padding-top:30px;display:flex;align-items:center;justify-content:space-between;color:#726a5c;font-size:21px}
+.hil-horizontal .hil-route-tag>span:last-child{margin-left:auto}.hil-route-badge{font-size:13px;background:#f4efe5;color:#8e7041;padding:4px 8px;border-radius:5px}
+.hil-horizontal .hil-active-session{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding:16px}
+.hil-workspace-dialog{width:520px;max-width:90vw;border:1px solid #e3ded4;border-radius:16px;padding:30px;color:#292925;background:white;box-shadow:0 18px 70px #0002}
+.hil-workspace-dialog::backdrop{background:#25241e66}.hil-workspace-dialog h2{font-size:24px;margin:0 0 18px}
+.hil-dialog-body{font-size:15px;line-height:1.9;color:#746d60;overflow-wrap:anywhere}.hil-dialog-body p+p{margin-top:12px}
+.hil-dialog-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:28px}
+@media(min-width:1700px){.hil-horizontal [data-camera-preview] .camera-placeholder{height:320px}.hil-horizontal .hil-teaching-stage{height:370px}}
+@media(min-width:1000px) and (max-width:1300px){body:has(.hil-horizontal) .sidebar{width:184px}body:has(.hil-horizontal) .workspace{margin-left:184px;width:calc(100% - 184px)}body:has(.hil-horizontal) main{padding:24px}.hil-horizontal [data-camera-preview] .camera-placeholder{height:200px}.hil-horizontal .hil-teaching-stage{height:245px}.hil-horizontal .hil-featurebar [role=tab]{padding:11px 14px}.hil-horizontal .hil-overview{padding:20px;column-gap:18px}.hil-horizontal .hil-overview h2{font-size:22px}.hil-horizontal .hil-lesson-copy{min-height:145px}}
+body:has(.hil-horizontal) .topbar{padding-top:11px;padding-bottom:11px}
+.hil-horizontal .hil-workspace-heading{margin-bottom:20px}
+.hil-horizontal .hil-featurebar{margin-bottom:22px}
+.hil-horizontal .hil-session{margin-top:18px;padding-top:12px}
+.hil-horizontal .hil-last-saved{margin-top:0}
+.hil-horizontal .hil-section-heading>div{display:flex;gap:10px}

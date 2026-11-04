@@ -160,11 +160,11 @@ class StateStore:
                                   'frame_id': self.cameras.get(name, {}).get('frame_id', 0)+1}
 
     def snapshot(self):
-        now = self.clock()
         def age(item):
             return {k: deepcopy(v) for k, v in item.items() if k not in ('data', 'received_at')} | {
                 'age_s': max(0.0, now-item['received_at'])}
         with self.lock:
+            now = self.clock()
             return {
                 'connected': self.connected, 'error': self.error,
                 'snapshot_monotonic_s': now,

@@ -178,6 +178,22 @@ class HILSupervisor:
 
         raise RuntimeError(f"unhandled HIL state: {self.state}")
 
+    def begin_policy_replan(self, now: int) -> HILUpdate:
+        """Retain existing POLICY ownership, revoke its plan and require fresh input.
+
+        This is not authorization from SAFE_HOLD or human control. The caller
+        must commit a measured hold before enabling a new inference request.
+        """
+        if self.state is not HILState.POLICY:
+            raise RuntimeError('Policy replan requires current policy ownership')
+        self.policy_epoch += 1
+        self.last_policy_request_id = None
+        self._fresh_request = None
+        self.handoff_monotonic_ns = now
+        self.state = HILState.HANDOFF_HOLD
+        self.hold_reason = 'rtc_waiting_for_fresh_policy'
+        return self._update(False, False, transition='rtc_replan_started', reason=self.hold_reason)
+
     def register_fresh_policy_request(
         self, *, policy_epoch: int, request_id: int, observation_id: int,
         observation_monotonic_ns: int, request_monotonic_ns: int,

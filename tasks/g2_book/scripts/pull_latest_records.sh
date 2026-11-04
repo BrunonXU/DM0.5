@@ -6,7 +6,7 @@ set -Eeuo pipefail
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 TASK_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)"
 LOCAL_ROOT="$TASK_ROOT/data"
-G2_HOST="${G2_HOST:-agi@10.130.86.13}"
+G2_HOST="${G2_HOST:-agi@192.0.2.8}"
 REMOTE_ROOT="${G2_RECORD_ROOT:-/data/record}"
 COUNT="${1:-2}"
 

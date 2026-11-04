@@ -23,7 +23,7 @@ related: [../CURRENT_STATUS.md]
 ---
 
 你正在接手我的G2 / DM0.5 LoRA V2项目，请先读文件和实际代码，不要根据旧聊天或旧文档重做已经解决的问题。
-本机项目根目录是 `/home/xza_100850113/projects`。先读适用的AGENTS.md；不要覆盖已有工作区改动，不要擅自commit。
+本机项目根目录是 `/home/user/projects`。先读适用的AGENTS.md；不要覆盖已有工作区改动，不要擅自commit。
 
 ## 必读顺序
 
@@ -53,7 +53,7 @@ F710离散开合意图仍可使用事件驱动move_ee_pos，不能把推理结�
 - 双臂保留jerk weight10、C2 cubic_spline、stationary_minjerk_v1/0.0035rad。没有改模型权重，但不能说完全无后处理，也未证明所有任务成功率不变。
 - Control唯一拥有Robot；Policy唯一拥有Camera/图像/网络，34D shared-memory ring传state。禁止为双手、RTC或HIL另开Robot owner。
 - 当前入口 `g2_robot/scripts/19_powered_sync_dual_side_17d.sh`：默认60秒，支持 `--duration-seconds N` 或 `--continuous`；旧 `_5s.sh` 只是兼容包装。不要写死5秒，不要误用仍走旧Split的05。现场命令以操作指南第0节为准。
-- 服务既有布局：6000D 10.130.153.114，Sync GPU7/7892，RTC GPU3/7893；binary WebSocket、native JPEG/PNG、5步Euler、fixed-prefix compile。09-07文档审计没有重查容器在线，要用时先只读核验。
+- 服务既有布局：6000D 192.0.2.1，Sync GPU7/7892，RTC GPU3/7893；binary WebSocket、native JPEG/PNG、5步Euler、fixed-prefix compile。09-07文档审计没有重查容器在线，要用时先只读核验。
 
 ## 证据与限制
 
@@ -97,6 +97,6 @@ O10重启后零反馈事故仍需注意，当前位置hold不能仅因时间戳�
 我的偏好是尽量保留模型动作能力；不要擅加动作阈值、deadband、硬导数限幅、手部冻结或固定测试时长。
 这不授权删除既有硬件保护。修改SDK接口前按g2_robot/AGENTS.md核对官方资料，未知要明确标注。
 2026-10-12本地目录归并后，遥操源码位于 `DAgger/G2/teleop/`。下述远端路径是历史部署记录，目录整理未迁移实机。
-6000D的g2_robot映射到G2 `agi@10.130.86.13:/home/agi/xza/DM0.5`，G2Teleop映射到 `/home/agi/xza/G2Teleop`。
+6000D的g2_robot映射到G2 `agi@192.0.2.8:/home/user/xza/DM0.5`，G2Teleop映射到 `/home/user/xza/G2Teleop`。
 同步只scp具体文件，G2禁用apt；不通过SSH执行Robot/GDK/Servo/复位/Powered。修改及无硬件测试后，由我在G2现场执行真机命令。
 09-07这一轮只更新本地文档，没有同步、运行测试或操作机器人。先用几句话确认你读到的当前基线和下一步，再继续我指定的任务。

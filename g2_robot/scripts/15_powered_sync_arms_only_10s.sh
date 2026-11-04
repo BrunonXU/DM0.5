@@ -17,7 +17,7 @@ source "$SCRIPT_DIR/lib/common.sh"
 source "$SCRIPT_DIR/lib/powered_split_runner.sh"
 
 NEWLORA_SYNC_TRANSPORT=websocket-binary \
-NEWLORA_SYNC_ENDPOINT="${NEWLORA_SYNC_ENDPOINT:-ws://10.130.153.114:7892/process_frame}" \
+NEWLORA_SYNC_ENDPOINT="${NEWLORA_SYNC_ENDPOINT:-ws://192.0.2.1:7892/process_frame}" \
 run_powered_split sync \
   --duration-seconds 10 \
   --arms-only \

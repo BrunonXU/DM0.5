@@ -1,4 +1,4 @@
-"""One explicitly confirmed Pico session. Never loaded by GET or boot service."""
+"""One explicitly started Pico session. Never loaded by GET or boot service."""
 import argparse,codecs,fcntl,hashlib,json,math,os,pty,secrets,select,signal,socket,subprocess,time,urllib.request
 from pathlib import Path
 from core import atomic_json
@@ -101,6 +101,11 @@ class Session:
             for fd in opened:os.close(fd)
     def cancelled(self):return self.stopping or (self.folder/'stop.json').exists()
     def await_confirmation(self):
+        # The start click authorizes only this request. Old prepared sessions keep
+        # their original confirmation protocol; boot/GET never creates intent.
+        if getattr(self,'request',{}).get('direct_start') is True:
+            if self.cancelled():return False
+            self.state.update(nonce=None,phase='starting');self.publish();return True
         self.state.update(phase='awaiting_confirmation',nonce=secrets.token_hex(24),confirmation_deadline=time.time()+120)
         self.publish()
         while not self.cancelled():
@@ -174,7 +179,7 @@ class Session:
                 time.sleep(.1)
             if self.cancelled() or not self.await_confirmation():return
             check_hardware()
-            # The browser operator explicitly confirms the original terminal prompt.
+            # The start click authorizes proceeding after the native preflight.
             if self.cancelled():return
             os.write(self.master,b'\n')
             self.state['phase']='waiting_xr'

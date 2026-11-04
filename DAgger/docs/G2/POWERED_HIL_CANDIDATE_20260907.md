@@ -32,7 +32,7 @@ cd $HOME\G2Teleop\hil_shadow_candidate
 G2：
 
 ```bash
-cd /home/agi/xza/G2Teleop
+cd /home/user/xza/G2Teleop
 bash scripts/40_g2_powered_hil.sh
 ```
 
@@ -77,8 +77,8 @@ Windows ACK协议仍用已有枚举，`reason=powered_hil:...`显示接收端状
 
 ## 日志与下一轮判据
 
-- console：`/home/agi/xza/G2Teleop/logs/powered_hil_console.log`
-- 遥测：`/home/agi/xza/DM0.5/logs/telemetry/powered/g2_powered_hil_*.jsonl`
-- episode：`/home/agi/xza/G2Teleop/logs/powered_hil/g2_powered_hil_*/`，journal与payload。
+- console：`/home/user/xza/G2Teleop/logs/powered_hil_console.log`
+- 遥测：`/home/user/xza/DM0.5/logs/telemetry/powered/g2_powered_hil_*.jsonl`
+- episode：`/home/user/xza/G2Teleop/logs/powered_hil/g2_powered_hil_*/`，journal与payload。
 
 用户启动后读取上述真实日志，核对policy SDK输出、START后无旧policy执行、人工动作、退出新观测恢复、Servo时延和三路录制持续性。此次若通过，才是Powered HIL场景验证；DAgger仍需可训练数据审计、聚合、训练和回归评估。

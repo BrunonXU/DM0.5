@@ -44,7 +44,11 @@ def processes():
             stat = (path/'stat').read_text().rsplit(')', 1)[1].split()
             if stat[0] == 'Z':
                 continue
-            found.append(dict(pid=int(path.name), start_ticks=stat[19], started_unix=boot+int(stat[19])/ticks))
+            runtime = None
+            if b'--runtime' in args:
+                runtime = args[args.index(b'--runtime')+1].decode()
+            found.append(dict(pid=int(path.name), start_ticks=stat[19], started_unix=boot+int(stat[19])/ticks,
+                              runtime=runtime))
         except (OSError, ValueError, IndexError):
             continue
     return found
@@ -85,6 +89,27 @@ def parse_tail(text):
 
 
 def guidance(phase, status):
+    if phase == 'episode_sender_update_required' or status.get('hold_reason') == 'episode_sender_update_required':
+        return 'START已收到，但当前sender缺少连续分条协议。请停止Windows sender，执行update_episodes.ps1，看到连续分条更新成功后重新启动sender和F1入口；反复按START无效。'
+    if phase == 'episode_ready': return '当前未录制；整理现场后释放控制，再按 START 开始新的一条。'
+    if phase == 'episode_starting': return '正在准备记录；保持控制释放。'
+    if phase == 'episode_saving': return '正在保存本条；完成后再按 START。提前按键不会排队。'
+    recovery = {
+        'input_wait_reconnect': '等待 sender 和手柄重新连接；重连后松 RB、松开其他按键并让摇杆回中。',
+        'input_wait_release_rb': '松 RB、松开其他按键并让摇杆回中，等待提示后再按 RB。',
+        'input_wait_fresh_packet': '保持松 RB、摇杆回中，等待新鲜输入确认。',
+        'input_wait_press_rb': '输入已确认；重新按 RB，再换安全方向移动。',
+        'input_wait_feedback': '本次 RB 未恢复控制；松 RB、摇杆回中，等机器人反馈恢复后再按 RB。',
+        'input_wait_safe_anchor': '当前实测姿态未通过检查；先松 RB、摇杆回中并排查原因，确认正常后再按 RB。',
+        'input_wait_update_sender': '更新 Windows sender；重连后松 RB、摇杆回中，再按 RB。',
+    }
+    if phase in recovery:
+        cause = str(status.get('recovery_reason') or '')
+        prefix = ('该方向有碰撞风险，候选动作已拦住。' if cause.startswith('manual_candidate_collision') else
+                  '手柄已断开，已暂停控制。' if cause == 'controller_disconnected' else '')
+        recording = ('自由接入不录制。' if status.get('purpose') == 'teleop_play' else
+                     '同一条仍在录制；暂停区间会单独标记。' if status.get('recording', {}).get('phase') == 'recording' else '')
+        return prefix + recovery[phase] + recording + '不要按 START 恢复。'
     if phase == 'not_configured': return '尚未配置 HIL 入口，请先完成本机安装配置。'
     if phase == 'idle': return '展开启动指引，按顺序打开三个终端。'
     if phase == 'failed': return '运行端报告异常；查看最近消息及 F1 终端，排除原因后再启动。'
@@ -94,13 +119,20 @@ def guidance(phase, status):
     if phase == 'awaiting_enter': return '在 F1 现场终端按 Enter，然后等待 sender 模式回执。'
     if phase in ('waiting_for_start', 'waiting_for_teleop_start'):
         if not status.get('input_fresh'): return '等待 sender 数据；依次检查 Windows 隧道和 sender。'
-        return '释放控制后单击 START，'+('进入人工采集。' if phase.endswith('teleop_start') else '开始策略流程。')
-    if phase == 'safe_hold': return '保护保持：先处理下方原因；收到恢复回执后释放控制，再按 START。'
+        return '释放控制后单击 START，'+('进入人工控制。' if phase.endswith('teleop_start') else '开始策略流程。')
+    if phase == 'safe_hold':
+        record_phase = status.get('recording', {}).get('phase')
+        if record_phase == 'recording' and str(status.get('hold_reason') or '').startswith(('ik_rejected:', 'policy_failed:', 'rtc_')):
+            return '策略已停止，本条仍在录制。释放控制后按 START 转人工接管，再按 RB 操作；完成后按↑保存。'
+        recording = ('本条因保护停止正在封存。' if record_phase == 'saving' else
+                     '当前未录制；保护停止不会续录旧条。' if record_phase == 'idle' else
+                     '请查看运行终端确认本条状态；必要时结束运行端。')
+        return recording + '先松 RB，按原始原因排障；不要反复按 START。确认问题已排除且保存完成后，START 只会开新条。'
     if phase in ('handoff_hold', 'manual_hold'): return '正在保持；等待交接条件完成，以 sender 回执为准。'
     if phase == 'policy': return '策略运行中；按 START 请求人工接管。'
     if phase == 'hil_latched':
-        if not status.get('side'): return '十字键选择左臂或右臂并释放，再按住 RB 控臂。'
-        return '按住 RB 并推动摇杆；RT 切换所选夹爪。' if not status.get('rb') else '正在请求控臂；松 RB 保持，仍留在人工模式。'
+        if not status.get('side'): return '松开 RB、摇杆回中，再按住 RB 控制右臂；无需十字键选臂。'
+        return '按住 RB 并推动摇杆控制右臂；RT 切换右夹爪。' if not status.get('rb') else '正在请求控臂；松 RB 保持，仍留在人工模式。'
     return '查看 sender 回执与最近消息，确认当前阶段。'
 
 
@@ -126,6 +158,55 @@ class HILService:
         return [dict(id='robot', title='1 · F1 运行端', where='F1 现场终端', command='bash '+shlex.quote(launcher), hint='基础启动完成后执行；按 Enter，等待 START。'),
             dict(id='tunnel', title='2 · Windows 隧道', where='新开 PowerShell，窗口保持打开', command='ssh -F NUL -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=15 -L 127.0.0.1:7907:127.0.0.1:7906 '+host, hint='连接后无输出可以是正常状态；先不要关闭窗口。'),
             dict(id='sender', title='3 · Windows sender', where='另开 PowerShell', command='cd "$HOME/DAgger-F1"\n.\\scripts\\windows_f1_sender.cmd', hint='收到 F1 模式回执后再按 START。F710 使用 X 模式，左摇杆应控制 X/Y 轴。')]
+
+    def saved_identity(self, saved):
+        if not isinstance(saved, dict) or saved.get('phase') != 'saved':
+            return saved
+        from hil_data import find_run, HILData
+        enriched = dict(saved)
+        try:
+            run = find_run(self, saved['run_id'])
+            row = HILData(self).row(run)
+            if row and row['recording_status'] == 'committed':
+                enriched['data_episode_id'] = row['id']
+                process = row.get('binding', {}).get('process_run_id')
+                if process: enriched['process_run_id'] = process
+        except (OSError, ValueError, KeyError, TypeError):
+            pass
+        return enriched
+
+    def receiver_runtime(self, default, active):
+        """Only installed runtime allowlist entries may supply status/finish files."""
+        roots = {default}
+        try:
+            installation = small_json(self.runtime/'hil-routes.json')
+            routes = installation.get('routes', {})
+            roots.update(Path(item['runtime']).expanduser().resolve()
+                         for item in routes.values() if item.get('runtime'))
+            models = installation.get('installed_policy_models', {})
+            if not isinstance(models, dict):
+                raise ValueError('Installed policy models must be an object')
+            for item in models.values():
+                if (not isinstance(item, dict)
+                        or not isinstance(item.get('model_id'), str) or not item['model_id'].strip()
+                        or not isinstance(item.get('runtime'), str) or not item['runtime'].strip()):
+                    raise ValueError('Installed policy model requires model_id and runtime')
+                root = Path(item['runtime']).expanduser()
+                if not root.is_absolute():
+                    raise ValueError('Installed policy model runtime must be absolute')
+                roots.add(root.resolve())
+        except FileNotFoundError:
+            pass
+        if len(active) == 1 and active[0].get('runtime'):
+            candidate = Path(active[0]['runtime']).expanduser().resolve()
+            if candidate not in roots:
+                raise ValueError('Active HIL runtime is not installed in route registry')
+            return candidate
+        if not active:
+            saved = [root for root in roots if (root/'last-session.json').is_file()]
+            if saved:
+                return max(saved, key=lambda root: (root/'last-session.json').stat().st_mtime_ns)
+        return default
 
     def state(self):
         with self.lock:
@@ -158,6 +239,9 @@ class HILService:
                         except (OSError,IndexError):pass
                     active=current
                 result['active'] = bool(active)
+                root = self.receiver_runtime(root, active)
+                log = root/'onsite-powered-console.log'
+                result.update(log_path=str(log), receiver_runtime=str(root))
                 if len(active) > 1: result['phase'] = 'conflict'
                 elif active:
                     result.update(phase='unknown', pid=active[0]['pid'], started_unix=active[0]['started_unix'])
@@ -187,7 +271,7 @@ class HILService:
                             result['summary_age_s']=max(0.,age)
                         if age <= STALE_S:
                             data = parsed['status'] or {}
-                            allowed = ('execution','state','hold_reason','input_fresh','side','rb','home','warning','start_toggle','packet_seq','packet_age_ms','observation_id','observation_age_ms','camera_age_ms','recording')
+                            allowed = ('execution','state','hold_reason','input_fresh','side','rb','home','warning','start_toggle','packet_seq','packet_age_ms','observation_id','observation_age_ms','camera_age_ms','recording','purpose','input_paused','recovery_reason','recovery_required','recovery_error')
                             result['status'] = {k:data[k] for k in allowed if k in data}
                             result.update(phase=parsed['phase'], summary_fresh=bool(data))
                             if parsed['failure']:
@@ -221,8 +305,8 @@ class HILService:
             except (OSError, ValueError, KeyError, TypeError, StopIteration) as exc:
                 result.update(phase='unknown', error=str(exc)[:300])
             try:
-                completion=small_json(root/'last-session.json')
-                if completion.get('schema')=='f1_session_completion_v1' and (not result['active'] or completion.get('run_id')==result.get('run_id')):
+                completion=self.saved_identity(small_json(root/'last-session.json'))
+                if completion.get('schema')=='f1_session_completion_v1' and (not result['active'] or completion.get('run_id')==result.get('run_id') or completion.get('process_run_id')==result.get('run_id')):
                     if completion.get('phase')=='finalizing' and not result['active']:
                         completion=dict(completion,phase='interrupted',errors=['收尾进程已退出；请检查原始文件'])
                     if completion.get('phase')=='saved':
@@ -232,7 +316,13 @@ class HILService:
                     result['completion']=completion
                     if result['active'] and completion.get('phase')=='finalizing':result['can_finish']=False
             except (OSError,ValueError,UnboundLocalError):pass
+            result['status_ttl_s'] = 2 if result.get('source') == 'structured_snapshot' else STALE_S
+            record = result['status'].get('recording')
+            if isinstance(record, dict) and record.get('last_saved'):
+                record['last_saved'] = self.saved_identity(record['last_saved'])
             data = result['status']
+            if result['active'] and result['summary_fresh'] and data.get('hold_reason') == 'episode_sender_update_required':
+                result['phase'] = 'episode_sender_update_required'
             result['next_step'] = guidance(result['phase'], data)
             signature = (result.get('pid'), result['phase'], data.get('hold_reason'), data.get('warning'))
             if signature != self.signature:
@@ -252,7 +342,7 @@ class HILService:
             if (not state.get('active') or not state.get('summary_fresh') or not state.get('can_finish')
                     or not isinstance(key,dict) or key!=state.get('session_key')):
                 raise ValueError('会话已变化或不支持网页结束；请刷新，旧版在 F1 终端按 Ctrl+C')
-            root=Path(small_json(self.config_path)['runtime']).expanduser().resolve()
+            root=Path(state['receiver_runtime'])
             atomic(root/'finish-request.json',dict(schema='f1_finish_request_v1',**key,requested_unix=self.clock()))
             return dict(requested=True,run_id=key['run_id'],saved=False)
 
@@ -280,7 +370,11 @@ class HILService:
             except (KeyError,OSError,ValueError,TypeError):command=None
             commands=[dict(x) for x in common]
             if commands:
-                commands[0].update(command=command or '',hint='现场执行后按 Enter，随后使用手柄 START。')
+                commands[0].update(command=command or '',hint=item.get('hint') or '现场执行后按 Enter，随后使用手柄 START。')
+                if command and item.get('rtc_hil'):
+                    commands[0]['command'] = ('bash '+shlex.quote(str(launcher))+' --continuous\n'
+                        '# 现场按 Enter 后，用手柄 START 开始；需要零输出专项检查时添加 --shadow\n'
+                        '# 定时：将 --continuous 换成 --duration-seconds 30')
             routes.append(dict(id=key,title=title,description=description,purpose=purpose,
                 configured=configured,ready=configured and (key!='policy' or model),reason=reason,
                 model_configured=model,candidate=bool(item.get('candidate',True)),commands=commands))

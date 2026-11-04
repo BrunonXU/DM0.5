@@ -11,4 +11,4 @@
 
 以上产物不进入 Git，不随源码包分发；本 README 可追踪。2026-10-12 将原 DAgger 的 data/logs/results 归入这里，内容和源哈希不因目录整理而改写。历史记录中的旧路径描述当时位置，不代表仍有第二套工作目录。
 
-`archive/pre_consolidation_20261012.tar.gz` 保留整理前根目录旧源码、doc 等内容。迁移前逐文件来源清单另见 [docs/history](../docs/history/)。机器人上的运行目录保持原配置，移动开发机文件不等于机器人迁移或重新验收。
+`archive/pre_consolidation_20261012.tar.gz` 保留整理前根目录旧源码、doc 等内容。迁移前逐文件来源清单另见 [docs/history](../docs/history)。机器人上的运行目录保持原配置，移动开发机文件不等于机器人迁移或重新验收。

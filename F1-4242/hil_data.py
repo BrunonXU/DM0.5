@@ -112,7 +112,8 @@ class HILData:
                 if media.get('source_signature')==signature and media.get('renderer')==PREVIEW_VERSION:
                     row.update(videos=media['videos'],analytics_url='/api/data/analytics/'+row['id'],preview_status='ready',duration_s=media['videos'][0]['duration_s'])
             except (OSError,ValueError,KeyError):pass
-        return row
+        from rollout_catalog import decorate
+        return decorate(row, run, m)
 
     def locate(self, eid):
         if not re.fullmatch('[a-f0-9]{24}',eid):raise ValueError('invalid episode id')

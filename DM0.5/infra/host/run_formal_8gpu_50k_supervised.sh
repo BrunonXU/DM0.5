@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -u
 
-PROJECT_ROOT="/home/xza_100850113/projects/DM0.5"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 RUNNER="${PROJECT_ROOT}/infra/host/run_formal_8gpu_50k.sh"
 RUN_ROOT="${PROJECT_ROOT}/server/runs/formal_50k"
 

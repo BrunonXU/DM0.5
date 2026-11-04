@@ -1,6 +1,8 @@
 # 自动启动与资源边界
 
-本文命令以新装 `/home/user/Bruno/F1-infra/` 为例；实际安装根由 `F1_INFRA_HOME` 配置。F1-09 原部署仍在旧位置，见 [STATUS](STATUS.md)。
+完成首次部署后，可让工作台随机器人开机运行，日常直接访问 4242 网页。此步骤可选；自启只恢复网页与反馈，不自动开始运动、遥操或录制。
+
+本页供部署人员安装和维护服务时查阅。命令以 `/home/user/Bruno/F1-infra/` 为例；实际安装根由 `F1_INFRA_HOME` 配置。安装服务前先按 [SHARING](SHARING.md#4-版本部署与自启) 建立版本目录和 `current`，不能把普通解压目录直接当成已完成版本部署。
 
 ## 运行方式
 
@@ -8,7 +10,7 @@
 
 `f1-console-4242.service` 使用 `WantedBy=default.target`、`Restart=always`、5秒恢复间隔，用户 `Linger=yes` 使用户管理器随开机运行。Linger 的语义见[systemd官方说明](https://github.com/systemd/systemd/blob/main/man/loginctl.xml)。`systemctl stop` 为显式停用，不会被 Restart=always 立即重新拉起；下次开机会按 enabled 设置运行。
 
-自启只启动 HTTP 和反馈订阅，不启动基础驱动、不启动Pico、不开始录制、不执行机器人动作。基础驱动晚启动时，每10秒重试同一机器/二进制/参数合同；失败继续只读，成功只恢复配置许可，仍需登录/租约/显式动作请求。初始合同通过后不持续重查模式，不将它当作电机实时模式ACK。持有操作租约时推迟切换能力。
+自启只启动 HTTP 和反馈订阅，不启动基础驱动、不启动Pico、不开始录制、不执行机器人动作。基础驱动晚启动时，每10秒重试同一机器/二进制/参数合同；失败继续只读，成功只恢复配置许可，仍需租约和显式动作请求。初始合同通过后不持续重查模式，不将它当作电机实时模式ACK。持有操作租约时推迟切换能力。
 
 ## 首次安装及维护
 
@@ -19,7 +21,7 @@ cd /home/user/Bruno/F1-infra/current
 HERE="$PWD"
 source configs/installation.env
 python3 deploy/install_service.py --home "$F1_INFRA_HOME" \
-  --profile "$F1_PROFILE_PATH" --port "$F1_CONSOLE_PORT"
+  --profile "$F1_PROFILE_PATH" --port 4242
 systemctl --user is-enabled f1-console-4242
 systemctl --user is-active f1-console-4242
 ```
@@ -45,7 +47,8 @@ systemctl --user start f1-console-4242
 | 网页常驻 | Python/ROS订阅、保留每路最新JPEG、状态检查；无模型加载、无GPU计算，也不保存相机历史，但仍消耗CPU/内存和DDS接收带宽 |
 | 看实时画面/URDF | 服务发送已有JPEG；模型渲染与图片显示在浏览器所在机器。用户开多个页面会增加HTTP/网络负担 |
 | 历史三路回放 | 读取已有MP4，经HTTP发送；浏览器解码。派生视频另行生成，不是每次打开页面重新编码 |
-| 独立LeRobot录制 | 10fps，三路CPU libx264/veryfast，每路编码线程参数2；另有同步、JPEG处理、Parquet、观测保留和磁盘写入。六个编码线程不代表固定占用六个CPU核，解码/管道等还有其他线程 |
+| 新统一录制 | 默认30Hz原始JPEG落盘，训练导出和视频派生分开；配置与验收见 [UNIFIED_DATA](UNIFIED_DATA.md)。采集本身仍消耗CPU、内存及磁盘资源 |
+| 旧内联LeRobot录制（历史配置） | 10fps，三路CPU libx264/veryfast，每路编码线程参数2；另有同步、JPEG处理、Parquet、观测保留和磁盘写入。六个编码线程不代表固定占用六个CPU核，解码/管道等还有其他线程 |
 | 执行网页动作 | 命令发布和反馈判定；通过共享控制锁与Pico互斥。其他推理执行器必须遵守同一控制权合同，不能同时抢同一组关节 |
 | 与推理并行 | 未使用CUDA不等于完全不影响GPU推理：Thor共享内存带宽、CPU预处理/调度、存储和网络仍可能争用，需要同模型同任务实测 |
 

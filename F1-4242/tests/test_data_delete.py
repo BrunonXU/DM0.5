@@ -100,8 +100,8 @@ def test_delete_http_requires_auth_origin_and_source_signature(http_app):
     app,request=http_app;app.data_delete.capture_active=lambda:False
     _,catalog,cookie=request('/api/data');row=catalog['episodes'][0]
     b=dict(confirm=True,episodes=[dict(id=row['id'],source_signature=row['source_signature'])])
-    assert request('/api/data/delete',b,cookie)[0]==401
-    assert request('/api/login',{'token':app.token},cookie)[0]==200
+    assert request('/api/data/delete',b,cookie,origin=False)[0]==403
+    assert request('/api/login',{},cookie)[0]==200
     assert request('/api/data/delete',b,cookie,origin=False)[0]==403
     assert request('/api/data/delete',dict(b,confirm=False),cookie)[0]==409
     assert request('/api/data/delete',b,cookie)[1]['complete']

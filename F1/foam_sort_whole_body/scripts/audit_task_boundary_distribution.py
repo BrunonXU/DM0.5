@@ -333,7 +333,7 @@ def main():
              "**可检查共同的夹爪/双臂起止形态；这些证据不足以把全体直接判成五段底盘运动，也不能证明录制外人工前进一步。**", "",
              "## 方法与可复现入口", "", "闭合候选取已观测非100→100、随后持续至少0.5秒的命令平台，避免把录制开始已经闭合误作一次抓取。100含义依接口清单为闭合。命令事件不等于物体接触或成功。", "",
              "双臂末端以原lead14维最后一个严格恒定后缀核对HAL变化；到位候选只表示接近本条最后HAL样本，不等于已知回零目标。背景完全复用原半秒图像对诊断，不读取旧六段速度来判运动方向。", "", "```bash",
-             "cd /home/xza_100850113/projects/F1/foam_sort_whole_body",
+             "cd /home/user/projects/F1/foam_sort_whole_body",
              "/tmp/f1-foam-audit-venv/bin/python scripts/audit_task_boundary_distribution.py --output results/task_boundary_distribution_v2",
              "```", "", "输出目录必须不存在；每次结果绑定脚本、选择集、mask清单、每条信号和背景pair SHA256。", "",
              "## 全体统计", "", f"- 检查 {a['episodes']} 份；首次持续闭合候选缺失 {a['first_close_missing']} 份。",

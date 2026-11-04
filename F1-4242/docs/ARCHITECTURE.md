@@ -38,7 +38,7 @@ flowchart LR
 
 ## 开发、部署和运行数据
 
-6000D 独立主副本：`/home/xza_100850113/projects/F1-4242`；共享包根名 `F1-infra`。安装路径由 `project_paths.py` 和 `configs/installation.env` 统一传给网关、录制与遥操进程，不依赖父工程或兼容链接。新装目录示例：
+6000D 独立主副本：`/home/user/projects/F1-4242`；共享包根名 `F1-infra`。安装路径由 `project_paths.py` 和 `configs/installation.env` 统一传给网关、录制与遥操进程，不依赖父工程或兼容链接。新装目录示例：
 
 ```text
 /home/user/Bruno/F1-infra/

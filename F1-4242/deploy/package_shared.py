@@ -18,9 +18,9 @@ ARCHIVE_ROOT = 'F1-infra'
 # arbitrary new top-level directory. Extracted packages use the same boundary.
 ROOT_FILES = (
     'README.md', 'AGENTS.md', '.gitignore', 'LICENSE', 'LICENSE.md',
-    'requirements.txt', 'pyproject.toml', 'access.sh', 'run.sh',
-    'control_auth.py', 'core.py', 'data_service.py', 'data_delete.py', 'health.py',
-    'preview_service.py', 'recording_service.py', 'replay_service.py', 'server.py',
+    'requirements.txt', 'pyproject.toml', 'run.sh', 'setup.sh',
+    'core.py', 'data_service.py', 'data_archives.py', 'data_rlt_assessment.py', 'data_annotations.py', 'data_organization.py', 'data_delete.py', 'health.py', 'rollout_catalog.py',
+    'preview_service.py', 'recording_service.py', 'replay_service.py', 'replay_reports.py', 'server.py',
     'startup_service.py', 'teleop_service.py', 'hil_service.py', 'hil_contract.py', 'hil_media.py', 'hil_data.py', 'project_paths.py',
     'installation.env.example',
 )
@@ -38,7 +38,7 @@ SECRET_NAMES = {
     'id_rsa', 'id_ed25519', 'id_ecdsa', 'id_dsa', '.env', '.netrc',
     'client_ssh_config', 'known_hosts', 'authorized_keys',
 }
-LOCAL_CONFIG_FILES = {'configs/robot.json', 'configs/installation.env'}
+LOCAL_CONFIG_FILES = {'configs/robot.json', 'configs/installation.env', 'configs/site.json'}
 EXCLUDED_SUFFIXES = {'.pyc', '.pyo', '.pem', '.key', '.so', '.o', '.zip', '.tar', '.gz'}
 
 

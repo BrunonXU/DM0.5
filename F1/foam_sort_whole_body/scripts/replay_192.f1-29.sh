@@ -10,7 +10,7 @@ case "$mode" in
   inspect|dry-run|to-start|preflight|record-check|execute) ;;
   *) echo "未知模式：$mode" >&2; exit 2 ;;
 esac
-if [[ "$(cat /etc/machine-id)" != f8181edeb110424bbd1963cf717dfeee ]]; then
+if [[ "$(cat /etc/machine-id)" != 00000000000000000000000000000001 ]]; then
   echo '此入口仅适用于4F-F1 / F1_D071' >&2; exit 2
 fi
 case "$mode" in

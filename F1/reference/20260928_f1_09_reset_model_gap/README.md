@@ -27,7 +27,7 @@
 | [onsite-pose-events.json](onsite-pose-events.json) | 3 个动作的 6 条请求/结果摘录：全身复位、无需运动再确认、历史积木姿态 |
 | [activation-v22-ui.json](activation-v22-ui.json)、[live-readonly-v22-ui.json](live-readonly-v22-ui.json) | 实际启用版本及切换后只读状态，不是新增实机动作验收 |
 
-源文件路径相对工作区 `/home/xza_100850113/projects/`，不是运行依赖。本归档是选定证据集，不含完整机器人工程、所有网格或全部复算脚本；完整分析脚本仍保存在 `F1-4242/results/pose_symmetry_20260928/` 与 `F1-4242/results/model_audit_20260928/`。原始 URDF SHA-256：`bc21c6f36446aa2741d6ba20c2190836be967b1f3043dfa39eaae0983c95d5c0`。
+源文件路径相对工作区 `/home/user/projects/`，不是运行依赖。本归档是选定证据集，不含完整机器人工程、所有网格或全部复算脚本；完整分析脚本仍保存在 `F1-4242/results/pose_symmetry_20260928/` 与 `F1-4242/results/model_audit_20260928/`。原始 URDF SHA-256：`bc21c6f36446aa2741d6ba20c2190836be967b1f3043dfa39eaae0983c95d5c0`。
 
 ## 现场事件与版本边界
 

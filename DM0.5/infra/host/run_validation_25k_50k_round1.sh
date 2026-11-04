@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PROJECT_ROOT="/home/xza_100850113/projects/DM0.5"
-IMAGE="docker.1ms.run/dexmal/opendm@sha256:60a754dce047fbef40ab7d3a160fd82ccfbf5fa0509d862b6702311499dfbd4d"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+IMAGE="docker.1ms.run/dexmal/opendm@sha256:REDACTED_HOST_FINGERPRINT"
 RESULT_ROOT="${PROJECT_ROOT}/server/evaluations/validation_25k_50k_round1"
 MANIFEST="${RESULT_ROOT}/manifest.json"
 CONTAINER_MANIFEST="/workspace/server/evaluations/validation_25k_50k_round1/manifest.json"

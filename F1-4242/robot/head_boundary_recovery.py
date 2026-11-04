@@ -113,7 +113,14 @@ def _feedback(a, snap, now):
     sequence, age = row.get('receipt_seq'), row.get('age_s')
     _require(type(sequence) is int and sequence > 0, '头部反馈缺少有效接收序号')
     _require(_number(age) and age >= 0, '头部反馈接收时间无效')
-    return position, sequence, now-age
+    snapshot_at = snap.get('snapshot_monotonic_s')
+    _require(_number(snapshot_at) and snapshot_at <= now, '头部反馈快照时间无效')
+    # age_s belongs to the StateStore snapshot's clock, not this later caller
+    # time. Using now adds variable processing latency to the receipt timestamp
+    # and can make two reads of the same HAL sample appear to go backwards.
+    receipt = snapshot_at-age
+    _require(now-receipt <= a.profile['feedback_max_age_s'], '头部反馈缺失或过期')
+    return position, sequence, receipt
 
 
 def execute(a, plan, cancel, on_progress=None, deadline=None, guard_keys=()):

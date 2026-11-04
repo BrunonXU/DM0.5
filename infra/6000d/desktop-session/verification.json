@@ -1,0 +1,77 @@
+{
+  "verified_utc": "2026-10-23T08:40:42.186434+00:00",
+  "launch_from_private_desktop": [
+    {
+      "desktop": "org.gnome.Nautilus",
+      "exit_code": 0
+    },
+    {
+      "desktop": "hq-company-share",
+      "exit_code": 0
+    }
+  ],
+  "visible_file_windows": [
+    {
+      "window": "0x3000008",
+      "pid": 2119869,
+      "main_bus": true
+    },
+    {
+      "window": "0x3018c6e",
+      "pid": 2119869,
+      "main_bus": true
+    },
+    {
+      "window": "0x3018d1a",
+      "pid": 2119869,
+      "main_bus": true
+    },
+    {
+      "window": "0x3018dda",
+      "pid": 2119869,
+      "main_bus": true
+    },
+    {
+      "window": "0x3018e79",
+      "pid": 2119869,
+      "main_bus": true
+    },
+    {
+      "window": "0x3018f67",
+      "pid": 2119869,
+      "main_bus": true
+    }
+  ],
+  "share_status": {
+    "display": {
+      "active": true,
+      "reason": "ready"
+    },
+    "failure": null,
+    "failure_state": "absent",
+    "keyring": {
+      "login_locked": false,
+      "owner": true,
+      "reason": "ready",
+      "saved_count": 1,
+      "usable_saved_count": 1
+    },
+    "mount": {
+      "known": true,
+      "mounted": true
+    },
+    "user_bus_available": true
+  },
+  "background_service": "Result=success\nExecMainStatus=0",
+  "timer_active": "active",
+  "desktop_service_enabled": "enabled",
+  "desktop_service_not_started": "ActiveState=inactive",
+  "release_zip_sha256": "723a39a3c30bc1d4c05b252eeb85e82639b1baf731c61f7c6c8ee8879f75a200",
+  "installed_files_match_receipt": true,
+  "cold_boot_tested": false,
+  "forced_disconnect_tested": false,
+  "existing_mount_preserved": true,
+  "credentials_read": false,
+  "private_legacy_nautilus_closed_gracefully": true,
+  "known_limit": "GNOME may briefly activate a private-bus gapplication-service without a visible window; direct private FileManager1 calls are not redirected."
+}

@@ -64,7 +64,7 @@ docker image inspect opendm:g2-34d-6ce8e7f
 项目根目录：
 
 ```text
-/home/xza_100850113/projects/DM0.5
+/home/user/projects/DM0.5
 ```
 
 选定NVMe物理目录通过bind mount统一暴露为：

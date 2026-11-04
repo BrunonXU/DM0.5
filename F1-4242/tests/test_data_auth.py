@@ -8,7 +8,6 @@ import threading
 
 import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from control_auth import ControlCode, AuthThrottled, provision
 from data_service import DataService
 from core import ControlLease
 from server import App, Server
@@ -33,29 +32,10 @@ def episode(root):
     return folder
 
 
-def test_runtime_credential_is_salted_and_rate_limited(tmp_path):
-    path = tmp_path/'control_code.json'
-    provision(path, 'fixture-control-code')
-    first = json.loads(path.read_text())
-    assert 'fixture-control-code' not in path.read_text()
-    assert path.stat().st_mode & 0o777 == 0o600
-    provision(path, 'fixture-control-code')
-    assert first['salt'] != json.loads(path.read_text())['salt']
-    clock = [100.]
-    auth = ControlCode(path, clock=lambda: clock[0])
-    assert auth.verify('fixture-control-code', 'same-ip')
-    for _ in range(5):
-        assert not auth.verify('wrong-control-code', 'same-ip')
-    with pytest.raises(AuthThrottled):
-        auth.verify('fixture-control-code', 'same-ip')
-    clock[0] += 61
-    assert auth.verify('fixture-control-code', 'same-ip')
-
-
 def test_data_review_preserves_sources_and_invalidates_changed_source(tmp_path):
     root = tmp_path/'raw'
     folder = episode(root)
-    before = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in folder.iterdir()}
+    before = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in folder.iterdir() if p.name!='f1-annotations.json'}
     store = DataService(root, tmp_path/'runtime', tmp_path/'web')
     listing = store.catalog()
     assert listing['summary']['episode_count'] == 1
@@ -63,9 +43,9 @@ def test_data_review_preserves_sources_and_invalidates_changed_source(tmp_path):
     assert row['duration_s'] == pytest.approx(60.310191278)
     assert row['topics'][0]['message_count'] == 27
     assert row['review']['status'] == 'pending'
-    reviewed = store.save_review(row['id'], 'approved', '动作完成，三路画面待验收', '现场测试', row['source_signature'])
+    reviewed = store.save_review(row['id'], 'approved', '动作完成，三路画面待验收', '现场测试', row['source_signature'], row['review']['revision'])
     assert reviewed['metadata_sha256'] == hashlib.sha256((folder/'metadata.yaml').read_bytes()).hexdigest()
-    assert before == {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in folder.iterdir()}
+    assert before == {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in folder.iterdir() if p.name!='f1-annotations.json'}
     assert store.episode(row['id'])['review']['status'] == 'approved'
     (folder/'data_0.mcap').write_bytes(b'changed source')
     with pytest.raises(ValueError):
@@ -118,7 +98,6 @@ def http_app(tmp_path):
     profile = json.loads((Path(__file__).resolve().parents[1]/'configs/f1-09.json').read_text())
     profile['data_path'] = str(root)
     runtime = tmp_path/'runtime'
-    provision(runtime/'control_code.json', 'fixture-control-code')
     app = App(profile, runtime, tmp_path/'control.lock', offline=True)
     server = Server(('127.0.0.1', 0), app, [])
     host = f'127.0.0.1:{server.server_address[1]}'
@@ -141,36 +120,51 @@ def http_app(tmp_path):
     server.shutdown(); server.server_close(); app.close(); thread.join(2)
 
 
-def test_http_code_acquisition_preserves_mutex_csrf_and_no_token_bypass(http_app):
+def test_passwordless_acquisition_preserves_session_mutex_csrf_and_no_motion(http_app):
     app, request = http_app
-    status, _, cookie = request('/api/session')
-    assert status == 200
-    assert request('/api/control/acquire', {'control_code':'fixture-control-code'}, cookie, origin=False)[0] == 403
-    assert request('/api/login', {'token':app.token}, cookie)[0] == 200
-    # Existing access token permits preset/review work but cannot bypass the control code.
-    assert request('/api/control/acquire', {}, cookie)[0] == 401
+    status, session, cookie = request('/api/session')
+    assert status == 200 and session['authenticated'] and not session['password_required']
+    assert not (app.runtime/'access.token').exists()
+    assert not (app.runtime/'control_code.json').exists()
+    assert app.lease.fd is None and app.actions.latest() is None
+    assert request('/api/control/acquire', {}, cookie, origin=False)[0] == 403
+    assert request('/api/login', {}, cookie)[0] == 200
+    assert app.lease.fd is None
     external = ControlLease(app.lease.path)
     external.acquire('pico-test')
     try:
-        assert request('/api/control/acquire', {'control_code':'fixture-control-code'}, cookie)[0] == 409
+        assert request('/api/control/acquire', {}, cookie)[0] == 409
     finally:
         external.release()
-    status, acquired, cookie = request('/api/control/acquire', {'control_code':'fixture-control-code','owner':'操作员'}, cookie)
+    status, acquired, cookie = request('/api/control/acquire', {'owner':'操作员'}, cookie)
     assert status == 200 and acquired['authenticated']
     assert app.actions.latest() is None
-    assert request('/api/control/acquire', {'control_code':'fixture-control-code'})[0] == 409
+    # Neither another browser nor a guessed lease can steal control.
+    assert request('/api/control/acquire', {})[0] == 409
+    assert request('/api/control/heartbeat', {'lease_id':acquired['lease_id']})[0] == 409
     assert request('/api/control/heartbeat', {'lease_id':'wrong'}, cookie)[0] == 409
     assert request('/api/control/release', {'lease_id':acquired['lease_id']}, cookie)[0] == 200
 
 
-def test_http_review_requires_login_but_no_motion_lease(http_app):
+def test_old_credential_files_are_not_read_or_rewritten(http_app):
+    app, request = http_app
+    for name in ('control_code.json','access.token'):
+        (app.runtime/name).write_text('invalid legacy content')
+    _, _, cookie = request('/api/session')
+    assert request('/api/control/acquire', {}, cookie)[0] == 200
+    assert app.actions.latest() is None
+    for name in ('control_code.json','access.token'):
+        assert (app.runtime/name).read_text() == 'invalid legacy content'
+
+
+def test_http_review_requires_origin_but_no_password_or_motion_lease(http_app):
     app, request = http_app
     _, catalog, cookie = request('/api/data')
     eid = catalog['episodes'][0]['id']
     assert request('/api/data/episodes/'+eid, cookie=cookie)[0] == 200
-    body = {'episode_id':eid,'status':'rejected','notes':'需要复核','expected_source_signature':catalog['episodes'][0]['source_signature']}
-    assert request('/api/data/reviews', body, cookie)[0] == 401
-    assert request('/api/login', {'control_code':'fixture-control-code'}, cookie)[0] == 200
+    body = {'episode_id':eid,'status':'rejected','notes':'需要复核','expected_source_signature':catalog['episodes'][0]['source_signature'],'expected_review_revision':catalog['episodes'][0]['review']['revision']}
+    assert request('/api/data/reviews', body, cookie, origin=False)[0] == 403
+    assert request('/api/login', {}, cookie)[0] == 200
     assert request('/api/data/reviews', body, cookie)[0] == 200
     assert app.lease.fd is None
     assert app.actions.latest() is None

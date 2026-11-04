@@ -50,7 +50,7 @@ def test_idle_writes_no_data_and_two_episodes_commit_independently(tmp_path):
     finally:assert r.close()
 
 
-def test_engine_start_stop_and_reconnect_keep_recording_boundaries(tmp_path):
+def test_engine_start_stop_and_hard_fault_keep_recording_boundaries(tmp_path):
     r=recorder(tmp_path)
     e=F1PolicyEngine(lambda *a,**kw:None, Source(), None, r, r, CONFIG, teleop_only=True, episodes=r)
     def send(seq,toggle,**kw):
@@ -68,7 +68,7 @@ def test_engine_start_stop_and_reconnect_keep_recording_boundaries(tmp_path):
         assert e.supervisor.state is HILState.HANDOFF_HOLD
         send(4,4)
         wait_for(lambda:r.phase=='recording')
-        e.disconnect(time.monotonic_ns())
+        e.disconnect(time.monotonic_ns(), 'target_rejected:collision')
         wait_for(lambda:r.phase=='idle')
         assert e.supervisor.state is HILState.SAFE_HOLD
         send(5,4)
@@ -219,3 +219,24 @@ def test_home_stop_keeps_same_episode_and_start_can_save_and_start_next(tmp_path
         assert e.supervisor.state is HILState.HANDOFF_HOLD and loop.home is None
         assert r.last_saved['phase']=='saved'
     finally:e.close();assert r.close()
+
+
+def test_process_failure_commits_clean_prefix_as_interrupted(tmp_path):
+    r=recorder(tmp_path);r.start(time.monotonic_ns());wait_for(lambda:r.phase=='recording')
+    r.record_timestamped_observation(observation(1,r.begin_ns+1),
+        hil_state='hil_latched',intervention_id=1,policy_epoch=1)
+    run=r.root/r.run_id
+    assert r.close(status='failed',termination=dict(reason='exception',error='output fault'))
+    j=json.loads((run/'journal/manifest.json').read_text());p=json.loads((run/'payload/manifest.json').read_text())
+    assert j['complete'] and p['complete'] and not j['training_ready']
+    assert j['binding']['termination']==dict(outcome='interrupted',reason='process_failed',requires_review=True)
+    events=[json.loads(x) for x in (run/'journal/events.jsonl').read_text().splitlines()]
+    assert any(x.get('event')=='session_termination' and x['error']=='output fault' for x in events)
+    assert r.last_saved['outcome']=='interrupted'
+
+
+def test_process_failure_does_not_hide_real_writer_error(tmp_path):
+    r=recorder(tmp_path);r.start(time.monotonic_ns());wait_for(lambda:r.phase=='recording')
+    r.active[1].writer_error='injected disk failure';run=r.root/r.run_id
+    assert not r.close(status='failed')
+    assert not (run/'journal').exists() and (run/'payload.partial').exists()

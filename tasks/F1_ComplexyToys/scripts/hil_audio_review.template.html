@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>人工介入 · 音效试听</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#fdfdfc;color:#252521;font-family:system-ui,-apple-system,"Microsoft YaHei",sans-serif;font-size:18px;line-height:1.6}main{width:calc(100% - 96px);max-width:1240px;margin:42px auto 80px}.eyebrow{color:#9b543e;font-size:14px;letter-spacing:.14em}h1{font-size:36px;margin:8px 0 12px;letter-spacing:-.025em}.intro{max-width:1000px;margin:0;color:#66635b}.toolbar{display:flex;align-items:center;gap:24px;padding:18px 22px;margin:26px 0;background:#f2f0ea;border-radius:10px}.toolbar label{display:flex;gap:12px;align-items:center;white-space:nowrap}.toolbar input{width:160px;accent-color:#a75c43}.toolbar output{width:45px;font-variant-numeric:tabular-nums}.status{flex:1;font-size:16px;color:#625f58}button{cursor:pointer;font:600 16px system-ui;border:1px solid #d8d3c8;background:#fff;color:#39362f;padding:10px 17px;border-radius:7px}button:hover{background:#f4eee8}button:focus-visible{outline:3px solid #bd846b;outline-offset:3px}.primary{background:#a75c43;color:white;border-color:#a75c43}.primary:hover{background:#8e4934}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.candidate{border:1px solid #e3ded4;border-radius:12px;padding:25px;background:#fff;position:relative}.candidate.selected{border:2px solid #ad6148;padding:24px;background:#fffaf7}.top{display:flex;align-items:center;gap:12px}.letter{background:#efebe3;border-radius:8px;width:42px;height:42px;text-align:center;line-height:42px;font-size:22px;font-weight:700}.top h2{font-size:23px;margin:0}.tag{font-size:13px;color:#8b604b;margin-left:auto}.candidate p{font-size:17px;color:#666159;margin:16px 0}.actions{display:flex;align-items:center;gap:12px}.duration{font-size:14px;color:#777268;margin-left:auto}input[type=radio]{accent-color:#a75c43}label.pick{font-size:15px;cursor:pointer}.sequence{border-top:1px solid #dedbd3;margin-top:34px;padding-top:24px}.sequence h2{font-size:23px;margin:0 0 10px}.flowline{display:flex;gap:14px;align-items:center;margin:16px 0;color:#676057;font-size:16px}.step{background:#f1eee8;padding:9px 16px;border-radius:5px}.refs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-top:20px}.ref{padding:18px;border:1px solid #e4dfd6;border-radius:9px}.ref h3{font-size:16px;margin:0 0 7px}.ref p{font-size:14px;color:#716a61;margin:6px 0 12px}.footer{margin-top:30px;font-size:14px;color:#777067}.footer a{color:#9c5740}details{margin-top:14px}summary{cursor:pointer}.now-playing{box-shadow:0 0 0 3px #dfbdac}.selection{margin-top:15px;font-size:17px}button:disabled{opacity:.55;cursor:default}
+</style></head><body><main>
+<div class="eyebrow">F1 · HIL DAGGER / SOUND REVIEW</div>
+<h1>人工介入，要有一声清楚的确认</h1>
+<p class="intro">为第二次 START 选一个低沉、庄重的接管音。先逐个试听，再连听三次状态提示，比较它与策略开始、交还的区别。</p>
+<p class="intro">声音只在您当前的电脑播放。这里的选择仅用于试听，不会修改机器人配置。</p>
+<div class="toolbar"><label for="volume">试听音量 <input id="volume" type="range" min="0" max="100" value="45"><output id="level">45%</output></label><button id="stop">■ 停止播放</button><span id="status" class="status" role="status" aria-live="polite">选择候选，点击播放。不会自动播放。</span></div>
+<div id="candidates" class="grid"></div>
+<section class="sequence"><h2>放进实际流程里，听听区别</h2><div class="flowline"><span class="step">① 策略开始</span><span>→</span><span class="step" id="middle">② 人工介入 · C</span><span>→</span><span class="step">③ 交还生效</span></div><button id="sequence" class="primary">▶ 连听三个状态音</button><p class="selection" id="selection">当前试听组合：人工介入使用 C · 下行双音。</p><div class="refs" id="references"></div></section>
+<footer class="footer">听完直接告诉我 A / B / C / D，或描述希望更低沉、更短、更庄重。交还提示在新策略实际生效时响，保存音仍是独立提示。
+<details><summary>音效来源与处理</summary><div id="sources"></div><p>素材来源：<a href="https://kenney.nl/assets/interface-sounds" target="_blank" rel="noopener">Kenney Interface Sounds（CC0）</a>。B/C/D 与交还参考音为原创程序合成。C已选定并接入人工接管，现场响度已确认；交还采用上行双音。其余候选保留试听。</p></details></footer>
+</main><script>
+const clips=__CLIPS__;
+let selected='c',active=null,generation=0;
+const byId=id=>document.getElementById(id);
+const status=text=>byId('status').textContent=text;
+function stop(){generation++;if(active){active.pause();active.currentTime=0;active=null;}document.querySelectorAll('.now-playing').forEach(e=>e.classList.remove('now-playing'));status('已停止。');}
+async function play(key,token){
+ if(token!==generation)return false;
+ const audio=new Audio(clips[key].url);active=audio;audio.volume=+byId('volume').value/100;
+ const card=byId('sound-'+key);card?.classList.add('now-playing');status('正在播放：'+clips[key].title);
+ const finished=new Promise(resolve=>{audio.onended=()=>resolve(true);audio.onpause=()=>resolve(true);audio.onerror=()=>resolve(false);});
+ try{await audio.play();if(token!==generation){audio.pause();return false;}if(!await finished)throw Error('音频解码失败');}
+ catch(error){if(token===generation)status('播放失败：请再次点击播放。'+error.message);return false;}
+ finally{card?.classList.remove('now-playing');if(active===audio)active=null;}
+ if(token===generation)status('播放结束：'+clips[key].title);return token===generation;
+}
+function single(key){stop();return play(key,generation);}
+for(const key of ['a','b','c','d']){
+ const c=clips[key],el=document.createElement('article');el.id='sound-'+key;el.className='candidate'+(key===selected?' selected':'');
+ el.innerHTML=`<div class="top"><span class="letter">${key.toUpperCase()}</span><h2>${c.title}</h2><span class="tag">${c.tag}</span></div><p>${c.desc}</p><div class="actions"><button data-play="${key}" class="primary">▶ 播放 ${key.toUpperCase()}</button><label class="pick"><input type="radio" name="choice" value="${key}" ${key===selected?'checked':''}> 用于连听</label><span class="duration">${c.seconds.toFixed(2)} 秒</span></div>`;
+ byId('candidates').append(el);
+}
+for(const key of ['start','resume','saved']){
+ const c=clips[key],el=document.createElement('article');el.id='sound-'+key;el.className='ref';el.innerHTML=`<h3>${c.title}</h3><p>${c.tag} · ${c.seconds.toFixed(2)} 秒</p><button data-play="${key}">▶ 单独试听</button>`;byId('references').append(el);
+}
+document.querySelectorAll('[data-play]').forEach(button=>button.onclick=()=>single(button.dataset.play));
+document.querySelectorAll('input[name=choice]').forEach(input=>input.onchange=()=>{stop();selected=input.value;document.querySelectorAll('.candidate').forEach(e=>e.classList.toggle('selected',e.id==='sound-'+selected));byId('middle').textContent='② 人工介入 · '+selected.toUpperCase();byId('selection').textContent=`当前试听组合：人工介入使用 ${selected.toUpperCase()} · ${clips[selected].title}。`;});
+byId('volume').oninput=()=>{byId('level').textContent=byId('volume').value+'%';if(active)active.volume=+byId('volume').value/100;};
+byId('stop').onclick=stop;
+byId('sequence').onclick=async()=>{stop();const token=generation,choice=selected;for(const key of ['start',choice,'resume']){if(!await play(key,token))return;await new Promise(r=>setTimeout(r,700));if(token!==generation)return;}status('三音连听结束。可更换人工介入候选再比较。');};
+byId('sources').textContent=Object.entries(clips).map(([k,c])=>`${k.toUpperCase()}：${c.origin}`).join('；');
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();});window.addEventListener('pagehide',stop);
+</script></body></html>

@@ -6,9 +6,9 @@ dagger_artifacts_root="${DAGGER_ARTIFACTS_ROOT:-$DAGGER_ROOT}"
 if [[ -z "${DAGGER_ARTIFACTS_ROOT:-}" && -d "$DAGGER_ROOT/../shared/src/dagger_core" ]]; then
     dagger_artifacts_root="$DAGGER_ROOT/../artifacts"
 fi
-G2_APP_ROOT=/home/agi/app
-DM05_DEPLOYMENT=/home/agi/xza/DM0.5/g2_sort/deployment
-DM05_ROOT=/home/agi/xza/DM0.5
+G2_APP_ROOT=/home/user/app
+DM05_DEPLOYMENT=/home/user/xza/DM0.5/g2_sort/deployment
+DM05_ROOT=/home/user/xza/DM0.5
 
 if [[ ! -d "${DM05_DEPLOYMENT}/g2_client" ]]; then
     echo "HOLD: missing validated DM0.5 g2_client at ${DM05_DEPLOYMENT}" >&2
@@ -18,7 +18,7 @@ fi
 export PYTHONPATH="${G2_APP_ROOT}/gdk/lib:${DAGGER_ROOT}/vendor_ik:${DAGGER_ROOT}/src:${DAGGER_ROOT}/../shared/src:${DM05_ROOT}:${DM05_DEPLOYMENT}${PYTHONPATH:+:${PYTHONPATH}}"
 export LD_LIBRARY_PATH="${G2_APP_ROOT}/lib:${G2_APP_ROOT}/gdk/lib${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
 export APP_CONF_PATH="${G2_APP_ROOT}/gdk/config/app_conf.yml"
-export AORTA_DISCOVERY_URI=http://10.42.1.101:2379
+export AORTA_DISCOVERY_URI=http://192.0.2.9:2379
 export AORTA_DISPATCHER_THREAD_NUM=6
 
 G2_LOCATOR_IP=$(ip -o -4 addr list | awk '$4 ~ /^10\.42\.1\./ {sub(/\/.*/, "", $4); print $4; exit}')

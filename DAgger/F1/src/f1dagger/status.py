@@ -25,6 +25,8 @@ class StatusPublisher:
         if e.supervisor.intervention_id != self.intervention:
             self.intervention=e.supervisor.intervention_id; self.intervention_start=time.monotonic()
         fields.update(intervention_elapsed_s=None if not self.intervention else time.monotonic()-self.intervention_start,
+                      runtime_fault=getattr(e, 'runtime_fault', None),
+                      recording_failure=getattr(e, 'recording_failed', None),
                       intervention_id=e.supervisor.intervention_id,limit_reason=self.limit,
                       policy_stage='executing' if e.chunk is not None else 'requesting' if e.real_future else 'waiting',
                       policy_health=('failed' if str(e.supervisor.hold_reason or '').startswith('policy_failed:') else
@@ -32,6 +34,20 @@ class StatusPublisher:
                                      'requesting' if e.real_future is not None else
                                      'bound' if self.binding.get('model_id') else 'unconfigured'),
                       model_id=self.binding.get('model_id'),purpose=self.binding['purpose'])
+        if hasattr(e, 'rlt_phase'):
+            fields.update(rlt_phase=e.rlt_phase, rlt_cycle=e.rlt_cycle,
+                          active_model_id=e.policy.model_id,
+                          actor_version=e.rlt_policy.rlt_identity['actor_version'],
+                          rlt_local_task=e.local_task.metadata(), ending_episode=e.ending_episode,
+                          actor_update_error=getattr(e.rlt_policy, 'candidate_error', None))
+        buttons = getattr(e, 'episode_buttons', None)
+        if buttons:
+            fields.update(episode_controls='f1_rlt_local_v4' if hasattr(e, 'local_task') else 'start_up_v2', episode_end_hint=buttons.end_hint,
+                home_active=buttons.home_active,
+                terminal_hold_seconds=None if buttons.hold_since is None else max(0., (time.monotonic_ns()-buttons.hold_since)/1e9))
+        if hasattr(e, 'ik_state'):
+            fields.update(ik_recovery_state=e.ik_state, ik_failures=e.ik_failures,
+                          ik_retry_limit=e.ik_retry_limit)
         data=dict(schema='f1_hil_status_v1',pid=os.getpid(),
                   start_ticks=Path('/proc/self/stat').read_text().rsplit(')',1)[1].split()[19],
                   run_id=self.run_id,updated_unix=time.time(),updated_monotonic_ns=time.monotonic_ns(),

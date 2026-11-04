@@ -1,34 +1,82 @@
 # F1-infra
 
-F1 机器人工作台：相机与状态、调姿、Pico 遥操、F710 HIL 状态、16D 录制和数据回放审核。独立项目，无需外层 `F1/` 目录。
+F1-infra 是 F1 机器人的浏览器工作台，统一查看机器人与相机状态、进入遥操采集、管理和回看数据。功能与操作请看配套介绍视频，这里只保留部署和使用步骤。
 
-## 快速开始
+首次在机器人上配置一次，以后电脑打开 `http://机器人IP:4242` 即可。F1-09日常优先有线地址，Wi-Fi保留备用；Pico、手柄 DAgger 和视频服务器按需接入。
 
-解压后进入 `F1-infra/`。先离线看网页（Linux，Python 3.10+）：
+## 你只需要准备什么
+
+| 信息 | 怎么填 |
+| --- | --- |
+| 机器人名字 | 自己取，例如 `F1-09` |
+| 机器人 IP | 从工具列出的地址中，选电脑能访问的那个 |
+| 数据保存位置 | 默认 `~/F1-data`，有独立数据盘再修改 |
+| 使用方式 | 基础工作台选 `none`；需要时选 `pico`、`dagger` 或 `pico,dagger` |
+
+端口固定使用 **4242**。机器标识、账号、安装路径和已有环境由工具检测；名字和 IP 以后可以单独修改。
+
+## 部署流程
+
+**下载 → 回答四项 → 启动 → 打开网页。**
+
+适用环境：机器人已有 Linux、Python 3.12、ROS Jazzy、F1 / 底盘消息和驱动、相机环境。电脑只需桌面浏览器，并能访问机器人网络。
+
+### 1. 下载并解压到机器人
+
+从共享盘 `X:\具身\F1-Infra` 下载最新版 ZIP，复制到机器人，解压得到 `~/F1-infra/`。
+
+没有 X 盘映射时，打开 `\\company.example.invalid\机器人软件共享盘\具身\F1-Infra`。已有安装先看文末的升级说明。
+
+### 2. 首次配置
+
+在**机器人账号的 Bash 终端**执行：
 
 ```bash
-bash run.sh --offline --host 127.0.0.1 --port 18442 \
-  --runtime /tmp/f1-infra-preview --control-lock /tmp/f1-infra-preview.lock
+cd ~/F1-infra
+bash setup.sh
 ```
 
-打开 **http://127.0.0.1:18442/**。
+依次填写上面四项，工具会生成本机配置，并列出还需接入的环境。无需手工填写整份配置文件；选择 Pico / DAgger 后，再完成对应模块的接入。
 
-部署到有现成 ROS Jazzy / F1 驱动的机器人，先复制配置：
+### 3. 启动
+
+仍在机器人同一终端、同一目录执行：
 
 ```bash
-cp configs/installation.env.example configs/installation.env
-cp configs/robot.example.json configs/robot.json
+bash run.sh --host 0.0.0.0
 ```
 
-- `installation.env`：设置安装/runtime 路径、`F1_PROFILE_PATH`（指向 `configs/robot.json`）、ROS/DDS 环境；使用遥操时配置 Pico/LXL 路径。
-- `robot.json`：填写机器人 IP、machine-id、控制器/监听器哈希、话题、限位和数据目录。模板默认关闭动作，完成本机核验后再启用。
+保持终端打开；按 `Ctrl+C` 停止工作台。日志显示在终端，运行记录保存在 `runtime/`。基础驱动和相机按现场原流程启动。若工具报告缺少环境，先按 [初始化说明](docs/INITIALIZATION.md) 处理。
 
-```bash
-bash run.sh --host 0.0.0.0 --port 4242
+新机器人首次使用动作功能，需部署人员完成本机适配与验收；初始化不会自动开启动作或遥操。
+
+### 4. 打开网页
+
+电脑浏览器访问 **`http://机器人IP:4242`**。例如 F1-09 当前地址：
+
+```text
+http://192.0.2.7:4242
 ```
 
-打开 **http://机器人IP:4242/**。运动功能还需本机构建监听器、设置控制码并现场验收，步骤见 [部署与换机](docs/SHARING.md)；常驻启动见 [自启](docs/AUTOSTART.md)。
+F1-09的Wi-Fi备用地址为`http://192.0.2.3:4242`；主备访问需在站点配置中同时允许，部署状态见[STATUS](docs/STATUS.md)。`.142`为当前DHCP租约，尚未保留为固定地址。
 
-[使用说明](docs/USER_GUIDE.md) · [全身配置](docs/JOINT_CONFIGURATION.md) · [全部文档](docs/README.md) · [版本与已知限制](docs/STATUS.md) · [Agent 工作约定](AGENTS.md)
+阅读入口须知，确认相机画面和机器人反馈。当前版本无需密码；点击执行会直接提交操作。已配置开机自启的机器人，日常直接打开网页。
 
-[HIL 标签页](docs/HIL.md)：自由接入、人工示教、策略HIL三路线；三端指引、可点击手柄教学、彩色状态和三图预览，关闭页面不影响遥操。
+## 按需接入
+
+| 需要什么 | 对应说明 |
+| --- | --- |
+| Pico 遥操与采集 | [Pico 接入](docs/PICO.md) · [本地录制](docs/UNIFIED_DATA.md) |
+| 手柄示教 / DAgger | [手柄配置](docs/HIL.md) |
+| MP4 视频回看 | [可选视频服务器](docs/SHARING.md#可选视频服务器) |
+| 开机自启 | [自启配置](docs/AUTOSTART.md) |
+
+使用 Pico 无需配置手柄 DAgger。新 HIL / 统一 Pico 录制的原图保存在机器人本地，采集和保存不依赖 MP4 服务器；**当前数据页播放 MP4，未生成 MP4 时无法在网页视频回看**。训练数据导出需要时再按 [导出说明](docs/UNIFIED_DATA.md#离线转换与审核) 配置。
+
+## 改名、换 IP 与升级
+
+- **改名或换 IP：** 修改 `configs/site.json` 的 `label`、主地址`ip`及可选备用地址`backup_ips`，在工作台空闲时重启；机器标识和动作配置保持不变。
+- **同机升级：** 备份后换新版源码，保留本机配置、运行目录和数据；不用重新初始化。
+- **换机器人：** 在新机重新运行 `bash setup.sh`，数据按需单独迁移。
+
+[部署人员详细说明](docs/SHARING.md) · [全部文档](docs/README.md)

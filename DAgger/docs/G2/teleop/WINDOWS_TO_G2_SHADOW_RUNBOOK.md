@@ -32,7 +32,7 @@ cd G2Teleop
 若还没有单独远端，可暂时从服务器复制，把 `<SERVER>` 替换为服务器 SSH 地址：
 
 ```powershell
-scp -r <SERVER>:/home/xza_100850113/projects/G2Teleop .
+scp -r <SERVER>:/home/user/projects/G2Teleop .
 cd G2Teleop
 ```
 
@@ -66,19 +66,19 @@ py scripts\02_windows_f710_readonly.py
 保持F710仍插在笔记本。只复制运行所需的项目文件，不触碰 `g2_robot`或厂商目录：
 
 ```powershell
-ssh agi@10.130.86.13 "mkdir -p /home/agi/xza/G2Teleop_staging"
+ssh agi@192.0.2.8 "mkdir -p /home/user/xza/G2Teleop_staging"
 scp -r src scripts configs pyproject.toml README.md doc `
-  agi@10.130.86.13:/home/agi/xza/G2Teleop_staging/
+  agi@192.0.2.8:/home/user/xza/G2Teleop_staging/
 ```
 
 首次用 staging 是为了让你先SSH检查目录；确认后可以将该目录作为正式项目目录。随后SSH进入
 G2，由你本人运行纯网络命令：
 
 ```bash
-cd /home/agi/xza/G2Teleop_staging
+cd /home/user/xza/G2Teleop_staging
 PYTHONPATH=src python3 scripts/03_g2_shadow_receiver.py \
   --bind 127.0.0.1 --port 7904 --watchdog-ms 100 \
-  --log /home/agi/xza/G2Teleop_staging/g2_shadow_intents.jsonl
+  --log /home/user/xza/G2Teleop_staging/g2_shadow_intents.jsonl
 ```
 
 必须看到 `NO-GDK SHADOW`和 `Listening only on 127.0.0.1:7904`。脚本源码没有
@@ -89,7 +89,7 @@ PYTHONPATH=src python3 scripts/03_g2_shadow_receiver.py \
 打开第二个 PowerShell：
 
 ```powershell
-.\scripts\04_windows_g2_tunnel.ps1 -G2Host 10.130.86.13 -G2User agi
+.\scripts\04_windows_g2_tunnel.ps1 -G2Host 192.0.2.8 -G2User agi
 ```
 
 它等价于：
@@ -97,7 +97,7 @@ PYTHONPATH=src python3 scripts/03_g2_shadow_receiver.py \
 ```powershell
 ssh.exe -N -T -o ExitOnForwardFailure=yes -o ServerAliveInterval=2 `
   -o ServerAliveCountMax=2 `
-  -L 127.0.0.1:7904:127.0.0.1:7904 agi@10.130.86.13
+  -L 127.0.0.1:7904:127.0.0.1:7904 agi@192.0.2.8
 ```
 
 这是“笔记本直接到G2”，不会经过6000D。G2 receiver 必须保持 `127.0.0.1`监听。
@@ -154,12 +154,12 @@ pgrep -af 'g2_client|powered|servo|training_data_replay|hand_home|reset_pose|10_
 只允许操作者在G2本地终端执行；不要通过服务器SSH代跑：
 
 ```bash
-bash /home/agi/xza/G2Teleop/scripts/10_g2_live_ik_shadow.sh \
+bash /home/user/xza/G2Teleop/scripts/10_g2_live_ik_shadow.sh \
   --bind 127.0.0.1 \
   --port 7904 \
   --watchdog-ms 100 \
   --max-state-read-ms 30 \
-  --log /home/agi/xza/G2Teleop/logs/live_ik_shadow.jsonl
+  --log /home/user/xza/G2Teleop/logs/live_ik_shadow.jsonl
 ```
 
 程序必须先打印`READ-ONLY LIVE IK SHADOW`和三次状态preflight通过，然后才出现
@@ -174,7 +174,7 @@ PowerShell A保持隧道：
 cd $HOME\G2Teleop
 ssh.exe -N -T -o ExitOnForwardFailure=yes -o ServerAliveInterval=2 `
   -o ServerAliveCountMax=2 `
-  -L 127.0.0.1:7904:127.0.0.1:7904 agi@10.130.86.13
+  -L 127.0.0.1:7904:127.0.0.1:7904 agi@192.0.2.8
 ```
 
 这里故意直接使用`ssh.exe`，不依赖PowerShell Execution Policy。若要使用仓库的`.ps1`包装脚本，

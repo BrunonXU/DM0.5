@@ -1,5 +1,7 @@
 """F1 journal format on the existing bounded asynchronous DAgger writer."""
 import json
+import os
+import time
 from pathlib import Path
 import numpy as np
 from dagger_core.hil_episode import EpisodeJournal
@@ -13,22 +15,102 @@ BLOCKERS = ['camera exposure clock mapping not certified', 'human correction qua
             'F1 observation/actual publication alignment requires export audit']
 
 
+def control_integrity_error(manifest):
+    """Powered observations without control evidence cannot be a complete episode."""
+    counts = manifest.get('counts', {})
+    if (manifest.get('binding', {}).get('execution_mode') == 'powered'
+            and counts.get('observations', 0) > 0 and counts.get('control', 0) == 0):
+        return 'powered episode has observations but no control records'
+    return None
+
+
 class F1Recorder(EpisodeJournal):
     schema_version = 3
 
     def __init__(self, *args, binding=None, **kwargs):
+        self.receipt_error = None
+        self._pending_receipt = None
+        self._receipt_retry_at = 0.
         self.binding = binding or {}
+        if self.binding.get('hardware_capabilities') is not None:
+            self.schema_version = 4
         super().__init__(*args, **kwargs)
 
     def format_manifest(self, manifest):
+        if self._pending_receipt is not None:
+            try:
+                self._write_local_receipt(('observations', 'policy_chunks', 'control', 'events'))
+            except Exception as exc:
+                self.receipt_error = type(exc).__name__ + ': ' + str(exc)
+        integrity_error = control_integrity_error(dict(manifest, binding=self.binding))
+        if integrity_error:
+            manifest = dict(manifest, complete=False, structurally_auditable=False,
+                            status='failed', integrity_errors=[integrity_error])
         payload = self.path.parent / 'payload'
         payload_hashes = {name: sha256(payload/name) for name in ('manifest.json','frames.jsonl') if (payload/name).is_file()}
-        return dict(manifest, schema_version=self.schema_version, contract=CONTRACT,
+        version = 4 if self.binding.get('hardware_capabilities') is not None else self.schema_version
+        return dict(manifest, schema_version=version, contract=CONTRACT,
+                    local_receipt_error=self.receipt_error,
                     payload_sha256=payload_hashes,
                     training_blockers=BLOCKERS, binding=self.binding,
                     action_contract=dict(dimension=16, names=FEATURE_NAMES, units=['degree']*14+['0..100']*2),
                     stream_sha256={name: sha256(self.partial_path / (name+'.jsonl'))
                                    for name in ('observations', 'policy_chunks', 'control', 'events')})
+
+    def checkpoint_record(self, stream, record, handles):
+        """Seal a journal prefix on the writer thread, without ending recording.
+
+        Payloads have their own durable pack checkpoints. The consumer must
+        verify every referenced image before promoting this receipt to replay.
+        """
+        if stream == 'events' and record.get('event') == 'rlt_local_closed':
+            self._pending_receipt = record
+            self._receipt_retry_at = 0.
+        if self._pending_receipt is None or time.monotonic() < self._receipt_retry_at:
+            return
+        # Failure of RAW durability stays a writer failure. Derived receipt
+        # creation below has its own retry/error state.
+        for handle in handles.values():
+            handle.flush()
+            os.fsync(handle.fileno())
+        try:
+            self._write_local_receipt(handles)
+        except Exception as exc:
+            self.receipt_error = type(exc).__name__ + ': ' + str(exc)
+            self._receipt_retry_at = time.monotonic() + 2.
+
+    def _write_local_receipt(self, handles):
+        files = {name: dict(bytes=(self.partial_path/(name+'.jsonl')).stat().st_size,
+                           sha256=sha256(self.partial_path/(name+'.jsonl')))
+                 for name in handles}
+        receipt = dict(schema='f1_local_journal_prefix_v1', episode_id=self.episode_id,
+                       binding=self.binding, task_prompt=self.task_prompt,
+                       streams=files, local_result=self._pending_receipt, drop_count=self.drops,
+                       training_ready=False)
+        out = self.path.parent/'local_segments'
+        out.mkdir(exist_ok=True)
+        target = out/'placement-1.json'
+        if target.exists():
+            existing = json.loads(target.read_text())
+            if existing.get('local_result') != self._pending_receipt:
+                raise ValueError('Local placement was already sealed with a different result')
+            self._pending_receipt = None
+            self.receipt_error = None
+            return
+        temporary = target.with_suffix('.partial')
+        with temporary.open('w') as handle:
+            json.dump(receipt, handle, allow_nan=False)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, target)
+        fd = os.open(out, os.O_RDONLY | os.O_DIRECTORY)
+        try:
+            os.fsync(fd)
+        finally:
+            os.close(fd)
+
+        self._pending_receipt = None
+        self.receipt_error = None
 
     def record_timestamped_observation(self, observation, *, hil_state, intervention_id, policy_epoch):
         return self._emit('observations', dict(event='observation', **observation.metadata(),
@@ -87,8 +169,18 @@ def audit(run):
         for name in ('manifest.json','frames.jsonl'):
             if manifest.get('payload_sha256',{}).get(name) != sha256(run/'payload'/name):
                 raise ValueError('payload index/manifest hash mismatch')
-        if manifest.get('contract') != CONTRACT or manifest.get('schema_version') != 3:
+        if manifest.get('contract') != CONTRACT or manifest.get('schema_version') not in (3, 4):
             raise ValueError('not an F1 journal')
+        integrity_error = control_integrity_error(manifest)
+        if integrity_error:
+            raise ValueError(integrity_error)
+        from .hardware import state_mask
+        mask = state_mask(manifest.get('binding', {}))
+        missing = not all(mask)
+        if (manifest['schema_version'] == 4) != missing:
+            raise ValueError('Journal version does not match hardware capabilities')
+        if missing and manifest['binding'].get('state_valid_mask') != list(mask):
+            raise ValueError('Missing hardware mask binding')
         if not manifest.get('complete') or not payload_manifest.get('complete'):
             raise ValueError('incomplete journal or payload')
         packed = payload_manifest.get('format') == FORMAT
@@ -115,7 +207,7 @@ def audit(run):
             rows = read_rows(run/'journal'/f'{stream}.jsonl')
             if len(rows) != manifest['counts'][stream]:
                 raise ValueError('journal count mismatch: ' + stream)
-            if any(r.get('stream_sequence') != i or r.get('schema_version') != 3 for i, r in enumerate(rows)):
+            if any(r.get('stream_sequence') != i or r.get('schema_version') != manifest['schema_version'] for i, r in enumerate(rows)):
                 raise ValueError('journal sequence/schema mismatch: ' + stream)
             streams[stream] = rows
         bound_identity_present = 'camera_identity_source' in manifest.get('binding', {})
@@ -156,7 +248,9 @@ def audit(run):
             if not last_observation_time < begin <= end:
                 raise ValueError('observation clock regressed')
             last_observation_time = begin
-            if len(row['state_timestamps_ns']) != 16 or any(not 0 < t <= end for t in row['state_timestamps_ns']):
+            if missing and (row.get('state_valid_mask') != list(mask) or row['state16'][14] != 0 or row.get('absent_state_semantics') != 'zero_storage_placeholder_not_measurement'):
+                raise ValueError('Missing hardware observation provenance')
+            if len(row['state_timestamps_ns']) != 16 or any((not 0 < t <= end) if valid else t != 0 for t, valid in zip(row['state_timestamps_ns'], mask)):
                 raise ValueError('invalid measured-state provenance')
             if tuple(f['camera'] for f in row['frames']) != ('head','left_wrist','right_wrist'):
                 raise ValueError('wrong camera order')
@@ -209,6 +303,8 @@ def audit(run):
                     or row.get('camera_identity_source') != obs.get('camera_identity_source')
                     or row.get('state_source') != obs.get('state_source')):
                 raise ValueError('payload and journal camera identity/source declaration mismatch')
+            if missing and (row.get('state_valid_mask') != list(mask) or row.get('absent_state_semantics') != obs.get('absent_state_semantics')):
+                raise ValueError('Payload missing-hardware metadata differs from journal')
             if obs.get('camera_identity_source') == CALLBACK_IDENTITY_SOURCE:
                 if (row.get('camera_drop_counts') != obs['camera_drop_counts']
                         or type(row.get('camera_discontinuity')) is not bool
@@ -253,7 +349,9 @@ def audit(run):
                 if row.get('publication_complete') is not True or row.get('execution_mode') != 'powered':
                     raise ValueError('submitted command lacks real complete publication evidence')
                 stamps = row.get('action_source_timestamps_ns', [])
-                if len(stamps) != 16 or any(not isinstance(t,int) or not 0 < t <= row['monotonic_ns'] for t in stamps):
+                if missing and (row.get('action_valid_mask') != list(mask) or row.get('state_valid_mask') != list(mask) or row['submitted'][14] != 0 or row['measured'][14] != 0):
+                    raise ValueError('Missing hardware control provenance')
+                if len(stamps) != 16 or any((not isinstance(t,int) or not 0 < t <= row['monotonic_ns']) if valid else t is not None for t, valid in zip(stamps, mask)):
                     raise ValueError('invalid per-field publication times')
                 pubs = row.get('publications', [])
                 if not pubs or pubs[0].get('topic_key') != 'joint_command':
@@ -265,6 +363,8 @@ def audit(run):
                     stamp = publication['monotonic_ns']
                     if key in seen or key not in ('joint_command','left_gripper_command','right_gripper_command'):
                         raise ValueError('duplicate/unknown command publication')
+                    if missing and key == 'left_gripper_command':
+                        raise ValueError('Publication to absent left gripper')
                     seen.add(key)
                     if not gid or not any(bytes.fromhex(gid)) or not last_time-50_000_000 <= stamp <= last_time:
                         raise ValueError('publication identity/time missing')
@@ -272,7 +372,7 @@ def audit(run):
                     for i in indices:
                         published_times[i] = stamp
                         published_values[i] = row['submitted'][i]
-                if published_times != stamps or published_values != row['submitted']:
+                if published_times != stamps or any(published_values[i] != row['submitted'][i] for i, valid in enumerate(mask) if valid):
                     raise ValueError('action differs from current/held publication evidence')
         for row in streams['policy_chunks']:
             obs = observations[row['observation_id']]

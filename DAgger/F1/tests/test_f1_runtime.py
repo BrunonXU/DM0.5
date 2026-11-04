@@ -58,7 +58,7 @@ def test_dispatch_watchdog_catches_slow_target_before_publication():
         loop.arm.target=slow
         step(2,1,deadman=True)
         assert e.supervisor.state is HILState.SAFE_HOLD
-        assert o.last_submitted[0]==0 and records[-1]['source']=='hold'
+        assert o.last_submitted[0]==0 and records[-1]['source']=='input_pause_hold'
     finally:e.close()
 
 
@@ -97,6 +97,8 @@ def test_y_home_holds_grippers_and_requires_arrival(monkeypatch, configured):
         from f1dagger.config import DAGGER_ROOT
         preset=json.loads((DAGGER_ROOT/'configs/f1_09_hil.json').read_text())['f710_home']
         preset.pop('clearance', None)  # Existing single-stage compatibility contract.
+        preset.pop('route', None)
+        preset.pop('scope', None)
         loop.profile.update(robot_id='F1-09',f710_home=preset)
         goal=np.array([preset['joints'][name] for name in ARM_NAMES])
     measured=[np.zeros(14)]
@@ -189,10 +191,33 @@ def test_runtime_reports_waiting_input_edges_and_mode_without_per_packet_spam():
         assert len(messages) == count+1
         e.disconnect(now[0], 'operator_disconnected')
         report(5, 1)
-        assert '"state": "safe_hold"' in messages[-1]
-        assert '"hold_reason": "operator_disconnected"' in messages[-1]
+        assert '"state": "input_wait_reconnect"' in messages[-1]
+        assert '"hold_reason": "input_wait_reconnect"' in messages[-1]
     finally:
         e.close()
+
+
+def test_runtime_reports_adopted_actor_identity_without_polling_or_per_packet_spam():
+    from f1dagger.runtime import RuntimeReporter
+    loop, e, o, t, now, records, step = setup_loop()
+    messages=[]
+    reporter=RuntimeReporter('shadow',SimpleNamespace(),emit=lambda message,**_:messages.append(message))
+    e.rlt_phase='base'
+    e.rlt_policy=SimpleNamespace(rlt_identity=dict(actor_version='base-bc400',checkpoint_step=400,q_guidance_updates=0))
+    e.local_task=SimpleNamespace(segment_id=None)
+    try:
+        reporter.report(now[0],e,None)
+        assert json.loads(messages[-1].removeprefix('F1 STATUS '))['rlt_segment_id'] is None
+        e.rlt_phase='actor'
+        e.rlt_policy.rlt_identity=dict(actor_version='actual-q1024',checkpoint_step=1024,q_guidance_updates=256)
+        e.local_task.segment_id='episode:placement:1'
+        reporter.report(now[0],e,None)
+        data=json.loads(messages[-1].removeprefix('F1 STATUS '))
+        assert (data['actor_version'],data['checkpoint_step'],data['q_guidance_updates']) == ('actual-q1024',1024,256)
+        assert data['rlt_segment_id']=='episode:placement:1'
+        reporter.report(now[0],e,None)
+        assert len(messages)==2
+    finally:e.close()
 
 
 def test_first_rt_publishes_but_pause_and_retakeover_do_not_replay_latches():
@@ -237,6 +262,8 @@ def test_clearance_y_only_enables_right_arm_and_abort_requires_new_y(monkeypatch
     monkeypatch.setattr(runtime,'ClearanceHomeMotion',Clearance)
     loop,e,o,t,now,records,step=setup_loop()
     preset=json.loads((DAGGER_ROOT/'configs/f1_09_hil.json').read_text())['f710_home']
+    preset.pop('route',None)
+    preset['clearance']=dict(schema='f1_right_clearance_v2',frame='base_link',lift_m=.06,right_m=.10,max_rotation_deg=10.)
     loop.profile=dict(robot_id='F1-09',f710_home=preset,max_joint_speed_deg_s=30,joint_tolerance_deg=1)
     enabled=[];approve=o.approve
     def capture(target,now,**kw):enabled.append(kw['enabled']);return approve(target,now,**kw)
@@ -288,6 +315,8 @@ def test_new_y_reuses_failed_geometry_but_rb_and_start_discard_it(monkeypatch):
     monkeypatch.setattr(runtime,'ClearanceHomeMotion',FailedHome)
     loop,e,o,t,now,records,step=setup_loop()
     preset=json.loads((DAGGER_ROOT/'configs/f1_09_hil.json').read_text())['f710_home']
+    preset.pop('route',None)
+    preset['clearance']=dict(schema='f1_right_clearance_v2',frame='base_link',lift_m=.06,right_m=.10,max_rotation_deg=10.)
     loop.profile=dict(robot_id='F1-09',f710_home=preset,max_joint_speed_deg_s=30,joint_tolerance_deg=1)
     try:
         step(0);step(1,1);step(2,1,home_reset=True)

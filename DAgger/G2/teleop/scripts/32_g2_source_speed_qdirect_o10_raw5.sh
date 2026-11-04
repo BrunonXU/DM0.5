@@ -3,8 +3,8 @@ set -euo pipefail
 
 source "$(dirname -- "${BASH_SOURCE[0]}")/lib/paths.sh"
 ROOT="$G2TELEOP_ROOT"
-DM=/home/agi/xza/DM0.5
-APP=/home/agi/app
+DM=/home/user/xza/DM0.5
+APP=/home/user/app
 DEPLOYMENT="$DM/g2_sort/deployment"
 REPLAY="$DM/g2_sort/config/training_replay_v1.json"
 EXPECTED_SHA=28233ac288e6fdbeb552dc44bc491817eea31c2f6b99949c8080b2068f799f3d
@@ -13,7 +13,7 @@ cd "$ROOT"
 export PYTHONPATH="$APP/gdk/lib:$ROOT/vendor_ik:$ROOT/src:$DM:$DEPLOYMENT${PYTHONPATH:+:$PYTHONPATH}"
 export LD_LIBRARY_PATH="$APP/lib:$APP/gdk/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 export APP_CONF_PATH="$APP/gdk/config/app_conf.yml"
-export AORTA_DISCOVERY_URI=http://10.42.1.101:2379
+export AORTA_DISCOVERY_URI=http://192.0.2.9:2379
 export AORTA_DISPATCHER_THREAD_NUM=6
 
 ACTUAL_SHA=$(sha256sum "$REPLAY" | awk '{print $1}')

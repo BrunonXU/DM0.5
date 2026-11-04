@@ -1,0 +1,168 @@
+/* Local layout refinements only. The v32 theme and component styles are retained. */
+#arms-section .arm-comparison {max-height:440px; overflow-y:auto; overscroll-behavior:contain; scrollbar-gutter:stable; padding-right:8px}
+#arms-section .arm-pair .joint-editor {padding:14px 0}
+#arms-section .arm-pair .target-control {grid-template-columns:minmax(0,1fr) 114px; gap:12px}
+#arms-section .arm-pair .number-field input {padding-left:8px; font-variant-numeric:tabular-nums}
+.system-technical {align-self:start}
+.system-technical>summary {cursor:pointer; font-weight:600}
+@media(max-width:700px) {
+  #arms-section .arm-comparison {max-height:440px}
+  #arms-section .arm-pair .target-control {grid-template-columns:1fr}
+  #arms-section .arm-pair .number-field {max-width:128px}
+}
+/* Task-first arrangements, retaining the existing component theme. */
+[hidden]{display:none!important}
+body[data-page] .page-heading:has(p:empty) p{display:none}
+.overview-current{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px 24px;margin-bottom:20px}
+.overview-current h2{margin:0 0 12px}
+.overview-current .line-list{display:flex;gap:12px 24px;flex-wrap:wrap}
+.overview-current .line-item{border:0;padding:0;gap:12px}
+#overview-alerts{grid-column:1/-1;display:flex;gap:8px 20px;flex-wrap:wrap;font-size:14px}
+#overview-alerts a{color:var(--muted)}
+.overview-devices>summary,#health-summary{font-weight:600}
+#health-summary{font-size:14px;color:var(--muted);margin-left:12px}
+body[data-page=overview] .event-list{max-height:320px;overflow:auto}
+body[data-page=control] .camera-section:not(.camera-expanded) .camera-placeholder{height:120px;min-height:0;aspect-ratio:auto}
+body[data-page=control] .camera-section:not(.camera-expanded) .camera-grid{height:162px}
+body[data-page=control] .camera-section:not(.camera-expanded) .camera-title{padding:8px 12px;font-size:14px}
+body[data-page=control] .camera-section{margin-bottom:20px;position:relative}
+body[data-page=control] .camera-section-heading{margin-bottom:8px}
+body[data-page=control] .camera-section-heading h2{font-size:18px}
+body[data-page=control] .camera-tools{position:absolute;right:0;top:-4px}
+body[data-page=control] .camera-section-heading .live-label{margin-right:105px}
+body[data-page=control] .pose-presets>summary{font-weight:600;cursor:pointer;display:flex;gap:12px;align-items:center}
+#preset-summary,[data-dirty-count]{font-size:14px;color:var(--muted);font-weight:400}
+[data-dirty-count]{margin-left:auto;margin-right:28px}
+.pose-section>summary{display:flex;align-items:center}
+body[data-page=control] .model-column{height:auto;max-height:none;min-width:0}
+body[data-page=control] .model-column .model-card{flex:none}
+body[data-page=control] .model-column .robot-model{flex:0 0 auto;height:360px;min-height:300px!important}
+body[data-page=control] .pose-presets:not([open]){padding:16px 20px}
+body[data-page=control] .pose-presets[open] .preset-list{max-height:180px;overflow:auto}
+body[data-page=control] .control-layout{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}
+body[data-page=control] .pose-toolbar{padding:16px 20px;margin-bottom:16px}
+body[data-page=control] .pose-section{padding:18px 24px;margin-bottom:14px}
+.camera-tools{display:flex;justify-content:flex-end;gap:8px;margin:0 0 8px}
+.camera-tabs{display:none}
+.camera-zoom{width:min(1000px,94vw);max-height:92dvh;padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
+.camera-zoom img{display:block;max-width:100%;max-height:78dvh;object-fit:contain;margin:auto}
+.camera-zoom::backdrop{background:#0009}
+.camera-placeholder[role=button]{cursor:zoom-in}
+.pico-options,.pico-comparison{margin-top:20px}
+.pico-options>summary,.pico-comparison>summary{font-weight:600;cursor:pointer;padding:12px 0}
+body[data-page=pico] .recorder-card{margin-top:20px}
+.hil-active-session,.hil-last-saved{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.hil-session-mismatch,.hil-writer-error{margin-bottom:12px;font-size:14px}
+.hil-last-saved{margin-top:12px;font-size:14px;overflow-wrap:anywhere}
+@media(max-width:1100px){
+ body[data-page=control] .control-layout{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}
+ body[data-page=control] .model-column{grid-row:auto;position:static}
+ body[data-page=control] .pose-toolbar-actions{gap:8px}
+}
+@media(max-width:700px){
+ .sidebar,.nav-collapsed .sidebar{padding:10px 12px}
+ .sidebar nav{display:flex;gap:5px;overflow-x:auto;flex-wrap:nowrap}
+ .sidebar .nav-item{flex:0 0 auto;min-width:64px;padding:9px 10px;white-space:nowrap}
+ .sidebar .nav-item.active:after{display:none}
+ .sidebar .brand{margin-bottom:10px}
+ .sidebar .nav-group-label,.sidebar .sidebar-footer{display:none}
+ .heading-actions{display:block!important;padding-top:0}
+ .page-heading{gap:10px;align-items:center}
+ .topbar{gap:8px;flex-wrap:wrap}
+ .overview-current{grid-template-columns:minmax(0,1fr)}
+ #overview-alerts{grid-column:1}
+ .camera-tools,body[data-page=control] .camera-tools{position:static;display:flex;justify-content:space-between}
+ .camera-tabs{display:flex;gap:6px;flex-wrap:wrap}
+ .camera-tabs [aria-selected=true]{border-color:var(--ink);font-weight:600}
+ .camera-section .camera-grid{display:block!important;height:auto!important}
+ .camera-section .camera-card{display:none}
+ .camera-section[data-selected=head] [data-live-camera=head],.camera-section[data-selected=left] [data-live-camera=left],.camera-section[data-selected=right] [data-live-camera=right]{display:block}
+ .camera-section .camera-placeholder,body[data-page=control] .camera-section:not(.camera-expanded) .camera-placeholder{height:170px;min-height:0;aspect-ratio:auto}
+ .camera-section.camera-expanded .camera-placeholder{height:260px}
+ body[data-page=control] .camera-section-heading .live-label{margin-right:0}
+ body[data-page=control] .control-layout{grid-template-columns:minmax(0,1fr)}
+ body[data-page=control] .model-column{grid-row:auto}
+ body[data-page=control] .model-column .robot-model{height:300px;min-height:260px!important}
+ body[data-page=control] .pose-toolbar{position:sticky;top:0;z-index:3}
+ .hil-active-session,.hil-last-saved{flex-wrap:wrap}
+}
+/* Desktop workbench: edit, execute and inspect without traversing card stacks. */
+body[data-page=control] .pose-workspace-heading{display:flex;align-items:center;gap:24px;margin-bottom:16px}
+body[data-page=control] .pose-workspace-heading h1{font-size:28px;margin:0;letter-spacing:0}
+body[data-page=control] .pose-navigation{margin:0}
+body[data-page=control] .pose-navigation .tab{font-size:16px;padding:8px 24px}
+body[data-page=control] .pose-presets{display:flex;align-items:center;gap:16px;padding:10px 16px;margin-bottom:18px;max-height:none}
+body[data-page=control] .pose-preset-label{font-size:15px;color:var(--muted);flex:none}
+body[data-page=control] .pose-presets .preset-list{display:flex;flex:1;flex-wrap:wrap;gap:6px;max-height:none;overflow:visible;padding:0;margin:0}
+body[data-page=control] .preset-item{padding:0 6px 0 12px;margin:0;min-height:36px;background:var(--bg);flex-wrap:nowrap}
+body[data-page=control] .preset-item.selected{background:#ede5d8}
+body[data-page=control] .preset-load{font-size:15px;padding:8px 0}
+body[data-page=control] .preset-menu>summary{font-size:20px}
+body[data-page=control] .control-layout{display:grid;grid-template-columns:minmax(520px,1.25fr) minmax(340px,1fr);gap:20px;align-items:start}
+body[data-page=control] .editor-card{background:var(--surface);border-radius:20px;padding:18px 20px;min-width:0}
+body[data-page=control] .pose-toolbar{position:static;border:0;border-radius:0;box-shadow:none;backdrop-filter:none;padding:0 0 16px;margin:0;gap:12px;background:none}
+body[data-page=control] .pose-intent{flex:1 1 180px;min-width:0}
+body[data-page=control] .pose-intent strong{font-size:19px}
+body[data-page=control] .pose-intent #pose-plan-summary{font-size:14px;margin-top:4px}
+body[data-page=control] .pose-toolbar-actions .button{font-size:15px;padding:9px 12px;min-height:40px}
+.pose-part-tabs{display:flex;gap:8px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px 0;margin-bottom:10px}
+.pose-part-tabs .tab{font-size:16px;padding:9px 16px;border-radius:9px;background:transparent;box-shadow:none;color:var(--muted)}
+.pose-part-tabs .tab.active{color:var(--ink);background:#f0ede6;box-shadow:none}
+.pose-part-tabs [data-part-dirty]{font-size:12px;color:#796142}
+body[data-page=control] .pose-section{padding:0;margin:0;border-radius:0}
+body[data-page=control] .pose-section>summary{display:none}
+body[data-page=control] .arm-comparison-heading{padding:4px 0 6px;margin:0;gap:20px;border-bottom:1px solid var(--line)}
+body[data-page=control] .arm-comparison-heading strong{font-size:16px}
+body[data-page=control] .joint-column-labels{display:flex;justify-content:space-between;align-items:center;margin-top:5px;color:var(--muted);font-size:12px;line-height:1.4;font-weight:400}
+body[data-page=control] .joint-column-labels span:last-child{width:96px;text-align:center}
+body[data-page=control] .arm-pair{gap:20px}
+body[data-page=control] #arms-section .arm-comparison{max-height:none;overflow:visible;padding:0;scrollbar-gutter:auto}
+body[data-page=control] .joint-editor,body[data-page=control] #arms-section .arm-pair .joint-editor{display:grid;grid-template-columns:72px minmax(0,1fr);align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #efeff2}
+body[data-page=control] .joint-row-title{display:flex;flex-direction:column;align-items:flex-start;margin:0;gap:2px}
+body[data-page=control] .joint-row-title label,body[data-page=control] .arm-pair .joint-row-title label{font-size:15px;font-weight:600}
+body[data-page=control] .live-measurement,body[data-page=control] .live-measurement output{font-size:13px;font-variant-numeric:tabular-nums}
+body[data-page=control] .target-control,body[data-page=control] #arms-section .arm-pair .target-control{grid-template-columns:minmax(40px,1fr) 88px;gap:8px}
+body[data-page=control] .number-field{max-width:none}
+body[data-page=control] .number-field input,body[data-page=control] .arm-pair .number-field input{font-size:15px;padding:9px 20px 9px 7px;font-variant-numeric:tabular-nums;text-align:right}
+body[data-page=control] .number-field span{font-size:12px;right:7px}
+body[data-page=control] .motion-info{padding:0;margin-top:14px}
+body[data-page=control] .motion-info>summary{font-size:13px}
+body[data-page=control] .model-column{position:sticky;top:16px;height:auto;max-height:none;gap:16px}
+body[data-page=control] .model-column .model-card{padding:16px;flex:none}
+body[data-page=control] .model-card .card-header h2{font-size:19px}
+body[data-page=control] .model-column .robot-model{height:340px;min-height:300px!important;flex:none}
+body[data-page=control] .model-legend{font-size:13px;margin-top:10px}
+body[data-page=control] .model-info{margin-top:8px}
+body[data-page=control] .model-info>summary{font-size:13px}
+body[data-page=control] .camera-section{margin:0;background:var(--surface);padding:14px 16px;border-radius:20px}
+body[data-page=control] .camera-section-heading h2{font-size:16px}
+body[data-page=control] .camera-section-heading .live-label{display:none}
+body[data-page=control] .camera-tools{right:16px;top:10px}
+body[data-page=control] .camera-tools .button{font-size:13px;min-height:30px;padding:5px 9px}
+body[data-page=control] .camera-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+body[data-page=control] .camera-section:not(.camera-expanded) .camera-grid{height:auto}
+body[data-page=control] .camera-section:not(.camera-expanded) .camera-placeholder{height:auto;aspect-ratio:4/3;min-height:0}
+body[data-page=control] .camera-section .camera-title{padding:7px;font-size:12px;display:block}
+body[data-page=control] .camera-title span:last-child{font-size:11px;display:block;margin-top:4px}
+body[data-page=control].model-focus .control-layout{grid-template-columns:1fr}
+body[data-page=control].model-focus .model-column{max-width:1200px}
+body[data-page=control].model-focus .robot-model{height:65dvh}
+@media(min-width:1600px){body[data-page=control] .model-column .robot-model{height:400px}body[data-page=control] .joint-editor,body[data-page=control] #arms-section .arm-pair .joint-editor{padding:13px 0}}
+@media(min-width:1001px) and (max-width:1300px){body[data-page=control] .control-layout{grid-template-columns:minmax(490px,1.4fr) minmax(300px,1fr);gap:14px}body[data-page=control] .editor-card{padding:16px}body[data-page=control] .arm-pair{gap:14px}body[data-page=control] #arms-section .joint-editor{grid-template-columns:54px minmax(0,1fr);gap:6px}}
+body[data-page=control] main{padding-top:16px}
+body[data-page=control] .pose-workspace-heading{margin-bottom:12px}
+body[data-page=control] .pose-presets{padding:8px 16px;margin-bottom:16px}
+body[data-page=control] .pose-presets>.button{min-height:36px;padding:7px 10px}
+body[data-page=control] .joint-row-title{line-height:1.2;gap:1px}
+body[data-page=control] .live-measurement,body[data-page=control] .live-measurement output{line-height:1.2}
+body[data-page=control] .joint-editor,body[data-page=control] #arms-section .arm-pair .joint-editor{padding:5px 0}
+body[data-page=control] .number-field input,body[data-page=control] .arm-pair .number-field input{padding-top:7px;padding-bottom:7px;line-height:1.4}
+@media(min-width:1600px){body[data-page=control] .joint-editor,body[data-page=control] #arms-section .arm-pair .joint-editor{padding:10px 0}}
+body[data-page=control] .pose-workspace-heading{gap:18px;margin-bottom:16px;min-height:52px}
+body[data-page=control] .pose-workspace-heading .pose-presets{flex:1;min-width:0;justify-content:flex-end;background:transparent;border-radius:0;margin:0;padding:0;gap:10px}
+body[data-page=control] .pose-workspace-heading .preset-list{flex:0 1 auto;justify-content:flex-end}
+body[data-page=control] .pose-workspace-heading .preset-item{background:var(--surface)}
+body[data-page=control] .pose-workspace-heading .preset-item.selected{background:#ede5d8}
+body[data-page=control] .model-column .robot-model{height:300px;min-height:260px!important}
+body[data-page=control] .target-control,body[data-page=control] #arms-section .arm-pair .target-control{grid-template-columns:minmax(40px,1fr) 96px}
+@media(min-width:1600px){body[data-page=control] .model-column .robot-model{height:400px}}

@@ -4,7 +4,7 @@
 
 > 当前实现/证据/未决问题以 [当前进度](RECORDING_AND_PROGRESS.md) 为准；按序查阅 [文档索引](00_INDEX.md)。POLICY 为单34D normal/100Hz；人工仍是臂Servo＋手5Hz点目标。多轮真实HIL已有证据，training_ready=false。
 
-**以下机载/Windows 命令沿用最后记录的已安装目录**：G2 `/home/agi/xza/DAgger`、Windows `C:\Users\100850113\DAgger`。本次只改开发树，未搬动这些安装。开发源码在 `DAgger/G2/`，公共组件在 `DAgger/shared/`。
+**以下机载/Windows 命令沿用最后记录的已安装目录**：G2 `/home/user/xza/DAgger`、Windows `C:\Users\user\DAgger`。本次只改开发树，未搬动这些安装。开发源码在 `DAgger/G2/`，公共组件在 `DAgger/shared/`。
 当前已完成多轮真实交接；最近已审计/导出175457轮，视频227.634秒。图像时间对齐和训练标签尚未认证，不能直接用于训练。
 
 > 首次START设计证据：[首次START开始、三轮数据和存储审计](START_GATE_AND_THREE_RUNS_20260908.md)。连接不再自动运行；首次START开始POLICY，后续START切HIL。
@@ -17,7 +17,7 @@
 
 ```powershell
 New-Item -ItemType Directory -Force "$HOME\DAgger" | Out-Null
-scp -r agi@10.130.86.13:/home/agi/xza/DAgger/windows_client/src agi@10.130.86.13:/home/agi/xza/DAgger/windows_client/scripts "$HOME\DAgger"
+scp -r agi@192.0.2.8:/home/user/xza/DAgger/windows_client/src agi@192.0.2.8:/home/user/xza/DAgger/windows_client/scripts "$HOME\DAgger"
 ```
 
 沿用已验证的 `$HOME\.venv\Scripts\python.exe`，不新建环境。
@@ -58,13 +58,13 @@ cd $HOME\DAgger
 第三个Windows PowerShell，先登录G2（停止其他Robot owner/12/19/旧40接收端）：
 
 ```powershell
-ssh agi@10.130.86.13
+ssh agi@192.0.2.8
 ```
 
 看到agi@...的Linux提示符后再执行：
 
 ```bash
-cd /home/agi/xza/DAgger
+cd /home/user/xza/DAgger
 bash scripts/40_g2_powered_hil.sh --capture-hz 30 --recording-mode hil-record --duration-seconds 0
 ```
 
@@ -100,7 +100,7 @@ bash scripts/40_g2_powered_hil.sh --recording-mode inference-only
 仅作文件/导入检查，不初始化GDK：
 
 ```bash
-PYTHONPATH=src:/home/agi/xza/DM0.5:/home/agi/xza/DM0.5/g2_sort/deployment:/home/agi/xza/DAgger/vendor_ik python3 scripts/40_g2_powered_hil.py --preflight-files-only --accept-dm05-hand-fit
+PYTHONPATH=src:/home/user/xza/DM0.5:/home/user/xza/DM0.5/g2_sort/deployment:/home/user/xza/DAgger/vendor_ik python3 scripts/40_g2_powered_hil.py --preflight-files-only --accept-dm05-hand-fit
 ```
 
 ## 机载日志和数据（已安装版本）
@@ -121,10 +121,10 @@ PYTHONPATH=src:/home/agi/xza/DM0.5:/home/agi/xza/DM0.5/g2_sort/deployment:/home/
 录制结束后，把RUN_ID替换为G2打印的本次编号；以下为6000D Linux终端命令：
 
 ```bash
-cd /home/xza_100850113/projects/DAgger
+cd /home/user/projects/DAgger
 RUN_ID=g2_powered_hil_YYYYMMDD_HHMMSS
 mkdir -p artifacts/data/raw/powered_hil
-scp -r "agi@10.130.86.13:/home/agi/xza/DAgger/data/raw/powered_hil/$RUN_ID" artifacts/data/raw/powered_hil/
+scp -r "agi@192.0.2.8:/home/user/xza/DAgger/data/raw/powered_hil/$RUN_ID" artifacts/data/raw/powered_hil/
 python3 G2/scripts/42_render_episode_preview.py "artifacts/data/raw/powered_hil/$RUN_ID" "artifacts/data/exports/$RUN_ID/three_camera_preview.mp4"
 ffmpeg -v error -i "artifacts/data/exports/$RUN_ID/three_camera_preview.mp4" -f null -
 ```

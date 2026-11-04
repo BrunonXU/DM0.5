@@ -34,12 +34,12 @@ def test_http_start_requires_login_origin_confirmation_and_no_lease(http_app,mon
     monkeypatch.setattr(app.startup,'start',lambda:(calls.append('start') or {'accepted':True}))
     _,_,cookie=request('/api/session')
     assert request('/api/startup/state',cookie=cookie)[0]==200 and calls==[]
-    assert request('/api/startup/start',{'confirm':True},cookie)[0]==401
-    request('/api/login',{'control_code':'fixture-control-code'},cookie)
+    assert request('/api/startup/start',{'confirm':True},cookie,origin=False)[0]==403
+    request('/api/login',{},cookie)
     assert request('/api/startup/start',{'confirm':True},cookie,origin=False)[0]==403
     assert request('/api/startup/start',{},cookie)[0]==409
     assert request('/api/startup/start',{'confirm':True},cookie)[0]==200 and calls==['start']
-    request('/api/control/acquire',{'control_code':'fixture-control-code'},cookie)
+    request('/api/control/acquire',{},cookie)
     assert request('/api/startup/start',{'confirm':True},cookie)[0]==409 and calls==['start']
 
 def test_waist_preview_is_read_only_and_rejects_bad_input(http_app,monkeypatch):

@@ -39,6 +39,8 @@ class TeleopService:
         request=small_json(folder/'request.json',{})
         data=small_json(folder/'status.json',{'phase':'starting','checked_unix':request.get('created_unix',0),'variant':request.get('variant')})
         state.update(data);state['id']=folder.name
+        state['status_age_s']=time.time()-float(data.get('checked_unix',0))
+        state['status_ttl_s']=12 if not data.get('pid') else 4
         alive=False
         if state['phase'] not in TERMINAL:
             age=time.time()-float(data.get('checked_unix',0))
@@ -65,7 +67,7 @@ class TeleopService:
             cfg=self.config[variant];source=Path(cfg['start'])
             if hashlib.sha256(source.read_bytes()).hexdigest()!=cfg['start_sha256']:raise ValueError('启动脚本已变化，需要重新核对；未执行')
             sid=secrets.token_hex(16);folder=self.owned/'sessions'/sid;folder.mkdir(parents=True,mode=0o700)
-            request={'id':sid,'variant':variant,'owner_hash':hashlib.sha256(owner.encode()).hexdigest(),'created_unix':time.time()}
+            request={'id':sid,'variant':variant,'owner_hash':hashlib.sha256(owner.encode()).hexdigest(),'created_unix':time.time(),'direct_start':True}
             atomic_json(folder/'request.json',request)
             args=['systemd-run','--user','--collect','--unit='+UNIT,'--property=Restart=no','--property=KillMode=control-group','--property=TimeoutStopSec=18','--property=WorkingDirectory='+str(self.root), '--setenv=PYTHONDONTWRITEBYTECODE=1','--setenv=PYTHONUNBUFFERED=1', '/usr/bin/python3','-m','teleop.worker','--session',str(folder)]
             env_args=['--setenv='+k+'='+v for k,v in installation_environment(self.runtime).items()]

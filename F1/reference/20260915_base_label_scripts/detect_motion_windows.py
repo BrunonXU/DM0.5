@@ -6,8 +6,8 @@ from mcap_ros2.decoder import DecoderFactory
 import cv2, numpy as np, json, math, os, re, time, traceback
 
 ROOTS=[Path(r'd:\all_data'),Path(r'd:\all_data_1'),Path(r'd:\all_data_2'),Path(r'd:\all_data_3')]
-OUT=Path(r'C:\Users\100591958\AppData\Local\Temp\all_episode_motion_timings.json')
-CHECKPOINT=Path(r'C:\Users\100591958\AppData\Local\Temp\all_episode_motion_timings.jsonl')
+OUT=Path(r'C:\Users\user\AppData\Local\Temp\all_episode_motion_timings.json')
+CHECKPOINT=Path(r'C:\Users\user\AppData\Local\Temp\all_episode_motion_timings.jsonl')
 
 def transform_displacement(old,new,shape,matcher):
     kp0,des0=old;kp1,des1=new

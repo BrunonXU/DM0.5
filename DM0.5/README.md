@@ -3,6 +3,8 @@
 本项目使用固定版本 OpenDM/DM0.5，通过 LoRA 适配 G2 双臂灵巧手数据，最终
 在真机验证“左手抓瓶、交接右手、分别放入托盘区域”的完整任务。
 
+2026-10-23：按工作区整理要求，本项目与配套 `g2_robot` 已迁到用户目录的 `Archive/`，保留代码、数据和 Git 历史；当前 F1 工作仍在 `../../projects/`。本页后续内容保留 G2 项目的原有事实，迁移没有重新启动训练或真机服务。Git 与目录维护见 [Archive 管理说明](../workspace/Archive/README.md)。
+
 ## 当前状态
 
 项目已从OldLora训练阶段推进到NewLora 75K真机、五步fixed-prefix compile与RTC控制架构优化。实时事实和下一步只在 [`docs/CURRENT_STATUS.md`](docs/CURRENT_STATUS.md) 维护；本README不复制易过时的服务、checkpoint或进度。

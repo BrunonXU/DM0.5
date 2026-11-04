@@ -2,7 +2,7 @@
 
 > 历史/专项证据：本文结论对应文内日期与轮次。当前实现及下一步统一见 [当前进度](RECORDING_AND_PROGRESS.md)，按序查阅 [文档索引](00_INDEX.md)。
 
-- 本地根目录：`/home/xza_100850113/projects/DAgger`；G2根目录：`/home/agi/xza/DAgger`。
+- 本地根目录：`/home/user/projects/DAgger`；G2根目录：`/home/user/xza/DAgger`。
 - 28个实现/支持模块迁入独立`g2dagger`命名空间（另有package initializer），8个测试文件，33–40操作/审计脚本、Windows sender/tunnel、配置快照、相关历史文档。
 - HIL/录制源码与测试不再留作G2Teleop的活动实现；迁移前副本在`data/archive/legacy_source/`。G2Teleop的33–40脚本只负责迁移提示和转发，12号冻结入口及其支持组件未改。
 - 新入口PYTHONPATH无需G2Teleop。G2的IK依赖复制为DAgger/vendor_ik；本地离线运行不要求安装真机IK。

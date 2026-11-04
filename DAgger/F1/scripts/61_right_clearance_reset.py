@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""F1-local one-shot right-arm clearance. No sender, policy or data recording.
+"""F1-local one-shot right-arm Home. No sender, policy or data recording.
 
 Default is read-only preflight. --execute still requires local terminal Enter.
 Uses the manifest-bound control library, never launches its HIL application.
@@ -20,12 +20,19 @@ from f1dagger.robot_io import ControlLock, CollisionGate, F1Owner, make_output
 from f1dagger.observation import RosObservationSource
 from f1dagger.teleop import F1ArmTarget
 from f1dagger.clearance_home import FeedbackAlignedClearanceHome as ClearanceHomeMotion
+from f1dagger.clearance_home import DirectWorkbenchHomeMotion
+
+
+def make_home(profile, state, arm, full, now):
+    goal = home_target(profile, state)
+    motion_type = DirectWorkbenchHomeMotion if profile['f710_home'].get('route') == 'direct' else ClearanceHomeMotion
+    return motion_type(profile, state, goal, arm, full, now)
 
 
 def preview(config, profile, mapping, urdf, full, state, gate):
     """Numerical path check only; synthetic tracking is not physical arrival."""
     arm = F1ArmTarget(urdf, mapping, config['ik'])
-    motion = ClearanceHomeMotion(profile, state, home_target(profile, state), arm, full, 0)
+    motion = make_home(profile, state, arm, full, 0)
     output = make_output(config)
     output.planner.set_limits(mapping.limits)
     output.push(state[:14], 0., enabled=(False, False))
@@ -57,9 +64,10 @@ def run_motion(config, profile, mapping, urdf, source, transport, gate, stop, em
     transport.prepare('joint_command')
     full = owner.initialize(time.monotonic())
     arm = F1ArmTarget(urdf, mapping, config['ik'])
-    arm.warmup(full, owner.last_submitted)
+    if profile['f710_home'].get('route') != 'direct':
+        arm.warmup(full, owner.last_submitted)
     full = owner.initialize(time.monotonic())
-    motion = ClearanceHomeMotion(profile, owner.last_submitted, home_target(profile, owner.last_submitted), arm, full, time.monotonic_ns())
+    motion = make_home(profile, owner.last_submitted, arm, full, time.monotonic_ns())
     fixed = full.copy(); stage = None; target_at = None; next_target = time.monotonic(); next_sample = next_target
     try:
         while not stop():
@@ -142,7 +150,11 @@ def main():
         if not args.execute:
             print('只读预检完成，没有发送动作。',flush=True);return
         phase = 'waiting_enter'
-        input('将只动右臂：上抬 6cm → 向机器人右侧 10cm → 积木demo-V0；避让允许少量姿态变化，不增加独立转腕动作。确认净空后按 Enter；Ctrl+C 取消：')
+        if p['f710_home'].get('route') == 'direct':
+            prompt = '将只动右臂：直接回到 '+p['f710_home']['name']+'。请先手动避开积木箱，确认整条回位路径净空后按 Enter；Ctrl+C 取消：'
+        else:
+            prompt = '将只动右臂：上抬 6cm → 向机器人右侧 10cm → '+p['f710_home']['name']+'；避让允许少量姿态变化，不增加独立转腕动作。确认净空后按 Enter；Ctrl+C 取消：'
+        input(prompt)
         full,_,_=source.feedback()
         if np.max(np.abs(full-checked))>p['joint_tolerance_deg']:
             raise RuntimeError('pose changed after preview; rerun preflight')

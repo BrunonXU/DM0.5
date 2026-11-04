@@ -36,7 +36,7 @@
   },
   "angle_mapping_source": "configs/model_mapping.json",
   "angle_mapping_sha256": "21e1879e2b5e15dfe590a27b1cb3c256626364b161cb950e24c5dd08a86633d5",
-  "mapping_source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/vendor/f1_safety/src/python/f1_safety_config.yaml",
+  "mapping_source": "/home/user/projects/F1-4242/integrations/pico_upper/vendor/f1_safety/src/python/f1_safety_config.yaml",
   "mapping_source_sha256": "83ad2c6bad9686c32c126efdfdfea4b943773c67ed48a4bc9f44e2121c025422",
   "license": "No separate model license found in supplied snapshot; internal authorized reuse.",
   "live_scope": "22 body/head/arm axes; no wheel, gripper or base odometry animation",
@@ -46,256 +46,256 @@
       "path": "meshes/arm_L_Link1.STL",
       "bytes": 158884,
       "sha256": "122f5da1eaa3c566290f45bc4a6e91a6e20fa559a2c136466cafd115609aa4ff",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_L_Link1.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_L_Link1.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_L_Link1.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/arm_L_Link1.STL",
       "original_sha256": "122f5da1eaa3c566290f45bc4a6e91a6e20fa559a2c136466cafd115609aa4ff"
     },
     {
       "path": "meshes/arm_L_Link2.STL",
       "bytes": 329584,
       "sha256": "351f3caa1d717377d8039c5d2d15d26dd239a802910bca0c3fd72dba4cd684f6",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_L_Link2.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_L_Link2.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_L_Link2.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/arm_L_Link2.STL",
       "original_sha256": "351f3caa1d717377d8039c5d2d15d26dd239a802910bca0c3fd72dba4cd684f6"
     },
     {
       "path": "meshes/arm_L_Link3.STL",
       "bytes": 144184,
       "sha256": "1d889da26b0a281f74707aa727301cf36996344fb04c62bbe825706d93c18452",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_L_Link3.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_L_Link3.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_L_Link3.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/arm_L_Link3.STL",
       "original_sha256": "1d889da26b0a281f74707aa727301cf36996344fb04c62bbe825706d93c18452"
     },
     {
       "path": "meshes/arm_L_Link4.STL",
       "bytes": 317484,
       "sha256": "cb70db2455c31437fff32afaa34898349087f9183d515c7607b2440bd67662c4",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_L_Link4.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_L_Link4.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_L_Link4.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/arm_L_Link4.STL",
       "original_sha256": "cb70db2455c31437fff32afaa34898349087f9183d515c7607b2440bd67662c4"
     },
     {
       "path": "meshes/arm_L_Link5.STL",
       "bytes": 324084,
       "sha256": "48396c2ae5f6a5241d9e58e9a4b5a2ed374f440c28a446f20d490fc350282124",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_L_Link5.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_L_Link5.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_L_Link5.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/arm_L_Link5.STL",
       "original_sha256": "48396c2ae5f6a5241d9e58e9a4b5a2ed374f440c28a446f20d490fc350282124"
     },
     {
       "path": "meshes/arm_L_Link6.STL",
       "bytes": 107884,
       "sha256": "15ba20e048bcab55f819a72dece27095f64872f0adcc848e6a03a5c6addba798",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_L_Link6.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_L_Link6.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_L_Link6.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/arm_L_Link6.STL",
       "original_sha256": "15ba20e048bcab55f819a72dece27095f64872f0adcc848e6a03a5c6addba798"
     },
     {
       "path": "meshes/arm_L_Link7.STL",
       "bytes": 734684,
       "sha256": "9da4c0c7d3a6ce1b9329deff6edc31dc59151917621b54aba49c28b9c6b99f00",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_L_Link7.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_L_Link7.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_L_Link7.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/arm_L_Link7.STL",
       "original_sha256": "9da4c0c7d3a6ce1b9329deff6edc31dc59151917621b54aba49c28b9c6b99f00"
     },
     {
       "path": "meshes/arm_R_Link1.STL",
       "bytes": 158284,
       "sha256": "b136b7bc9b565700d9089260c83c9191356cab0658dea5646b296a6ba2c50bc4",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_R_Link1.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_R_Link1.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_R_Link1.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/arm_R_Link1.STL",
       "original_sha256": "b136b7bc9b565700d9089260c83c9191356cab0658dea5646b296a6ba2c50bc4"
     },
     {
       "path": "meshes/arm_R_Link2.STL",
       "bytes": 327184,
       "sha256": "4b18874520252e4209a6c15005c1636ebd472dcfb431d5c127d157cffe660f40",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_R_Link2.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_R_Link2.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_R_Link2.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/arm_R_Link2.STL",
       "original_sha256": "4b18874520252e4209a6c15005c1636ebd472dcfb431d5c127d157cffe660f40"
     },
     {
       "path": "meshes/arm_R_Link3.STL",
       "bytes": 140584,
       "sha256": "094ac1bea27a907b6a95c5f3cabc661993b445fdde56a25f6fde47477efbcf03",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_R_Link3.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_R_Link3.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_R_Link3.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/arm_R_Link3.STL",
       "original_sha256": "094ac1bea27a907b6a95c5f3cabc661993b445fdde56a25f6fde47477efbcf03"
     },
     {
       "path": "meshes/arm_R_Link4.STL",
       "bytes": 319684,
       "sha256": "6bef3f3b02dc7f3e4678289eaa6e10f5ac2ca07258c6286d50e579c1ed6052ff",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_R_Link4.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_R_Link4.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_R_Link4.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/arm_R_Link4.STL",
       "original_sha256": "6bef3f3b02dc7f3e4678289eaa6e10f5ac2ca07258c6286d50e579c1ed6052ff"
     },
     {
       "path": "meshes/arm_R_Link5.STL",
       "bytes": 324984,
       "sha256": "7458754ad9675c44a68afd9d59f00494ebf6bf508b60417efeb3a660c8840087",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_R_Link5.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_R_Link5.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_R_Link5.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/arm_R_Link5.STL",
       "original_sha256": "7458754ad9675c44a68afd9d59f00494ebf6bf508b60417efeb3a660c8840087"
     },
     {
       "path": "meshes/arm_R_Link6.STL",
       "bytes": 108884,
       "sha256": "3bf5bbbdd3f2c22a1bcec8f410661f9815117fb75e276ca59ff8b4cf8545c85d",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_R_Link6.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_R_Link6.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_R_Link6.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/arm_R_Link6.STL",
       "original_sha256": "3bf5bbbdd3f2c22a1bcec8f410661f9815117fb75e276ca59ff8b4cf8545c85d"
     },
     {
       "path": "meshes/arm_R_Link7.STL",
       "bytes": 737584,
       "sha256": "64b17deaad40a8077de806963fc8bf6121d077312b2e0c4584936f3aaaba9493",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_R_Link7.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/arm_R_Link7.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/arm_R_Link7.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/arm_R_Link7.STL",
       "original_sha256": "64b17deaad40a8077de806963fc8bf6121d077312b2e0c4584936f3aaaba9493"
     },
     {
       "path": "meshes/base_link.STL",
       "bytes": 886084,
       "sha256": "a7cfb3eb6148433848b6e5416c195743f632ea0e291b5edd5f6494d9d754ff36",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/base_link.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/base_link.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/base_link.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/base_link.STL",
       "original_sha256": "a7cfb3eb6148433848b6e5416c195743f632ea0e291b5edd5f6494d9d754ff36"
     },
     {
       "path": "meshes/body_Link1.STL",
       "bytes": 3393984,
       "sha256": "1a4340a16efbcd2b53eabcb67f73f0b1166fa8a65457495001fb45ece31df003",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/body_Link1.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/body_Link1.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/body_Link1.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/body_Link1.STL",
       "original_sha256": "1a4340a16efbcd2b53eabcb67f73f0b1166fa8a65457495001fb45ece31df003"
     },
     {
       "path": "meshes/body_Link2.STL",
       "bytes": 1373184,
       "sha256": "cc828252b579a02dc47bea7288aa7945254f791601cdfa9d1b3b22f70f71cd4c",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/body_Link2.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/body_Link2.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/body_Link2.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/body_Link2.STL",
       "original_sha256": "cc828252b579a02dc47bea7288aa7945254f791601cdfa9d1b3b22f70f71cd4c"
     },
     {
       "path": "meshes/body_Link3.STL",
       "bytes": 2644584,
       "sha256": "87e58ec84a748d0d314e6b5852306355258a0dcbd6d626832cf7c460d0cb360c",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/body_Link3.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/body_Link3.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/body_Link3.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/body_Link3.STL",
       "original_sha256": "87e58ec84a748d0d314e6b5852306355258a0dcbd6d626832cf7c460d0cb360c"
     },
     {
       "path": "meshes/body_Link4.STL",
       "bytes": 2150484,
       "sha256": "2edbdcfaa7033529ae36a4db69e0f01100efec36b7b60b88df94ee9cc92480b3",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/body_Link4.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/body_Link4.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/body_Link4.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/body_Link4.STL",
       "original_sha256": "2edbdcfaa7033529ae36a4db69e0f01100efec36b7b60b88df94ee9cc92480b3"
     },
     {
       "path": "meshes/body_Link5.STL",
       "bytes": 6975184,
       "sha256": "ba78eb77fa40eab9d41aeb0eff0430043de37146952b6b5b219d35f2027865c7",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/body_Link5.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/body_Link5.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/body_Link5.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/body_Link5.STL",
       "original_sha256": "ba78eb77fa40eab9d41aeb0eff0430043de37146952b6b5b219d35f2027865c7"
     },
     {
       "path": "meshes/chassis_L_wheel_front_link1.STL",
       "bytes": 106384,
       "sha256": "ea29ee75918bfd73dd027566221ff9676c004da08f4fe63317777c9cd7611f12",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/chassis_L_wheel_front_link1.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/chassis_L_wheel_front_link1.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/chassis_L_wheel_front_link1.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/chassis_L_wheel_front_link1.STL",
       "original_sha256": "ea29ee75918bfd73dd027566221ff9676c004da08f4fe63317777c9cd7611f12"
     },
     {
       "path": "meshes/chassis_L_wheel_front_link2.STL",
       "bytes": 478984,
       "sha256": "dcbca673162ae826bc4bf254b33c70885526eed5e31f0aed358efd90db0a84a7",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/chassis_L_wheel_front_link2.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/chassis_L_wheel_front_link2.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/chassis_L_wheel_front_link2.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/chassis_L_wheel_front_link2.STL",
       "original_sha256": "dcbca673162ae826bc4bf254b33c70885526eed5e31f0aed358efd90db0a84a7"
     },
     {
       "path": "meshes/chassis_L_wheel_rear_link1.STL",
       "bytes": 102784,
       "sha256": "15a6c5ba884c99cf2eb24d8a05946e99d71c23d2c77be65d3b3b86028bf9bb72",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/chassis_L_wheel_rear_link1.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/chassis_L_wheel_rear_link1.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/chassis_L_wheel_rear_link1.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/chassis_L_wheel_rear_link1.STL",
       "original_sha256": "15a6c5ba884c99cf2eb24d8a05946e99d71c23d2c77be65d3b3b86028bf9bb72"
     },
     {
       "path": "meshes/chassis_L_wheel_rear_link2.STL",
       "bytes": 479584,
       "sha256": "2d27681b7ff213aba13a5dcaf163c769dfdb5744ecc5add88e25f82ff00f1409",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/chassis_L_wheel_rear_link2.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/chassis_L_wheel_rear_link2.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/chassis_L_wheel_rear_link2.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/chassis_L_wheel_rear_link2.STL",
       "original_sha256": "2d27681b7ff213aba13a5dcaf163c769dfdb5744ecc5add88e25f82ff00f1409"
     },
     {
       "path": "meshes/chassis_R_wheel_front_link1.STL",
       "bytes": 106384,
       "sha256": "c18629756a9b234753c329278adcaa6687e136e251d9489259589d890253b4e1",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/chassis_R_wheel_front_link1.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/chassis_R_wheel_front_link1.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/chassis_R_wheel_front_link1.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/chassis_R_wheel_front_link1.STL",
       "original_sha256": "c18629756a9b234753c329278adcaa6687e136e251d9489259589d890253b4e1"
     },
     {
       "path": "meshes/chassis_R_wheel_front_link2.STL",
       "bytes": 479184,
       "sha256": "d3238fbf7ce6255951cec32f18a9babc27e916e7fc06565903aa4913a573d745",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/chassis_R_wheel_front_link2.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/chassis_R_wheel_front_link2.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/chassis_R_wheel_front_link2.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/chassis_R_wheel_front_link2.STL",
       "original_sha256": "d3238fbf7ce6255951cec32f18a9babc27e916e7fc06565903aa4913a573d745"
     },
     {
       "path": "meshes/chassis_R_wheel_rear_link1.STL",
       "bytes": 102784,
       "sha256": "b2800d51f669353f0c37d30f4daadabafaea0d12cfa4ebb3c4f675fda9fef181",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/chassis_R_wheel_rear_link1.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/chassis_R_wheel_rear_link1.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/chassis_R_wheel_rear_link1.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/chassis_R_wheel_rear_link1.STL",
       "original_sha256": "b2800d51f669353f0c37d30f4daadabafaea0d12cfa4ebb3c4f675fda9fef181"
     },
     {
       "path": "meshes/chassis_R_wheel_rear_link2.STL",
       "bytes": 481584,
       "sha256": "845047bf5f2d22c81af473d96172fe5b06e7e1770d2e3e264a4542521ccf32d1",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/chassis_R_wheel_rear_link2.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/chassis_R_wheel_rear_link2.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/chassis_R_wheel_rear_link2.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/chassis_R_wheel_rear_link2.STL",
       "original_sha256": "845047bf5f2d22c81af473d96172fe5b06e7e1770d2e3e264a4542521ccf32d1"
     },
     {
       "path": "meshes/head_Link1.STL",
       "bytes": 370784,
       "sha256": "28959ada6360baa21ddacf31131fb6bc0dcd6d59b5e537ed59bf1596b3ff50c2",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/head_Link1.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/head_Link1.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/head_Link1.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/head_Link1.STL",
       "original_sha256": "28959ada6360baa21ddacf31131fb6bc0dcd6d59b5e537ed59bf1596b3ff50c2"
     },
     {
       "path": "meshes/head_Link2.STL",
       "bytes": 952984,
       "sha256": "a230bfbe0c27ccdb39eee354f2a75646d8908333ae7199f4a289cf092d1e4982",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/head_Link2.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/head_Link2.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/head_Link2.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/head_Link2.STL",
       "original_sha256": "a230bfbe0c27ccdb39eee354f2a75646d8908333ae7199f4a289cf092d1e4982"
     },
     {
       "path": "meshes/head_Link3.STL",
       "bytes": 2943484,
       "sha256": "1aa95e188e974ecba212b1b74f512ab332a5f46b37778254453148127ebdc968",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/head_Link3.STL",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/meshes/head_Link3.STL",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/meshes/head_Link3.STL",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/meshes/head_Link3.STL",
       "original_sha256": "1aa95e188e974ecba212b1b74f512ab332a5f46b37778254453148127ebdc968"
     },
     {
       "path": "urdf/f1_wheel_0602_new.urdf",
       "bytes": 38269,
       "sha256": "bc21c6f36446aa2741d6ba20c2190836be967b1f3043dfa39eaae0983c95d5c0",
-      "source": "/home/xza_100850113/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/urdf/f1_wheel_0602_new.urdf",
-      "original_source": "/home/xx_100872445/F1/PICO/pico/assets/f1_wheel/urdf/f1_wheel_0602_new.urdf",
+      "source": "/home/user/projects/F1-4242/integrations/pico_upper/assets/f1_wheel/urdf/f1_wheel_0602_new.urdf",
+      "original_source": "/home/user/F1/PICO/pico/assets/f1_wheel/urdf/f1_wheel_0602_new.urdf",
       "original_sha256": "bc21c6f36446aa2741d6ba20c2190836be967b1f3043dfa39eaae0983c95d5c0"
     }
   ]

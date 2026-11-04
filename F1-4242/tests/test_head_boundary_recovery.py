@@ -306,6 +306,87 @@ def test_stale_sequence_with_fake_fresh_age_does_not_reset_watchdog():
     assert len(transport.sent) == 1
 
 
+def test_snapshot_processing_delay_does_not_make_same_receipt_go_backwards(monkeypatch):
+    a, clock, transport = candidate()
+    p = plan(a)
+    original = a.snapshot
+    snapshots = []
+
+    def delayed_snapshot():
+        snap = original()
+        snapshots.append(snap)
+        # A real StateStore snapshot has already measured age. Processing that
+        # snapshot can take longer than the next read, without a new HAL frame.
+        if len(snapshots) == 2:
+            clock.now += .002
+        return snap
+
+    monkeypatch.setattr(a, 'snapshot', delayed_snapshot)
+    origin, edge = p['origin'], p['edge']
+    result = execute(a, p, Feedback(a, clock, lambda t: origin+(edge-origin)*min(t/.3, 1.)))
+    first, repeated = snapshots[1], snapshots[3]
+    assert first['joints']['head_j2']['receipt_seq'] == repeated['joints']['head_j2']['receipt_seq']
+    assert repeated['snapshot_monotonic_s'] > first['snapshot_monotonic_s']
+    assert result['recovered'] and result['elapsed_s'] >= .45
+    assert transport.sent == [('joint_command', {'head_j2': edge})]
+
+
+@pytest.mark.parametrize('invalid_time', [None, True, float('nan'), float('inf'), 1e9])
+def test_invalid_snapshot_time_is_rejected_before_output(monkeypatch, invalid_time):
+    a, clock, transport = candidate()
+    p = plan(a)
+    original = a.snapshot
+
+    def invalid_snapshot():
+        snap = original()
+        snap['snapshot_monotonic_s'] = invalid_time
+        return snap
+
+    monkeypatch.setattr(a, 'snapshot', invalid_snapshot)
+    with pytest.raises(ValueError, match='快照时间无效'):
+        execute(a, p, Event(clock))
+    assert not transport.sent
+
+
+def test_snapshot_that_expires_during_processing_is_rejected_before_output(monkeypatch):
+    a, clock, transport = candidate()
+    p = plan(a)
+    original = a.snapshot
+    reads = 0
+
+    def delayed_snapshot():
+        nonlocal reads
+        snap = original()
+        reads += 1
+        if reads == 2:
+            clock.now += a.profile['feedback_max_age_s']+.001
+        return snap
+
+    monkeypatch.setattr(a, 'snapshot', delayed_snapshot)
+    with pytest.raises((ValueError, ActionRejected), match='过期'):
+        execute(a, p, Event(clock))
+    assert not transport.sent
+
+
+@pytest.mark.parametrize('regression', ['sequence', 'time'])
+def test_genuine_receipt_regression_still_aborts_after_one_boundary_command(regression):
+    a, clock, transport = candidate()
+    p = plan(a)
+    previous = dict(a.store.joints['head_j2'])
+
+    def regress(t):
+        row = a.store.joints['head_j2']
+        if regression == 'sequence':
+            row['receipt_seq'] = previous['receipt_seq']-1
+        else:
+            row['received_at'] = previous['received_at']-.001
+
+    with pytest.raises(ValueError, match='接收序号或时间倒退') as error:
+        execute(a, p, Feedback(a, clock, lambda t: p['origin']+.1, hook=regress))
+    assert error.value.boundary_command_sent and not error.value.hold_sent
+    assert transport.sent == [('joint_command', {'head_j2': p['edge']})]
+
+
 def test_legal_before_publish_drifting_outside_cannot_turn_into_recovery():
     a, clock, transport = candidate()
     p = plan(a)

@@ -1,0 +1,404 @@
+/* Approved October workspace: desktop shell, contextual navigation and shared capture.
+   Operation ownership and red control signals remain in the existing state handlers. */
+body,body[data-page=hil]:has(.hil-horizontal){--bg:#fff;--surface:#fff;--ink:#242424;--muted:#777;--line:#e8e8e8;--sidebar:#f7f7f7;background:#fff}
+body{min-width:1180px}
+body .app-shell .sidebar{width:236px;padding:28px 14px 16px;box-shadow:none;border-right:1px solid #ededed}
+body .app-shell>.workspace{margin-left:236px;width:calc(100% - 236px)}
+body .sidebar .infra-brand{margin:20px 12px 26px}
+body .sidebar .infra-name{font-size:26px;letter-spacing:-.8px}
+body .sidebar .nav-item{height:46px;padding:10px 14px;font-size:15px;border:0;border-radius:9px;gap:12px}
+body .sidebar #navigation{gap:5px}
+body .sidebar .sidebar-label{font-size:12px;margin:16px 13px 12px;color:#909090}
+body .sidebar .nav-item.active{border:0;box-shadow:none;background:#e9e9e9}
+.sidebar-context{margin-top:20px;flex:1;min-height:0;overflow:auto;overscroll-behavior:contain}
+.context-links{gap:4px}
+.context-links button{border:0;border-radius:8px;background:transparent;text-align:left;padding:11px 14px;color:#696969;font-size:14px}
+.context-links button:hover,.context-links button[aria-current=page]{background:#e9e9e9;color:#242424}
+.context-guide{display:block;padding:18px 14px;font-size:12px;color:#777}
+.context-note{padding:0 13px;font-size:12px;color:#999;line-height:1.9}
+.workspace-help{display:flex;align-items:center;gap:11px;flex:none;padding:13px 10px;border-radius:10px;margin-top:18px;font-size:14px}
+.workspace-help:hover{background:#ededed;text-decoration:none}
+.workspace-help>span:nth-child(2){flex:1}
+.workspace-help strong{display:block;font-weight:550}
+.workspace-help small{display:block;color:#888;font-size:11px;margin-top:4px}
+.help-mark{display:grid;place-items:center;width:30px;height:30px;border:1px solid #d7d7d7;border-radius:50%;color:#777}
+body .sidebar .sidebar-bottom{margin-top:8px;padding:12px 10px 0;font-size:11px}
+body .sidebar .sidebar-bottom small{display:none}
+body.nav-collapsed .sidebar-context,body.nav-collapsed .workspace-help{display:none}
+body .workspace>.topbar{min-height:64px;padding:12px 28px;border-bottom:1px solid #efefef;background:#fff}
+body .workspace>main,body:not([data-page=data]) .workspace>main{max-width:1840px;padding:28px 32px 32px;margin:auto}
+body .workspace .page-heading h1,body .pose-workspace-heading h1,.capture-heading h1{font-size:28px;letter-spacing:-.5px;font-weight:650}
+body .workspace .page-heading{margin-bottom:26px}
+body .page-heading p,.capture-heading p{font-size:14px;color:#888;margin-top:7px}
+body .workspace .card{border:1px solid #e7e7e7;border-radius:14px;padding:20px;box-shadow:none;background:#fff}
+body .workspace .button{border-radius:9px;border-color:#dfdfdf;font-size:14px;min-height:37px;padding:8px 13px}
+body .workspace .button.primary{background:#262626;border-color:#262626;color:white}
+body .workspace .button:hover:enabled{background:#f3f3f3}
+body .workspace .button.primary:hover:enabled{background:#404040}
+body .workspace .card-header h2,body .workspace .camera-section-heading h2{font-size:17px;font-weight:600}
+body .workspace .section-note{font-size:13px}
+body .workspace-footer{padding:18px 32px;color:#999;font-size:11px}
+body .workspace pre{background:#f7f7f7;border-color:#e7e7e7}
+/* Explicit control mode is a feature, including the top strip and execution action. */
+body.control-mode .workspace>.topbar{background:#a64136;border-color:#a64136}
+body.control-mode .sidebar .nav-item.active{background:#a64136;color:#fff8f4}
+body.control-mode .workspace .pose-toolbar .primary{background:#a64136;border-color:#a64136}
+body.control-mode .workspace>.topbar .button{background:#fff4ee;border-color:#fff4ee;color:#913d32}
+/* Overview */
+.overview-summary{display:grid;grid-template-columns:1fr 1fr 1fr;padding:0 0 22px;margin-bottom:24px;border-bottom:1px solid #ededed;gap:24px}
+.overview-summary>div{display:grid;gap:8px;border-right:1px solid #ededed}
+.overview-summary>div:last-child{border:0}
+.overview-summary span{font-size:12px;color:#888}
+.overview-summary strong{font-size:16px;font-weight:550}
+.overview-layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(300px,1fr);gap:24px;align-items:start}
+.overview-scene{min-width:0}
+body .workbench-startup{display:block;margin:0;min-height:0}
+body .workbench-startup h2{font-size:19px;letter-spacing:0}
+body .workbench-startup p{font-size:13px;margin:8px 0 18px}
+body .workbench-startup .workbench-actions{gap:8px}
+body .workbench-startup.ready h2::before{width:22px;height:22px;font-size:13px;margin-right:8px}
+body .workbench-devices .health-grid{display:grid;grid-template-columns:1fr;gap:0}
+body .workbench-devices .health-item{display:flex;align-items:center;justify-content:space-between;background:none;border:0;border-bottom:1px solid #f0f0f0;border-radius:0;min-height:0;padding:10px 0;gap:8px}
+body .workbench-devices .health-top{display:flex;align-items:center;gap:10px;margin:0;font-size:13px}
+body .workbench-devices .health-status{font-size:12px;margin:0}
+body .workbench-devices .health-item p{display:none}
+body #health-summary{font-size:11px;color:#888}
+body .workbench-feedback{font-size:12px;margin-top:14px}
+body .workbench-events{margin-top:24px}
+body .workbench-entries{gap:8px;margin:16px 0 0}
+body .workbench-entries a{padding:12px;background:#f8f8f8;border-radius:9px;gap:8px}
+body .workbench-entries strong{font-size:12px}
+body .workbench-entries a>svg{width:16px;height:16px}
+/* Main head view, secondary wrist views. Keep uncropped native images. */
+body[data-page=overview] .workspace [data-camera-preview]:not(.camera-expanded) .camera-grid,
+body[data-page=hil] .workspace [data-camera-preview]:not(.camera-expanded) .camera-grid,
+body[data-page=pico] .workspace .pico-workspace [data-camera-preview]:not(.camera-expanded) .camera-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+body[data-page=overview] .workspace [data-camera-preview]:not(.camera-expanded) [data-live-camera=head],
+body[data-page=hil] .workspace [data-camera-preview]:not(.camera-expanded) [data-live-camera=head],
+body[data-page=pico] .workspace [data-camera-preview]:not(.camera-expanded) [data-live-camera=head]{grid-column:1/-1;grid-row:1}
+body .workspace .camera-card{border-radius:10px;border:1px solid #e6e6e6;overflow:hidden;margin:0;min-width:0}
+body .workspace .camera-title{font-size:12px;padding:8px 10px}
+body .workspace .camera-title span:last-child{font-size:11px}
+body .workspace .camera-section{margin-bottom:0}
+body .workspace .camera-section-heading{margin-bottom:14px}
+body .workspace .camera-section:not(.camera-expanded) .camera-tabs{display:none}
+/* Capture uses one shell and the existing independent operation lifecycles. */
+.capture-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:26px;gap:20px}
+.capture-methods{display:flex;gap:4px;padding:4px;background:#f3f3f3;border:1px solid #e9e9e9;border-radius:11px}
+.capture-methods a{font-size:14px;padding:9px 20px;border-radius:8px;text-decoration:none;color:#777}
+.capture-methods a.active{background:#fff;box-shadow:0 1px 4px #0000000c;color:#222}
+.capture-routes{display:flex;gap:8px;border-bottom:1px solid #e8e8e8;padding-bottom:15px;margin-bottom:20px}
+.capture-routes a{font-size:13px;padding:8px 14px;border-radius:8px;background:#f7f7f7;color:#555}
+.capture-routes a:last-child{margin-left:auto;background:none;color:#888}
+body .hil-horizontal .hil-workspace-heading{margin:0 0 14px;gap:12px}
+body .hil-horizontal .hil-workspace-heading h1{font-size:20px}
+body .hil-horizontal .hil-featurebar{margin-bottom:18px;gap:12px}
+body .hil-horizontal .hil-featurebar>div{display:flex;gap:6px}
+body .hil-horizontal .hil-featurebar button{font-size:12px}
+body .hil-horizontal #hil-pane-live{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(290px,1fr);gap:16px 24px;align-items:start}
+body .hil-horizontal #hil-pane-live>[data-camera-preview]{grid-column:1;grid-row:1/5}
+body .hil-horizontal #hil-pane-live>#hil-overview,body .hil-horizontal #hil-pane-live>#hil-live-health,body .hil-horizontal #hil-pane-live>#hil-recording-session{grid-column:2}
+body .hil-horizontal .hil-overview{padding:20px;min-height:0;margin:0}
+body .hil-horizontal .hil-overview h2{font-size:21px}
+body .hil-horizontal .hil-overview .hil-context,body .hil-horizontal .hil-overview .hil-next{font-size:14px}
+body .hil-horizontal .hil-title{display:block}
+body .hil-horizontal .hil-mode{display:block;margin-top:10px;font-size:11px}
+body .hil-horizontal #hil-live-health .hil-health{display:grid;grid-template-columns:1fr 1fr;gap:12px;border:1px solid #e7e7e7;border-radius:12px;padding:16px;margin:0}
+body .hil-horizontal .hil-health-item{font-size:12px;gap:6px}
+body .hil-horizontal .hil-session{margin:0;padding:16px}
+body .hil-horizontal .hil-command-title{flex-wrap:wrap;font-size:13px}
+body .hil-horizontal .hil-live-instruction{font-size:13px;line-height:2}
+body .hil-horizontal .hil-step{border:1px solid #e3e3e3;border-radius:12px;background:#fafafa;margin:0 0 16px}
+body .hil-horizontal .hil-section-heading h2{font-size:20px}
+body .hil-horizontal #hil-pane-connect{max-width:1100px;margin:auto}
+body .hil-horizontal .hil-command-header{padding:18px 22px}
+body .hil-horizontal .hil-command-header strong{font-size:15px}
+body .hil-horizontal .hil-step-content{padding:0 22px 22px}
+body .hil-horizontal .hil-step-content pre{font-size:15px;padding:20px;background:#f1f1f1}
+.single-window-label{font-size:13px;color:#777;padding:6px 0 16px}
+.rlt-entry{display:block;margin:24px 0 12px;max-width:700px}
+.rlt-entry strong{font-size:20px}
+.rlt-entry p{font-size:14px;color:#777;margin:8px 0}
+.rlt-entry span{font-size:13px}
+body .hil-home .hil-route-menu{gap:16px}
+body .hil-home .hil-route-card h3{font-size:18px}
+body .hil-home .hil-route-card p{font-size:13px}
+body .workspace .pico-workspace-bar{margin-bottom:18px}
+body .workspace .pico-live-grid{grid-template-columns:minmax(0,1.65fr) minmax(300px,1fr);gap:24px}
+body .workspace .pico-record-link{display:none}
+body .workspace .pico-live-grid .recorder-layout{display:block}
+body .workspace .pico-live-grid .recorder-card{padding:18px;margin:0}
+body .workspace .pico-live-grid .recorder-card .card-header{flex-wrap:wrap;gap:8px}
+body .workspace .pico-live-grid .recorder-card .card-header h2{font-size:17px}
+body .workspace .pico-live-grid .recorder-card .line-item{font-size:12px;gap:10px;overflow-wrap:anywhere}
+body .workspace .pico-live-grid .recorder-card .recording-actions{flex-wrap:wrap}
+body .workspace .pico-live-grid .recorder-card .button{white-space:normal}
+body .workspace .pico-live-grid #teleop-session h2{font-size:19px}
+body .workspace .pico-live-grid #teleop-session p{font-size:13px}
+.pico-onboarding{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;list-style:none;padding:0;margin:0 0 24px}
+.pico-onboarding li{padding:22px;border:1px solid #e7e7e7;border-radius:12px}
+.pico-onboarding li>span{display:grid;place-items:center;width:28px;height:28px;background:#f0f0f0;border-radius:50%;margin-bottom:14px;font-size:13px}
+.pico-onboarding strong{font-size:15px}
+.pico-onboarding p{font-size:13px;color:#777;margin-top:7px}
+/* Debug: actual model left, editable targets right, shared pending scope below. */
+body .workspace .pose-workspace-heading{gap:18px;margin-bottom:20px}
+body .workspace .pose-navigation{margin:0}
+body .workspace .pose-presets{border:0;background:none;padding:0;max-height:none}
+body .workspace .pose-presets .preset-load{font-size:13px}
+body .workspace .control-layout{display:grid;grid-template-columns:minmax(300px,.95fr) minmax(450px,1.35fr);gap:24px;align-items:start}
+body .workspace .control-layout>.model-column{grid-column:1;grid-row:1;position:static;height:auto;gap:16px}
+body .workspace .control-layout>.editor-card{grid-column:2;grid-row:1;padding:0}
+body .workspace .model-card{height:450px;flex:none}
+body .workspace .model-column .robot-model{min-height:240px;background:#fafafa}
+body .workspace .model-column .model-info{font-size:12px}
+body .workspace .pose-section{padding:20px;border:1px solid #e7e7e7;border-radius:12px;margin:0}
+body .workspace .pose-section>summary{font-size:15px}
+body .workspace .arm-comparison-heading{gap:24px;margin-bottom:10px}
+body .workspace .arm-comparison-heading strong{font-size:16px}
+body .workspace .arm-pair{gap:24px}
+body .workspace .arm-pair .joint-editor{padding:11px 0}
+body .workspace .joint-row-title{font-size:14px;margin-bottom:6px}
+body .workspace .live-measurement,body .workspace .live-measurement output{font-size:13px}
+body .workspace .target-control{grid-template-columns:minmax(0,1fr) 78px;gap:10px}
+body .workspace .number-field input{font-size:15px;padding:8px 20px 8px 8px;border-radius:7px}
+body .workspace .joint-column-labels{font-size:11px}
+body .workspace .pose-part-tabs{padding:0 0 16px;margin:0;justify-content:flex-end;background:none}
+body .workspace .pose-part-tabs .tab{font-size:13px;padding:9px 20px}
+body .workspace #pose-actions{position:sticky;bottom:0;z-index:25;margin-top:20px;padding-top:8px;background:#ffffffed;backdrop-filter:blur(12px)}
+body .workspace #pose-actions .pose-toolbar{position:static;display:flex;margin:0;padding:16px 20px;border:1px solid #dedede;box-shadow:0 -4px 20px #00000004;border-radius:12px;gap:12px}
+#pose-draft-scope{display:block;color:#777;font-size:12px;margin-bottom:5px}
+body .workspace .pose-intent strong{font-size:16px}
+body .workspace .pose-intent p{font-size:13px;margin-top:4px}
+body .workspace .pose-control-status{margin:0 0 16px;padding:12px 18px;font-size:15px;background:#a64136;color:#fff8f4}
+body.model-focus .workspace .control-layout{grid-template-columns:1fr}
+body.model-focus .workspace .control-layout>.editor-card{display:none}
+body.model-focus .workspace .model-card{height:calc(100vh - 300px)}
+/* Data: directory is contextual navigation, capacity is an on-demand popover. */
+body[data-page=data] .workspace .data-library{padding:0;border:0;border-radius:0}
+body[data-page=data] .workspace .data-library-body{display:block}
+body[data-page=data] .workspace .data-browse-toolbar{padding:0 0 20px;border-bottom:1px solid #eaeaea}
+body[data-page=data] .workspace .folder-sections{width:100%;min-width:0}
+body[data-page=data] .workspace .folder-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+body[data-page=data] .workspace .folder-item{min-height:92px;padding:16px;border-radius:11px}
+body[data-page=data] .workspace .folder-icon{transform:scale(.65);transform-origin:left center;width:44px}
+body[data-page=data] .workspace .folder-name{font-size:15px}
+body[data-page=data] .workspace .folder-meta{font-size:12px}
+body .sidebar .data-versions{padding:0;border:0;min-width:0}
+body .sidebar .data-versions h2{font-size:12px;color:#909090;font-weight:500;margin:16px 13px}
+body .sidebar .data-version-tree{padding:0;max-height:none;overflow:visible;font-size:12px}
+body .sidebar .data-tree-row{padding-left:calc(var(--level,0)*10px);min-height:34px;gap:0}
+body .sidebar .data-tree-row>button[data-folder]{font-size:12px;padding:8px 6px;gap:7px;border-radius:7px;min-width:0}
+body .sidebar .data-tree-row>button[data-folder].current{background:#e9e9e9}
+body .sidebar .tree-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body .sidebar .tree-folder{width:14px;height:11px;flex:0 0 14px;background:#aaa}
+body .sidebar .tree-folder:before{background:#999}
+body .sidebar .tree-toggle{width:16px;min-width:16px;padding:0;font-size:10px}
+body .sidebar .data-tree-row small{font-size:11px;color:#999}
+.storage-popover{position:relative}
+.storage-popover>summary{list-style:none;border:1px solid #e5e5e5;border-radius:20px;padding:8px 14px;cursor:pointer;font-size:13px;white-space:nowrap}
+.storage-popover>summary:hover{background:#f7f7f7}
+body .workspace .storage-popover>.data-storage{position:absolute;right:0;top:calc(100% + 10px);z-index:45;width:375px;background:#fff;border:1px solid #e4e4e4;border-radius:14px;padding:22px;box-shadow:0 12px 40px #00000014}
+body .workspace .storage-layout{display:block}
+.storage-bar{display:flex;height:10px;border-radius:6px;overflow:hidden;background:#eee;margin:18px 0}
+.storage-bar span{min-width:0}
+body .workspace .storage-heading h2{font-size:17px}
+body .workspace .storage-heading span{font-size:11px}
+body .workspace .storage-category{padding:10px 0;font-size:13px}
+body .workspace .storage-category strong{font-size:14px}
+body .workspace .storage-category small{font-size:11px;margin-left:8px}
+body .workspace .storage-other{font-size:12px}
+body .workspace .storage-free{font-size:22px}
+body .workspace .storage-remaining{font-size:12px;padding-top:16px;margin-top:14px}
+@media(min-width:1700px){body .workspace>main{padding:32px 42px}.overview-layout,.pico-live-grid,body .hil-horizontal #hil-pane-live{grid-template-columns:minmax(0,1.8fr) minmax(360px,1fr)}body .workspace .model-card{height:500px}}
+@media(max-width:1320px){body .app-shell .sidebar{width:210px}body .app-shell>.workspace{margin-left:210px;width:calc(100% - 210px)}body .workspace>main,body:not([data-page=data]) .workspace>main{padding:24px}body .workspace>.topbar{padding:12px 24px}.topbar .breadcrumb{font-size:12px}.topbar-actions{gap:7px!important}body .workspace .control-layout{gap:18px;grid-template-columns:minmax(270px,.8fr) minmax(440px,1.3fr)}body .workspace .model-card{height:420px}body .workspace .pose-workspace-heading h1{font-size:24px}body .workspace .pose-presets .preset-item{padding:0 6px}body .workspace .pose-presets .preset-load{font-size:12px}.capture-routes a{padding:8px 10px}}
+body.nav-collapsed .app-shell>.workspace{margin-left:76px;width:calc(100% - 76px)}
+/* Context navigation owns page switching when the sidebar is open. */
+body:not(.nav-collapsed) .hil-featurebar>[role=tablist],body:not(.nav-collapsed) .pico-workspace-bar>.workbench-tabs{display:none}
+body .hil-horizontal .hil-featurebar,body .pico-workspace-bar{background:none;padding:0;min-height:36px;justify-content:flex-end;border-radius:0}
+body .hil-horizontal .hil-overview{display:block}
+body .hil-horizontal .hil-context{margin-top:10px;display:block;line-height:1.7}
+body .hil-horizontal .hil-overview .hil-next,body .hil-horizontal .hil-live-instruction{padding:12px 0 0;margin-top:12px;border-left:0;border-top:1px solid #e4e4e4}
+body .hil-horizontal .hil-record-count{margin:14px 0}
+body .hil-horizontal .hil-overview.tone-manual{background:#fff3ef;border-color:#d89488}
+body .hil-horizontal .hil-overview.tone-fault{background:#fff3ef;border-color:#d89488}
+body .capture-routes a[aria-current=page]{background:#e9e9e9;color:#222;font-weight:600}
+body .workspace .pico-live-grid .recorder-info>.field-label,body .workspace .pico-live-grid .recorder-info>.read-only-field{font-size:12px}
+body .workspace .pico-live-grid .recorder-info .read-only-field{padding:9px 11px}
+body .workspace .recorder-location{font-size:12px;color:#888;margin:14px 0}
+body .workspace .recorder-location>summary{cursor:pointer}
+body .workspace .pico-live-grid .recording-metrics{margin-top:14px}
+body .workspace .pico-live-grid .recording-metrics strong{font-size:30px}
+body .workspace .pico-live-grid .recording-review-summary{font-size:13px;padding:14px 0 0}
+body .workspace .pico-live-grid .recording-review-summary p,body .workspace .pico-live-grid .recording-review-summary span{font-size:12px}
+.capture-progress{display:flex;gap:22px;flex-wrap:wrap;font-size:12px;color:#888;padding:0 0 18px}
+.capture-progress span{display:flex;align-items:center;gap:8px}
+.capture-progress i{font-style:normal;width:21px;height:21px;border-radius:50%;display:grid;place-items:center;background:#eee}
+.capture-progress .complete{color:#4c6656}
+.capture-progress .complete i{background:#eaf2ed}
+body .sidebar .data-tree-row>button[data-browse-mode]{display:flex;align-items:center;flex:1;gap:7px;text-align:left;font-size:12px;padding:8px 6px;border:0;border-radius:7px;background:none;color:#333;min-width:0}
+body .sidebar .data-tree-row>button[data-browse-mode][aria-pressed=true]{background:#e9e9e9;font-weight:600}
+body .sidebar .data-tree-row>button[data-browse-mode] small{margin-left:auto}
+body .workspace .pose-part-tabs .tab[aria-selected=true],body .workspace .pose-presets .preset-item.selected{background:#eaeaea}
+body .hil-horizontal .hil-featurebar,body .workspace .pico-workspace-bar{position:sticky;top:0;z-index:19;background:#ffffffed;backdrop-filter:blur(10px)}
+/* Keep the current recording action before optional task/path details. */
+body .workspace .pico-live-grid .recorder-layout{display:flex;flex-direction:column;gap:16px}
+body .workspace .pico-live-grid .recorder-session{order:-1}
+body .workspace .pico-live-grid .recorder-info{border-top:1px solid #eee;padding-top:14px}
+body .workspace .pico-live-grid .recorder-card .card-header{min-height:0;margin-bottom:12px}
+body .workspace .pico-live-grid #teleop-session .quick-links{display:none}
+body .workspace .pico-live-grid #teleop-session .card-header{min-height:0;margin-bottom:0}
+/* Confirmed capture revision: device -> workflow -> connection and physical keys. */
+.capture-heading{display:block;margin-bottom:24px}
+.capture-heading>div+div{margin-top:22px}
+.capture-device-label{display:block;font-size:13px;font-weight:600;color:#555;margin-bottom:10px}
+.capture-methods{display:flex;width:max-content;gap:12px;background:none;border:0;padding:0}
+.capture-methods a{display:flex;align-items:center;gap:12px;min-width:165px;padding:12px 16px;background:#f4f4f5;color:#454545;border:1px solid transparent;font-weight:550}
+.capture-methods a svg{width:23px;height:23px;flex:none}
+.capture-methods a.active{background:#fff;border-color:#252525;box-shadow:inset 0 0 0 1px #252525;color:#191919}
+.capture-methods a svg:last-child:not(:first-child){width:18px;height:18px;margin-left:auto}
+.context-links button{display:flex;align-items:center;gap:11px;font-size:14px;color:#333}
+.context-links button svg{width:20px;height:20px;flex:none}
+.context-links button:disabled{opacity:.55}
+body[data-page=hil] .hil-home{max-width:none;margin:0}
+body .hil-home>h2{font-size:19px;margin-bottom:8px}
+body .hil-home>.section-note{margin:0 0 20px}
+body .hil-home .hil-route-menu{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+body .hil-home .hil-route-card{display:flex;flex-direction:column;align-items:stretch;gap:16px;min-width:0;min-height:285px;padding:22px 18px;text-decoration:none;color:#242424;transition:border-color .15s,background .15s}
+body .hil-home .hil-route-card:hover{border-color:#555;background:#fafafa}
+body .hil-home .hil-route-card>svg{width:42px;height:42px;margin:3px 0 4px}
+.capture-mode-copy{display:grid;gap:7px;min-width:0}
+.capture-mode-copy strong{font-size:17px;font-weight:650}
+.capture-mode-copy small{font-size:13px;line-height:1.6;color:#667080}
+body .hil-home .capture-mode-detail{border-top:1px solid #e7e7e7;padding-top:16px;font-size:13px;color:#555;line-height:1.7;margin:0}
+.capture-mode-action{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid #d6d6da;border-radius:8px;padding:12px;margin-top:auto;font-size:13px;font-weight:600}
+.capture-mode-action svg{width:18px;height:18px;flex:none}
+.capture-help-links{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px}
+.capture-help-links>a{display:flex;align-items:center;gap:16px;border:1px solid #e4e4e4;border-radius:12px;padding:20px;color:#242424}
+.capture-help-links>a>svg{width:30px;height:30px;flex:none}
+.capture-help-links span{display:grid;gap:7px;flex:1}
+.capture-help-links small{font-size:12px;color:#687080}
+.capture-routes,.pico-variant-options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;border:0;padding:0;margin:0 0 22px}
+.pico-variant-options{grid-template-columns:repeat(2,minmax(0,1fr));max-width:740px;margin:14px 0 26px}
+body .capture-routes a.capture-mode,body .pico-variant-options .capture-mode{display:flex;align-items:center;position:relative;gap:13px;border:1px solid #dddfe4;border-radius:10px;padding:15px 16px;background:#fff;color:#242424;min-width:0;margin:0;text-align:left;text-decoration:none}
+body .workspace .capture-mode>svg{width:30px;height:30px;flex:none}
+body .capture-routes a[aria-current=page],body .pico-variant-options [aria-pressed=true]{border-color:#242424;background:#f5f5f6;box-shadow:inset 0 0 0 1px #242424}
+.capture-selected{margin-left:auto;display:flex}
+.capture-selected svg{width:18px;height:18px}
+.capture-routes .capture-mode-copy strong{font-size:15px}
+.capture-routes .capture-mode-copy small{font-size:12px}
+body .hil-horizontal .hil-workspace-heading{margin-bottom:0}
+body .hil-horizontal .hil-featurebar{margin-bottom:12px;min-height:36px}
+body .hil-horizontal #hil-pane-connect{max-width:none;margin:0}
+.capture-connect-grid{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(265px,1fr);gap:24px;align-items:start}
+.capture-connect-main{min-width:0}
+body .hil-horizontal .hil-section-heading{margin:0 0 18px;padding:0;min-height:0}
+body .hil-horizontal .hil-section-heading h2,.capture-connect-grid>div>h2{font-size:23px;line-height:1.4;margin:0 0 8px}
+body .hil-horizontal .hil-step{background:#fafafa}
+body .hil-horizontal .hil-command-header{padding:14px 16px;gap:12px;display:flex;align-items:center}
+body .hil-horizontal .hil-command-header>span{display:none}
+body .hil-horizontal .hil-command-header strong{font-size:13px;flex:1}
+body .hil-horizontal .hil-command-header .button{background:#242424;color:#fff;border-color:#242424;white-space:nowrap}
+body .hil-horizontal .hil-step-content{padding:0 16px 16px}
+body .hil-horizontal .hil-step-content pre{font-size:14px;padding:18px 12px;white-space:pre-wrap;overflow-wrap:anywhere}
+body .hil-horizontal .hil-step-content p{font-size:13px;line-height:1.8;color:#606773}
+.capture-disclosure{border:1px solid #e1e2e5;border-radius:9px;padding:14px 16px;margin:10px 0}
+.capture-disclosure>summary{font-size:14px;font-weight:550;cursor:pointer}
+.capture-disclosure>p{font-size:13px;margin:14px 0}
+.capture-disclosure .hil-step{margin-top:14px!important}
+.capture-connection{padding:22px;border-radius:12px;background:#f6f6f7;border:1px solid #ededee}
+.capture-connection h2{font-size:16px;margin:0 0 12px}
+.capture-connection h3{font-size:25px;line-height:1.5;margin:0 0 14px;padding-bottom:14px;border-bottom:1px solid #dddee2}
+.capture-connection-row{display:flex;align-items:center;gap:10px;padding:12px 0;font-size:13px}
+.capture-connection-row>svg{width:24px;height:24px;flex:none}
+.capture-connection-row>span{flex:1}
+.capture-connection-row strong{display:flex;align-items:center;gap:7px;font-size:12px;color:#747985;font-weight:500;text-align:right}
+.capture-connection-row i{width:8px;height:8px;border-radius:50%;background:#969ba5;flex:none}
+.capture-connection-row .good i{background:#479369}
+.capture-connection-row .good{color:#3f7054}
+.capture-connection>p{padding-top:16px;border-top:1px solid #dddee2;margin:14px 0;font-size:13px;line-height:1.8;color:#657080}
+.capture-physical-key{display:flex;align-items:center;gap:12px;font-size:12px;color:#657080}
+.capture-operation{display:flex;flex-wrap:wrap;align-items:center;gap:18px;border:1px solid #dfe1e5;border-radius:12px;padding:20px;margin-top:22px}
+.capture-operation-title{display:flex;gap:10px;align-items:center}
+.capture-operation-title strong{font-size:17px}
+.capture-operation-title small{font-size:12px;color:#657080}
+.capture-operation-steps{display:flex;flex:1;align-items:center;justify-content:space-between;gap:12px}
+.capture-operation-steps>span{display:flex;gap:10px;align-items:center;font-size:13px;line-height:1.6;color:#435064}
+.capture-operation kbd,.capture-physical-key kbd{display:inline-block;white-space:nowrap;border:1px solid #d0d3d9;background:#f0f0f2;color:#242424;border-radius:8px;padding:10px 13px;font:600 14px/1.3 inherit}
+.capture-operation>details,.capture-operation>p{flex-basis:100%;font-size:13px;color:#606b7b;line-height:1.8;margin:0}
+.capture-operation details>summary{cursor:pointer}
+.capture-operation details p{margin-top:12px}
+.capture-flow-label{font-size:17px}
+body .pico-onboarding{display:block;margin:16px 0}
+body .pico-onboarding li{display:flex;gap:16px;border:0;border-bottom:1px solid #eaeaea;border-radius:0;padding:14px 0}
+body .pico-onboarding li>span{flex:none;margin:0}
+body .pico-onboarding p{line-height:1.7}
+body .workspace #pico-versions>.card{padding:18px;background:#fafafa}
+body .workspace #pico-versions .card-header{min-height:0;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+body .workspace #pico-versions .card-header h2{font-size:17px}
+body .workspace #pico-versions p,body .workspace #pico-versions .notice{font-size:13px;line-height:1.8}
+body .workspace #pico-versions details{font-size:13px}
+body .workspace #pico-view-connect [data-pico-session-slot] .card{padding:16px}
+body .workspace #pico-view-connect [data-pico-session-slot] .card-header{min-height:0;flex-wrap:wrap;gap:10px}
+body .workspace #pico-view-connect [data-pico-session-slot] h2{font-size:17px}
+body .workspace #pico-view-connect [data-pico-session-slot] details{font-size:12px}
+/* Capture and Data share one subordinate navigation level below their parent. */
+body .sidebar #navigation>.nav-item{font-size:17px;font-weight:550;height:49px}
+body .sidebar #navigation>.workspace-subnav{flex:none;margin:0 8px 8px 23px;padding:3px 0 5px 10px;overflow:visible;border-left:1px solid #d9dfe5;min-height:0}
+body .sidebar .workspace-subnav .sidebar-label{font-size:11px;letter-spacing:.3px;margin:7px 11px 8px;color:#798591}
+body .sidebar .capture-subnav .context-links{display:grid;gap:3px}
+body .sidebar .capture-subnav .context-links button{position:relative;font-size:13px;font-weight:450;padding:10px 11px;gap:9px;border-radius:7px;color:#55616d;min-height:39px}
+body .sidebar .capture-subnav .context-links button svg{width:18px;height:18px}
+body .sidebar .capture-subnav .context-links button:hover:enabled{background:#eef1f4}
+body .sidebar .capture-subnav .context-links button[aria-current=page]{background:#e8eef3;color:#34566e;font-weight:600}
+body .sidebar .capture-subnav .context-links button[aria-current=page]::before{content:'';position:absolute;left:-11px;top:10px;bottom:10px;width:3px;border-radius:2px;background:#5b7b93}
+body.nav-collapsed .sidebar #navigation>.workspace-subnav{display:none}
+body .workspace [data-pico-recorder-slot=connect]{margin-top:20px}
+body:is([data-page=hil],[data-page=pico]) .capture-heading>div+div{margin-top:16px}
+body:is([data-page=hil],[data-page=pico]) .capture-device-label{display:none}
+body:not(.nav-collapsed) .hil-horizontal .hil-featurebar{display:none}
+body .hil-horizontal .hil-workspace-heading{display:flex;align-items:center;min-height:36px;margin:0 0 12px}
+body .hil-horizontal .hil-workspace-heading [data-hil-request-finish]{margin-left:auto}
+body:not(.nav-collapsed) .pico-workspace-bar:has(#pico-persistent-stop[hidden]){display:none}
+body .hil-horizontal #hil-persistent-status{margin:0 0 16px;padding:10px 0}
+body .hil-horizontal .hil-section-heading>div{display:block}
+body .workspace #pico-versions>.card{padding:16px}
+body .workspace #pico-versions .quick-links{margin:0}
+body .workspace #pico-versions .pico-setup-details{margin-top:16px}
+body .workspace #pico-versions .pico-setup-details>summary{cursor:pointer}
+body .pico-onboarding li{padding:11px 0}
+/* Sidebar only: the existing data content and browse preferences stay intact. */
+body .sidebar .data-tree-row>button[data-folder],body .sidebar .data-tree-row>button[data-browse-mode]{font-size:13px;padding:10px 7px}
+body .sidebar .data-subnav .data-versions h2{font-size:11px;font-weight:450;letter-spacing:.3px;margin:7px 11px 8px;color:#798591}
+body .sidebar .data-subnav .data-version-tree{display:grid;gap:3px}
+body .sidebar .data-subnav .data-tree-row{position:relative;min-height:39px}
+body .sidebar .data-subnav .data-tree-row>button[data-folder],body .sidebar .data-subnav .data-tree-row>button[data-browse-mode]{font-size:13px;font-weight:450;border-radius:7px;color:#55616d;min-height:39px}
+body .sidebar .data-subnav .data-tree-row>button:hover{background:#eef1f4}
+body .sidebar .data-subnav .data-tree-row>button.current,body .sidebar .data-subnav .data-tree-row>button[aria-pressed=true]{background:#e8eef3;color:#34566e;font-weight:600}
+body .sidebar .data-subnav .data-tree-row:has(>button.current)::before,body .sidebar .data-subnav .data-tree-row:has(>button[aria-pressed=true])::before{content:'';position:absolute;left:-11px;top:10px;bottom:10px;width:3px;border-radius:2px;background:#5b7b93}
+/* Let all three full frames occupy their width instead of a short letterbox. */
+body:is([data-page=overview],[data-page=hil],[data-page=pico]) .workspace [data-camera-preview].camera-section:not(.camera-expanded) .camera-placeholder{height:auto;min-height:0;max-height:none;aspect-ratio:4/3}
+body:is([data-page=overview],[data-page=hil],[data-page=pico]) .workspace [data-camera-preview].camera-section:not(.camera-expanded) [data-camera=head]{aspect-ratio:16/9}
+body:is([data-page=overview],[data-page=hil],[data-page=pico]) .workspace [data-camera-preview].camera-section:not(.camera-expanded) .camera-placeholder:has(img:not([hidden])){aspect-ratio:auto}
+body:is([data-page=overview],[data-page=hil],[data-page=pico]) .workspace [data-camera-preview].camera-section:not(.camera-expanded) .camera-placeholder img:not([hidden]){height:auto;width:100%;max-height:none;position:static;display:block}
+@media(max-width:1320px){.capture-connect-grid{gap:18px;grid-template-columns:minmax(0,1.6fr) minmax(265px,1fr)}body .hil-home .hil-route-card{padding:18px 13px;min-height:280px}.capture-mode-copy strong{font-size:16px}.capture-mode-action{padding:10px;font-size:12px}.capture-routes{gap:8px}body .capture-routes a.capture-mode{gap:9px;padding:12px 10px}.capture-mode>svg{width:25px;height:25px}.capture-routes .capture-mode-copy strong{font-size:13px}.capture-operation{gap:14px;padding:16px}.capture-operation-steps{flex-basis:100%}.capture-connection{padding:18px}}
+
+/* Overview uses the shared page width and typography; activity stays below devices. */
+body[data-page=overview] .overview-summary{padding-bottom:16px;margin-bottom:20px}
+body[data-page=overview] .overview-layout{grid-template-columns:minmax(0,1.55fr) minmax(390px,1fr);gap:24px}
+body[data-page=overview] .overview-sidebar{gap:16px;min-width:0}
+body[data-page=overview] .overview-sidebar .card-header{margin-bottom:12px;gap:10px}
+body[data-page=overview] .workbench-startup .workbench-actions{display:flex;flex-wrap:nowrap;align-items:center;gap:10px}
+body[data-page=overview] .workbench-startup #base-start-button{flex:1;min-height:54px;font-size:18px;font-weight:650;justify-content:center;padding:12px}
+body[data-page=overview] .workbench-startup .start-all-label{font-size:14px;font-weight:500;white-space:nowrap}
+body[data-page=overview] .workbench-startup #base-start-button:disabled{opacity:1;background:#e7ebe8;border-color:#d9e1db;color:#536359;cursor:not-allowed}
+body[data-page=overview] .workbench-startup #base-start-button:disabled .start-all-label{color:#64756b;border-color:#b6c4bc}
+body[data-page=overview] .workbench-startup .workbench-actions>.small{white-space:nowrap}
+body[data-page=overview] .workbench-devices .card-header h2{font-size:20px;font-weight:700}
+body[data-page=overview] #health-summary{font-size:13px;font-weight:550}
+body[data-page=overview] .workbench-devices .health-grid{grid-template-columns:1fr 1fr;column-gap:20px}
+body[data-page=overview] .workbench-devices .health-item{padding:10px 0;gap:6px}
+body[data-page=overview] .workbench-devices .health-top{font-size:14px;font-weight:600;gap:7px;line-height:1.5}
+body[data-page=overview] .workbench-devices .health-status{font-size:14px;font-weight:650;color:#343a37;line-height:1.5;white-space:nowrap}
+body[data-page=overview] .workbench-events{margin:0}
+body[data-page=overview] .workbench-events .event-list{max-height:144px!important;overflow:auto;overscroll-behavior:contain}
+body[data-page=overview] .workbench-events .event p{overflow-wrap:anywhere}

@@ -16,11 +16,11 @@ status: evidence_based_with_open_items
 
 | 层 | 6000D | F1 D070 |
 |---|---|---|
-| 已核对主机 | `hq` / `xza_100850113`，x86_64 | `ms-thor` / `user`，aarch64 |
+| 已核对主机 | `hq` / `user`，x86_64 | `ms-thor` / `user`，aarch64 |
 | 已核对基础环境 | Ubuntu 22.04.5，系统 Python 3.10.12 | Ubuntu 24.04.3，系统 Python 3.12.3，ROS Jazzy，`6.8.12-rt-tegra` |
 | 本项目职责 | 数据归档、清洗、离线 replay、训练、预定的推理服务 | 现场 replay、反馈与图像接入、预定的推理请求客户端 |
-| 本项目根目录 | `/home/xza_100850113/projects/F1/foam_sort_whole_body` | `/home/user/Bruno/F1/foam_sort_whole_body` |
-| 模型共享源码 | `/home/xza_100850113/projects/DM0.5/opendm` | 按客户端实际依赖发布，不默认复制整个模型仓库 |
+| 本项目根目录 | `/home/user/projects/F1/foam_sort_whole_body` | `/home/user/Bruno/F1/foam_sort_whole_body` |
+| 模型共享源码 | `/home/user/projects/DM0.5/opendm` | 按客户端实际依赖发布，不默认复制整个模型仓库 |
 | 原始数据 | `/mnt/dm05_nvme/dm05/datasets/f1_foam_sort/raw` | 按需部署小型 replay 包，不是原始数据主库 |
 
 这些 OS/架构事实来自 09-14 核对。系统 Python 不代表审计 venv 或训练容器版本；`tegra` 内核名也不证明具体 CUDA、JetPack、GPU 或 TensorRT 版本。两机的 venv、ARM 共享库和 ROS 编译产物不能跨架构直接复用。依据：[系统配置](../F1系统配置.md)、[6000D 配置](../foam_sort_whole_body/configs/machine.6000d.yaml)、[F1 配置](../foam_sort_whole_body/configs/machine.f1.yaml)。

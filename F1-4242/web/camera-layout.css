@@ -1,0 +1,51 @@
+/* Full-frame live views. Size the container to the image, never crop the feed.
+ * Data/replay layouts deliberately keep their existing presentation. */
+body:not([data-page=data]) .workspace [data-camera-preview].camera-section .camera-grid {
+  grid-template-columns:minmax(0,3fr) minmax(0,4fr) minmax(0,3fr);
+  height:auto;
+  align-items:start;
+}
+body[data-page=overview] .workspace [data-camera-preview].camera-section .camera-grid {gap:12px}
+body:not([data-page=data]) .workspace [data-camera-preview].camera-section .camera-placeholder {
+  height:auto;
+  min-height:0;
+  max-height:none;
+  aspect-ratio:4/3;
+  display:block;
+}
+body:not([data-page=data]) .workspace [data-camera-preview].camera-section [data-camera=head] {aspect-ratio:16/9}
+body:not([data-page=data]) .workspace [data-camera-preview].camera-section .camera-placeholder:has(img:not([hidden])) {aspect-ratio:auto}
+body:not([data-page=data]) .workspace [data-camera-preview].camera-section .camera-placeholder img:not([hidden]) {
+  position:static;
+  display:block;
+  width:100%;
+  height:auto;
+  max-height:none;
+}
+body[data-page=pico] .workspace .pico-workspace [data-camera-preview].camera-section:not(.camera-expanded) .camera-grid {grid-template-columns:repeat(2,minmax(0,1fr))}
+
+/* Expanded views use the available desktop width with the same native ratios. */
+body:not([data-page=data]) .workspace [data-camera-preview].camera-section.camera-expanded[open] {
+  position:fixed;
+  inset:16px;
+  z-index:1000;
+  margin:0;
+  padding:76px 24px 24px;
+  background:var(--bg);
+  border:1px solid var(--line);
+  border-radius:20px;
+  box-shadow:0 0 0 20px #20202588;
+  overflow:auto;
+  display:flex;
+  flex-direction:column;
+}
+body:not([data-page=data]) .workspace [data-camera-preview].camera-section.camera-expanded .camera-grid {position:absolute;left:24px;right:24px;top:50%;transform:translateY(-50%);margin:0}
+body:not([data-page=data]) .workspace [data-camera-preview].camera-section.camera-expanded .camera-section-heading {position:absolute;top:24px;left:24px;right:24px}
+body:not([data-page=data]) .workspace [data-camera-preview].camera-section.camera-expanded .camera-tools {position:absolute;top:20px;right:24px;z-index:1}
+body:not([data-page=data]) .workspace [data-camera-preview].camera-section.camera-expanded [data-live-camera] {grid-column:auto;grid-row:auto}
+body:not([data-page=data]):has([data-camera-preview].camera-expanded[open]) {overflow:hidden}
+body[data-page=control] .model-column:has([data-camera-preview].camera-expanded[open]) {position:static}
+@media(max-width:1320px) {
+  body[data-page=hil] .hil-horizontal .hil-health {padding-top:10px}
+  body[data-page=hil] .hil-horizontal .hil-session {margin-top:8px;padding-top:8px}
+}

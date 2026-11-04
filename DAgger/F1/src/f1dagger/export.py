@@ -16,6 +16,27 @@ HUMAN_SOURCES = {'human_hold', 'human_arm', 'human_hand', 'human_arm_and_hand'}
 RESAMPLING = 'causal_observation_hold_and_published_action_v2'
 
 
+def input_invalid_intervals(events):
+    """Conservative cut from last trusted receipt through explicit recovery.
+
+    An unfinished pause excludes the tail. Legacy episodes without these
+    events still use the existing state/epoch/publication boundaries.
+    """
+    intervals, start = [], None
+    for event in events:
+        if event.get('event') == 'rlt_episode_finish_requested':
+            intervals.append((event['monotonic_ns'], None))
+        elif event.get('event') == 'input_pause_started':
+            value = event['invalid_from_monotonic_ns']
+            start = value if start is None else min(start, value)
+        elif event.get('event') in ('input_pause_ended', 'hold_to_hil') and start is not None:
+            intervals.append((start, event['monotonic_ns']))
+            start = None
+    if start is not None:
+        intervals.append((start, None))
+    return intervals
+
+
 def _resample_groups(groups, controls, times, fps, valid_control):
     """Fixed-rate samples, without future observations or compressed gaps.
 
@@ -46,7 +67,7 @@ def _resample_groups(groups, controls, times, fps, valid_control):
             valid = (control is not None and begin >= 0
                      and 0 <= grid - source_time <= max_observation_age
                      and 0 <= grid - control['monotonic_ns'] <= 50_000_000
-                     and all(0 <= grid - t <= 250_000_000 for t in source['state_timestamps_ns'])
+                     and all(0 <= grid - t <= 250_000_000 for t, valid in zip(source['state_timestamps_ns'], source.get('state_valid_mask', [True]*16)) if valid)
                      and all(0 <= grid - f['host_received_monotonic_ns'] <= 200_000_000
                              for f in source['frames'])
                      and all(valid_control(c, source['intervention_id'], source['policy_epoch'])
@@ -86,6 +107,8 @@ def select_segments(run, review, *, fps=30):
     if not isinstance(approved, list) or not approved or any(type(x) is not int or x < 1 for x in approved):
         raise ValueError('explicit accepted intervention IDs required')
     manifest = json.loads((run/'journal/manifest.json').read_text())
+    masked = manifest.get('schema_version') == 4
+    mask = [True]*14 + [False, True] if masked else [True]*16
     if manifest['binding'].get('purpose') in ('input_check','teleop_play'):
         raise ValueError('input checks and teleop play are never expert training data')
     if manifest['binding'].get('execution_mode') != 'powered':
@@ -94,13 +117,18 @@ def select_segments(run, review, *, fps=30):
     controls = read_rows(run/'journal/control.jsonl')
     times = [row['monotonic_ns'] for row in controls]
     observations = read_rows(run/'journal/observations.jsonl')
+    invalid_intervals = input_invalid_intervals(read_rows(run/'journal/events.jsonl'))
+    def input_valid(start, end):
+        return not any(end >= lo and (hi is None or start <= hi) for lo, hi in invalid_intervals)
     groups, group = [], []
     prior_control = None
     prior_time = None
     prior_callback_ids = None
     period = round(1e9/fps)
     def valid_control(row, intervention=None, epoch=None):
-        return (row['hil_state'] == 'hil_latched' and row['source'] in HUMAN_SOURCES
+        return (input_valid(row['monotonic_ns'], row['monotonic_ns'])
+                and row['hil_state'] == 'hil_latched' and row['source'] in HUMAN_SOURCES
+                and row.get('action_valid_mask', [True]*16) == mask
                 and row['intervention_id'] in approved and row['submitted'] is not None
                 and row['publication_complete'] is True and row['execution_mode'] == 'powered'
                 and (intervention is None or row['intervention_id'] == intervention)
@@ -125,11 +153,13 @@ def select_segments(run, review, *, fps=30):
             prior_callback_ids = callback_ids
         index = bisect.bisect_right(times, t)-1
         row = controls[index] if index >= 0 else None
-        valid = (row is not None and valid_control(row) and obs['observation_id'] in payload
+        valid = (input_valid(min(f['host_received_monotonic_ns'] for f in obs['frames']), t)
+                 and row is not None and valid_control(row) and obs['observation_id'] in payload
                  and obs['hil_state'] == 'hil_latched'
                  and obs['intervention_id'] == row['intervention_id'] and obs['policy_epoch'] == row['policy_epoch']
                  and 0 <= t-row['monotonic_ns'] <= 50_000_000
-                 and all(0 <= t-stamp <= 250_000_000 for stamp in obs['state_timestamps_ns'])
+                 and obs.get('state_valid_mask', [True]*16) == mask
+                 and all(0 <= t-stamp <= 250_000_000 for stamp, valid in zip(obs['state_timestamps_ns'], mask) if valid)
                  and all(0 <= t-f['host_received_monotonic_ns'] <= 200_000_000 for f in obs['frames']))
         if valid:
             # Include the command governing the earliest actual image receipt,
@@ -147,6 +177,7 @@ def select_segments(run, review, *, fps=30):
             prior = group[-1]
             intervening = controls[prior_control+1:index+1]
             if (t-prior['reference_monotonic_ns'] > int(period*1.5)
+                    or not input_valid(prior['reference_monotonic_ns'], t)
                     or not all(valid_control(c, row['intervention_id'], row['policy_epoch']) for c in intervening)
                     or prior['intervention_id'] != row['intervention_id'] or prior['policy_epoch'] != row['policy_epoch']):
                 flush()
@@ -154,6 +185,7 @@ def select_segments(run, review, *, fps=30):
             command_sequence=row['command_sequence'], control_stream_sequence=row['stream_sequence'],
             intervention_id=row['intervention_id'], policy_epoch=row['policy_epoch'],
             state=obs['state16'], action=row['submitted'], state_timestamps_ns=obs['state_timestamps_ns'],
+            state_valid_mask=mask, action_valid_mask=mask,
             action_source_timestamps_ns=row['action_source_timestamps_ns'], frames=payload[obs['observation_id']]['frames'])
         group.append(item)
         prior_control = index
@@ -163,6 +195,7 @@ def select_segments(run, review, *, fps=30):
         raise ValueError('no reviewed, contiguous, causally aligned HIL segment with >=2 frames')
     rows = [row for segment in segments for row in segment]
     report.update(selected_frames=len(rows), selected_segments=len(segments),
+                  input_invalid_intervals=invalid_intervals,
                   rejected_observations=rejected, reviewer=review['reviewer'], fps=fps,
                   resampling=RESAMPLING, source_contiguous_groups=len(groups),
                   resampling_rejected_grid_points=grid_rejections,
@@ -204,6 +237,10 @@ def export_dataset(run, review_path, output, lerobot_root, *, fps=30, writer_cla
     from PIL import Image
     features = {'observation.state': {'dtype':'float32','shape':(16,),'names':list(FEATURE_NAMES)},
                 'action': {'dtype':'float32','shape':(16,),'names':list(FEATURE_NAMES)}}
+    masked = manifest.get('schema_version') == 4
+    if masked:
+        for name in ('observation.state_valid_mask', 'action_valid_mask'):
+            features[name] = dict(dtype='bool', shape=(16,), names=list(FEATURE_NAMES))
     first_frames = segments[0][0]['frames']
     for frame in first_frames:
         features['observation.images.'+frame['camera']] = dict(dtype='video', shape=(frame['height'],frame['width'],3), names=['height','width','channels'])
@@ -221,6 +258,9 @@ def export_dataset(run, review_path, output, lerobot_root, *, fps=30, writer_cla
             for index, row in enumerate(segment):
                 frame = {'observation.state':np.array(row['state'],dtype=np.float32),
                          'action':np.array(row['action'],dtype=np.float32), 'task':manifest['task_prompt']}
+                if masked:
+                    frame['observation.state_valid_mask'] = np.asarray(row['state_valid_mask'], dtype=bool)
+                    frame['action_valid_mask'] = np.asarray(row['action_valid_mask'], dtype=bool)
                 for image in row['frames']:
                     with Image.open(BytesIO(read_payload(run/'payload', image))) as im:
                         pixels = np.asarray(im.convert('RGB'))
@@ -242,6 +282,8 @@ def export_dataset(run, review_path, output, lerobot_root, *, fps=30, writer_cla
                       source_payload_index_sha256=sha256(run/'payload/frames.jsonl'),
                       review_sha256=sha256(review_path), writer_binding=binding,
                       source_basis='f1dagger_single_owner_publication',
+                      hardware_mask_exported=masked,
+                      training_input_contract='right_only_mask_required_v1' if masked else 'legacy_full16',
                       synthetic=manifest['binding'].get('synthetic') is True,
                       human_review_accepted=manifest['binding'].get('synthetic') is not True,
                       write_completed=True, structure_verified=False)
@@ -258,6 +300,9 @@ def export_dataset(run, review_path, output, lerobot_root, *, fps=30, writer_cla
                     raise ValueError('LeRobot action readback differs from publication evidence')
                 if not np.allclose(np.asarray(sample['observation.state']),row['state'],rtol=1e-6,atol=1e-5):
                     raise ValueError('LeRobot state readback differs from feedback')
+                if masked and (not np.array_equal(np.asarray(sample['observation.state_valid_mask']), row['state_valid_mask'])
+                               or not np.array_equal(np.asarray(sample['action_valid_mask']), row['action_valid_mask'])):
+                    raise ValueError('LeRobot hardware validity mask roundtrip mismatch')
                 for camera in CAMERAS:
                     pixels = np.asarray(sample['observation.images.'+camera])
                     h,w,_ = features['observation.images.'+camera]['shape']

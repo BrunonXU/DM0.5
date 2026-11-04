@@ -15,6 +15,41 @@ class Clock:
     def __call__(self): return self.now
 
 
+def test_snapshot_clock_is_sampled_after_waiting_for_new_feedback():
+    clock = Clock()
+    store = StateStore(clock)
+    store.update_joints(joints(['head_j2'], [-27.6]))
+    lock = store.lock
+    waiting = threading.Event()
+    result = []
+
+    class Gate:
+        def __enter__(self):
+            if threading.current_thread() is reader:
+                waiting.set()
+            return lock.__enter__()
+
+        def __exit__(self, *args):
+            return lock.__exit__(*args)
+
+    store.lock = Gate()
+    reader = threading.Thread(target=lambda: result.append(store.snapshot()))
+    with lock:
+        reader.start()
+        assert waiting.wait(2), 'snapshot did not reach the locked store'
+        # A callback installs a new sample while the snapshot is waiting. Its
+        # capture time must belong to the eventual locked read, not the wait.
+        clock.now += .2
+        store.update_joints(joints(['head_j2'], [-25.]))
+        received_at = store.joints['head_j2']['received_at']
+    reader.join(2)
+    assert not reader.is_alive()
+    snap = result[0]
+    assert snap['joints']['head_j2']['position'] == -25.
+    assert snap['snapshot_monotonic_s'] >= received_at
+    assert snap['snapshot_monotonic_s']-snap['joints']['head_j2']['age_s'] == received_at
+
+
 def joints(names, positions):
     return NS(name=names, position=positions, header=NS(stamp=NS(sec=946600000, nanosec=7)))
 

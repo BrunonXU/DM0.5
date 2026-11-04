@@ -1,0 +1,505 @@
+{
+  "schema": "f1_rlt_dagger_recipe_v1",
+  "experiment": "B1250_RLT_DAggerSuccess_Offline",
+  "seed": 20261026,
+  "parent_bundle": "/u01/user/runs/f1-toys-stage-sampling-20261022-r3/bundle-B-1250",
+  "encoder": "/u01/user/runs/f1-rlt-b1250-20261026-r1/evaluation/encoder",
+  "freeze_vla": true,
+  "freeze_encoder": true,
+  "model": {
+    "z_dim": 2048,
+    "proprio_dim": 8,
+    "action_dim": 10,
+    "chunk_len": 16,
+    "ref_chunk_len": 50,
+    "fixed_std": 0.002
+  },
+  "output_parameterization": "linear_normalized_xyz_tanh_rotation6d_gripper",
+  "reference_mode": "fresh_frozen_B1250_unguided_5step_reference_offline_only",
+  "fps": 30,
+  "anchor_stride_steps": 16,
+  "max_observation_age_ns": 50000000,
+  "max_camera_age_ns": 200000000,
+  "max_state_age_ns": 250000000,
+  "max_control_gap_ns": 50000000,
+  "gamma_per_step": 0.999,
+  "tau": 0.005,
+  "batch_size": 64,
+  "warmup_steps": 300,
+  "actor_update_interval": 4,
+  "learning_rate": 0.0003,
+  "clip_grad": 10.0,
+  "bc_weight": 5.0,
+  "q_weight": 0.1,
+  "reference_dropout_prob": 0.5,
+  "eval_interval": 50,
+  "reward_definition": "+1 only at confirmed correct placement and safe retreat; 0 otherwise; incorrect placement terminal; operator stop truncates",
+  "label_evidence": "Five autonomous outcomes preserved from their frozen audited replay. Nine training human corrections and one held-out human correction retain prior operator success confirmation and reviewed pre-Home retreat endpoint images, hashes and observation IDs.",
+  "time_origin": "first payload observation available_monotonic_ns; not assumed identical to UI video time",
+  "wandb": {
+    "project": "f1_complexytoys",
+    "entity": "robotics-example",
+    "group": "09_RLT_Stage2_DAgger_B1250"
+  },
+  "asynchronous_runner": false,
+  "deployment_ready": false,
+  "limitations": [
+    "Small fixed replay; no new robot interactions",
+    "Nine human successes share one training session and were already used by parent SFT/token training",
+    "Held-out human correction has model-selection exposure",
+    "RTC action routing and async runner remain unimplemented",
+    "Offline metrics do not establish task success-rate improvement"
+  ],
+  "base_replay": "/u01/user/runs/f1-rlt-stage2-offline-20261026-r1/cache",
+  "base_recipe": "/u01/user/runs/f1-rlt-stage2-offline-20261026-r1/recipe.json",
+  "base_replay_manifest_sha256": "0c344f8841c9db15e90705aed537542443287dbb9fd763c8dc8435183b864f54",
+  "human_raw_root": "/u01/user/datasets/f1_rlt_dagger_success_20261026/raw",
+  "human_review_root": "/u01/user/datasets/f1_rlt_dagger_success_20261026/reviews",
+  "warmup_max_steps": 600,
+  "q_max_steps": 200,
+  "patience": 3,
+  "terminal_sample_probability": 0.1,
+  "validation_scope": "Development validation: one autonomous failure and one old human success from another session. Human success used for SFT/token validation and token checkpoint selection, never their gradients. Same-day layout, not untouched test or V2 generalization.",
+  "human_segments": [
+    {
+      "id": "human_017cd44f",
+      "source_run": "f1_hil_20261021T093244Z_017cd44f",
+      "source_group": "f1_hil_20261021T093218Z_1eb32b6e",
+      "split": "train",
+      "start_ns": 28689312485942,
+      "end_ns": 28709064607020,
+      "outcome": "success",
+      "terminal_evidence": {
+        "observation_id": 1924,
+        "available_monotonic_ns": 28709064607020,
+        "success_after_retreat_confirmed": true,
+        "evidence_refs": [
+          "tasks/F1_ComplexyToys/artifacts/20261021-v1-dagger-training/build/reviews/f1_hil_20261021T093244Z_017cd44f.json",
+          "tasks/F1_ComplexyToys/artifacts/20261021-nine-hil-review/visual/visual-audit.json",
+          "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/endpoint-review.json"
+        ],
+        "endpoint_images": [
+          {
+            "path": "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/f1_hil_20261021T093244Z_017cd44f-endpoint-head.jpg",
+            "sha256": "36c85f1bc5f3578b85280b1837c2bcd204718cbbdd82cb98bce947c9dafa2e0c",
+            "camera": "head",
+            "observation_id": 1924
+          },
+          {
+            "path": "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/f1_hil_20261021T093244Z_017cd44f-endpoint-right_wrist.jpg",
+            "sha256": "4d37a2eab4d95a4512b3c97316db5a630a2a2f20ba4939a9dc10a4918b6275ef",
+            "camera": "right_wrist",
+            "observation_id": 1924
+          }
+        ],
+        "visual_inspection_status": "Both original endpoint camera images actually inspected on endpoint-sheet-1/2: gripper is open and empty, separated from placement; supported by prior operator-confirmed insertion/release/retreat. Perspective view does not independently certify insertion depth or metric clearance."
+      },
+      "review_sha256": "0e4c8a31334699af7f6f4675f682b5dd61794cee8ee5fcf83c069fbbfddf4870",
+      "source_manifest_sha256": "c41f277ad202f613583d4cb8fefe7dd29522b1c5b5490b8c17d857e3e0b1f2fb",
+      "behavior_model_id": "f1-toys-eef-efe3e5fa54ed0fb2",
+      "prior_exposure": {
+        "sft_train": true,
+        "sft_validation": false,
+        "token_train_observations": 96,
+        "token_validation_observations": 0,
+        "completely_unseen": false
+      }
+    },
+    {
+      "id": "human_fd0a2c7e",
+      "source_run": "f1_hil_20261021T093348Z_fd0a2c7e",
+      "source_group": "f1_hil_20261021T093218Z_1eb32b6e",
+      "split": "train",
+      "start_ns": 28751564278754,
+      "end_ns": 28777280079419,
+      "outcome": "success",
+      "terminal_evidence": {
+        "observation_id": 3967,
+        "available_monotonic_ns": 28777280079419,
+        "success_after_retreat_confirmed": true,
+        "evidence_refs": [
+          "tasks/F1_ComplexyToys/artifacts/20261021-v1-dagger-training/build/reviews/f1_hil_20261021T093348Z_fd0a2c7e.json",
+          "tasks/F1_ComplexyToys/artifacts/20261021-nine-hil-review/visual/visual-audit.json",
+          "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/endpoint-review.json"
+        ],
+        "endpoint_images": [
+          {
+            "path": "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/f1_hil_20261021T093348Z_fd0a2c7e-endpoint-head.jpg",
+            "sha256": "6c1a7aaa0aeaf9c3b9207c79c489d7edf4a0e4ae7e7097f8322b809bf9300165",
+            "camera": "head",
+            "observation_id": 3967
+          },
+          {
+            "path": "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/f1_hil_20261021T093348Z_fd0a2c7e-endpoint-right_wrist.jpg",
+            "sha256": "83e3a3d1eb5b79407663f0c5b79add943b5bcaae122031a109b316855c54980a",
+            "camera": "right_wrist",
+            "observation_id": 3967
+          }
+        ],
+        "visual_inspection_status": "Both original endpoint camera images actually inspected on endpoint-sheet-1/2: gripper is open and empty, separated from placement; supported by prior operator-confirmed insertion/release/retreat. Perspective view does not independently certify insertion depth or metric clearance."
+      },
+      "review_sha256": "14fac5605d2e7019eabbae33809d29b67754219433ab3765f6fe75d3e41ab874",
+      "source_manifest_sha256": "2574ba9204f122acffc2766f17dda000d93a9bc91476163f6c3d88618b247883",
+      "behavior_model_id": "f1-toys-eef-efe3e5fa54ed0fb2",
+      "prior_exposure": {
+        "sft_train": true,
+        "sft_validation": false,
+        "token_train_observations": 96,
+        "token_validation_observations": 0,
+        "completely_unseen": false
+      }
+    },
+    {
+      "id": "human_9fdb92f7",
+      "source_run": "f1_hil_20261021T093454Z_9fdb92f7",
+      "source_group": "f1_hil_20261021T093218Z_1eb32b6e",
+      "split": "train",
+      "start_ns": 28816622162885,
+      "end_ns": 28828440053216,
+      "outcome": "success",
+      "terminal_evidence": {
+        "observation_id": 5500,
+        "available_monotonic_ns": 28828440053216,
+        "success_after_retreat_confirmed": true,
+        "evidence_refs": [
+          "tasks/F1_ComplexyToys/artifacts/20261021-v1-dagger-training/build/reviews/f1_hil_20261021T093454Z_9fdb92f7.json",
+          "tasks/F1_ComplexyToys/artifacts/20261021-nine-hil-review/visual/visual-audit.json",
+          "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/endpoint-review.json"
+        ],
+        "endpoint_images": [
+          {
+            "path": "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/f1_hil_20261021T093454Z_9fdb92f7-endpoint-head.jpg",
+            "sha256": "6359185526fdaf1e85e0ff4709355cd853e4fb29f1df2db7b50eb108b48f8124",
+            "camera": "head",
+            "observation_id": 5500
+          },
+          {
+            "path": "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/f1_hil_20261021T093454Z_9fdb92f7-endpoint-right_wrist.jpg",
+            "sha256": "6bf059d7785c862728faea60caf4d80cb34a0391ce060aa2255304dab22dd2ce",
+            "camera": "right_wrist",
+            "observation_id": 5500
+          }
+        ],
+        "visual_inspection_status": "Both original endpoint camera images actually inspected on endpoint-sheet-1/2: gripper is open and empty, separated from placement; supported by prior operator-confirmed insertion/release/retreat. Perspective view does not independently certify insertion depth or metric clearance."
+      },
+      "review_sha256": "92eae708dd0320c98806052a23ddca5fd67697d172313a5d22270f3982b92457",
+      "source_manifest_sha256": "6ad1ea1ff20e6a286f5a0f35499482273de91a16c31051a77eb74a3fd74e49a7",
+      "behavior_model_id": "f1-toys-eef-efe3e5fa54ed0fb2",
+      "prior_exposure": {
+        "sft_train": true,
+        "sft_validation": false,
+        "token_train_observations": 96,
+        "token_validation_observations": 0,
+        "completely_unseen": false
+      }
+    },
+    {
+      "id": "human_459343cc",
+      "source_run": "f1_hil_20261021T093552Z_459343cc",
+      "source_group": "f1_hil_20261021T093218Z_1eb32b6e",
+      "split": "train",
+      "start_ns": 28873170062413,
+      "end_ns": 28884712850021,
+      "outcome": "success",
+      "terminal_evidence": {
+        "observation_id": 7184,
+        "available_monotonic_ns": 28884712850021,
+        "success_after_retreat_confirmed": true,
+        "evidence_refs": [
+          "tasks/F1_ComplexyToys/artifacts/20261021-v1-dagger-training/build/reviews/f1_hil_20261021T093552Z_459343cc.json",
+          "tasks/F1_ComplexyToys/artifacts/20261021-nine-hil-review/visual/visual-audit.json",
+          "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/endpoint-review.json"
+        ],
+        "endpoint_images": [
+          {
+            "path": "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/f1_hil_20261021T093552Z_459343cc-endpoint-head.jpg",
+            "sha256": "e4988189d8fc01605a5a2b09a28a9157ee8e6d043d58b2a2d99581e87b5aed51",
+            "camera": "head",
+            "observation_id": 7184
+          },
+          {
+            "path": "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/f1_hil_20261021T093552Z_459343cc-endpoint-right_wrist.jpg",
+            "sha256": "6ada11ba97b0483b497f9f89f26f045a0c3aa55c7592b3d69e8281c3d1b384c9",
+            "camera": "right_wrist",
+            "observation_id": 7184
+          }
+        ],
+        "visual_inspection_status": "Both original endpoint camera images actually inspected on endpoint-sheet-1/2: gripper is open and empty, separated from placement; supported by prior operator-confirmed insertion/release/retreat. Perspective view does not independently certify insertion depth or metric clearance."
+      },
+      "review_sha256": "2b74ba8f3c48838b05618fce3958d00b6ff565e488edd9efc331b37777514464",
+      "source_manifest_sha256": "2e08d7764d3b90b9da9b20235116352d9b3bc864604fe5d636626a806b72f868",
+      "behavior_model_id": "f1-toys-eef-efe3e5fa54ed0fb2",
+      "prior_exposure": {
+        "sft_train": true,
+        "sft_validation": false,
+        "token_train_observations": 96,
+        "token_validation_observations": 0,
+        "completely_unseen": false
+      }
+    },
+    {
+      "id": "human_e16a4e57",
+      "source_run": "f1_hil_20261021T093638Z_e16a4e57",
+      "source_group": "f1_hil_20261021T093218Z_1eb32b6e",
+      "split": "train",
+      "start_ns": 28923852859637,
+      "end_ns": 28940846522841,
+      "outcome": "success",
+      "terminal_evidence": {
+        "observation_id": 8859,
+        "available_monotonic_ns": 28940846522841,
+        "success_after_retreat_confirmed": true,
+        "evidence_refs": [
+          "tasks/F1_ComplexyToys/artifacts/20261021-v1-dagger-training/build/reviews/f1_hil_20261021T093638Z_e16a4e57.json",
+          "tasks/F1_ComplexyToys/artifacts/20261021-nine-hil-review/visual/visual-audit.json",
+          "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/endpoint-review.json"
+        ],
+        "endpoint_images": [
+          {
+            "path": "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/f1_hil_20261021T093638Z_e16a4e57-endpoint-head.jpg",
+            "sha256": "517e0aafecaa6a372c9dc525dee1fe9e7cc2d1009cee9b5350cd1ee79b8ab1d3",
+            "camera": "head",
+            "observation_id": 8859
+          },
+          {
+            "path": "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/f1_hil_20261021T093638Z_e16a4e57-endpoint-right_wrist.jpg",
+            "sha256": "cdbdf88eb74423a0eb97db903460f54401c20055122771a81ce58f40d6a5ffb3",
+            "camera": "right_wrist",
+            "observation_id": 8859
+          }
+        ],
+        "visual_inspection_status": "Both original endpoint camera images actually inspected on endpoint-sheet-1/2: gripper is open and empty, separated from placement; supported by prior operator-confirmed insertion/release/retreat. Perspective view does not independently certify insertion depth or metric clearance."
+      },
+      "review_sha256": "21abdf889b2c64215d594466d82bbab187e89ff2dca1a5c3e94a6e3590c3563d",
+      "source_manifest_sha256": "a3a355752929b383b2782be75fbfcd511f8a4d0f742b047463cb6a6825a01a37",
+      "behavior_model_id": "f1-toys-eef-efe3e5fa54ed0fb2",
+      "prior_exposure": {
+        "sft_train": true,
+        "sft_validation": false,
+        "token_train_observations": 96,
+        "token_validation_observations": 0,
+        "completely_unseen": false
+      }
+    },
+    {
+      "id": "human_d4071322",
+      "source_run": "f1_hil_20261021T093733Z_d4071322",
+      "source_group": "f1_hil_20261021T093218Z_1eb32b6e",
+      "split": "train",
+      "start_ns": 28981388623485,
+      "end_ns": 28999137618579,
+      "outcome": "success",
+      "terminal_evidence": {
+        "observation_id": 10603,
+        "available_monotonic_ns": 28999137618579,
+        "success_after_retreat_confirmed": true,
+        "evidence_refs": [
+          "tasks/F1_ComplexyToys/artifacts/20261021-v1-dagger-training/build/reviews/f1_hil_20261021T093733Z_d4071322.json",
+          "tasks/F1_ComplexyToys/artifacts/20261021-nine-hil-review/visual/visual-audit.json",
+          "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/endpoint-review.json"
+        ],
+        "endpoint_images": [
+          {
+            "path": "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/f1_hil_20261021T093733Z_d4071322-endpoint-head.jpg",
+            "sha256": "4fdd8c7637f8696d1fb580b2304c190807507cb60e2520b4ed622a9808692b1b",
+            "camera": "head",
+            "observation_id": 10603
+          },
+          {
+            "path": "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/f1_hil_20261021T093733Z_d4071322-endpoint-right_wrist.jpg",
+            "sha256": "c761b243b9c961fa7d1a395d85709f66887a8dce2832a554c2ac5d5b91f932ec",
+            "camera": "right_wrist",
+            "observation_id": 10603
+          }
+        ],
+        "visual_inspection_status": "Both original endpoint camera images actually inspected on endpoint-sheet-1/2: gripper is open and empty, separated from placement; supported by prior operator-confirmed insertion/release/retreat. Perspective view does not independently certify insertion depth or metric clearance."
+      },
+      "review_sha256": "418a14a4eae0c37410e6f6a97360bc296b2b96e1140e78498916ef4c91025337",
+      "source_manifest_sha256": "4899abea8100556bdaeff9af4d5e65a3dc7ce8b982c9633537dcab772b505eef",
+      "behavior_model_id": "f1-toys-eef-efe3e5fa54ed0fb2",
+      "prior_exposure": {
+        "sft_train": true,
+        "sft_validation": false,
+        "token_train_observations": 96,
+        "token_validation_observations": 0,
+        "completely_unseen": false
+      }
+    },
+    {
+      "id": "human_575fde01",
+      "source_run": "f1_hil_20261021T093840Z_575fde01",
+      "source_group": "f1_hil_20261021T093218Z_1eb32b6e",
+      "split": "train",
+      "start_ns": 29046808719046,
+      "end_ns": 29065670902282,
+      "outcome": "success",
+      "terminal_evidence": {
+        "observation_id": 12597,
+        "available_monotonic_ns": 29065670902282,
+        "success_after_retreat_confirmed": true,
+        "evidence_refs": [
+          "tasks/F1_ComplexyToys/artifacts/20261021-v1-dagger-training/build/reviews/f1_hil_20261021T093840Z_575fde01.json",
+          "tasks/F1_ComplexyToys/artifacts/20261021-nine-hil-review/visual/visual-audit.json",
+          "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/endpoint-review.json"
+        ],
+        "endpoint_images": [
+          {
+            "path": "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/f1_hil_20261021T093840Z_575fde01-endpoint-head.jpg",
+            "sha256": "8b8f1f24ceb50d213df800821d65ad381dd98d3a2c4ce70022957a33c9f26684",
+            "camera": "head",
+            "observation_id": 12597
+          },
+          {
+            "path": "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/f1_hil_20261021T093840Z_575fde01-endpoint-right_wrist.jpg",
+            "sha256": "efdf744e54122c4872795ec42f7519f1de364d80971fae783ff2974940b98d0d",
+            "camera": "right_wrist",
+            "observation_id": 12597
+          }
+        ],
+        "visual_inspection_status": "Both original endpoint camera images actually inspected on endpoint-sheet-1/2: gripper is open and empty, separated from placement; supported by prior operator-confirmed insertion/release/retreat. Perspective view does not independently certify insertion depth or metric clearance."
+      },
+      "review_sha256": "10a8aa3bb5823d253bc7b3f901f530eef3d19121d06c06fed9737d0fa34ac897",
+      "source_manifest_sha256": "aa0c4b08f5a6ffee95ce32c50c917df412c1ad0654996e5d73771b84db22d613",
+      "behavior_model_id": "f1-toys-eef-efe3e5fa54ed0fb2",
+      "prior_exposure": {
+        "sft_train": true,
+        "sft_validation": false,
+        "token_train_observations": 96,
+        "token_validation_observations": 0,
+        "completely_unseen": false
+      }
+    },
+    {
+      "id": "human_3ea7ceb1",
+      "source_run": "f1_hil_20261021T093939Z_3ea7ceb1",
+      "source_group": "f1_hil_20261021T093218Z_1eb32b6e",
+      "split": "train",
+      "start_ns": 29106821771057,
+      "end_ns": 29113674926301,
+      "outcome": "success",
+      "terminal_evidence": {
+        "observation_id": 14035,
+        "available_monotonic_ns": 29113674926301,
+        "success_after_retreat_confirmed": true,
+        "evidence_refs": [
+          "tasks/F1_ComplexyToys/artifacts/20261021-v1-dagger-training/build/reviews/f1_hil_20261021T093939Z_3ea7ceb1.json",
+          "tasks/F1_ComplexyToys/artifacts/20261021-nine-hil-review/visual/visual-audit.json",
+          "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/endpoint-review.json"
+        ],
+        "endpoint_images": [
+          {
+            "path": "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/f1_hil_20261021T093939Z_3ea7ceb1-endpoint-head.jpg",
+            "sha256": "a9048380d49f74fc6f744a7135c492576bc584225002f813c4ecc54f7eae9b91",
+            "camera": "head",
+            "observation_id": 14035
+          },
+          {
+            "path": "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/f1_hil_20261021T093939Z_3ea7ceb1-endpoint-right_wrist.jpg",
+            "sha256": "8af857507617e15126bf66b1408bc9ebd130a55654a7383363a6588d953f1054",
+            "camera": "right_wrist",
+            "observation_id": 14035
+          }
+        ],
+        "visual_inspection_status": "Both original endpoint camera images actually inspected on endpoint-sheet-1/2: gripper is open and empty, separated from placement; supported by prior operator-confirmed insertion/release/retreat. Perspective view does not independently certify insertion depth or metric clearance."
+      },
+      "review_sha256": "59675f4c1ea6c544697aa1f507ff82c7e1171db8279f82c693fdb49398fddd7f",
+      "source_manifest_sha256": "0d29f58c129dddf455f26ea86e5a7ea6ce265547d2724be47dc8b2f9560e6805",
+      "behavior_model_id": "f1-toys-eef-efe3e5fa54ed0fb2",
+      "prior_exposure": {
+        "sft_train": true,
+        "sft_validation": false,
+        "token_train_observations": 96,
+        "token_validation_observations": 0,
+        "completely_unseen": false
+      }
+    },
+    {
+      "id": "human_f45308d2",
+      "source_run": "f1_hil_20261021T094026Z_f45308d2",
+      "source_group": "f1_hil_20261021T093218Z_1eb32b6e",
+      "split": "train",
+      "start_ns": 29155501018511,
+      "end_ns": 29176694084445,
+      "outcome": "success",
+      "terminal_evidence": {
+        "observation_id": 15921,
+        "available_monotonic_ns": 29176694084445,
+        "success_after_retreat_confirmed": true,
+        "evidence_refs": [
+          "tasks/F1_ComplexyToys/artifacts/20261021-v1-dagger-training/build/reviews/f1_hil_20261021T094026Z_f45308d2.json",
+          "tasks/F1_ComplexyToys/artifacts/20261021-nine-hil-review/visual/visual-audit.json",
+          "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/endpoint-review.json"
+        ],
+        "endpoint_images": [
+          {
+            "path": "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/f1_hil_20261021T094026Z_f45308d2-endpoint-head.jpg",
+            "sha256": "8b16b88c0d75825b2ecaf36a8bc7adf3ca5aa34731a92403d2e900e201d4e5f8",
+            "camera": "head",
+            "observation_id": 15921
+          },
+          {
+            "path": "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/f1_hil_20261021T094026Z_f45308d2-endpoint-right_wrist.jpg",
+            "sha256": "740ee2c70c626a2851bc7809d6d60fe99dedde6c3fcbafc7374c447fed69a429",
+            "camera": "right_wrist",
+            "observation_id": 15921
+          }
+        ],
+        "visual_inspection_status": "Both original endpoint camera images actually inspected on endpoint-sheet-1/2: gripper is open and empty, separated from placement; supported by prior operator-confirmed insertion/release/retreat. Perspective view does not independently certify insertion depth or metric clearance."
+      },
+      "review_sha256": "4707314f48ee9a3e7d475726a2c1c395134ac216ba66d693537d0c6a6246f9ce",
+      "source_manifest_sha256": "95279ad460179f88433f2b5c2bcf8fe533aff069c15cc8e9d48b6d15d96cd956",
+      "behavior_model_id": "f1-toys-eef-efe3e5fa54ed0fb2",
+      "prior_exposure": {
+        "sft_train": true,
+        "sft_validation": false,
+        "token_train_observations": 96,
+        "token_validation_observations": 0,
+        "completely_unseen": false
+      }
+    },
+    {
+      "id": "human_c70f9627",
+      "source_run": "f1_hil_20261021T070206Z_c70f9627",
+      "source_group": "f1-09-scene-20261021-070206-c70f9627",
+      "split": "validation",
+      "start_ns": 19680435149132,
+      "end_ns": 19699273133784,
+      "outcome": "success",
+      "terminal_evidence": {
+        "observation_id": 2074,
+        "available_monotonic_ns": 19699273133784,
+        "success_after_retreat_confirmed": true,
+        "evidence_refs": [
+          "tasks/F1_ComplexyToys/artifacts/20261021-rtc-hil/first-correction-review.json",
+          "tasks/F1_ComplexyToys/artifacts/20261021-rtc-hil/first-real-acceptance.json",
+          "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/endpoint-review.json"
+        ],
+        "endpoint_images": [
+          {
+            "path": "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/f1_hil_20261021T070206Z_c70f9627-endpoint-head.jpg",
+            "sha256": "b2d9cf72f9b51a056cd6ac343209e1bcd110751891dcff1c84c79fd43e00f3b1",
+            "camera": "head",
+            "observation_id": 2074
+          },
+          {
+            "path": "tasks/F1_ComplexyToys/training/artifacts/20261026-rlt-dagger-success/source-audit/f1_hil_20261021T070206Z_c70f9627-endpoint-right_wrist.jpg",
+            "sha256": "ecabccc92a42ba3ac5793c6895bb6ef1d7e0038ea58f8143c5b3874acb2b0c21",
+            "camera": "right_wrist",
+            "observation_id": 2074
+          }
+        ],
+        "visual_inspection_status": "Both original endpoint camera images actually inspected on endpoint-sheet-1/2: gripper is open and empty, separated from placement; supported by prior operator-confirmed insertion/release/retreat. Perspective view does not independently certify insertion depth or metric clearance."
+      },
+      "review_sha256": "471dc0b159d5388f03421fdb3028812be860f0a8ec4b830905819102cfc10859",
+      "source_manifest_sha256": "58cc493359ec575a547f688e90aab890bcca0f2e6f5eaa199189b9fe4d93c429",
+      "behavior_model_id": "f1-toys-eef-efe3e5fa54ed0fb2",
+      "prior_exposure": {
+        "sft_train": false,
+        "sft_validation": true,
+        "token_train_observations": 0,
+        "token_validation_observations": 64,
+        "completely_unseen": false
+      }
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PROJECT_ROOT="/home/xza_100850113/projects/DM0.5"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 IMAGE="opendm:g2-34d-fa2"
 NVME_MOUNT="/mnt/dm05_nvme"
 NVME_UUID="bd6a10fd-b6fe-428e-ade2-7f3130ea902a"

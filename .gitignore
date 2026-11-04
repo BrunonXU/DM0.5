@@ -109,3 +109,33 @@
 # Independent checkout and local connectivity probe (not root-repository sources)
 /rea/
 /h20-access-check-20261008/
+/tools/rea/
+/infra/h20/experiments/20261008-access-check/probe.bin
+
+# Public source snapshot: credentials and generated evidence stay local.
+/HARNESS/API.MD
+/HARNESS/api.md
+**/known_hosts
+**/*_known_hosts
+**/ssh_config
+**/*_ssh_config
+**/authorized_keys
+**/id_rsa*
+**/id_ed25519*
+**/*.pem
+**/*.key
+**/*.pub
+**/*.local.*
+/.artifacts/
+/F1/connect/**/evidence/
+/Whereweare/tracking/
+/Whereweare/docs/assets/*.png
+/tools/WhyHow/artifacts/
+/tools/WhyHow/catalog.before-*.json
+/tasks/**/visualizations/**/*.png
+/tasks/**/visualizations/**/*.jpg
+/tasks/**/visualizations/**/*.wav
+/tasks/**/training/experiments/assets/
+/DM0.5/docs/training/experiments/new_lora/augmentation_examples/*.jpg
+/DM0.5/opendm/assets/demo/
+/g2_robot/g2_sort/config/training_replay_v1.json

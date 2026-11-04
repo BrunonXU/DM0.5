@@ -84,8 +84,8 @@ def test_joint_failure_after_dispatch_sends_fresh_hold_when_still_owned():
 def test_http_plan_requires_lease_and_has_no_execution(http_app,monkeypatch):
     from robot.adapter import ActionRejected
     app,request=http_app;_,_,cookie=request('/api/session')
-    assert request('/api/actions/plan',{'kind':'lift','level':1},cookie)[0]==401
-    _,auth,_=request('/api/control/acquire',{'control_code':'fixture-control-code'},cookie)
+    assert request('/api/actions/plan',{'kind':'lift','level':1},cookie,origin=False)[0]==403
+    _,auth,_=request('/api/control/acquire',{},cookie)
     monkeypatch.setattr(app.adapter,'plan',lambda spec:{'motion_s':2,'targets':{}},raising=False)
     body={'kind':'lift','level':1,'lease_id':auth['lease_id']}
     assert request('/api/actions/plan',body,cookie)[0]==200

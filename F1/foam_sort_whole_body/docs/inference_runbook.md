@@ -38,10 +38,10 @@ IK输出以 `reject` 检查，不能再次clip改变EEF。夹爪0–100、底盘
 
 ## 6000D 检查与模型启动
 
-6000D终端，工作目录 `/home/xza_100850113/projects/F1/foam_sort_whole_body`：
+6000D终端，工作目录 `/home/user/projects/F1/foam_sort_whole_body`：
 
 ```bash
-cd /home/xza_100850113/projects/F1/foam_sort_whole_body
+cd /home/user/projects/F1/foam_sort_whole_body
 bash scripts/inference_server.sh inspect
 bash scripts/inference_client.sh inspect
 ```
@@ -59,12 +59,12 @@ export F1_INFERENCE_GPU=填写空闲GPU编号
 mkdir -p results/inference_server_logs
 sg docker -c 'docker run --rm --name f1-foam-inference --network host \
   --gpus "device=$F1_INFERENCE_GPU" \
-  --mount type=bind,src=/home/xza_100850113/projects,dst=/home/xza_100850113/projects,readonly \
+  --mount type=bind,src=/home/user/projects,dst=/home/user/projects,readonly \
   --mount type=bind,src=/mnt/dm05_nvme/dm05,dst=/mnt/dm05_nvme/dm05,readonly \
   --env PYTHONDONTWRITEBYTECODE=1 --env NO_ALBUMENTATIONS_UPDATE=1 \
   --env F1_INFERENCE_PYTHON=/opt/conda/envs/opendm/bin/python \
   --entrypoint bash opendm:g2-34d-fa2 \
-  /home/xza_100850113/projects/F1/foam_sort_whole_body/scripts/inference_server.sh serve' \
+  /home/user/projects/F1/foam_sort_whole_body/scripts/inference_server.sh serve' \
   2>&1 | tee "results/inference_server_logs/$(date +%Y%m%dT%H%M%S).log"
 ```
 
@@ -86,7 +86,7 @@ sg docker -c 'docker run --rm --name f1-foam-inference --network host \
 持久隧道只提供登录，没有转发模型端口。6000D另一个终端，任意目录：
 
 ```bash
-ssh -F /dev/null -i /home/xza_100850113/.ssh/id_ed25519_f1 \
+ssh -F /dev/null -i /home/user/.ssh/id_ed25519_f1 \
   -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes \
   -o HostKeyAlias=f1-d070 -o ExitOnForwardFailure=yes \
   -o ServerAliveInterval=30 -o ServerAliveCountMax=3 \

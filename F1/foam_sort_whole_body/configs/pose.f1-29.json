@@ -123,7 +123,7 @@
   "base_speed_limits_source": "F1 .29 live parameters 20260918; 0.65m/s task ceiling retained; not a hardware safety rating",
   "verification_scope": "current_controller_binary_and_ros_modes_plus_explicit_task_software_policy; live_start_state_and_ownership_rechecked_at_execute",
   "robot_name": "4F-F1",
-  "expected_machine_id": "f8181edeb110424bbd1963cf717dfeee",
+  "expected_machine_id": "00000000000000000000000000000001",
   "robot_id": "F1_D071",
   "command_ownership_policy": "observed_idle_v1",
   "command_monitor_binary": "/home/user/Bruno/F1/foam_sort_whole_body/runtime/command_monitors/20260918-f1-29-v1/build/libf1_command_monitor_shared.so",

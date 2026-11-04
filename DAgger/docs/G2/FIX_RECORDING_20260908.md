@@ -32,7 +32,7 @@ prebuffer-record仍为首次START前约4秒（受内存容量限制）+首次STA
 现场启动和结束后审计：
 
 ```bash
-cd /home/agi/xza/DAgger
+cd /home/user/xza/DAgger
 bash scripts/40_g2_powered_hil.sh --capture-hz 30 --recording-mode hil-record
 # 结束后，将下面路径替换为本次打印的Episode路径下journal目录
 python3 scripts/41_audit_capture_rate.py logs/powered_hil/本次Episode/journal
@@ -43,4 +43,4 @@ python3 scripts/34_audit_hil_episode.py logs/powered_hil/本次Episode/journal
 
 ### G2同步验证
 
-本轮变更已同步至/home/agi/xza/DAgger。G2离线全套测试54 passed（3.83s）；补齐与启动脚本一致的DM0.5 PYTHONPATH后files-only预检通过，明确未导入或初始化GDK。首次手工预检因缺g2_client搜索路径失败，属于该验证命令环境遗漏，不是Powered运行失败。未运行Powered。
+本轮变更已同步至/home/user/xza/DAgger。G2离线全套测试54 passed（3.83s）；补齐与启动脚本一致的DM0.5 PYTHONPATH后files-only预检通过，明确未导入或初始化GDK。首次手工预检因缺g2_client搜索路径失败，属于该验证命令环境遗漏，不是Powered运行失败。未运行Powered。

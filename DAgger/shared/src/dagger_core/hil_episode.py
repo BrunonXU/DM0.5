@@ -174,6 +174,9 @@ class EpisodeJournal:
                     json.dumps(_jsonable(record), separators=(",", ":")) + "\n"
                 )
                 self._counts[stream] += 1
+                checkpoint = getattr(self, 'checkpoint_record', None)
+                if checkpoint is not None:
+                    checkpoint(stream, record, handles)
                 pending += 1
                 if pending >= 32 or self._queue.empty():
                     for handle in handles.values():

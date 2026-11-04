@@ -199,10 +199,10 @@ scene: mm
 task: F1 PICO teleoperation
 local_base: mocap_data
 central:
-  dataset_base: /media/xx_100872445/069dd146-6f88-4f29-b859-245b1c012179/pico/mocap_data
-  host: 100.71.200.77
+  dataset_base: /media/user/069dd146-6f88-4f29-b859-245b1c012179/pico/mocap_data
+  host: 192.0.2.33
   port: 22222
-  user: xx_100872445
+  user: user
   identity_file: config/private/transfer_control_ed25519
   known_hosts_file: config/private/transfer_control_known_hosts
   dashboard: true
@@ -225,7 +225,7 @@ F1：
 /home/user/meaxiao/pico/mocap_data/mm/mocap_data
 
 6000d：
-/media/xx_100872445/069dd146-6f88-4f29-b859-245b1c012179/pico/mocap_data/mm/mocap_data
+/media/user/069dd146-6f88-4f29-b859-245b1c012179/pico/mocap_data/mm/mocap_data
 ~~~
 
 只把scene改成pick，两端都会使用各自的pick/mocap_data，mm不受影响。
@@ -310,7 +310,7 @@ F1每15秒发送会话心跳，中央租约为90秒。意外关机或失联且�
 不要在采集中执行重置。若中央仍有任意活跃采集会话，脚本拒绝执行，不会强制中断机器人。
 
 ```bash
-cd /home/xx_100872445/F1/PICO/pico
+cd /home/user/F1/PICO/pico
 # 可选：只看待清理目录、条数、帧数，不做修改
 ./reset_central_dataset.sh --scene mm
 # 一键执行：归档旧数据、清空当前mm、重置全部数据编号
@@ -322,14 +322,14 @@ cd /home/xx_100872445/F1/PICO/pico
 但多场景工作时建议显式指定。它不支持任意路径递归删除，不使用`rm -rf`。
 
 重置后的默认目录仍是：
-`/media/xx_100872445/069dd146-6f88-4f29-b859-245b1c012179/pico/mocap_data/mm/mocap_data`。
+`/media/user/069dd146-6f88-4f29-b859-245b1c012179/pico/mocap_data/mm/mocap_data`。
 
 - 清零中央episode编号、全局frame/index、文件编号和当前溯源索引；第一次新数据入库将为`episode_index=0`，
   `index=0`开始，Parquet/三相机视频文件从`chunk-000/file-000.*`开始。重置后为空目录，首条新数据入库时生成完整LeRobot v3元数据，不伪造空episode。
 - 旧数据、全部revision和索引**移动归档，可恢复**：`<dataset_base>/.reset_backups/mm-reset-时间-唯一后缀/scene/`。
   同一磁盘重命名，不复制多份视频；归档不会立即释放旧数据占用的磁盘空间。
 - 仅归档目标场景的接收缓存/回执以及网页缓存、人工阶段标注，保存在
-  `/home/xx_100872445/F1/PICO/reset_backups/mm-reset-时间-唯一后缀/`，内含`reset-report.json`。
+  `/home/user/F1/PICO/reset_backups/mm-reset-时间-唯一后缀/`，内含`reset-report.json`。
   不改其他子场景、SSH配对、Windows隧道、网页登录token或机器人数据。
 - 接收服务先停止并保持停止，下次机器人正常`./start.sh --allow-motion`会重新启动。
   如果独立网页正在查看该场景，会自动暂停并恢复以展示空数据集；浏览器刷新即可，登录方式不变。
@@ -375,7 +375,7 @@ pending=0、error=null表示该次更新时已入队条目均获确认；还须�
 
 ~~~bash
 systemctl --user is-active pico-transfer-receiver pico-dashboard-central
-tail -f /home/xx_100872445/F1/PICO/transfer_6000d/logs/receiver.log
+tail -f /home/user/F1/PICO/transfer_6000d/logs/receiver.log
 ~~~
 
 最后一台stop后，预期两项均显示inactive；查询返回非零退出码是正常的。
@@ -384,9 +384,9 @@ tail -f /home/xx_100872445/F1/PICO/transfer_6000d/logs/receiver.log
 独立的整库/哈希复查：
 
 ~~~bash
-cd /home/xx_100872445/F1/PICO/pico
+cd /home/user/F1/PICO/pico
 .venv/bin/python scripts/audit_transfer.py
-PYTHONPATH=src .venv/bin/python scripts/check_lerobot_v3.py /media/xx_100872445/069dd146-6f88-4f29-b859-245b1c012179/pico/mocap_data/mm/mocap_data
+PYTHONPATH=src .venv/bin/python scripts/check_lerobot_v3.py /media/user/069dd146-6f88-4f29-b859-245b1c012179/pico/mocap_data/mm/mocap_data
 ~~~
 
 两个命令默认/示例为mm；其他场景要传对应--root或位置参数。完整视频审计较耗时，不放进遥操启动流程。
@@ -434,7 +434,7 @@ D070已完成此前部署；2026-09-18 已向 D070_01、D072 部署 v1.4.3、构
 在6000d执行一次：
 
 ~~~bash
-cd /home/xx_100872445/F1/PICO/pico
+cd /home/user/F1/PICO/pico
 .venv/bin/python scripts/pair_collection_robot.py --robot F1_D072
 ~~~
 
@@ -445,9 +445,9 @@ cd /home/xx_100872445/F1/PICO/pico
 6000d首次安装服务单元后，**不enable常驻自启动**；由机器人会话按需启动：
 
 ~~~bash
-cd /home/xx_100872445/F1/PICO/pico
-mkdir -p /home/xx_100872445/F1/PICO/transfer_6000d/logs
-cp config/pico-transfer-receiver.service config/pico-dashboard-central.service /home/xx_100872445/.config/systemd/user/
+cd /home/user/F1/PICO/pico
+mkdir -p /home/user/F1/PICO/transfer_6000d/logs
+cp config/pico-transfer-receiver.service config/pico-dashboard-central.service /home/user/.config/systemd/user/
 systemctl --user daemon-reload
 # 仅在无人采集的安装/维护阶段执行
 systemctl --user disable --now pico-transfer-receiver pico-dashboard-central
@@ -503,7 +503,7 @@ v1.4.1 对最终双臂指令增加独立 Grip 门控：未启用的一侧保持�
 在 **6000d 终端**执行，后台运行，不需要连接机器人或保持终端打开：
 
 ```bash
-cd /home/xx_100872445/F1/PICO/pico
+cd /home/user/F1/PICO/pico
 ./dashboard_start.sh
 # 查看完毕后关闭独立模式
 ./dashboard_stop.sh
@@ -512,7 +512,7 @@ cd /home/xx_100872445/F1/PICO/pico
 默认读取上一次中央网页选择的数据集；明确指定其他已存盘子集时：
 
 ```bash
-./dashboard_start.sh --root /media/xx_100872445/069dd146-6f88-4f29-b859-245b1c012179/pico/mocap_data/mm/mocap_data
+./dashboard_start.sh --root /media/user/069dd146-6f88-4f29-b859-245b1c012179/pico/mocap_data/mm/mocap_data
 ```
 
 6000d 本机与已配置 SSH 隧道的 Windows Chrome 都访问 **http://127.0.0.1:18976/**，登录密钥不变。Windows仍需内网/VPN能访问6000d，但不需要任何F1开机。
@@ -546,7 +546,7 @@ cd /home/user/meaxiao/pico
 | 位置 | 用途 | 执行内容 |
 | --- | --- | --- |
 | F1_D070，`user@ms-thor` | 遥操和录制 | `./start.sh --allow-motion`；不必启动网页 |
-| 6000d，`xx_100872445@hq` | 自动接收与中央网页分析 | 由F1会话按需启动；查看状态、读取登录密钥 |
+| 6000d，`user@hq` | 自动接收与中央网页分析 | 由F1会话按需启动；查看状态、读取登录密钥 |
 | Windows本机 | Chrome访问、建立到6000d的端口转发 | VS Code「端口」面板，或Windows PowerShell |
 
 ### 1. 确认自动网页已启动
@@ -564,7 +564,7 @@ systemctl --user status pico-dashboard-central --no-pager
 
 ### 2. Windows 一次性安装自动隧道（推荐）
 
-2026-09-18 已由现场确认：独立 SSH 到 `xx_100872445@10.130.153.114:22` 的转发可用；当时 VS Code 转发条目存在但请求超时，具体内部原因未确定。新增 [windows_review.ps1](scripts/windows_review.ps1)，不再依赖 VS Code 的端口恢复。
+2026-09-18 已由现场确认：独立 SSH 到 `user@192.0.2.1:22` 的转发可用；当时 VS Code 转发条目存在但请求超时，具体内部原因未确定。新增 [windows_review.ps1](scripts/windows_review.ps1)，不再依赖 VS Code 的端口恢复。
 
 **以下只在 Windows 本机 PowerShell 执行，不是在6000d的远程终端。** 安装一次后，每次登录 Windows 自动运行，只需在 Chrome 打开 `http://127.0.0.1:18976/`。需要先连上能够访问该内网 IP 的公司网络/VPN，并且6000d网页处于运行状态。
 
@@ -572,7 +572,7 @@ systemctl --user status pico-dashboard-central --no-pager
 
 ```powershell
 # 下载脚本；按提示输入6000d账户密码。也可从VS Code文件浏览器下载同一文件。
-scp xx_100872445@10.130.153.114:/home/xx_100872445/F1/PICO/pico/scripts/windows_review.ps1 "$env:USERPROFILE\Downloads\windows_review.ps1"
+scp user@192.0.2.1:/home/user/F1/PICO/pico/scripts/windows_review.ps1 "$env:USERPROFILE\Downloads\windows_review.ps1"
 
 # 一次性安装：仅本次进程使用Bypass，不修改系统执行策略，不需要管理员。
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$env:USERPROFILE\Downloads\windows_review.ps1" -Mode Install
@@ -634,7 +634,7 @@ http://127.0.0.1:18976/
 在6000d远程终端读取：
 
 ```bash
-cat /home/xx_100872445/F1/PICO/private_review_D070/access.token
+cat /home/user/F1/PICO/private_review_D070/access.token
 ```
 
 将输出粘贴到Windows Chrome的网页登录框。不要把密钥发到聊天、放入URL、截图或共享日志。
@@ -643,7 +643,7 @@ cat /home/xx_100872445/F1/PICO/private_review_D070/access.token
 
 ### 可选：不用VS Code端口面板，改用Windows PowerShell
 
-从Windows开始菜单打开 **PowerShell / Windows Terminal**，不要在 `xx_100872445@hq` 远程终端执行。
+从Windows开始菜单打开 **PowerShell / Windows Terminal**，不要在 `user@hq` 远程终端执行。
 输入你在Windows上实际用来连接6000d的SSH别名，或完整的 `用户名@地址`：
 
 ```powershell
@@ -657,7 +657,7 @@ ssh -N -o ExitOnForwardFailure=yes -L 127.0.0.1:18976:127.0.0.1:18976 $PicoRevie
 
 ### 常见问题与安全边界
 
-- `Could not resolve hostname 6000d`：检查是否误在 `xx_100872445@hq` 执行了隧道命令；Windows上也必须使用真实配置的SSH别名/地址。
+- `Could not resolve hostname 6000d`：检查是否误在 `user@hq` 执行了隧道命令；Windows上也必须使用真实配置的SSH别名/地址。
 - `Address already in use`：命令所在电脑的本地端口被占用，不是网页开放到了公网。优先检查是否已有正确转发，不要终止不明服务。
   旧的8765与新模式无关。若18976被无关程序占用，可在6000d将网页改为 `./dashboard_6000d.sh --port 18977`，
   并将Windows转发两端和浏览器地址一起改为18977；请先确认旧实例归属，不要抢占他人的端口。

@@ -179,7 +179,7 @@ def _parse_joint_limits(root: ET.Element) -> JointLimitsConfig:
 def _parse_network(root: ET.Element) -> NetworkConfig:
     node = root.find("network")
     return NetworkConfig(
-        local_ip=_text(node, "local_ip", "192.168.2.101"),
+        local_ip=_text(node, "local_ip", "192.0.2.13"),
         udp_port=_int(node, "udp_port", 8888),
         ip_config_path=_text(node, "ip_config_path", ""),
     )
@@ -282,7 +282,7 @@ def _parse_joint_limits_yaml(data: Dict) -> JointLimitsConfig:
 def _parse_network_yaml(data: Dict) -> NetworkConfig:
     net = data.get("network", {})
     return NetworkConfig(
-        local_ip=str(net.get("local_ip", "192.168.2.101")),
+        local_ip=str(net.get("local_ip", "192.0.2.13")),
         udp_port=int(net.get("udp_port", 8888)),
         ip_config_path=os.path.expandvars(str(net.get("ip_config_path", ""))),
     )

@@ -49,8 +49,8 @@ def test_configured_demo_home_replaces_legacy_arms_without_changing_other_axes(m
                                  infra_root=ROOT, profile_path=ROOT/'configs/f1-09.json')
     submitted = np.r_[np.zeros(14), 43., 76.]
     home = mapping.check_action(home_target(profile, submitted))
-    assert profile['f710_home']['name'] == '积木demo-V0'
-    assert home[0] == submitted[0] and home[7] == -71.0736083984375
+    assert profile['f710_home']['name'] == '积木demo-V1'
+    assert home[0] == submitted[0] and home[7] == -71.27658081054688
     np.testing.assert_array_equal(home[7:14], [config['f710_home']['joints'][k] for k in ARM_NAMES[7:]])
     np.testing.assert_array_equal(home[:7], submitted[:7])
     np.testing.assert_array_equal(home[14:], submitted[14:])

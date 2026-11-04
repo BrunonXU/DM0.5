@@ -5,11 +5,11 @@ task: F1 PICO teleoperation
 local_base: mocap_data
 central:
   # 6000d最终路径 = <dataset_base>/<scene>/mocap_data
-  dataset_base: /media/xx_100872445/069dd146-6f88-4f29-b859-245b1c012179/pico/mocap_data
+  dataset_base: /media/user/069dd146-6f88-4f29-b859-245b1c012179/pico/mocap_data
   # 私有Tailnet SSH入口；专用密钥只能管理本机器人的采集会话。
-  host: 100.71.200.77
+  host: 192.0.2.33
   port: 22222
-  user: xx_100872445
+  user: user
   identity_file: config/private/transfer_control_ed25519
   known_hosts_file: config/private/transfer_control_known_hosts
   dashboard: true

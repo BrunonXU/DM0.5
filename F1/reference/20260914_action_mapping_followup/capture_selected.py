@@ -8,7 +8,7 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parent
-SSH = ["ssh", "-F", "/dev/null", "-i", "/home/xza_100850113/.ssh/id_ed25519_f1",
+SSH = ["ssh", "-F", "/dev/null", "-i", "/home/user/.ssh/id_ed25519_f1",
        "-o", "IdentitiesOnly=yes", "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=yes",
        "-o", "HostKeyAlias=f1-d070", "-o", "ConnectTimeout=5", "-p", "22022", "user@127.0.0.1"]
 REMOTE = r'''

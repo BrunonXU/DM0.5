@@ -1,4 +1,5 @@
 """Offline boundary and release checks; no SSH or running robot is involved."""
+import ast
 import hashlib
 import importlib.util
 import io
@@ -16,6 +17,25 @@ import pytest
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from deploy import package_shared, release
+
+
+def test_shared_package_contains_local_root_import_dependencies():
+    selected = set(package_shared.selected_files(ROOT))
+    missing = []
+    for path in selected:
+        if path.parent != ROOT or path.suffix != '.py':
+            continue
+        for node in ast.walk(ast.parse(path.read_text())):
+            modules = []
+            if isinstance(node, ast.Import):
+                modules = [alias.name for alias in node.names]
+            elif isinstance(node, ast.ImportFrom) and node.level == 0 and node.module:
+                modules = [node.module]
+            for module in modules:
+                dependency = ROOT / (module.split('.')[0] + '.py')
+                if dependency.is_file() and dependency not in selected:
+                    missing.append(f'{path.name} imports missing {dependency.name}')
+    assert not missing, '\n'.join(sorted(set(missing)))
 
 
 def write(root, name, text='fixture\n'):
@@ -40,7 +60,7 @@ def source(tmp_path):
 
 def test_share_zip_is_standalone_verified_and_repackable(source, tmp_path):
     for name in ('runtime/private.json', 'results/old.zip', 'connect/client_ssh_config',
-                 'unlisted/private.txt', 'configs/robot.json', 'configs/installation.env',
+                 'unlisted/private.txt', 'configs/robot.json', 'configs/installation.env', 'configs/site.json',
                  'configs/access.token', 'configs/.env.local', 'web/.ssh/id_rsa',
                  'scripts/__pycache__/secret.pyc'):
         write(source, name, 'NOT FOR SHARING')

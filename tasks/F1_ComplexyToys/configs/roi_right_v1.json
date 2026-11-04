@@ -1,0 +1,21 @@
+{
+  "schema": "f1_toys_contract_v1",
+  "contract": "f1_upper_16d_v1",
+  "head_resolution": [1280, 720],
+  "head_roi_xyxy_normalized": [0.24, 0.04, 0.96, 1.0],
+  "roi_basis": "User red-box candidate with a small outward margin; historical coverage review required",
+  "image_size": 224,
+  "cameras": ["head", "left_wrist", "right_wrist"],
+  "active_action_indices": [7, 8, 9, 10, 11, 12, 13, 15],
+  "state_dim": 16,
+  "model_action_dim": 32,
+  "fps": 30,
+  "horizon": 50,
+  "max_token_len": 200,
+  "train_image_augmentation": false,
+  "mask_inactive_action_inputs": true,
+  "prompt": "Use the right gripper to pick up the wooden block and insert it into the matching opening of the container.",
+  "prompt_status": "smoke-only task description; formal dataset prompts require episode review",
+  "normalization": "train-only mean/std; constant dimensions use scale 1",
+  "left_output": "inherit controller last valid submitted target; never zero HAL targets"
+}

@@ -66,7 +66,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--endpoint",
-        default="http://10.130.153.114:7892/process_frame",
+        default="http://192.0.2.1:7892/process_frame",
     )
     parser.add_argument("--head", type=Path, required=True)
     parser.add_argument("--left-wrist", type=Path, required=True)

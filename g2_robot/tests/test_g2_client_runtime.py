@@ -1199,7 +1199,7 @@ def test_cli_defaults_shadow_and_safe_test_conflicts_with_powered():
     assert args.mode == "shadow"
     assert args.policy_backend == "dm05"
     assert args.policy_transport == "http-multipart-json"
-    assert args.policy_endpoint == "http://10.130.153.114:7892/process_frame"
+    assert args.policy_endpoint == "http://192.0.2.1:7892/process_frame"
     assert args.servo_output_mode == "split"
     assert args.last_hand_command_json.as_posix() == (
         "logs/runtime/last_hand_command.json"
@@ -1309,7 +1309,7 @@ def test_cli_shared_preview_profile_is_one_10hz_split_profile(mode):
 def test_formal_sync_script_selects_raw_5hz_changed_only_hands():
     project_root = Path(__file__).resolve().parents[1]
     powered = (project_root / "scripts/05_powered_sync.sh").read_text()
-    assert "ws://10.130.153.114:7892/process_frame" in powered
+    assert "ws://192.0.2.1:7892/process_frame" in powered
     assert "--arm-internal-jerk-weight 10" in powered
     assert "--arm-interpolation-profile cubic_spline" in powered
     assert "--arm-micro-motion-profile stationary_minjerk_v1" in powered
@@ -1328,7 +1328,7 @@ def test_formal_rtc_scripts_freeze_validated_network_and_arm_baseline():
     ).read_text()
 
     assert "NEWLORA_RTC_TRANSPORT:-websocket-binary" in powered
-    assert "ws://10.130.153.114:7893/process_frame" in powered
+    assert "ws://192.0.2.1:7893/process_frame" in powered
     assert "arm_interpolation_profile=cubic_spline" in powered
     assert '--arm-internal-jerk-weight 10' in powered
     assert '--arm-interpolation-profile "$arm_interpolation_profile"' in powered

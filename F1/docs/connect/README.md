@@ -1,18 +1,18 @@
 ---
-updated: 2026-09-17
+updated: 2026-11-03
 type: connection_runbook
 robot: F1_D070
 ---
 
 # F1 ↔ 6000D 持久连接
 
-**2026-09-22 新增 [F1-09](F1-09.md)：** Wi-Fi `192.168.31.58`，独立反向入口 `22009` 已部署；免密、自启配置、进程自动恢复和维护网线断开后的连接已验证，Wi-Fi DHCP保留地址已于2026-10-12重新获取；旧接口名绑定修复及自动连接证据见F1-09接入记录，修复后冷启动待验收。
+**2026-11-03 [F1-09](F1-09.md#wired-router-20261103)已设有线优先，Wi-Fi仅备用。** 当前局域网主地址`192.0.2.7`、备用`192.0.2.3`；6000D仍通过本机22009反向入口连接，出站已走有线。`.142`为DHCP租约，地址保留、拔线恢复及重启验收按本机档案继续核对。
 
-**2026-09-21 新增 [3F-JIMU](3F-JIMU.md)：** 积木识别分拣投放 demo，现场 IP `192.168.31.165`，独立入口 `22165`；持久服务已部署，免密登录、自启配置和进程退出后自动恢复已验证。
+**2026-09-21 新增 [3F-JIMU](3F-JIMU.md)：** 积木识别分拣投放 demo，现场 IP `192.0.2.24`，独立入口 `22165`；持久服务已部署，免密登录、自启配置和进程退出后自动恢复已验证。
 
-**多机入口：** 本文下方旧记录属于F1_D070（22022）。新机器人正式称[4F-F1](../robots/4F-F1.md)，使用独立SSH配置`F1/connect/robots/f1-22029/client_ssh_config`和22029端口。6000D直连192.168.31.29本次超时，已有反向隧道可用；不得把两机配置或密钥覆盖到一起。
+**多机入口：** 本文下方旧记录属于F1_D070（22022）。新机器人正式称[4F-F1](../robots/4F-F1.md)，使用独立SSH配置`F1/connect/robots/f1-22029/client_ssh_config`和22029端口。6000D直连192.0.2.25本次超时，已有反向隧道可用；不得把两机配置或密钥覆盖到一起。
 
-本页对应旧 F1 D070（22022）。2026-09-18 新接入 F1（Wi-Fi `192.168.31.29`）使用独立 22029 入口，见 [新 F1 接入记录](f1-22029.md)。
+本页对应旧 F1 D070（22022）。2026-09-18 新接入 F1（Wi-Fi `192.0.2.25`）使用独立 22029 入口，见 [新 F1 接入记录](f1-22029.md)。
 
 2026-09-16已部署并验证：F1使用专用密钥建立反向SSH，systemd用户服务负责断线重连，开机启用；6000D仍用`127.0.0.1:22022`登录F1。不经过个人电脑，不依赖IDE或Tailscale。配置、日志、私钥在F1的`/home/user/Bruno/connect/`。
 
@@ -22,7 +22,7 @@ robot: F1_D070
 
 ```mermaid
 flowchart LR
-  F["F1 systemd用户服务"] -->|"专用密钥主动连接SSH 22"| S["6000D 10.130.153.114"]
+  F["F1 systemd用户服务"] -->|"专用密钥主动连接SSH 22"| S["6000D 192.0.2.1"]
   C["6000D SSH/SCP客户端"] --> L["6000D 127.0.0.1:22022"]
   L <-->|"复用加密隧道"| T["F1 SSH客户端"]
   T <--> R["F1 127.0.0.1:22 sshd"]
@@ -32,14 +32,14 @@ F1先连接6000D；6000D上的登录请求再沿该连接进入F1，因此6000D�
 
 | 用途 | 私钥保存位置 | 公钥授权位置 |
 |---|---|---|
-| F1建立隧道 | F1 `/home/user/Bruno/connect/keys/id_ed25519_6000d_tunnel`，权限600 | 6000D `/home/xza_100850113/.ssh/authorized_keys` |
-| 6000D登录F1 | 6000D `/home/xza_100850113/.ssh/id_ed25519_f1`，沿用原密钥 | F1原有 `~/.ssh/authorized_keys`，本次未修改 |
+| F1建立隧道 | F1 `/home/user/Bruno/connect/keys/id_ed25519_6000d_tunnel`，权限600 | 6000D `/home/user/.ssh/authorized_keys` |
+| 6000D登录F1 | 6000D `/home/user/.ssh/id_ed25519_f1`，沿用原密钥 | F1原有 `~/.ssh/authorized_keys`，本次未修改 |
 
-专用隧道密钥无口令，供后台无人值守；私钥没有取回6000D或写入项目。其指纹为`SHA256:DYWU6/ySwGgD5v3V8t9BIL3ACkrpuM7sW8D7sfnjREs`。
+专用隧道密钥无口令，供后台无人值守；私钥没有取回6000D或写入项目。其指纹为`SHA256:REDACTED_HOST_FINGERPRINT`。
 
 6000D对该密钥设置`restrict,port-forwarding`、`command="/bin/false"`：不允许shell/PTY/agent/X11/user rc；远端监听仅允许`127.0.0.1:22022`。`permitopen="127.0.0.1:22"`同时限制其本地转发目标。它是受限转发身份，不是6000D通用登录密钥。测试端口22023已撤销授权并停止服务；未授权22024转发与shell命令均实测拒绝。
 
-F1固定校验6000D的Ed25519主机公钥，来自6000D本机`/etc/ssh/ssh_host_ed25519_key.pub`，指纹`SHA256:IWw8Npjf0zmEsMWqVbyS8p1QzAXMvikX6M0JbaUoovY`。不是网络扫描后无条件信任；主机换钥应独立核对，不能关闭主机校验。
+F1固定校验6000D的Ed25519主机公钥，来自6000D本机`/etc/ssh/ssh_host_ed25519_key.pub`，指纹`SHA256:REDACTED_HOST_FINGERPRINT`。不是网络扫描后无条件信任；主机换钥应独立核对，不能关闭主机校验。
 
 ## 日常使用
 
@@ -47,7 +47,7 @@ F1固定校验6000D的Ed25519主机公钥，来自6000D本机`/etc/ssh/ssh_host_
 
 ```bash
 ssh -F /dev/null \
-  -i /home/xza_100850113/.ssh/id_ed25519_f1 \
+  -i /home/user/.ssh/id_ed25519_f1 \
   -o IdentitiesOnly=yes -o BatchMode=yes \
   -o StrictHostKeyChecking=yes -o HostKeyAlias=f1-d070 \
   -o ConnectTimeout=5 -p 22022 user@127.0.0.1 hostname
@@ -95,7 +95,7 @@ systemd注册需要两处系统管理链接：`~/.config/systemd/user/f1-6000d-t
 ```bash
 systemctl --user restart f1-6000d-tunnel.service
 tail -n 80 /home/user/Bruno/connect/tunnel.log
-ip route get 10.130.153.114
+ip route get 192.0.2.1
 ```
 
 - `Permission denied (publickey)`：检查专用公钥授权和密钥权限；不是让服务循环输密码。
@@ -112,7 +112,7 @@ ssh -F /dev/null -fNT \
   -o ExitOnForwardFailure=yes \
   -o ServerAliveInterval=30 -o ServerAliveCountMax=3 \
   -R 127.0.0.1:22022:127.0.0.1:22 \
-  xza_100850113@10.130.153.114
+  user@192.0.2.1
 ```
 
 临时方案可能要求6000D密码，不会自动重连。恢复自动方案时先只终止确认属于自己的临时隧道，再`systemctl --user start f1-6000d-tunnel.service`。
@@ -135,10 +135,10 @@ systemctl --user enable --now /home/user/Bruno/connect/systemd/f1-6000d-tunnel.s
 
 ## 网络历史与用途边界
 
-2026-09-14验证：F1的Wi-Fi为`wlP1p1s0 / 192.168.31.125`，到6000D `10.130.153.114`经`192.168.31.1`；6000D直接连接F1私网地址超时，反向隧道可达。2026-09-16部署时仍观察到F1从`192.168.31.125`连接6000D。Wi-Fi地址变化通常不影响F1主动重建隧道，但新网络必须能到6000D。
+2026-09-14验证：F1的Wi-Fi为`wlP1p1s0 / 192.0.2.28`，到6000D `192.0.2.1`经`192.0.2.19`；6000D直接连接F1私网地址超时，反向隧道可达。2026-09-16部署时仍观察到F1从`192.0.2.28`连接6000D。Wi-Fi地址变化通常不影响F1主动重建隧道，但新网络必须能到6000D。
 
 原方案是用户手动`ssh -fNT`：关终端通常不结束后台SSH，但进程退出、网络长断或机器人重启后不会自动恢复。2026-09-16已由上面的systemd服务替代。
 
-历史Tailscale状态：6000D `100.102.55.108`、F1 `100.112.143.61`各自Online，但peer列表未包含对方，SSH尝试超时；具体网络归属、共享或访问策略原因未定。本次未改Tailscale。其控制面协调身份和连接，数据面WireGuard加密，优先直连、必要时中继；参考[控制与数据面](https://tailscale.com/docs/concepts/control-data-planes)和[连接类型](https://tailscale.com/docs/reference/connection-types)。这不是当前SSH的数据路径。
+历史Tailscale状态：6000D `192.0.2.29`、F1 `192.0.2.30`各自Online，但peer列表未包含对方，SSH尝试超时；具体网络归属、共享或访问策略原因未定。本次未改Tailscale。其控制面协调身份和连接，数据面WireGuard加密，优先直连、必要时中继；参考[控制与数据面](https://tailscale.com/docs/concepts/control-data-planes)和[连接类型](https://tailscale.com/docs/reference/connection-types)。这不是当前SSH的数据路径。
 
 本连接用于SSH、明确文件的SCP/rsync与日志读取。模型训练在6000D；[真机replay](../../foam_sort_whole_body/docs/replay_runbook.md)由现场操作者在F1启动。未来F1请求6000D推理服务需另核定服务端口、延迟和超时；本隧道只提供SSH入口，不代表模型服务或机器人动作验收已通过。开发部署约定见[F1 AGENTS](../../AGENTS.md)。

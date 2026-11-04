@@ -27,7 +27,7 @@ related: [VISUAL_AUG_PAIRED_REPORT.md]
 - launcher：`infra/host/run_NewLora_75k_inference.sh`；
 - container：`NewLora-dm05-http-75k`；
 - physical GPU：4；
-- endpoint：`http://10.130.153.114:7892/process_frame`；
+- endpoint：`http://192.0.2.1:7892/process_frame`；
 - checkpoint：`NewLora_g2_armrel_handabs_officialaug_4gpu_75k_v1/checkpoint-75000`；
 - Euler去噪步数：10；
 - 返回合同：`50×34` finite absolute actions；
@@ -111,7 +111,7 @@ paired输入。不要每次无记录地随机增强，而应预生成可复现�
 6000D只负责服务和只读诊断，不远程运行任何Servo/powered动作。G2端由Bruno手动：
 
 ```bash
-cd /home/agi/xza/DM0.5 || exit 1
+cd /home/user/xza/DM0.5 || exit 1
 ./scripts/00_preflight.sh
 ./scripts/01_shadow.sh 3
 ./scripts/04_powered_guarded_smoke.sh 1 normal

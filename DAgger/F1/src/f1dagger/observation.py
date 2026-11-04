@@ -7,6 +7,8 @@ import time
 import numpy as np
 from dagger_core.recording_observation import DeviceTimestamp, TimestampedFrame
 from .contract import ARM_NAMES, FULL_NAMES, CAMERAS, vector
+from .hardware import state_mask, validate_mask
+from .faults import FeedbackUnavailable
 
 CAMERA_IDENTITY = 'ros_callback_sequence_v1'
 
@@ -28,6 +30,7 @@ class Observation:
     camera_identity_source: str | None = None
     camera_drop_counts: tuple | None = None
     camera_discontinuity: bool = False
+    state_valid_mask: tuple | None = None
 
     def __post_init__(self):
         if self.camera_identity_source not in (None, CAMERA_IDENTITY):
@@ -41,7 +44,10 @@ class Observation:
         vector(self.full22, 22, 'full22')
         if tuple(f.camera for f in self.frames) != CAMERAS:
             raise ValueError('ordered three-camera observation required')
-        if len(self.state_timestamps_ns) != 16 or any(t <= 0 or t > self.available_monotonic_ns for t in self.state_timestamps_ns):
+        mask = validate_mask(self.state_valid_mask)
+        if any(not valid and (self.state16[i] != 0 or self.state_timestamps_ns[i] != 0) for i, valid in enumerate(mask)):
+            raise ValueError('Absent hardware must use explicit zero placeholder and no measurement timestamp')
+        if len(self.state_timestamps_ns) != 16 or any((t <= 0 or t > self.available_monotonic_ns) if valid else t != 0 for t, valid in zip(self.state_timestamps_ns, mask)):
             raise ValueError('invalid measured-state timestamps')
         if not 0 <= self.capture_started_monotonic_ns <= self.available_monotonic_ns:
             raise ValueError('invalid acquisition interval')
@@ -63,6 +69,9 @@ class Observation:
             metadata.update(camera_identity_source=self.camera_identity_source,
                 camera_drop_counts=dict(zip(CAMERAS, self.camera_drop_counts)),
                 camera_discontinuity=self.camera_discontinuity)
+        if self.state_valid_mask is not None:
+            metadata.update(state_valid_mask=list(self.state_valid_mask),
+                absent_state_semantics='zero_storage_placeholder_not_measurement')
         return metadata
 
 
@@ -234,6 +243,7 @@ def make_camera_store(base_class, *, max_items=32, max_bytes=64*1024**2, **kwarg
 class RosObservationSource:
     def __init__(self, store, profile, config):
         self.store, self.profile, self.config = store, profile, config
+        self.state_valid_mask = state_mask(config)
         self.stop_event = threading.Event()
         self.sequence = 0
         self.last_stamps = {}
@@ -251,9 +261,12 @@ class RosObservationSource:
                 raise RuntimeError('F1 feedback disconnected: ' + str(self.store.error))
             rows = [dict(self.store.joints.get(name, {})) for name in FULL_NAMES]
             grippers = [dict(self.store.grippers.get(side, {})) for side in ('left', 'right')]
-        for row in rows + grippers:
+        if not self.state_valid_mask[14]:
+            # Ignore cached driver values entirely; never forge a hardware receipt.
+            grippers[0] = dict(position=0., received_at=0.)
+        for row in rows + [r for r, valid in zip(grippers, self.state_valid_mask[14:]) if valid]:
             if not row or not 0 <= now - row['received_at'] <= self.profile['feedback_max_age_s']:
-                raise RuntimeError('missing/stale F1 full-body or gripper feedback')
+                raise FeedbackUnavailable('missing/stale F1 full-body or gripper feedback')
         full = vector([r['position'] for r in rows], 22)
         state = vector(list(full[:14]) + [r['position'] for r in grippers], 16)
         if any(not 0 <= v <= 100 for v in state[14:]):
@@ -323,14 +336,16 @@ class RosObservationSource:
                 for name, row in zip(CAMERAS, rows):
                     stamp = row.get('source_stamp')
                     if not stamp:
-                        raise RuntimeError('camera source timestamp missing: ' + name)
+                        raise CameraUnavailable('camera source timestamp missing: ' + name)
                     value = stamp['sec'] * 1_000_000_000 + stamp['nanosec']
                     if value <= 0 or value < self.last_stamps.get(name, -1):
+                        # Clock identity cannot be repaired by forgetting its
+                        # previous value. Keep the evidence and latch supervision.
                         raise RuntimeError('camera source clock invalid/regressed: ' + name)
                     stamps.append(value)
                 if self.callback_identity:
                     if any(row['callback_sequence'] <= self.frame_ids[name] for name, row in zip(CAMERAS, rows)):
-                        raise RuntimeError('camera callback identity did not advance')
+                        raise CameraUnavailable('camera callback identity did not advance')
                     break
                 if all(value > self.last_stamps.get(name, -1) for name, value in zip(CAMERAS, stamps)):
                     break
@@ -347,8 +362,12 @@ class RosObservationSource:
         from PIL import Image
         frames = []
         for name, row, received_ns, stamp in zip(CAMERAS, rows, received, stamps):
-            with Image.open(BytesIO(row['data'])) as im:
-                width, height = im.size
+            try:
+                with Image.open(BytesIO(row['data'])) as im:
+                    width, height = im.size
+                    im.verify()
+            except (OSError, ValueError) as exc:
+                raise CameraUnavailable('camera frame decode failed: ' + name) from exc
             frame_id = row['callback_sequence'] if self.callback_identity else self.frame_ids[name]+1
             frames.append(TimestampedFrame(name, frame_id, DeviceTimestamp(stamp, 'ns', 'f1_ros_header_unverified'),
                 received_ns, row['data'], row['mime'], width, height))
@@ -364,7 +383,8 @@ class RosObservationSource:
             or (self.sequence > 0 and any(frame.frame_id != self.frame_ids[frame.camera]+1 for frame in frames)))
         obs = Observation(self.sequence, begin, time.monotonic_ns(), tuple(frames), tuple(state), state_times, tuple(full),
             camera_identity_source=CAMERA_IDENTITY if self.callback_identity else None,
-            camera_drop_counts=drop_counts, camera_discontinuity=bool(discontinuity))
+            camera_drop_counts=drop_counts, camera_discontinuity=bool(discontinuity),
+            state_valid_mask=self.state_valid_mask if not all(self.state_valid_mask) else None)
         self.last_capture_started = begin
         self.last_stamps.update(zip(CAMERAS, stamps))
         self.last_received.update(zip(CAMERAS, received))

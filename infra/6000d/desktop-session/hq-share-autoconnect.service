@@ -1,0 +1,8 @@
+[Unit]
+Description=Reconnect personal company share using existing unlocked credentials
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/hq-share-autoconnect
+TimeoutStartSec=25
+UMask=0077

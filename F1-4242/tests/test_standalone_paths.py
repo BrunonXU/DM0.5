@@ -325,3 +325,30 @@ def test_online_logs_use_final_cli_runtime_and_preserve_explicit_shared_lock(unp
     assert not old_runtime.exists()
     assert report['runtime'] == report['env']['F1_CONSOLE_RUNTIME'] == str(runtime)
     assert report['control_lock'] == report['env']['PICO_UPPER_CONTROL_LOCK'] == str(lock)
+
+
+def test_unresolved_setup_does_not_source_partial_environment(unpacked_source, tmp_path):
+    marker = tmp_path / 'must-not-load-ros'
+    setup = tmp_path / 'ros.bash'
+    setup.write_text(f'touch "{marker}"\n')
+    env = dict(os.environ, F1_ROS_SETUP=str(setup), F1_ROBOT_SETUP='',
+               F1_AGV_SETUP=str(setup), F1_INSTALLATION_ENV=str(tmp_path / 'absent.env'))
+    result = subprocess.run(['bash', str(unpacked_source / 'run.sh')], env=env,
+                            capture_output=True, text=True, timeout=10)
+    assert result.returncode == 2
+    assert 'setup-report.json' in result.stderr
+    assert not marker.exists()
+
+
+def test_unresolved_dds_does_not_fall_back_to_legacy_config(unpacked_source, tmp_path):
+    marker = tmp_path / 'must-not-load-ros'
+    setup = tmp_path / 'ros.bash'
+    setup.write_text(f'touch "{marker}"\n')
+    env = dict(os.environ, F1_ROS_SETUP=str(setup), F1_ROBOT_SETUP=str(setup),
+               F1_AGV_SETUP=str(setup), F1_CYCLONEDDS_URI='',
+               F1_INSTALLATION_ENV=str(tmp_path / 'absent.env'))
+    result = subprocess.run(['bash', str(unpacked_source / 'run.sh')], env=env,
+                            capture_output=True, text=True, timeout=10)
+    assert result.returncode == 2
+    assert 'DDS' in result.stderr
+    assert not marker.exists()

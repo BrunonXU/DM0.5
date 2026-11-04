@@ -33,33 +33,27 @@
   "f710_home": {
     "schema": "f1_upper_home_v1",
     "robot_id": "F1-09",
-    "name": "积木demo-V0",
+    "name": "积木demo-V1",
     "units": "degree",
-    "source_preset_id": "81bda04dd141438e8a1ae2a6df2d3fdb",
-    "source_preset_sha256": "292d589f83bb668bc7224aea5cc8e8c116c5dd16f004a9cae995b8e00fea0370",
+    "source_preset_id": "4b88bb213b0f45cc9300238b68605ac5",
+    "source_preset_sha256": "ba59066e165526dbe0adcf9be1b68641325d19325e9d6aa173fe58bc5087da07",
     "scope": "right_arm_only_preserve_left_grippers_head_body",
     "joints": {
-      "arm_l_j1": 69.80035400390625,
-      "arm_l_j2": -90.89399719238281,
-      "arm_l_j3": -89.36174011230469,
-      "arm_l_j4": -85.25431060791016,
-      "arm_l_j5": 0.2968093752861023,
-      "arm_l_j6": -0.23917236924171448,
-      "arm_l_j7": -0.05494537204504013,
-      "arm_r_j1": -71.0736083984375,
-      "arm_r_j2": -88.95988464355469,
-      "arm_r_j3": 91.31665802001953,
-      "arm_r_j4": -85.14677429199219,
-      "arm_r_j5": -0.9444946050643921,
-      "arm_r_j6": 0.47875672578811646,
-      "arm_r_j7": -0.9856315851211548
+      "arm_l_j1": 69.97728729248047,
+      "arm_l_j2": -91.56895446777344,
+      "arm_l_j3": -89.15641784667969,
+      "arm_l_j4": -85.88263702392578,
+      "arm_l_j5": 0.3136047422885895,
+      "arm_l_j6": -0.1630302369594574,
+      "arm_l_j7": -0.2892906069755554,
+      "arm_r_j1": -71.27658081054688,
+      "arm_r_j2": -88.8252182006836,
+      "arm_r_j3": 91.53736877441406,
+      "arm_r_j4": -85.19598388671875,
+      "arm_r_j5": -1.1886039972305298,
+      "arm_r_j6": 0.7593132257461548,
+      "arm_r_j7": -1.4709045886993408
     },
-    "clearance": {
-      "schema": "f1_right_clearance_v2",
-      "frame": "base_link",
-      "lift_m": 0.06,
-      "right_m": 0.1,
-      "max_rotation_deg": 10.0
-    }
+    "route": "direct"
   }
 }

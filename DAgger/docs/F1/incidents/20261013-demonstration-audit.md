@@ -48,7 +48,7 @@
 | 新条原件355,662,155字节 | F1 `/home/user/Bruno/data/hil_data/demonstration/f1_hil_20261013T060830Z_4015997f` |
 | 进程诊断（不是另一条训练录制） | F1 `/home/user/Bruno/DAgger-runtime/f1-09/sessions/f1_hil_20261013T060518Z_154cda04` |
 | 三路视频、曲线、时间线及manifest | F1 `/home/user/Bruno/F1/F1-4242/runtime/data_previews/793143fa86f50e7d86491cda` |
-| 服务器编码缓存（原始来源文件+派生视频等，共358,601,653字节） | `/home/xza_100850113/projects/F1-4242/results/session-preview-server/cache/f05aaf3fccb479db818829a2235c4662bd4715e3b236e2d0980f8f2f4787df52` |
+| 服务器编码缓存（原始来源文件+派生视频等，共358,601,653字节） | `/home/user/projects/F1-4242/results/session-preview-server/cache/f05aaf3fccb479db818829a2235c4662bd4715e3b236e2d0980f8f2f4787df52` |
 | 旧LeRobot候选195,557,413字节 | F1 `/home/user/Bruno/data/datasets/f710_20261010_candidate`，1834帧/74段，未审核 |
 | 旧示教原件1,644,351,173字节 | F1 `/home/user/Bruno/DAgger-runtime/f1-09/raw/f1_hil_20261010T074359Z_977e0872` |
 

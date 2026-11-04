@@ -2,7 +2,7 @@
   "schema_version": 1,
   "robot": "F1-09",
   "source": {
-    "local_path": "/home/xza_100850113/projects/F1/reference/20260923_f1_09_infra/files/home/user/workspace/start_all.sh",
+    "local_path": "/home/user/projects/F1/reference/20260923_f1_09_infra/files/home/user/workspace/start_all.sh",
     "robot_path": "/home/user/workspace/start_all.sh",
     "sha256": "64254d3005cfed067625cb4df39fe68472737cd1fdf3504b14263399521b1c75"
   },

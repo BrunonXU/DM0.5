@@ -29,6 +29,8 @@ def load_config(path, *, infra_root=None, profile_path=None):
         # A session snapshot, bound by config SHA; never edit the infra profile.
         profile['f710_home'] = json.loads(json.dumps(config['f710_home']))
         home_target(profile, [0.] * 16)
+    from .hardware import state_mask
+    state_mask(config)  # Fail closed on unsupported hardware capability declarations.
     policy = config['policy']
     if type(policy['chunk_steps']) is not int or not 1 <= policy['chunk_steps'] <= 1000:
         raise ValueError('chunk_steps must be in 1..1000')

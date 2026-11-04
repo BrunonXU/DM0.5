@@ -6,7 +6,7 @@ if [[ "$#" -ne 1 ]]; then
   exit 2
 fi
 
-PROJECT_ROOT="/home/xza_100850113/projects/DM0.5"
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 CONTAINER_ID="$1"
 RUN_ROOT="${PROJECT_ROOT}/server/runs/formal_50k"
 

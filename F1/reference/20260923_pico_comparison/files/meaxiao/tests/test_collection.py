@@ -24,7 +24,7 @@ class CollectionTest(unittest.TestCase):
         self.base = self.home / "storage/pico/datasets"
         self.base.mkdir(parents=True)
         self.cfg = dict(scene="mm", task="synthetic", local_base="mocap_data", central=dict(
-            dataset_base=str(self.base), host="100.71.200.77", port=22222, user="xx_100872445",
+            dataset_base=str(self.base), host="192.0.2.33", port=22222, user="user",
             identity_file="config/private/key", known_hosts_file="config/private/hosts", dashboard=True))
         self.write_config()
 

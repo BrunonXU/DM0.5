@@ -9,15 +9,24 @@ from f1dagger.export import select_segments,export_dataset,_resample_groups
 from test_f1_policy import observation
 
 
-def raw_episode(tmp_path,sources=None,*,fps=10,synthetic=False,control_offset_ns=-1,epochs=None,interventions=None,timestamps_ns=None):
+def raw_episode(tmp_path,sources=None,*,fps=10,synthetic=False,control_offset_ns=-1,epochs=None,interventions=None,timestamps_ns=None,events=(),masked=False):
     run=tmp_path/'raw';run.mkdir()
     sources=sources or ['human_arm','human_hold','home','human_hand','human_hold']
-    recorder=F1Recorder(run/'journal',episode_id='test-f1',task_prompt='pick',
-        binding={'execution_mode':'powered','recording_mode':'hil-record','synthetic':synthetic})
+    binding={'execution_mode':'powered','recording_mode':'hil-record','synthetic':synthetic}
+    mask=[True]*14+[False,True]
+    if masked:
+        from f1dagger.hardware import LEFT_GRIPPER_REMOVED
+        binding.update(hardware_capabilities=LEFT_GRIPPER_REMOVED,state_valid_mask=mask)
+    recorder=F1Recorder(run/'journal',episode_id='test-f1',task_prompt='pick',binding=binding)
     sink=make_sink(run/'payload','hil-record')
     for i,source in enumerate(sources):
         offset = round(i*1_000_000_000/fps) if timestamps_ns is None else timestamps_ns[i]
         obs=observation(i,1_000_000_000+offset)
+        if masked:
+            from dataclasses import replace
+            obs=replace(obs,state16=obs.state16[:14]+(0.,obs.state16[15]),
+                        state_timestamps_ns=obs.state_timestamps_ns[:14]+(0,obs.state_timestamps_ns[15]),
+                        state_valid_mask=tuple(mask))
         sink.submit(obs)
         epoch = 2 if epochs is None else epochs[i]
         intervention = 1 if interventions is None else interventions[i]
@@ -28,12 +37,14 @@ def raw_episode(tmp_path,sources=None,*,fps=10,synthetic=False,control_offset_ns
             grip_stamp=t-1
         pubs=[{'topic_key':'joint_command','monotonic_ns':t-1,'publisher_gid':'aa'*16}]
         if i == 0:
-            pubs += [{'topic_key':key,'monotonic_ns':grip_stamp,'publisher_gid':'aa'*16} for key in ('left_gripper_command','right_gripper_command')]
+            pubs += [{'topic_key':key,'monotonic_ns':grip_stamp,'publisher_gid':'aa'*16} for key in (('right_gripper_command',) if masked else ('left_gripper_command','right_gripper_command'))]
         recorder.control(now=t,state='hil_latched',intervention=intervention,epoch=epoch,
             selected=command,submitted=command,source=source,measured=np.zeros(16),sequence=i+1,
-            publication_complete=True,execution_mode='powered',action_source_timestamps_ns=[t-1]*14+[grip_stamp]*2,
-            publications=pubs)
+            publication_complete=True,execution_mode='powered',action_source_timestamps_ns=[t-1]*14+[None if masked else grip_stamp,grip_stamp],
+            publications=pubs, **(dict(state_valid_mask=mask,action_valid_mask=mask) if masked else {}))
     assert sink.close()
+    for event in events:
+        recorder.record_event(**event)
     assert recorder.close()
     report=audit(run);assert report['valid'],report
     review=tmp_path/'review.json'
@@ -242,3 +253,46 @@ def test_resampling_rechecks_freshness_and_control_at_grid_time(expired):
     assert rejected==1
     assert groups[0][0]['reference_monotonic_ns']==origin+66_666_667
     assert len(groups[0])==2
+
+
+def test_schema4_export_preserves_missing_hardware_mask_and_valid_right_labels(tmp_path):
+    run, review = raw_episode(tmp_path, masked=True, synthetic=True)
+    segments, report, manifest = select_segments(run, json.loads(review.read_text()), fps=10)
+    assert manifest['schema_version'] == 4
+    assert [len(segment) for segment in segments] == [2, 2]
+    assert all(row['state_valid_mask'][14] is False and row['action_valid_mask'][15] is True
+               for segment in segments for row in segment)
+    result = export_dataset(run, review, tmp_path/'masked-export', None, fps=10, writer_class=FakeWriter)
+    assert result['hardware_mask_exported'] and not result['training_ready']
+    assert result['training_input_contract'] == 'right_only_mask_required_v1'
+
+
+@pytest.mark.skipif(not os.environ.get('F1_TEST_LEROBOT_ROOT'), reason='requires pinned LeRobot environment')
+def test_real_lerobot_schema4_mask_roundtrip(tmp_path):
+    run, review = raw_episode(tmp_path, masked=True, synthetic=True)
+    result = export_dataset(run, review, tmp_path/'masked-real', os.environ['F1_TEST_LEROBOT_ROOT'], fps=10)
+    assert result['reader_roundtrip_verified'] and result['hardware_mask_exported']
+    assert not result['training_ready']  # synthetic fixture cannot be approved
+
+
+def test_local_terminal_durable_prefix_exists_before_physical_episode_close(tmp_path):
+    import time
+    import hashlib
+    run = tmp_path/'prefix'; run.mkdir()
+    recorder = F1Recorder(run/'journal', episode_id='prefix', task_prompt='placement',
+        binding=dict(execution_mode='powered', recording_boundary='f1_rlt_local_v2'))
+    try:
+        assert recorder.record_event('rlt_local_closed', monotonic_ns=123,
+            objective='approach_place_release_v1', status='success', segment_id='prefix:p')
+        receipt_path = run/'local_segments/placement-1.json'
+        for _ in range(100):
+            if receipt_path.exists(): break
+            time.sleep(.01)
+        receipt = json.loads(receipt_path.read_text())
+        assert not (run/'journal').exists()
+        for stream, identity in receipt['streams'].items():
+            data = (run/'journal.partial'/(stream+'.jsonl')).read_bytes()[:identity['bytes']]
+            assert hashlib.sha256(data).hexdigest() == identity['sha256']
+        assert recorder.record_event('post_local_vla', monotonic_ns=124)
+    finally:
+        recorder.close()

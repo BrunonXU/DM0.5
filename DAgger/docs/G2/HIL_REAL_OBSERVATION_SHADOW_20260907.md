@@ -12,7 +12,7 @@
 
 已有人工 Powered F710 可复用当前候选 Windows 7906 tunnel/sender：结束 39 与其他 Robot owner 后运行 `bash scripts/12_g2_powered_f710.sh --port 7906`，按 ENTER。
 本轮在 G2 对该 Python 入口运行 `--preflight-files-only --accept-dm05-hand-fit --port 7906` 成功，未导入/初始化 GDK；没有自动启动真机。
-真实控制遥测在 `/home/agi/xza/DM0.5/logs/telemetry/powered/g2_powered_f710_*.jsonl`。
+真实控制遥测在 `/home/user/xza/DM0.5/logs/telemetry/powered/g2_powered_f710_*.jsonl`。
 **12 是已有人工遥操，START 不切 policy；不可称为 Powered HIL 或 DAgger。** 用户所需 policy 自动执行与人工接管同 owner 的 Powered HIL 仍待实现，不应再以 Shadow 或旧 F710 冒充该阶段完成。
 
 ## 当前结论
@@ -41,8 +41,8 @@ RT、退出互锁、迟到 response 的现场覆盖仍未补齐，不视为通�
 - 本地：`logs/offline/20260907_real_hil_shadow/pytest.txt`，**143 passed / 6 skipped**。跳过项缺少 Ruckig/Pinocchio。
 - G2：`logs/offline/20260907_real_hil_shadow/g2_validation.txt`，39 入口 imports/preflight 成功，真实采集适配与网络 Shadow 单元测试 **9 passed**；均未初始化 GDK。
 - 新测试覆盖单消息原始时间戳、重复帧 ID、全零手值保留与拒绝输入、阻塞推理/HIL 中持续采集及旧 response 拒收、采集错误退出。
-- G2 访问 `http://10.130.153.114:7892/process_frame` 返回 **426**，只证明 WebSocket listener 可达，不证明模型推理成功。
-- shell 入口显式传 `/home/agi/app` 给 `env.sh`，避免运行参数被误作 SDK 路径。
+- G2 访问 `http://192.0.2.1:7892/process_frame` 返回 **426**，只证明 WebSocket listener 可达，不证明模型推理成功。
+- shell 入口显式传 `/home/user/app` 给 `env.sh`，避免运行参数被误作 SDK 路径。
 
 ## 用户启动
 
@@ -50,7 +50,7 @@ RT、退出互锁、迟到 response 的现场覆盖仍未补齐，不视为通�
 G2 终端执行：
 
 ```bash
-cd /home/agi/xza/G2Teleop
+cd /home/user/xza/G2Teleop
 bash scripts/39_g2_real_observation_hil_shadow.sh
 ```
 
@@ -58,7 +58,7 @@ bash scripts/39_g2_real_observation_hil_shadow.sh
 关注 `real_policy_result` 的 `accepted=true`；可按 START 进入 HIL，稍后再按 START 退出，验证真实观测下暂停/恢复。
 本阶段 RB、RT、Home 都不会驱动机器人，不能据此判断遥操故障。
 
-输出：`/home/agi/xza/G2Teleop/logs/real_hil_shadow/run_*/`，内含 `runtime.jsonl`、`journal/`、`payload/`。
+输出：`/home/user/xza/G2Teleop/logs/real_hil_shadow/run_*/`，内含 `runtime.jsonl`、`journal/`、`payload/`。
 异常可能留下 `.partial`，不能当完整数据。运行结束后直接读取 G2 日志，不要求用户复制。
 
 ## 随后工作

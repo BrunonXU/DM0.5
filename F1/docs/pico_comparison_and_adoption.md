@@ -14,18 +14,18 @@ status: reviewed_upper_teleop_deployed_data_unchanged
 
 | 来源 | 本轮证据与定位 |
 |---|---|
-| `/home/xx_100872445/F1/PICO/pico` | 完整独立工程，VERSION / pyproject / 包版本均为 1.4.4；包括遥操、录制、入库、审阅，不只是控制脚本微调 |
-| `/home/xx_100872445/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf` | 可读的 lxl 原始遥操、UDP→ROS、初始化和 MCAP 录制源码 |
+| `/home/user/F1/PICO/pico` | 完整独立工程，VERSION / pyproject / 包版本均为 1.4.4；包括遥操、录制、入库、审阅，不只是控制脚本微调 |
+| `/home/user/F1/本体平台/0804_fix_urdf/origin/lxl_0804_fix_urdf` | 可读的 lxl 原始遥操、UDP→ROS、初始化和 MCAP 录制源码 |
 | 同一归档的 `make/lxl/start_all_pico1.sh` | 对照用户给出的 `/home/user/lxl/start_all_pico1.sh`；归档不等于 F1-09 当前文件 |
-| `/home/xx_100872445/F1/PICO/deployment` | 旧 lxl 的修复/诊断脚本，不是独立新版运行时依赖 |
-| `/home/xx_100872445/F1/reset` | 全身基准采集、校验和复位工程；有明确实物姿态不符记录，目前不能当通用已验收复位功能 |
-| `/home/xx_100872445/F1/cyb_safe_control_real` | 旧模型/保护组件；新版 Pico 已有 `vendor/f1_safety`，应跟随实际使用版本，避免混装两个版本 |
-| `/home/xx_100872445/F1/openpi` | 本轮列目录为空，不能据目录名推断已有训练平台 |
-| `/home/xx_100872445/F1/ref_doc` | 有工作规划资料；规划不作为已实现能力 |
+| `/home/user/F1/PICO/deployment` | 旧 lxl 的修复/诊断脚本，不是独立新版运行时依赖 |
+| `/home/user/F1/reset` | 全身基准采集、校验和复位工程；有明确实物姿态不符记录，目前不能当通用已验收复位功能 |
+| `/home/user/F1/cyb_safe_control_real` | 旧模型/保护组件；新版 Pico 已有 `vendor/f1_safety`，应跟随实际使用版本，避免混装两个版本 |
+| `/home/user/F1/openpi` | 本轮列目录为空，不能据目录名推断已有训练平台 |
+| `/home/user/F1/ref_doc` | 有工作规划资料；规划不作为已实现能力 |
 
 **16:23权限状态更新：** xx主目录当前ACL已明确拒绝xza，本账号已不能进入其F1目录；下文“F1可读”描述的是本日早先审阅时点。已复制到自有目录的来源快照仍保留。[权限与修改范围核查](xx_access_audit_20260923.md)。
 
-**检索范围限制：** 用户随后要求继续查 `xx_100872445` 账户，但系统返回 home 根目录 `Permission denied`；已知 `F1/` 可列出。`PICO/transfer_6000d` 和部分审阅/数据运行目录也不可读。没有改变权限、切换账户或读取私钥。可访问文档未提供其他已确认的平台路径，因此这里是 **F1 可读工程审计，不是整个账户检索完成**。账户之外的数据处理平台仍待可访问目录清单补全。
+**检索范围限制：** 用户随后要求继续查 `user` 账户，但系统返回 home 根目录 `Permission denied`；已知 `F1/` 可列出。`PICO/transfer_6000d` 和部分审阅/数据运行目录也不可读。没有改变权限、切换账户或读取私钥。可访问文档未提供其他已确认的平台路径，因此这里是 **F1 可读工程审计，不是整个账户检索完成**。账户之外的数据处理平台仍待可访问目录清单补全。
 
 源码包不是 Git 仓库，无法取得 commit；快照保存实际文件内容、来源路径、时间、大小和 SHA256。见 [快照说明](../reference/20260923_pico_comparison/README.md)、[来源清单](../reference/20260923_pico_comparison/manifest.json)。
 
@@ -73,7 +73,7 @@ F1-09 的适配清单：
 
 本次适配只开放双臂14轴与夹爪：保留独立Grip、慢速精调、轨迹/碰撞/断流处理；不创建身体/底盘控制发布者，不提供X+Y复位，不启动录制/传输，不切换模式。身体/头部反馈仅用于模型检查。内部臂UDP改为`127.0.0.1:42428`，避免占用旧8888；PCService沿用现有安装，仅检查且本次未启动。当前实机mode=3、imp=1，不套其他机器人mode=1。
 
-现场在`/home/user/Bruno/F1/pico_upper/current`使用`./check.sh`、`./start.sh`、`./stop.sh`；动作由用户在本机发起。Pico App仍连`192.168.31.58`。脚本按进程归属管理并与4242共享控制锁，原lxl保留。完整按键、夹爪Trigger方向和限制见[现场说明](../pico_upper/README.md)。
+现场在`/home/user/Bruno/F1/pico_upper/current`使用`./check.sh`、`./start.sh`、`./stop.sh`；动作由用户在本机发起。Pico App仍连`192.0.2.3`。脚本按进程归属管理并与4242共享控制锁，原lxl保留。完整按键、夹爪Trigger方向和限制见[现场说明](../pico_upper/README.md)。
 
 ## 4. 哪些 infra 值得提取
 

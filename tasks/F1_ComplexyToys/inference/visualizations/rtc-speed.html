@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>让同一条轨迹更早走完 · F1倍速与RTC</title>
+<style>
+:root{--ink:#242522;--muted:#686960;--paper:#fdfdfc;--line:#e4e2db;--accent:#b45e43;--green:#397868;--blue:#547487;--sand:#f4f1e9}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink)}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans CJK SC","Microsoft YaHei",sans-serif;font-size:22px;line-height:1.85}
+main.lesson{max-width:1240px;margin:auto;padding:40px 38px 90px}.eyebrow{font-size:13px;letter-spacing:.15em;color:var(--accent);font-weight:700}
+h1{font-size:42px;line-height:1.35;margin:16px 0 24px;letter-spacing:-.035em}h2{font-size:28px;line-height:1.5;margin:0 0 18px}h3{font-size:21px;margin:18px 0 8px}p{margin:14px 0}.lead{max-width:950px;font-size:22px;color:#51534d}
+.lesson p,.lesson li{font-size:20px}.caption,.lesson .caption{font-size:15px;line-height:1.7;color:var(--muted)}.tag{display:inline-block;padding:3px 10px;background:var(--sand);font-size:13px;border-radius:4px;color:#75614d}
+nav{display:flex;gap:28px;padding:20px 0 28px;border-bottom:1px solid var(--line);font-size:16px}a{color:var(--accent);text-underline-offset:5px}section{margin-top:54px;scroll-margin-top:22px}
+.chapter{font-size:14px;color:var(--accent);margin-bottom:8px;font-weight:700}.panel{padding:24px;background:#f7f6f2;border:1px solid var(--line);border-radius:8px}
+.row{display:flex;align-items:center;gap:18px;flex-wrap:wrap}.control-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:28px;align-items:center}.field label{display:block;font-size:17px;font-weight:650;margin-bottom:8px}
+input[type=range]{accent-color:var(--accent);width:100%;cursor:pointer}select,input[type=number]{font:inherit;font-size:17px;padding:8px 10px;border:1px solid #cfcbbf;background:#fff;border-radius:5px;color:var(--ink)}
+select{width:100%}button{font:inherit;font-size:16px;cursor:pointer;padding:9px 17px;border:1px solid #cfcbbf;border-radius:5px;background:#fff;color:var(--ink)}button:hover{border-color:var(--accent)}button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid #95b4a9;outline-offset:3px}.presets{display:flex;gap:8px}.presets button{padding:5px 12px;font-size:14px}
+.big{font-size:30px;font-weight:750;color:var(--accent);font-variant-numeric:tabular-nums}.numbers{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin:20px 0}.number{border-left:2px solid var(--line);padding-left:17px}.number b{font-size:27px;display:block;line-height:1.6}.number span{font-size:14px;color:var(--muted)}
+svg{display:block;width:100%;height:auto;overflow:visible}svg text{font-family:inherit;font-size:15px;fill:var(--ink)}.scene{margin:22px 0 8px;background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.scrub{display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center}.mono,code,pre{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-variant-numeric:tabular-nums}.formula{padding:19px 23px;border-left:3px solid var(--accent);background:#f7f4ee;margin:24px 0;font-size:20px}.formula small{display:block;color:var(--muted);font-family:inherit;font-size:15px;margin-top:5px}
+table{width:100%;border-collapse:collapse;font-size:17px;line-height:1.75}th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line)}th{font-weight:650;background:#f3f1eb}tbody tr:last-child td{border-bottom:0}.table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:6px;margin:22px 0}
+.good{color:var(--green);font-weight:700}.warn{color:#946815;font-weight:700}.bad{color:#aa4235;font-weight:700}.split{display:grid;grid-template-columns:1fr 1fr;gap:30px}
+.flowline{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:22px 0;font-size:16px}.flowline span{background:#f1f3ef;padding:10px 16px;border-radius:5px}.flowline i{color:#8c8d84;font-style:normal}
+.steps{counter-reset:step;list-style:none;padding:0}.steps>li{counter-increment:step;padding:0 0 25px 48px;position:relative}.steps>li:before{content:counter(step);position:absolute;left:0;top:3px;border:1px solid #d2c4b5;border-radius:50%;width:28px;height:28px;line-height:28px;text-align:center;color:var(--accent);font-size:16px}.steps strong{display:block}
+details{border-top:1px solid var(--line);padding:18px 0}summary{cursor:pointer;font-weight:650;font-size:19px}pre{background:#f4f3ee;padding:20px;overflow:auto;font-size:15px;line-height:1.8;white-space:pre-wrap}
+.foot{border-top:1px solid var(--line);padding-top:24px;margin-top:44px}.foot p{font-size:15px}.small-input{width:105px}.end-note{color:var(--muted);font-size:16px}.timeline{margin:24px 0 10px}
+@media(min-width:1600px){main.lesson{max-width:1320px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<main class="lesson">
+<div class="eyebrow">F1 / EXECUTION SPEED / RTC</div>
+<h1>让同一条轨迹更早走完</h1>
+<p class="lead">1.2倍速：原来1秒后才到的目标，约0.833秒就到。模型仍按30Hz描述动作，执行层用更快的“轨迹时钟”读取它。</p>
+<p class="lead">先看相同路径的运动对照，再看时间如何换算、RTC如何跟着调整。这里演示的是候选执行方法，尚未部署到F1。</p>
+<span class="tag">教学示意 · 不是真机仿真或验收结果 · 不连接机器人</span>
+<nav aria-label="本页章节"><a href="#motion">看运动</a><a href="#clock">看两只时钟</a><a href="#rtc">看RTC预算</a><a href="#duration">算任务用时</a><a href="#implementation">怎样实现</a></nav>
+
+<section id="motion">
+<div class="chapter">01 / 同一路径，两个到达时间</div>
+<h2>按播放，观察两个夹爪谁先到</h2>
+<p>这段示意动作原本6秒：4.2秒搬运，1.8秒对准与插入。两条线使用完全相同的参考路径；倍速只改变沿路径前进的时间。</p>
+<div class="panel">
+<div class="control-grid">
+ <div class="field"><label for="speed">执行倍率 <output id="speed-value" class="big">1.20×</output></label>
+ <input id="speed" type="range" min="1" max="1.5" step=".05" value="1.2">
+ <div class="presets"><button data-speed="1">1.0×</button><button data-speed="1.1">1.1×</button><button data-speed="1.2">1.2×</button><button data-speed="1.5">1.5×</button></div></div>
+ <div class="field"><label for="mode">哪些阶段加速？</label><select id="mode"><option value="all">整段均匀倍速 · 理解原理</option><option value="travel">只加速70%的搬运 · 接触阶段保持1.0×</option></select><p class="caption">更改倍率或模式会重置演示，不模拟机器人中途立即换挡。</p></div>
+</div>
+<div class="numbers"><div class="number"><span>原速参考用时</span><b>6.00秒</b></div><div class="number"><span>倍速参考用时</span><b id="demo-duration">5.00秒</b></div><div class="number"><span>这段示意少用</span><b id="demo-saved">1.00秒</b></div></div>
+<div class="scene">
+<svg id="motion-svg" viewBox="0 0 1100 340" role="img" aria-label="原速与倍速夹爪沿相同路径移动对照">
+<defs><pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M36 0H0V36" fill="none" stroke="#f1f0eb"/></pattern>
+<g id="gripper-shape"><path d="M-16-30H16M-10-30V-10L-16-3M10-30V-10L16-3" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><rect x="-9" y="-4" width="18" height="18" rx="2" fill="#c5935c"/></g></defs>
+<rect width="1100" height="340" fill="url(#grid)"/>
+<text x="25" y="49" style="fill:#547487;font-weight:700">原速 1.00×</text><text id="normal-stage" x="25" y="76">搬运</text>
+<text x="25" y="211" style="fill:#b45e43;font-weight:700" id="fast-label">倍速 1.20×</text><text id="fast-stage" x="25" y="238">搬运</text>
+<rect x="840" y="40" width="180" height="95" rx="6" fill="#f3eadf"/><rect x="840" y="202" width="180" height="95" rx="6" fill="#f3eadf"/>
+<text x="860" y="59" style="font-size:12px;fill:#806846">对准 / 插入</text><text x="860" y="221" style="font-size:12px;fill:#806846">对准 / 插入</text>
+<path id="path-normal" fill="none" stroke="#d6dfdf" stroke-width="3"/><path id="path-fast" fill="none" stroke="#e7cbbf" stroke-width="3"/>
+<g id="dots-normal" fill="#a8b8bd"></g><g id="dots-fast" fill="#cf9f89"></g>
+<g transform="translate(950 110)"><path d="M-19-5V18H19V-5" stroke="#77766d" stroke-width="5" fill="none"/></g>
+<g transform="translate(950 272)"><path d="M-19-5V18H19V-5" stroke="#77766d" stroke-width="5" fill="none"/></g>
+<g id="gripper-normal" style="color:#547487"><use href="#gripper-shape"/></g>
+<g id="gripper-fast" style="color:#b45e43"><use href="#gripper-shape"/></g>
+<text id="normal-progress" x="175" y="149" style="font-size:13px;fill:#686960"></text>
+<text id="fast-progress" x="175" y="311" style="font-size:13px;fill:#686960"></text>
+</svg>
+</div>
+<div class="scrub"><div class="row"><button id="play" class="primary" aria-pressed="false">播放对照</button><button id="reset">重置</button></div><input id="wall" type="range" min="0" max="6" step=".01" value="0" aria-label="现实经过时间"><output id="wall-value" class="mono">0.00秒</output></div>
+<p class="caption">标记点仅用于看清路径。动画忽略驱动跟踪误差和动态约束；阶段模式的时间按理想分段计算，真机还需平滑变速过渡。示意段跨越多个模型chunk，不表示一次生成6秒动作。</p>
+</div>
+</section>
+
+<section id="clock">
+<div class="chapter">02 / 模型时间 τ，现实时间 t</div>
+<h2>不是把角度乘1.2，而是更早读到后面的目标</h2>
+<p>假设某关节原来在1秒内从20°匀速走到30°。1.2倍速后终点仍是30°，只是约0.833秒到达。不会把30°变成36°。</p>
+<div class="formula mono">τ(t) = r × t &nbsp; → &nbsp; q执行(t) = q原轨迹(τ(t))
+<small>固定倍率r时：第k个模型间隔的到达时间 tₖ = k / (30 × r)。控制循环仍按原有墙钟运行。</small></div>
+<div class="table-scroll"><table><thead><tr><th>模型间隔 k</th><th>原参考角度</th><th>模型时间 τ</th><th id="time-heading">1.20×时现实到达时间 t</th></tr></thead><tbody id="waypoint-table"></tbody></table></div>
+<p class="caption">本表抽稀展示0到30共31个采样位置，即30个间隔。50个模型输出点有49个点间间隔；F1还包含从执行锚点到第0个输出点的一个间隔，完整采样时需要计入。匀速关节只是算术例子，真实启停需要平滑。</p>
+<div class="split">
+<div><h3>两级控制循环怎样配合？</h3><p>约50Hz更新目标时，读取单调时钟、计算相位τ，再对相邻模型点插值；约250Hz输出层继续做动态约束和发布。两个循环保持各自的真实时间节奏。</p></div>
+<div><h3>为什么多推理几次不等于倍速？</h3><p>缩短S只是更常生成新计划。如果轨迹相位仍每秒只前进1秒，动作时间轴没有变快。</p></div>
+</div>
+<p>这仍是闭环执行：下一次推理继续使用新的相机图像与实测state。倍速处理的是当次计划的未来轨迹，不是把整条示教拿来快放。</p>
+</section>
+
+<section id="rtc">
+<div class="chapter">03 / 倍速也会更快消耗RTC缓冲</div>
+<h2>同样14步，时间预算变短了</h2>
+<p>已验证过的F1配置是30Hz、H50、D14/S16。若按1.2倍速消费模型点，D14覆盖的时间从467ms变成389ms。模型计算并没有因此自动变快。</p>
+<div class="panel">
+<div class="control-grid"><div class="field"><label for="latency">完整截止耗时（用于教学预算） <output id="latency-value">280ms</output></label><input id="latency" type="range" min="100" max="550" step="1" value="280">
+<div class="presets"><button data-latency="280">示意280ms</button><button data-latency="367">历史尾部367ms</button><button data-latency="450">假设450ms</button></div></div>
+<p class="caption">完整截止耗时包括请求前后调度，不等于最新222ms请求中位数。367ms来自历史一轮的截止耗时，不能代表未来最大值。</p></div>
+<div class="table-scroll"><table><thead><tr><th>比较方案</th><th>D / S</th><th>前缀时间预算</th><th>重规划周期</th><th>扣除耗时后余量</th></tr></thead><tbody id="rtc-table"></tbody></table></div>
+<svg id="budget-svg" class="timeline" viewBox="0 0 1100 160" role="img" aria-label="推理耗时与硬前缀时间预算比较"></svg>
+<p class="caption">浅色条是承诺时间窗口，深色细条是推理与调度耗时；细条越过右侧竖线，就超过本次预算。</p>
+<p id="rtc-explanation"></p>
+<p class="caption">“保持墙钟预算”按D=ceil(14r)、S=ceil(16r)分别向上取整，只是教学候选。当前实现还要求D≤S&lt;H−D；更大D/S会增加解码窗口，需要重新测量真实耗时。绿灯只表示本次算术预算为正，不代表部署通过。</p>
+</div>
+<p>从头以固定倍率启动最简单。中途改倍率则必须保留已经承诺的动作及其真实到达时刻，在承诺区间之后平滑换挡；不能收到新结果就从索引0重播，也不能把旧计划的时间戳全部乘新倍率。</p>
+</section>
+
+<section id="duration">
+<div class="chapter">04 / 从60秒任务算到几秒</div>
+<h2>RTC先消除等待，倍速再压缩运动时间</h2>
+<div class="panel">
+<div class="row"><label for="sync-time">同步完成用时 <input class="small-input" id="sync-time" type="number" min="1" max="600" step="1" value="60"> 秒</label><label for="sync-wait">每段全部阻塞等待 <input class="small-input" id="sync-wait" type="number" min="0" max="2000" step="10" value="250"> ms</label></div>
+<p class="caption">按同步每次执行20/30≈0.667秒动作计算。等待包括取新观测、推理与调度；假设同一路径、相同动作数量、没有失败重试，没有额外固定等待。首次启动、最后收敛和变速过渡未计入。</p>
+<div class="numbers"><div class="number"><span>同步：动作＋等待</span><b id="task-sync">60.0秒</b></div><div class="number"><span>RTC：原动作节奏</span><b id="task-rtc">43.6秒</b></div><div class="number"><span id="task-speed-label">RTC＋1.20×</span><b id="task-fast">36.4秒</b></div></div>
+<svg id="task-svg" viewBox="0 0 1100 185" role="img" aria-label="同步、RTC与倍速的任务用时条形对照"></svg>
+<p class="mono" id="task-formula"></p>
+<p id="task-condition" role="status"></p>
+<p class="caption">保持动作节奏时，模型再省20ms主要增加RTC余量；不会把每次请求的20ms都累计成任务节省。这里所有秒数都是条件推算，不是F1完成时间实测。</p>
+</div>
+</section>
+
+<section id="implementation">
+<div class="chapter">05 / 真正写进推理框架时</div>
+<h2>先实现固定1.1倍速，再做分阶段速度</h2>
+<div class="flowline"><span>模型30Hz预测</span><i>→</i><span>既有EEF解码与IK</span><i>→</i><span>带时间的关节轨迹</span><i>→</i><span>执行相位 τ(t)</span><i>→</i><span>现有输出与跟踪</span></div>
+<ol class="steps">
+<li><strong>分开两只时钟，保留原模型合同。</strong>新增独立的execution_scale / 执行相位。模型仍报告30Hz、H50，所有观测与日志继续记录真实墙钟。当前协议会拒绝把frequency_hz直接改成36。</li>
+<li><strong>按相位采样，不缩放目标角度。</strong>固定1.1×从bootstrap开始；同一会话的计划接续使用连续相位和明确的计划原点。约250Hz输出循环、反馈新鲜度与watchdog继续按真实时间工作。</li>
+<li><strong>RTC按真实执行日历保留承诺。</strong>把旧计划在新请求各采样时刻的绝对动作作为前缀，再按新观测锚点重表达。已经承诺的实际输出曲线与时间不能被重采样覆盖；未来后缀才采用新生成结果。</li>
+<li><strong>检查真实跟踪，不只检查参考曲线。</strong>固定r时速度需求乘r、加速度乘r²、jerk乘r³。若输出限额已经吃满，时间轴跑快也可能只是目标跑远了；要比较selected→submitted→measured的滞后。</li>
+<li><strong>再做平滑过渡和分阶段倍速。</strong>搬运段试1.1×/1.2×，接触与夹爪时机先保持原速。阶段识别与切换也要验证。G2的C1/C2连续性经验用于减少突变，不保证自动缩短任务时间。</li>
+</ol>
+<div class="numbers"><div class="number"><span>固定倍率：速度需求</span><b id="v-scale">1.20×</b></div><div class="number"><span>固定倍率：加速度需求</span><b id="a-scale">1.44×</b></div><div class="number"><span>固定倍率：jerk需求</span><b id="j-scale">1.73×</b></div></div>
+<details><summary>为什么不能让倍率瞬间从1.0跳到1.2？</summary>
+<p>变速时轨迹相位是积分：τ(t)=∫r(u)du。原轨迹对τ的导数记作q′、q″、q‴，则：</p>
+<pre>速度：q̇ = r q′
+加速度：q̈ = r² q″ + ṙ q′
+jerk：q⃛ = r³ q‴ + 3rṙ q″ + r̈ q′</pre>
+<p>只要倍率正在变化，就会多出ṙ和r̈项。工程上应做连续过渡，并检查整条过渡轨迹的动态约束，而不是直接切换倍率。动画的分阶段计时忽略这些过渡时间。</p>
+</details>
+<details><summary>用一小段伪代码看固定倍率采样</summary>
+<pre># 仅解释核心采样，不是可以直接部署的控制代码
+model_hz = 30
+execution_scale = 1.2
+# q[0]在此表示执行锚点，其后才是模型输出点
+
+wall_elapsed = monotonic_now - plan_wall_origin
+model_phase = execution_scale * wall_elapsed
+index_float = model_hz * model_phase
+k = floor(index_float)
+u = index_float - k
+q_reference = interpolate(q[k], q[k + 1], u)
+
+# 实际系统还要处理：有效窗口、RTC承诺、观测身份、
+# 新计划原点、输出动态约束、夹爪时机和过期计划丢弃。
+# 中途变速时应累计相位，不能用新倍率重算全部历史。</pre>
+</details>
+<details><summary>为什么不会“保留了路径，就一定保持准确率”？</summary><p>相同空间参考路径不等于相同实际运动。执行加快会改变惯性、接触过程、夹爪可用闭合时间和新观测中的状态分布。当前F1已有Ruckig及低通，不能默认再加一层平滑就能跟上。首轮应先离线检查，再完整负载shadow，最后现场验证到位、夹持与插入。</p></details>
+<p class="end-note">此页交付的是动画与实现设计。没有修改机器人执行倍率、运动保护、模型权重或现场入口。</p>
+</section>
+<footer class="foot">
+<p>依据：<a href="/?doc=training-recipe" target="_blank" rel="noopener">F1模型时间合同</a>；本任务2026-10-20 RTC真机计时与执行代码核对；<a href="https://arxiv.org/html/2506.07339v2" target="_blank" rel="noopener">RTC原论文</a>。路径、单关节角度和6秒动画均为教学构造。</p>
+<p>真实完成时间仍需要同场景、同起止定义的对照。本页的固定倍率方案尚未实现或部署。</p>
+</footer>
+</main>
+<script>
+'use strict';
+const $=id=>document.getElementById(id), NS='http://www.w3.org/2000/svg';
+const state={r:1.2,mode:'all',t:0,playing:false,last:null};
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const ease=u=>u*u*u*(10+u*(-15+6*u));
+function phase(t,r,mode){return clamp(mode==='all'?r*t:(t<=4.2/r?r*t:4.2+t-4.2/r),0,6)}
+function duration(r,mode){return mode==='all'?6/r:4.2/r+1.8}
+function point(tau,base){if(tau<=4.2){let u=ease(clamp(tau/4.2,0,1));return {x:190+660*u,y:base-48*Math.sin(Math.PI*u)}}return {x:850+100*ease(clamp((tau-4.2)/1.8,0,1)),y:base}}
+function svgNode(name,attrs={},text){const n=document.createElementNS(NS,name);Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,v));if(text!==undefined)n.textContent=text;return n}
+function makePaths(){for(const [name,base] of [['normal',110],['fast',272]]){let d='';for(let i=0;i<=120;i++){const p=point(i/20,base);d+=(i?'L':'M')+p.x.toFixed(2)+' '+p.y.toFixed(2)+' '}$('path-'+name).setAttribute('d',d);for(let i=0;i<=20;i++){const p=point(i*.3,base);$('dots-'+name).appendChild(svgNode('circle',{cx:p.x,cy:p.y,r:2.5}))}}}
+function updateMotion(){const fast=phase(state.t,state.r,state.mode),normal=clamp(state.t,0,6);for(const [name,tau,base] of [['normal',normal,110],['fast',fast,272]]){const p=point(tau,base);$('gripper-'+name).setAttribute('transform',`translate(${p.x} ${p.y})`);$(name+'-stage').textContent=tau>=6?'已完成':tau<4.2?'搬运':'对准 / 插入';$(name+'-progress').textContent=`轨迹相位 τ = ${tau.toFixed(2)}秒 · 名义时间进度 ${(tau/6*100).toFixed(0)}%`}$('wall').value=state.t;$('wall-value').textContent=state.t.toFixed(2)+'秒';$('wall').setAttribute('aria-valuetext',state.t.toFixed(2)+'秒');$('play').textContent=state.playing?'暂停':state.t>=6?'重新播放':'播放对照';$('play').setAttribute('aria-pressed',String(state.playing))}
+function drawBudget(rows,latency){const svg=$('budget-svg');svg.replaceChildren();const x0=230,w=770,max=650;rows.forEach((row,i)=>{const y=18+i*45;svg.appendChild(svgNode('text',{x:8,y:y+15},row.short));svg.appendChild(svgNode('rect',{x:x0,y,width:w*row.budget/max,height:23,rx:3,fill:row.color,opacity:.22}));svg.appendChild(svgNode('rect',{x:x0,y:y+8,width:w*latency/max,height:7,rx:2,fill:latency>=row.budget?'#ad493d':'#555f59'}));const x=x0+w*row.budget/max;svg.appendChild(svgNode('line',{x1:x,x2:x,y1:y-3,y2:y+27,stroke:row.color,'stroke-width':2}));svg.appendChild(svgNode('text',{x:x+8,y:y+16,'font-size':12},Math.round(row.budget)+'ms'))})}
+function updateRTC(){const r=state.r,L=Number($('latency').value),d=Math.ceil(14*r-1e-9),s=Math.ceil(16*r-1e-9);$('latency-value').textContent=L+'ms';
+ const rows=[{name:'原速基线',short:'原速 D14/S16',d:14,s:16,f:30,color:'#547487'},{name:`${r.toFixed(2)}×，D/S不变`,short:'倍速，保留步数',d:14,s:16,f:30*r,color:'#b45e43'},{name:`${r.toFixed(2)}×，保持墙钟预算`,short:'倍速，重算步数',d,s,f:30*r,color:'#397868'}];
+ rows.forEach(x=>x.budget=x.d/x.f*1000);$('rtc-table').replaceChildren();
+ for(const row of rows){let margin=row.budget-L,cls=margin<=0?'bad':margin<50?'warn':'good',tr=document.createElement('tr');tr.innerHTML=`<td>${row.name}</td><td>${row.d} / ${row.s}</td><td>${row.budget.toFixed(1)}ms</td><td>${(row.s/row.f*1000).toFixed(1)}ms</td><td class="${cls}">${margin>0?'+':''}${margin.toFixed(1)}ms${margin<=0?' · 无余量':''}</td>`;$('rtc-table').appendChild(tr)}
+ const legal=d<=s&&s<50-d;$('rtc-explanation').textContent=`当前倍率${r.toFixed(2)}×：保持原时间预算的示例为D${d}/S${s}，满足性检查 ${d} ≤ ${s} < ${50-d}：${legal?'通过':'不通过'}。${state.mode==='travel'?'此表按加速搬运段计算；接触阶段及换挡需要单独的执行日历。':''}`;
+ const covered=L<Math.min(rows[0].budget,rows[2].budget);$('task-condition').className=covered?'caption':'bad';$('task-condition').textContent=covered?'用时推算的前提：推理始终被RTC覆盖，没有截止超时暂停。':'当前耗时设定已超出原速或重算后RTC预算；上述无暂停任务时间条件不成立，数字仅保留作理想算式展示。';
+ drawBudget(rows,L)}
+function validNumber(id,fallback,min,max){const raw=$(id).value,n=Number(raw);return raw.trim()===''||!Number.isFinite(n)?fallback:clamp(n,min,max)}
+function taskValues(){const sync=validNumber('sync-time',60,1,600),wait=validNumber('sync-wait',250,0,2000)/1000,c=20/30,rtc=sync*c/(c+wait),fraction=state.mode==='all'?1:.7;return {sync,rtc,fast:rtc*(1-fraction+fraction/state.r),fraction}}
+function updateTask(){const v=taskValues();$('task-sync').textContent=v.sync.toFixed(1)+'秒';$('task-rtc').textContent=v.rtc.toFixed(1)+'秒';$('task-fast').textContent=v.fast.toFixed(1)+'秒';$('task-speed-label').textContent=`RTC＋${state.r.toFixed(2)}×${state.mode==='travel'?'搬运':''}`;$('task-formula').textContent=state.mode==='all'?`${v.rtc.toFixed(2)} ÷ ${state.r.toFixed(2)} ≈ ${v.fast.toFixed(2)}秒`:`${v.rtc.toFixed(2)} × (30% + 70% ÷ ${state.r.toFixed(2)}) ≈ ${v.fast.toFixed(2)}秒`;
+ const svg=$('task-svg');svg.replaceChildren();const x0=235,w=710;[['同步',v.sync,'#9b9e96'],['RTC 原速',v.rtc,'#547487'],['RTC 倍速',v.fast,'#b45e43']].forEach(([name,t,color],i)=>{let y=18+53*i;svg.appendChild(svgNode('text',{x:12,y:y+21},name));svg.appendChild(svgNode('rect',{x:x0,y,width:w*t/v.sync,height:31,rx:3,fill:color}));svg.appendChild(svgNode('text',{x:x0+w*t/v.sync+14,y:y+22},t.toFixed(1)+'秒'))})}
+function update(){const r=state.r;$('speed-value').textContent=r.toFixed(2)+'×';$('speed').setAttribute('aria-valuetext',r.toFixed(2)+'倍');$('fast-label').textContent='倍速 '+r.toFixed(2)+'×';$('demo-duration').textContent=duration(r,state.mode).toFixed(2)+'秒';$('demo-saved').textContent=(6-duration(r,state.mode)).toFixed(2)+'秒';$('time-heading').textContent=r.toFixed(2)+'×时现实到达时间 t';$('waypoint-table').replaceChildren();[0,6,12,18,24,30].forEach(k=>{let tr=document.createElement('tr');tr.innerHTML=`<td>${k}</td><td>${20+k/3}°</td><td>${(k/30).toFixed(3)}秒</td><td>${(k/(30*r)).toFixed(3)}秒</td>`;$('waypoint-table').appendChild(tr)});$('v-scale').textContent=r.toFixed(2)+'×';$('a-scale').textContent=(r*r).toFixed(2)+'×';$('j-scale').textContent=(r**3).toFixed(2)+'×';updateMotion();updateRTC();updateTask()}
+function reset(){state.playing=false;state.last=null;state.t=0;updateMotion()}
+$('speed').addEventListener('input',()=>{reset();state.r=Number($('speed').value);update()});
+$('mode').addEventListener('change',()=>{reset();state.mode=$('mode').value;update()});
+document.querySelectorAll('[data-speed]').forEach(b=>b.addEventListener('click',()=>{$('speed').value=b.dataset.speed;$('speed').dispatchEvent(new Event('input'))}));
+document.querySelectorAll('[data-latency]').forEach(b=>b.addEventListener('click',()=>{$('latency').value=b.dataset.latency;updateRTC()}));
+$('latency').addEventListener('input',updateRTC);['sync-time','sync-wait'].forEach(id=>$(id).addEventListener('input',updateTask));
+$('wall').addEventListener('input',()=>{state.playing=false;state.last=null;state.t=Number($('wall').value);updateMotion()});
+$('reset').addEventListener('click',reset);$('play').addEventListener('click',()=>{if(state.t>=6)state.t=0;state.playing=!state.playing;state.last=null;updateMotion()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){state.playing=false;state.last=null;updateMotion()}});
+function tick(now){if(state.playing){if(state.last!==null)state.t=Math.min(6,state.t+Math.min((now-state.last)/1000,.1));state.last=now;if(state.t>=6){state.playing=false;state.last=null}updateMotion()}requestAnimationFrame(tick)}
+makePaths();update();requestAnimationFrame(tick);
+// Read-only numerical helpers for browser acceptance; no robot or network calls.
+window.speedLesson={phase,duration,point,taskValues,snapshot:()=>({r:state.r,mode:state.mode,t:state.t,playing:state.playing,phase:phase(state.t,state.r,state.mode),duration:duration(state.r,state.mode),task:taskValues()})};
+</script>
+</body>
+</html>

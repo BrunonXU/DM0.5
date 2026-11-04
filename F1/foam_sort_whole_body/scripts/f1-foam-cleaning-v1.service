@@ -3,6 +3,6 @@ Description=F1 foam cleaning v1 candidate dataset
 
 [Service]
 Type=oneshot
-ExecStart=/bin/bash /home/xza_100850113/projects/F1/foam_sort_whole_body/scripts/run_cleaning_v1.sh assemble
+ExecStart=/bin/bash /home/user/projects/F1/foam_sort_whole_body/scripts/run_cleaning_v1.sh assemble
 Nice=10
 TimeoutStartSec=infinity

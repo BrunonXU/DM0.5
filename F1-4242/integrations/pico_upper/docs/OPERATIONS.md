@@ -27,7 +27,7 @@ mkdir -p /home/user/Bruno/F1-infra/runtime/pico_upper/logs
 
 这是供应商已有服务的启动脚本；它不启动我们的遥操或录制。确认服务运行后再执行本包`start.sh`。
 
-Pico App 连接机器人实际局域网 IP（原 F1-09 为 **192.168.31.58**），选 Head + Controller 并 Send。内部臂桥使用 `127.0.0.1:42428`，**不要把内部 IP 改成局域网地址**。仅检查并复用已经运行的 PCService（63901/60061）；脚本不启动/停止它。
+Pico App 连接机器人实际局域网 IP（原 F1-09 为 **192.0.2.3**），选 Head + Controller 并 Send。内部臂桥使用 `127.0.0.1:42428`，**不要把内部 IP 改成局域网地址**。仅检查并复用已经运行的 PCService（63901/60061）；脚本不启动/停止它。
 
 等待日志出现 `UPPER_TELEOP_READY` 后接管。启动终端保持前台运行；Ctrl+C 或另一个 F1 终端执行：
 

@@ -32,7 +32,7 @@ GDK console有重复手关节“Param ... not found”日志；SDK返回0不能�
 
 ## 存储实际位置
 
-代码仍在/home/agi/xza/DAgger（系统overlay盘）。该目录data、logs是符号链接：
+代码仍在/home/user/xza/DAgger（系统overlay盘）。该目录data、logs是符号链接：
 
 - /data/logs/xza/DAgger/data/raw/powered_hil/<run>/journal：四路JSONL/manifest。
 - 同级payload：三路原生JPEG/PNG图像序列、frames.jsonl、manifest；目前不是编码后的MP4。

@@ -56,9 +56,9 @@ def cleanup_published_job(cache,job):
     if root.exists():shutil.rmtree(root)
     receipt.update(cache_removed=True,cleaned_unix=time.time());save_receipt(path,receipt)
 
-def finish_cache(cache,job,files):
+def finish_cache(cache,job,files,timing=None):
     receipt=dict(id=job['id'],source_sha256=job['source_sha256'],episode_id=job['episode_id'],renderer=VERSION,
-                 published=True,published_unix=time.time(),files=files,cache_removed=False)
+                 published=True,published_unix=time.time(),files=files,cache_removed=False,timing=timing or {})
     save_receipt(receipt_path(cache,job),receipt)
     cleanup_published_job(cache,job)
 
@@ -82,7 +82,7 @@ def retry_publications(client,cache):
         try:
             value=json.loads(pending.read_text());job=value['job']
             if cache_job_root(cache,job)!=root.resolve():raise ValueError('pending cache identity mismatch')
-            if client.published(job):finish_cache(cache,job,value['files'])
+            if client.published(job):finish_cache(cache,job,value['files'],value.get('timing'))
         except (ValueError,KeyError) as exc:print('publication check pending:',root.name,str(exc),flush=True)
 
 
@@ -103,8 +103,9 @@ class Client:
         origin=urlsplit(self.origin)
         if origin.scheme not in ('http','https') or not origin.hostname or origin.username or origin.password or origin.path or origin.query or origin.fragment:raise ValueError('invalid request origin')
         self.host=origin.netloc
+        self.pause_s=0.;self.download_bytes=0;self.upload_bytes=0
         self.opener=build_opener(ProxyHandler({}),NoRedirect(),HTTPCookieProcessor(http.cookiejar.CookieJar()))
-        self.post('/api/login',{'token':Path(config['access_token_file']).read_text().strip()})
+        self.post('/api/login',{})
     def published(self,job):
         eid=job.get('episode_id','')
         if not re.fullmatch('[a-f0-9]{24}',eid):raise ValueError('invalid episode identity')
@@ -130,24 +131,32 @@ class Client:
             try:return self.op(op,job,**kw)
             except ValueError as exc:
                 if 'transfer_paused_active_session' not in str(exc):raise
+                started=time.monotonic()
                 self.op('progress',job,status='returning' if op in ('upload','publish_preview') else 'transferring');time.sleep(2)
+                self.pause_s+=time.monotonic()-started
+    def block_size(self,job,direction):
+        value=job.get('transfer',{}).get(direction+'_block_bytes',131072)
+        if type(value) is not int or not 1<=value<=1024*1024:raise ValueError('invalid negotiated block size')
+        return value
     def download(self,job,name,path):
         path.parent.mkdir(parents=True,exist_ok=True)
         offset=path.stat().st_size if path.exists() else 0
         with path.open('ab') as f:
             while True:
-                r=self.transfer('source',job,name=name,offset=offset,count=131072)
+                r=self.transfer('source',job,name=name,offset=offset,count=self.block_size(job,'source'))
                 data=base64.b64decode(r['data'],validate=True)
-                if offset>r['size']:raise ValueError('cached source too large')
-                f.write(data);offset+=len(data)
+                if r.get('offset')!=offset or len(data)>self.block_size(job,'source') or offset+len(data)>r['size']:raise ValueError('invalid source range response')
+                f.write(data);offset+=len(data);self.download_bytes+=len(data)
                 if offset==r['size']:break
                 if not data:raise ValueError('source truncated')
     def upload(self,job,path):
         offset=0;size=path.stat().st_size
-        while offset<size:
-            with path.open('rb') as f:f.seek(offset);data=f.read(131072)
-            offset=self.transfer('upload',job,name=path.name,offset=offset,data=base64.b64encode(data).decode())['offset']
-            if not 0<offset<=size:raise ValueError('invalid resume offset')
+        with path.open('rb') as f:
+            while offset<size:
+                f.seek(offset);data=f.read(self.block_size(job,'upload'))
+                offset=self.transfer('upload',job,name=path.name,offset=offset,data=base64.b64encode(data).decode())['offset']
+                self.upload_bytes+=len(data)
+                if not 0<offset<=size:raise ValueError('invalid resume offset')
 
 
 def render(root,output,source_sha):
@@ -232,6 +241,15 @@ def render(root,output,source_sha):
 def process(client,job,cache):
     if job.get('kind')!='session_preview' or job.get('renderer')!=VERSION:raise ValueError('wrong job contract')
     root=cache_job_root(cache,job);phase=['transferring'];stop=threading.Event();errors=[]
+    started=time.monotonic();phase_started=started
+    initial=(client.pause_s,client.download_bytes,client.upload_bytes)
+    timing=dict(queue_age_s=max(0,time.time()-job.get('created_unix',time.time())))
+    def stage(name):
+        nonlocal phase_started
+        now=time.monotonic();timing[phase[0]+'_s']=round(now-phase_started,3)
+        phase[0]=name;phase_started=now
+        print(json.dumps(dict(episode=job['episode_id'],phase=name,timing=timing)),flush=True)
+    print(json.dumps(dict(episode=job['episode_id'],phase=phase[0],timing=timing)),flush=True)
     def heartbeat():
         while not stop.wait(20):
             try:client.op('progress',job,status=phase[0])
@@ -250,18 +268,20 @@ def process(client,job,cache):
         for camera in CAMERAS:
             name=camera+'.pack';client.download(job,'payload/'+name,root/'payload'/name)
             if sha(root/'payload'/name)!=pm['pack_files'][camera]['sha256']:raise ValueError('image pack mismatch')
-        phase[0]='rendering';client.op('progress',job,status=phase[0]);out=root/'render';meta=render(root,out,job['source_sha256'])
+        stage('rendering');client.op('progress',job,status=phase[0]);out=root/'render';meta=render(root,out,job['source_sha256'])
         if errors:raise errors[0]
-        phase[0]='returning';client.op('progress',job,status=phase[0])
+        stage('returning');client.op('progress',job,status=phase[0])
         for name in meta:client.upload(job,out/name)
         binding={k:job[k] for k in ('id','source_sha256','source_signature','episode_id')}
-        save_receipt(root/'publication-pending.json',dict(job=binding,files=meta))
+        save_receipt(root/'publication-pending.json',dict(job=binding,files=meta,timing=timing))
         published=client.transfer('publish_preview',job,files=meta)
         if published.get('ready') is not True:raise ValueError('preview publication not confirmed; cache retained')
-        print(json.dumps(dict(ready=job['episode_id'],files=meta)),flush=True)
+        stage('ready')
+        timing.update(total_s=round(time.monotonic()-started,3),paused_s=round(client.pause_s-initial[0],3),download_bytes=client.download_bytes-initial[1],upload_bytes=client.upload_bytes-initial[2])
+        print(json.dumps(dict(ready=job['episode_id'],files=meta,timing=timing)),flush=True)
     finally:stop.set();thread.join(2)
     # Cleanup failure must not change the already-published robot job to failed.
-    try:finish_cache(cache,job,meta)
+    try:finish_cache(cache,job,meta,timing)
     except (OSError,ValueError) as exc:print('published; cache cleanup pending:',job['id'],str(exc),flush=True)
 
 

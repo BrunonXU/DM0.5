@@ -24,6 +24,7 @@ from dagger_core.f710_mapping import F710Mapper
 from dagger_core.gamepad_windows import GamepadNotFoundError, WindowsF710Reader
 from dagger_core.async_transport import AsyncLatestIntentTransport
 from dagger_core.protocol import IntentPacket
+from dagger_core.input_recovery import recovery_token, sampled_recovery_packet, without_recovery_token
 from dagger_core.sender_guidance import operator_guidance, transport_guidance
 from datetime import datetime
 
@@ -119,13 +120,19 @@ def operator_status_key(intent: object, ack: object) -> tuple[object, ...]:
         intent.deadman,
         None if ack is None else ack.receiver_state,
         None if ack is None else ack.accepted,
-        None if ack is None else ack.reason,
+        None if ack is None else without_recovery_token(ack.reason),
         intent.warning,
         getattr(intent, "speed_scale", 1.0),
         getattr(intent, "home_reset", False),
         getattr(intent, "hil_toggle_id", 0),
         getattr(intent, "hil_button_pressed", False),
     )
+
+
+def timing_summary(values):
+    if not values:
+        return 'n/a'
+    return f'n={len(values)} p50={np.percentile(values,50):.1f} p99={np.percentile(values,99):.1f} max={max(values):.1f}'
 
 
 def make_packet(session_id: str, sequence: int, intent: object) -> IntentPacket:
@@ -146,6 +153,13 @@ def make_packet(session_id: str, sequence: int, intent: object) -> IntentPacket:
         home_reset=intent.home_reset,
         hil_toggle_id=intent.hil_toggle_id,
         hil_button_pressed=intent.hil_button_pressed,
+        episode_end_id=getattr(intent, "episode_end_id", None),
+        episode_end_pressed=getattr(intent, "episode_end_pressed", None),
+        operator_protocol=getattr(intent, "operator_protocol", None),
+        home_end_id=getattr(intent, "home_end_id", None),
+        local_result=getattr(intent, "local_result", None),
+        policy_switch_id=getattr(intent, "policy_switch_id", None),
+        policy_switch_pressed=getattr(intent, "policy_switch_pressed", None),
     )
 
 
@@ -235,6 +249,7 @@ def main() -> int:
                     last_toggle = None
                     announce(f"新发送会话 session={session_id} generation={generation}；旧回执已清空。")
 
+                token_before_sample = recovery_token(transport_state.last_ack)
                 sample = reader.snapshot()
                 if not sample.connected:
                     # Publish an explicit disabled state once, then let the G2
@@ -254,6 +269,7 @@ def main() -> int:
 
                 intent = mapper.map(sample)
                 packet = make_packet(session_id, sequence, intent)
+                packet = sampled_recovery_packet(packet, token_before_sample, sample, mapper.neutral_threshold)
                 if transport.publish(generation, packet):
                     sequence += 1
                 ack = transport_state.last_ack
@@ -302,6 +318,8 @@ def main() -> int:
                     )
                     announce(
                         f"TIMING sample_ms[{sample_text}] ack_rtt_ms[{rtt_text}] "
+                        f"publish_to_worker_ms[{timing_summary(state.publish_to_worker_ms)}] "
+                        f"socket_write_ms[{timing_summary(state.socket_write_ms)}] "
                         f"sent={state.sent_packets} acked={state.acked_packets} "
                         f"latest_overwrites={state.dropped_latest_packets} "
                         f"reconnects={state.reconnects} generation={generation} session={session_id} "

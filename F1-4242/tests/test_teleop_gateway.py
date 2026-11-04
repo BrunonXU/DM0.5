@@ -64,8 +64,8 @@ def test_stale_state_cannot_confirm(service):
     with pytest.raises(ValueError):s.command('confirm','owner',folder.name,'n'*48)
 
 def test_legacy_config_never_executes_code(tmp_path):
-    p=tmp_path/'config.py';p.write_text("raise RuntimeError('do not execute')\nlocal_ip='192.168.31.58'\ntarget_left=[1]*7\nreset_left=[1,2,3]\n")
-    assert legacy_config(p)=={'local_ip':'192.168.31.58','reset_left':[1,2,3]}
+    p=tmp_path/'config.py';p.write_text("raise RuntimeError('do not execute')\nlocal_ip='192.0.2.3'\ntarget_left=[1]*7\nreset_left=[1,2,3]\n")
+    assert legacy_config(p)=={'local_ip':'192.0.2.3','reset_left':[1,2,3]}
 
 def test_http_auth_csrf_lease_and_stop_separation(http_app,monkeypatch):
     app,request=http_app;calls=[]
@@ -73,11 +73,11 @@ def test_http_auth_csrf_lease_and_stop_separation(http_app,monkeypatch):
     monkeypatch.setattr(app.teleop,'command',lambda *a:(calls.append(a) or {'phase':'stopping'}))
     _,_,cookie=request('/api/session')
     assert request('/api/teleop/state',cookie=cookie)[0]==200 and calls==[]
-    assert request('/api/teleop/prepare',{'variant':'lxl'},cookie)[0]==401
-    request('/api/login',{'control_code':'fixture-control-code'},cookie)
+    assert request('/api/teleop/prepare',{'variant':'lxl'},cookie,origin=False)[0]==403
+    request('/api/login',{},cookie)
     assert request('/api/teleop/prepare',{'variant':'lxl'},cookie,origin=False)[0]==403
     assert request('/api/teleop/prepare',{'variant':'lxl'},cookie)[0]==200
-    request('/api/control/acquire',{'control_code':'fixture-control-code'},cookie)
+    request('/api/control/acquire',{},cookie)
     assert request('/api/teleop/prepare',{'variant':'lxl'},cookie)[0]==409
     assert request('/api/teleop/confirm',{'session_id':'x','nonce':'n'},cookie)[0]==409
     assert request('/api/teleop/stop',{'session_id':'x'},cookie)[0]==200
@@ -172,3 +172,16 @@ def test_stop_refuses_pid_that_left_owned_scope(tmp_path,monkeypatch):
     monkeypatch.setattr('teleop.worker.signal.pidfd_send_signal',lambda *args:calls.append(('signal',args)))
     s.stop_owned()
     assert calls==[('close',999)]
+
+
+def test_direct_start_is_bound_to_explicit_request_and_can_be_cancelled(service,tmp_path):
+    gateway,calls=service
+    assert gateway.state()['phase']=='idle' and not calls
+    gateway.prepare('lxl','browser')
+    request=json.loads((gateway.current()/'request.json').read_text())
+    assert request['direct_start'] is True and request['id']==gateway.current().name
+    s=fake_session(tmp_path);s.request=request
+    assert s.await_confirmation() is True
+    assert s.state['phase']=='starting' and s.state['nonce'] is None
+    (tmp_path/'stop.json').touch()
+    assert s.await_confirmation() is False

@@ -10,7 +10,7 @@ Windows目录缺失需先从G2的DAgger/windows_client下载src和scripts到$HOM
 
 后续父进程核查：bridge在pts/2交互bash下运行，非40遗留子进程；详见同一记录。
 
-来源与功能进一步核查见 [PAOS bridge报告](../PAOS_BRIDGE_ORIGIN_20260907.md)：来源SSH 10.131.28.55，代码为ziyao-dev下的PhyAgentOS只读接口；具体人员未确认。
+来源与功能进一步核查见 [PAOS bridge报告](../PAOS_BRIDGE_ORIGIN_20260907.md)：来源SSH 192.0.2.10，代码为ziyao-dev下的PhyAgentOS只读接口；具体人员未确认。
 
 用户随后授权停止该bridge；身份复核后SIGTERM正常退出，锁自行释放，未强杀/删锁。
 

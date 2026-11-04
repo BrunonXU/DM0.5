@@ -31,7 +31,7 @@ related: [../../incidents/]
 |---|---|
 | 项目HEAD | `d70aa4dd1ad44ad629a1b5ab93e126cf2774d2f9`，另有本阶段未提交工作树diff |
 | OpenDM commit | `6ce8e7f13e0c46906b141fda1773364f18a577c2` |
-| 官方镜像digest/ID | `sha256:60a754dce047fbef40ab7d3a160fd82ccfbf5fa0509d862b6702311499dfbd4d` |
+| 官方镜像digest/ID | `sha256:REDACTED_HOST_FINGERPRINT` |
 | DM0.5 base revision | `581279826a339f0d90de15f145ec1a96aeea081e` |
 | 数据 | 800 train / 80 validation；880条全部转换成功 |
 | split SHA256 | `0664ba3d7684e916c83f0e37a9a5721f3e03602d26808dd9a7500502214ec11b` |

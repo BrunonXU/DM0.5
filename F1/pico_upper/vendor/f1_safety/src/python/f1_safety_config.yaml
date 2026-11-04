@@ -191,7 +191,7 @@ joint_limits:
 # ─────────────────────────────────────────────────────────────
 network:
   # 本机监听 IP（可被 ip_config.py 覆盖）
-  local_ip: 192.168.2.101
+  local_ip: 192.0.2.13
   # UDP 监听端口
   udp_port: 8888
   # ip_config.py 路径（如文件存在则优先使用其中的 IP/Port）

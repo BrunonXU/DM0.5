@@ -1,0 +1,435 @@
+diff --git a/rlinf/data/datasets/openpi_rlinf/__init__.py b/rlinf/data/datasets/openpi_rlinf/__init__.py
+index 99830ab5..e9ed75e3 100644
+--- a/rlinf/data/datasets/openpi_rlinf/__init__.py
++++ b/rlinf/data/datasets/openpi_rlinf/__init__.py
+@@ -43,8 +43,16 @@ def _load_official_openpi_sft_dataloader() -> SftDataLoaderBuilder:
+     return build_official_openpi_sft_dataloader
+ 
+ 
++def _load_f1_toys_sft_dataloader() -> SftDataLoaderBuilder:
++    # The task package is versioned with its ROI/data contract, not vendored here.
++    from f1_toys.dataset import build_sft_dataloader
++
++    return build_sft_dataloader
++
++
+ # Environment name -> lazy SFT dataloader builder.
+ _SFT_DATALOADER_BUILDERS = {
++    "f1_toys": _load_f1_toys_sft_dataloader,
+     "behavior": _load_behavior_sft_dataloader,
+     "dualfranka": _load_dual_franka_sft_dataloader,
+     "robotwin": _load_official_openpi_sft_dataloader,
+diff --git a/rlinf/models/embodiment/openpi_rlinf/__init__.py b/rlinf/models/embodiment/openpi_rlinf/__init__.py
+index 0568b939..cc22c81c 100644
+--- a/rlinf/models/embodiment/openpi_rlinf/__init__.py
++++ b/rlinf/models/embodiment/openpi_rlinf/__init__.py
+@@ -88,6 +88,15 @@ def get_model(cfg: Any, torch_dtype: Any = None) -> Any:
+     if max_token_len is not None:
+         pi0_kwargs["max_token_len"] = int(max_token_len)
+ 
++    loss_mask = OmegaConf.select(model_cfg, "action_loss_mask", default=None)
++    if loss_mask is not None:
++        pi0_kwargs["action_loss_mask"] = tuple(loss_mask)
++    pi0_kwargs["mask_inactive_action_inputs"] = bool(
++        OmegaConf.select(model_cfg, "mask_inactive_action_inputs", default=False)
++    )
++    pi0_kwargs["train_image_augmentation"] = bool(
++        OmegaConf.select(model_cfg, "train_image_augmentation", default=True)
++    )
+     pi0_config = Pi0Config(**pi0_kwargs)
+     model = pi0_config.create()
+     if safetensors_path is not None and full_weights_path is None:
+diff --git a/rlinf/models/embodiment/openpi_rlinf/pi0_model/gemma.py b/rlinf/models/embodiment/openpi_rlinf/pi0_model/gemma.py
+index 7c6909b1..d0a213e9 100644
+--- a/rlinf/models/embodiment/openpi_rlinf/pi0_model/gemma.py
++++ b/rlinf/models/embodiment/openpi_rlinf/pi0_model/gemma.py
+@@ -595,7 +595,8 @@ class Module(nn.Module):
+         else:
+             layer_kv_caches = (
+                 list(kv_cache)
+-                if isinstance(kv_cache, list | tuple)
++                # Tuple form also traces on our pinned Torch 2.7 runtime.
++                if isinstance(kv_cache, (list, tuple))
+                 else [kv_cache] * len(self.layers)
+             )
+ 
+diff --git a/rlinf/models/embodiment/openpi_rlinf/pi0_model/pi0.py b/rlinf/models/embodiment/openpi_rlinf/pi0_model/pi0.py
+index e0a08d2d..3f2d8fb6 100644
+--- a/rlinf/models/embodiment/openpi_rlinf/pi0_model/pi0.py
++++ b/rlinf/models/embodiment/openpi_rlinf/pi0_model/pi0.py
+@@ -265,7 +265,7 @@ class Pi0(model.BaseModel):
+             )
+ 
+         # Embed actions
+-        action_tokens = self.action_in_proj(noisy_actions)
++        action_tokens = self.action_in_proj(self.mask_action_coordinates(noisy_actions))
+ 
+         # Time embedding
+         time_emb = posemb_sincos(
+@@ -315,6 +315,52 @@ class Pi0(model.BaseModel):
+ 
+         return tokens, input_mask, ar_mask, adarms_cond
+ 
++    def mask_action_coordinates(self, actions: torch.Tensor) -> torch.Tensor:
++        """Use the same inactive latent coordinates during training and sampling."""
++        if not self._config.mask_inactive_action_inputs:
++            return actions
++        mask = actions.new_tensor(self._config.action_loss_mask, dtype=torch.bool)
++        return torch.where(mask, actions, 0.0)
++
++    def action_loss(self, prediction: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
++        """Average only supervised coordinates; padding must not dilute the loss."""
++        if self._config.action_loss_mask is None:
++            return torch.mean(torch.square(prediction - target), dim=-1)
++        mask = prediction.new_tensor(self._config.action_loss_mask, dtype=torch.bool)
++        # Select before subtraction, so inactive values cannot introduce NaN/Inf.
++        error = prediction[..., mask].float() - target[..., mask].float()
++        return error.square().mean(dim=-1)
++
++    @staticmethod
++    def validate_action_time_mask(
++        mask: torch.Tensor | None, actions: torch.Tensor
++    ) -> torch.Tensor | None:
++        """Require actual supervision to be a nonempty contiguous prefix."""
++        if mask is None:
++            return None
++        if mask.dtype != torch.bool or mask.shape != actions.shape[:2]:
++            raise ValueError("action_time_mask must be bool [B,H]")
++        mask = mask.to(device=actions.device)
++        if not mask[:, 0].all() or (mask[:, 1:] & ~mask[:, :-1]).any():
++            raise ValueError("action_time_mask must be a nonempty contiguous prefix")
++        return mask
++
++    @staticmethod
++    def reduce_action_loss(
++        loss: torch.Tensor, action_time_mask: torch.Tensor | None = None
++    ) -> torch.Tensor:
++        """Equal weight per anchor, normalized by its real supervised steps.
++
++        This keeps microbatch/DDP accumulation independent of how partial
++        windows are distributed across ranks. Padding is never a denominator.
++        """
++        if action_time_mask is None:
++            return loss.mean()
++        return (
++            torch.where(action_time_mask, loss, 0.0).sum(-1)
++            / action_time_mask.sum(-1)
++        ).mean()
++
+     def compute_loss(
+         self,
+         observation: model.Observation,
+@@ -324,18 +370,24 @@ class Pi0(model.BaseModel):
+         rng: torch.Generator | None = None,
+         noise: torch.Tensor | None = None,
+         time: torch.Tensor | None = None,
++        action_time_mask: torch.Tensor | None = None,
+     ) -> torch.Tensor:
+         """Compute flow matching loss.
+ 
+         Returns:
+             loss: (B, action_horizon) per-timestep MSE loss
+         """
++        action_time_mask = self.validate_action_time_mask(action_time_mask, actions)
++        if action_time_mask is not None:
++            actions = torch.where(action_time_mask[..., None], actions, 0.)
+         B = actions.shape[0]
+         device = actions.device
+ 
+         # Preprocess first (requries float32 for image ops),
+         # then cast to model dtype for FSDP2 mixed precision compatibility.
+-        observation = model.preprocess_observation(observation, train=train, rng=rng)
++        observation = model.preprocess_observation(
++            observation, train=train and self._config.train_image_augmentation, rng=rng
++        )
+ 
+         embed_dtype = self.embed_dtype
+         observation = model._observation_to_dtype(observation, embed_dtype)
+@@ -358,6 +410,8 @@ class Pi0(model.BaseModel):
+             time = time * 0.999 + 0.001
+         else:
+             time = time.to(dtype=dtype)
++        if action_time_mask is not None:
++            noise = torch.where(action_time_mask[..., None], noise, 0.)
+         time_expanded = time[:, None, None]
+ 
+         # Flow matching interpolation
+@@ -370,6 +424,9 @@ class Pi0(model.BaseModel):
+             observation, x_t, time
+         )
+ 
++        if action_time_mask is not None:
++            suffix_mask = suffix_mask.clone()
++            suffix_mask[:, -self.action_horizon:] &= action_time_mask
+         input_mask = torch.cat([prefix_mask, suffix_mask], dim=1)
+         ar_mask = torch.cat([prefix_ar_mask, suffix_ar_mask], dim=0)
+         attn_mask = make_attn_mask(input_mask, ar_mask)
+@@ -384,7 +441,10 @@ class Pi0(model.BaseModel):
+ 
+         v_t = self.action_out_proj(suffix_out[:, -self.action_horizon :])
+ 
+-        return torch.mean(torch.square(v_t - u_t), dim=-1)
++        if action_time_mask is not None:
++            v_t = torch.where(action_time_mask[..., None], v_t, 0.)
++            u_t = torch.where(action_time_mask[..., None], u_t, 0.)
++        return self.action_loss(v_t, u_t)
+ 
+     def build_prefix_cache(
+         self, observation: model.Observation
+@@ -481,7 +541,7 @@ class Pi0(model.BaseModel):
+ 
+         _, prefix_mask, kv_cache = self.build_prefix_cache(observation)
+ 
+-        x_t = noise
++        x_t = self.mask_action_coordinates(noise)
+         t = 1.0
+ 
+         # Euler integration
+@@ -491,7 +551,7 @@ class Pi0(model.BaseModel):
+                 observation, x_t, t_tensor, kv_cache, prefix_mask
+             )
+             v_t = self.velocity_from_suffix(suffix_out_act)
+-            x_t = x_t + dt * v_t
++            x_t = self.mask_action_coordinates(x_t + dt * v_t)
+             t = t + dt
+ 
+         return x_t
+diff --git a/rlinf/models/embodiment/openpi_rlinf/pi0_model/pi0_config.py b/rlinf/models/embodiment/openpi_rlinf/pi0_model/pi0_config.py
+index fdbae34b..c2a57e14 100644
+--- a/rlinf/models/embodiment/openpi_rlinf/pi0_model/pi0_config.py
++++ b/rlinf/models/embodiment/openpi_rlinf/pi0_model/pi0_config.py
+@@ -37,8 +37,19 @@ class Pi0Config(model.BaseModelConfig):
+     pi05: bool = False
+     discrete_state_input: bool | None = None
+     pcd: bool = False
++    # Optional task-specific supervision; None preserves the upstream objective.
++    action_loss_mask: tuple[bool, ...] | None = None
++    mask_inactive_action_inputs: bool = False
++    train_image_augmentation: bool = True
+ 
+     def __post_init__(self):
++        if self.action_loss_mask is not None:
++            mask = tuple(self.action_loss_mask)
++            if len(mask) != self.action_dim or not any(mask) or any(type(x) is not bool for x in mask):
++                raise ValueError("action_loss_mask must contain action_dim booleans and an active dimension")
++            self.action_loss_mask = mask
++        if self.mask_inactive_action_inputs and self.action_loss_mask is None:
++            raise ValueError("mask_inactive_action_inputs requires action_loss_mask")
+         if self.pi05 and self.max_token_len == 48:
+             object.__setattr__(self, "max_token_len", 200)
+         if self.discrete_state_input is None:
+diff --git a/rlinf/models/embodiment/openpi_rlinf/sft_action_model.py b/rlinf/models/embodiment/openpi_rlinf/sft_action_model.py
+index 7436c242..f3dd475e 100644
+--- a/rlinf/models/embodiment/openpi_rlinf/sft_action_model.py
++++ b/rlinf/models/embodiment/openpi_rlinf/sft_action_model.py
+@@ -68,22 +68,34 @@ class OpenPiPytorchSFTActionModel(OpenPiPytorchActionModel):
+     def sft_forward(self, data: Any) -> torch.Tensor:
+         """Compute the flow-matching SFT loss for one batch.
+ 
+-        ``data`` is either a ``(observation, actions)`` tuple or a dict with
+-        ``observation`` and ``actions`` keys. The data loader has already run
++        ``data`` is a ``(observation, actions[, action_time_mask])`` tuple or a
++        dict with ``observation``, ``actions`` and optional ``action_time_mask``.
++        The data loader has already run
+         the openpi transform pipeline, so ``actions`` arrive normalised and
+-        padded to the model action dim. Returns the scalar mean of the
+-        ``(B, action_horizon)`` per-timestep loss from :meth:`Pi0.compute_loss`
++        padded to the model action dim. With a time mask, average real timesteps
++        per anchor before averaging the batch; otherwise take the ordinary mean
++        of the ``(B, action_horizon)`` loss from :meth:`Pi0.compute_loss`
+         (which samples the flow-matching noise/time internally).
+         """
+         observation, actions = self._unpack_sft_batch(data)
+         observation = self._observation_to_device(observation)
+         actions = self._actions_to_device(actions)
++        time_mask = (
++            data.get("action_time_mask")
++            if isinstance(data, dict)
++            else (data[2] if len(data) == 3 else None)
++        )
++        if time_mask is not None:
++            time_mask = torch.as_tensor(time_mask, device=self.device)
++            time_mask = self.model.validate_action_time_mask(time_mask, actions)
+         if not self.rlt_cfg.use_rlt:
+             per_timestep_loss = self.model.compute_loss(
+-                observation, actions, train=True
++                observation, actions, train=True, action_time_mask=time_mask
+             )
+-            return per_timestep_loss.mean()
++            return self.model.reduce_action_loss(per_timestep_loss, time_mask)
+ 
++        if time_mask is not None:
++            raise ValueError("Partial-time supervision is not implemented for RLT")
+         per_timestep_loss, prefix_output, prefix_mask = (
+             self._sft_forward_with_rlt_prefix(observation, actions)
+         )
+@@ -102,12 +114,12 @@ class OpenPiPytorchSFTActionModel(OpenPiPytorchActionModel):
+     @staticmethod
+     def _unpack_sft_batch(data: Any) -> tuple[Any, Any]:
+         if isinstance(data, (tuple, list)):
+-            if len(data) != 2:
++            if len(data) not in (2, 3):
+                 raise ValueError(
+-                    "SFT batch tuple must be (observation, actions); "
++                    "SFT batch tuple must be (observation, actions[, action_time_mask]); "
+                     f"got length {len(data)}."
+                 )
+-            observation, actions = data
++            observation, actions = data[:2]
+         elif isinstance(data, dict):
+             if "observation" not in data or "actions" not in data:
+                 raise ValueError(
+diff --git a/rlinf/models/embodiment/openpi_rlinf/utils/model_builders.py b/rlinf/models/embodiment/openpi_rlinf/utils/model_builders.py
+index 8f8ebfcc..f1cca838 100644
+--- a/rlinf/models/embodiment/openpi_rlinf/utils/model_builders.py
++++ b/rlinf/models/embodiment/openpi_rlinf/utils/model_builders.py
+@@ -113,6 +113,18 @@ def _build_sft_model(
+         OpenPiPytorchSFTActionModel,
+     )
+ 
++    if model_cfg.get("f1_native_lora", False):
++        from f1_toys.lora import inject
++
++        report = inject(model, rank=32, alpha=16)
++        logger.info("F1 native LoRA: %d leaves, %d trainable parameters",
++                    len(report["modules"]), report["trainable_parameters"])
++    elif model_cfg.get("f1_full_sft", False):
++        from f1_toys.full import audit_full
++
++        report = audit_full(model)
++        logger.info("F1 Full SFT: %d trainable parameters", report["trainable_parameters"])
++
+     return OpenPiPytorchSFTActionModel(
+         model,
+         num_steps=num_steps,
+diff --git a/rlinf/workers/sft/fsdp_vla_sft_worker.py b/rlinf/workers/sft/fsdp_vla_sft_worker.py
+index 3ce2aee6..b10dacd4 100644
+--- a/rlinf/workers/sft/fsdp_vla_sft_worker.py
++++ b/rlinf/workers/sft/fsdp_vla_sft_worker.py
+@@ -28,6 +28,15 @@ class FSDPVlaSftWorker(FSDPSftWorker):
+     def __init__(self, cfg: DictConfig):
+         super().__init__(cfg)
+ 
++    def build_lr_scheduler(self, optimizer, optim_config, last_epoch=-1):
++        scheduler = super().build_lr_scheduler(optimizer, optim_config, last_epoch)
++        if optim_config.get("f1_hold_lr_after_schedule", False):
++            if self.cfg.actor.model.get("openpi", {}).get("config_name") != "pi05_f1_toys":
++                raise ValueError("F1 schedule extension requires the F1 task")
++            from f1_toys.schedules import hold_schedule_tail
++            scheduler = hold_schedule_tail(scheduler, int(optim_config.total_training_steps))
++        return scheduler
++
+     def build_dataloader(self, data_paths: Any, eval_dataset: bool = False):
+         model_type = SupportedModel(self.cfg.actor.model.model_type)
+         if model_type == SupportedModel.OPENPI_RLINF:
+@@ -79,6 +88,14 @@ class FSDPVlaSftWorker(FSDPSftWorker):
+         # now the eval is not supported for embodied sft
+         raise NotImplementedError("eval is not supported for embodied sft right now.")
+ 
++    def run_eval(self):
++        if self.cfg.actor.model.get("openpi", {}).get("config_name") == "pi05_f1_toys":
++            from f1_toys.validation import run_validation
++
++            with self.worker_timer():
++                return run_validation(self)
++        return super().run_eval()
++
+     def get_train_model_output(self, batch: Any) -> tuple[torch.Tensor, dict[str, Any]]:
+         with self.amp_context:
+             output = self.model(forward_type=ForwardType.SFT, data=batch)
+@@ -89,6 +106,28 @@ class FSDPVlaSftWorker(FSDPSftWorker):
+             loss = output["loss"]
+ 
+         step_metrics = {"loss": loss.detach().item()}
++        metadata = (
++            getattr(batch[0], "_f1_metadata", None) if isinstance(batch, tuple) else None
++        )
++        if metadata:
++            step_metrics["sample_fraction/correction"] = sum(
++                r["dataset_role"] == "correction" for r in metadata
++            ) / len(metadata)
++            step_metrics["sample_valid_steps"] = sum(
++                r["valid_action_steps"] for r in metadata
++            ) / len(metadata)
++            for phase in (
++                "alignment_insertion",
++                "release",
++                "withdrawal",
++                "native_home",
++                "terminal_hold",
++                "human",
++                "home",
++            ):
++                step_metrics["sample_phase/" + phase] = sum(
++                    r["supervision_phase"] == phase for r in metadata
++                ) / len(metadata)
+         if isinstance(output, dict):
+             for key, value in output.items():
+                 if key == "loss":
+@@ -111,6 +150,10 @@ class FSDPVlaSftWorker(FSDPSftWorker):
+ 
+             if self._rank == 0:
+                 torch.save(all_states, os.path.join(save_path, "data.pt"))
++                torch.save(
++                    {"epoch": self._data_epoch, "offset": self._data_iter_offset},
++                    os.path.join(save_path, "data_progress.pt"),
++                )
+ 
+             torch.distributed.barrier()
+ 
+@@ -129,7 +172,55 @@ class FSDPVlaSftWorker(FSDPSftWorker):
+             all_states = torch.load(
+                 os.path.join(load_path, "data.pt"), weights_only=False
+             )
++            resizing = len(all_states) != self._world_size
++            allow_v1_resize = (
++                self.cfg.data.get("f1_resume_eight_to_four", False)
++                and self.cfg.actor.model.get("openpi", {}).get("config_name") == "pi05_f1_toys"
++                and self._world_size == 4
++            )
++            if resizing and not allow_v1_resize:
++                raise ValueError("Exact SFT data resume requires unchanged world size")
+             state = all_states[self._rank]
++            progress_path = os.path.join(load_path, "data_progress.pt")
++            if os.path.exists(progress_path):
++                progress = torch.load(progress_path, weights_only=True)
++                self._data_epoch = int(progress["epoch"])
++                self._data_iter_offset = int(progress["offset"])
++            elif isinstance(self.data_config, dict) and self.data_config.get("schema") in (
++                "f1_toys_dataset_v1", "f1_toys_eef_dataset_v2"
++            ):
++                # Legacy F1 checkpoints used a fixed-length, drop_last loader.
++                # Its StatefulDataLoader saved the position, but DistributedSampler
++                # did not save its epoch. Recover only this known legacy format.
++                from f1_toys.resume import legacy_progress
++                step = int(os.path.basename(os.path.dirname(load_path)).split("global_step_")[-1])
++                self._data_epoch, self._data_iter_offset = legacy_progress(
++                    step, self.gradient_accumulation, len(self.data_loader), state
++                )
++            if resizing:
++                from f1_toys.resume import repartition_v1_eight_to_four
++
++                progress = torch.load(progress_path, weights_only=True)
++                step = int(os.path.basename(os.path.dirname(load_path)).split("global_step_")[-1])
++                state, self._data_epoch, self._data_iter_offset = repartition_v1_eight_to_four(
++                    all_states, progress, self.data_loader, rank=self._rank, step=step,
++                    global_batch=self.global_batch_size, accumulation=self.gradient_accumulation,
++                )
++                optimizer_steps = {
++                    int(value["step"]) for value in self.optimizer.state.values()
++                    if "step" in value
++                }
++                if optimizer_steps != {step} or self.lr_scheduler.last_epoch != step:
++                    raise ValueError("V1 resized resume did not restore optimizer/scheduler step")
++                self.log_info(
++                    f"V1 resume 8->4: step={step}, epoch={self._data_epoch}, "
++                    f"micro_offset={self._data_iter_offset}, global_batch={self.global_batch_size}, "
++                    f"accumulation={self.gradient_accumulation}, optimizer_steps={optimizer_steps}, "
++                    f"scheduler_step={self.lr_scheduler.last_epoch}, "
++                    f"lr={self.optimizer.param_groups[0]['lr']}; RNG uses saved rank {self._rank}"
++                )
++            from rlinf.data.datasets.common.epoch import forward_set_epoch
++            forward_set_epoch(self.data_loader, self._data_epoch)
+             self.data_loader.load_state_dict(state)
+             self.data_iter = iter(self.data_loader)
+ 

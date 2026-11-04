@@ -1,5 +1,5 @@
 [Unit]
-Description=F1 Wi-Fi 192.168.31.29 reverse SSH tunnel to 6000D (loopback 22029)
+Description=F1 Wi-Fi 192.0.2.25 reverse SSH tunnel to 6000D (loopback 22029)
 StartLimitIntervalSec=0
 
 [Service]

@@ -110,9 +110,10 @@ def test_end_to_end_server_worker_video_and_auth(tmp_path):
     try:
         import http.client as hc
         connection=hc.HTTPConnection('127.0.0.1',http.server_port)
-        connection.request('POST','/api/hil/media/claim',body='{}',headers={'Content-Type':'application/json','Origin':'http://'+addr,'X-F1-Request':'1'})
-        r=connection.getresponse();assert r.status==401;r.read();connection.close()
-        client=Client(dict(robot_url='http://'+addr,access_token_file=str(app.token_path)))
+        connection.request('POST','/api/hil/media/claim',body='{}',headers={'Content-Type':'application/json','Origin':'http://wrong-origin.invalid','X-F1-Request':'1'})
+        r=connection.getresponse();assert r.status==403;r.read();connection.close()
+        legacy=tmp_path/'legacy-worker.token';legacy.write_text('legacy-worker-compatibility')
+        client=Client(dict(robot_url='http://'+addr,access_token_file=str(legacy)))
         job=client.post('/api/hil/media/claim',{})['job'];assert job
         process(client,job,tmp_path/'server-cache')
         jobs=app.hil_media.listing();assert jobs[0]['status']=='ready' and len(jobs[0]['clips'])==1

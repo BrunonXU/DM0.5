@@ -39,10 +39,10 @@
     {
       "id": "block-sort",
       "name": "F1 · π0.5 积木分拣",
-      "description": "当前主线：F1复杂积木分拣。场景、姿态与采集支撑已有依据；专项训练与任务验收尚待确认。",
+      "description": "F1右手积木抓取、对孔插入、释放与回位；数据、训练、推理和现场评测集中在任务目录。",
       "kind": "delivery",
-      "status": "场景与采集支撑已关联",
-      "stage": "示教与数据审核",
+      "status": "已关联任务状态与待办",
+      "stage": "以任务 STATUS 为准",
       "priority": "P2",
       "tags": [
         "F1",
@@ -50,24 +50,23 @@
         "积木分拣"
       ],
       "source_paths": [
-        "F1/docs/connect/3F-JIMU.md",
-        "F1-4242/docs/STATUS.md",
-        "DAgger/docs/F1/STATUS.md"
+        "tasks/F1_ComplexyToys/STATUS.md",
+        "tasks/F1_ComplexyToys/TODO.md"
       ],
       "watch_paths": [
-        "F1/docs/connect/3F-JIMU.md"
+        "tasks/F1_ComplexyToys"
       ],
-      "evidence_date": "2026-10-12",
+      "evidence_date": null,
       "warnings": [
-        "3F-JIMU连接与F1-09数采记录保留各自机器身份，不能推断为同一台。",
-        "积木姿态、通用示教和工具部署不代表积木专项数据集、π0.5训练或分拣闭环通过。",
-        "支撑事件归原项目，不重复计算业务成果。"
+        "本次仅更新来源登记，未发布新的进度审阅；当前结论以任务 STATUS 与有日期的验收记录为准。",
+        "训练完成、回放与零动作 shadow 不能代替现场抓取、插入、释放和回位成功率。",
+        "DAgger 数采和 4242 工作台事件仍归所属支撑项目，不重复计算业务成果。"
       ],
       "milestones": [],
       "platform": "F1",
       "supports": [],
       "activity_paths": [
-        "F1/docs/connect/3F-JIMU.md"
+        "tasks/F1_ComplexyToys"
       ]
     },
     {

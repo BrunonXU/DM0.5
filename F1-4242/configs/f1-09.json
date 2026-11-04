@@ -133,7 +133,7 @@
   },
   "id": "F1-09",
   "label": "F1-09 · Thor",
-  "ip": "192.168.31.58",
+  "ip": "192.0.2.3",
   "version": "0.6.6",
   "groups": {
     "left_arm": [
@@ -259,7 +259,7 @@
   },
   "contract_note": "F1-09 绑定驱动/全身配置；双臂、身体、头部、夹爪与底盘现场操作。身体/头部200Hz，工程模型地面排除不等于完整碰撞规划；相对升降按本机URDF几何，未做绝对高度标定。",
   "data_path": "/home/user/lxl/pico_data",
-  "expected_machine_id": "90429b8a96e04ef79dbc12175b538115",
+  "expected_machine_id": "00000000000000000000000000000000",
   "controller_binary_sha256": "898ef58fb7118ecbf416af134e01700ed38ffdd3480293cf06fe95da14bce0c8",
   "expected_motor_parameters": {
     "arm_control_mode": 3,

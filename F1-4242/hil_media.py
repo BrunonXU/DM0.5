@@ -10,6 +10,9 @@ import uuid
 
 VERSION='f1-three-view-v1'
 PREVIEW_VERSION='f1-session-review-v1'
+SOURCE_BLOCK_BYTES=1024*1024
+UPLOAD_BLOCK_BYTES=131072
+PREVIEW_BYTES_PER_SECOND=8*1024*1024
 PREVIEW_FILES={'head.mp4','left.mp4','right.mp4','timeline.json','analytics.json'}
 SOURCE_FILES={'journal/manifest.json','journal/observations.jsonl','journal/control.jsonl','journal/events.jsonl','payload/manifest.json','payload/frames.jsonl','payload/head.pack','payload/left_wrist.pack','payload/right_wrist.pack'}
 
@@ -82,26 +85,36 @@ class HILMedia:
             for j in sorted(jobs,key=lambda j:j.get('created_unix',0)):
                 if j.get('kind','intervention')==kind and j['status'] not in ('ready','failed'):
                     j.update(status='transferring',lease=uuid.uuid4().hex,lease_until=now+120)
-                    self.save(j);return dict(paused=False,job=j)
+                    self.save(j);return dict(paused=False,job=dict(j,transfer=dict(source_block_bytes=SOURCE_BLOCK_BYTES,upload_block_bytes=UPLOAD_BLOCK_BYTES)))
             return dict(paused=False,job=None)
     def leased(self,key,token):
         j=self.load(key)
         if not token or j.get('lease')!=token or j.get('lease_until',0)<time.time():raise ValueError('expired video worker lease')
-        j['lease_until']=time.time()+120;self.save(j);return j
+        # Progress heartbeats persist every 20 s. Chunk reads need not fsync the
+        # same lease thousands of times; keep at least 90 s durable validity.
+        if j['lease_until']-time.time()<90:
+            j['lease_until']=time.time()+120;self.save(j)
+        return j
+    def throttle(self,job,count):
+        rate=PREVIEW_BYTES_PER_SECOND if job.get('kind')=='session_preview' else 2*1024*1024
+        wait=self.last_transfer+count/rate-time.monotonic()
+        if wait>0:time.sleep(wait)
+        # A recording may start while throttled. Never begin the next block
+        # using only the busy check made before that wait.
+        if self.busy():raise ValueError('transfer_paused_active_session')
+        self.last_transfer=time.monotonic()
     def source(self,key,token,name,offset,count):
         with self.lock:
             if self.busy():raise ValueError('transfer_paused_active_session')
             j=self.leased(key,token)
-            if name not in SOURCE_FILES or type(offset) is not int or offset<0 or type(count) is not int or not 1<=count<=131072:raise ValueError('invalid source range')
+            if name not in SOURCE_FILES or type(offset) is not int or offset<0 or type(count) is not int or not 1<=count<=SOURCE_BLOCK_BYTES:raise ValueError('invalid source range')
             from hil_data import find_run, confined
             run=find_run(self.hil,j['run_id'])
             p=confined(run,name).resolve()
             if run not in p.parents:raise ValueError('source escaped')
             if digest(run/'journal/manifest.json')!=j['source_sha256']:raise ValueError('source manifest changed')
             # Global single-stream bandwidth ceiling, pause checked each block.
-            wait=self.last_transfer+count/(2*1024*1024)-time.monotonic()
-            if wait>0:time.sleep(wait)
-            self.last_transfer=time.monotonic()
+            self.throttle(j,count)
             with p.open('rb') as f:f.seek(offset);data=f.read(count)
             return dict(data=base64.b64encode(data).decode(),size=p.stat().st_size,offset=offset)
     def command(self,operation,body):
@@ -135,13 +148,11 @@ class HILMedia:
             path=folder/(name+'.partial')
             if operation=='upload':
                 data=base64.b64decode(body.get('data',''),validate=True)
-                if len(data)>131072:raise ValueError('upload block too large')
+                if len(data)>UPLOAD_BLOCK_BYTES:raise ValueError('upload block too large')
                 size=path.stat().st_size if path.exists() else 0
                 if body.get('offset')!=size:return dict(offset=size)
                 if size+len(data)>512*1024*1024:raise ValueError('clip exceeds 512MiB')
-                wait=self.last_transfer+len(data)/(2*1024*1024)-time.monotonic()
-                if wait>0:time.sleep(wait)
-                self.last_transfer=time.monotonic()
+                self.throttle(j,len(data))
                 with path.open('ab') as f:f.write(data)
                 return dict(offset=size+len(data))
             if operation=='publish':

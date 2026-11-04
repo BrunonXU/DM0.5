@@ -56,8 +56,49 @@ class IntentPacket:
     hil_button_pressed: bool = False
     version: int = PROTOCOL_VERSION
     kind: str = "intent"
+    # Optional negotiated extension. Omitted on legacy wire connections.
+    recovery_token: str | None = None
+    controls_neutral: bool | None = None
+    episode_end_id: int | None = None
+    episode_end_pressed: bool | None = None
+    policy_switch_id: int | None = None
+    policy_switch_pressed: bool | None = None
+
+    operator_protocol: str | None = None
+    home_end_id: int | None = None
+    local_result: str | None = None
 
     def __post_init__(self) -> None:
+        if self.operator_protocol is not None:
+            if self.operator_protocol not in ('f1_rlt_local_v2', 'f1_rlt_local_v3', 'f1_rlt_local_v4') or type(self.home_end_id) is not int or self.home_end_id < 0:
+                raise ProtocolError('invalid local RLT operator extension')
+            if self.policy_switch_id is None or self.episode_end_id is None:
+                raise ProtocolError('local RLT requires complete event counters')
+        elif self.home_end_id is not None:
+            raise ProtocolError('home_end_id requires operator_protocol')
+        if self.operator_protocol == 'f1_rlt_local_v4':
+            if self.local_result not in ('success', 'failure'):
+                raise ProtocolError('v4 requires explicit local result kind')
+        elif self.local_result is not None:
+            raise ProtocolError('local_result requires negotiated v4')
+        if self.policy_switch_id is not None and (type(self.policy_switch_id) is not int or self.policy_switch_id < 0):
+            raise ProtocolError('invalid policy_switch_id')
+        if self.policy_switch_pressed is not None and type(self.policy_switch_pressed) is not bool:
+            raise ProtocolError('invalid policy_switch_pressed')
+        if (self.policy_switch_id is None) != (self.policy_switch_pressed is None):
+            raise ProtocolError('policy switch extension must be complete')
+        if self.episode_end_id is not None and (type(self.episode_end_id) is not int or self.episode_end_id < 0):
+            raise ProtocolError("invalid episode_end_id")
+        if self.episode_end_pressed is not None and type(self.episode_end_pressed) is not bool:
+            raise ProtocolError("invalid episode_end_pressed")
+        if (self.episode_end_id is None) != (self.episode_end_pressed is None):
+            raise ProtocolError("episode end extension must be complete")
+        if self.recovery_token is not None and (not isinstance(self.recovery_token, str)
+                or len(self.recovery_token) != 32
+                or any(c not in '0123456789abcdef' for c in self.recovery_token)):
+            raise ProtocolError('invalid recovery token')
+        if self.controls_neutral is not None and type(self.controls_neutral) is not bool:
+            raise ProtocolError('controls_neutral must be boolean')
         if self.version != PROTOCOL_VERSION or self.kind != "intent":
             raise ProtocolError("unsupported protocol version or packet kind")
         if not self.session_id or len(self.session_id) > 128:
@@ -163,7 +204,12 @@ class AckPacket:
 
 
 def encode_packet(packet: IntentPacket | AckPacket) -> bytes:
-    encoded = (json.dumps(asdict(packet), separators=(",", ":")) + "\n").encode("utf-8")
+    fields = asdict(packet)
+    for key in ('recovery_token', 'controls_neutral', 'episode_end_id', 'episode_end_pressed',
+                'policy_switch_id', 'policy_switch_pressed', 'operator_protocol', 'home_end_id', 'local_result'):
+        if fields.get(key) is None:
+            fields.pop(key, None)
+    encoded = (json.dumps(fields, separators=(",", ":")) + "\n").encode("utf-8")
     if len(encoded) > MAX_WIRE_BYTES:
         raise ProtocolError("packet exceeds maximum wire size")
     return encoded

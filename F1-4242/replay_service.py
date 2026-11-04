@@ -9,7 +9,7 @@ import time
 import uuid
 
 from robot.replay_data import read_recording
-from robot.replay_action import validate, live_check
+from robot.replay_action import validate, live_check, check_start, start_deviations
 
 
 class ReplayService:
@@ -36,9 +36,13 @@ class ReplayService:
             raise ValueError('录制占用状态尚未确认空闲')
 
     def load(self, episode_id, start, end):
-        root, entry = self.app.hil_data.locate(episode_id)
-        if entry.get('source') != 'hil_demonstration':
-            raise ValueError('首版实机回放仅支持 F710 人工示教')
+        # The catalog owns path resolution; request bodies never supply paths.
+        entry = self.app.data.episode(episode_id, refresh=True)
+        root = Path(entry['path'])
+        if not (root / 'journal/manifest.json').is_file():
+            raise ValueError('此记录缺少可核验的原始发布日志与机器人绑定；仍可回看视频，不能以实测姿态代替命令复现')
+        if entry.get('recording_status') != 'committed':
+            raise ValueError('录制尚未完整提交；原件保留供排查')
         recording = read_recording(root)
         return recording.select(start, end), entry
 
@@ -57,10 +61,15 @@ class ReplayService:
         data = json.loads(path.read_text())
         return {k:v for k,v in data.items() if k != 'samples'}
 
+    def recent(self, episode_id):
+        from replay_reports import recent
+        return recent(self.app.runtime/'replay_runs', episode_id)
+
     def review(self, sid, episode_id, start=0, end=None):
         self.invalidate(sid)
         segment, entry = self.load(episode_id, start, end)
         response = dict(segment.summary(), episode_id=episode_id, executable=False, can_align=False,
+                        can_force_start=False, start_deviations=None,
                         issues=[], review_id=None, source_signature=entry['source_signature'])
         try:
             response['metrics'] = validate(self.app.adapter.profile, segment)
@@ -69,7 +78,11 @@ class ReplayService:
             response['issues'].append(str(exc) if not isinstance(exc, AttributeError) else '离线预览，未连接机器人')
             return response
         try:
-            live_check(self.app.adapter, segment, start=True)
+            _, actual = live_check(self.app.adapter, segment)
+            deviations = start_deviations(self.app.adapter.profile, segment, actual)
+            response['start_deviations'] = deviations
+            response['can_force_start'] = not any(row['outside_tolerance'] for row in deviations['grippers'])
+            check_start(self.app.adapter.profile, segment, actual)
             response['executable'] = True
         except (ValueError, RuntimeError, AttributeError, KeyError) as exc:
             response['issues'].append(str(exc))
@@ -84,7 +97,7 @@ class ReplayService:
                     response['issues'] += [x['message'] for x in alignment.get('issues', [])]
             except (ValueError, RuntimeError, AttributeError, KeyError) as error:
                 response['issues'].append(str(error))
-        if response['executable'] or response['can_align']:
+        if response['executable'] or response['can_align'] or response['can_force_start']:
             token = secrets.token_urlsafe(24)
             with self.lock:
                 self.tickets = {k:v for k,v in self.tickets.items() if v['expires'] > time.monotonic() and v['sid'] != sid}
@@ -92,7 +105,8 @@ class ReplayService:
                     self.tickets.pop(next(iter(self.tickets)))
                 self.tickets[token] = dict(sid=sid, expires=time.monotonic()+120, segment=segment,
                     episode_id=episode_id, start=start, end=end, signature=entry['source_signature'],
-                    profile=self.profile_hash(), executable=response['executable'], can_align=response['can_align'])
+                    profile=self.profile_hash(), executable=response['executable'], can_align=response['can_align'],
+                    can_force_start=response['can_force_start'])
             response.update(review_id=token, valid_for_s=120)
         return response
 
@@ -102,6 +116,11 @@ class ReplayService:
     def start(self, sid, body, *, align=False):
         if body.get('confirm') is not True:
             raise ValueError('请在现场明确确认开始实机回放')
+        force_start = body.get('force_start', False)
+        if type(force_start) is not bool:
+            raise ValueError('强行回放标记必须为布尔值')
+        if align and force_start:
+            raise ValueError('回到录制起点不能使用强行回放标记')
         token = body.get('review_id')
         if not isinstance(token, str):
             raise ValueError('请先检查回放数据与起点')
@@ -114,8 +133,13 @@ class ReplayService:
         segment, entry = self.load(ticket['episode_id'], ticket['start'], ticket['end'])
         if segment.recording.fingerprint != ticket['segment'].recording.fingerprint or entry['source_signature'] != ticket['signature']:
             raise ValueError('录制来源已变化，请重新检查')
-        if not ticket['can_align' if align else 'executable']:
+        eligibility = 'can_align' if align else 'can_force_start' if force_start else 'executable'
+        if not ticket[eligibility]:
             raise ValueError('请重新检查起点并选择相应操作')
+        if not align:
+            # This scans the complete source. Keep stop/lease handling free;
+            # the profile hash is checked again inside the operation mutex.
+            validate(self.app.adapter.profile, segment)
         with self.app.op_lock:
             self.app.lease.require(sid, body.get('lease_id'), renew=True)
             self.idle()
@@ -137,10 +161,14 @@ class ReplayService:
                     pose['head_boundary_recovery_ack'] = True
                 pose['replay'] = dict(episode_id=ticket['episode_id'], phase='alignment')
                 return self.app.actions.start(pose, sid)
+            _, actual = live_check(self.app.adapter, segment, start=True, force_start=force_start)
             report_id = uuid.uuid4().hex
             metadata = dict(episode_id=ticket['episode_id'], episode_name=segment.recording.episode,
+                            source_signature=ticket['signature'], created_at=time.time(),
                             fingerprint=segment.recording.fingerprint, start_s=segment.summary()['start_s'],
-                            end_s=segment.summary()['end_s'], report_id=report_id)
-            spec = dict(kind='replay', _segment=segment, replay=metadata,
+                            end_s=segment.summary()['end_s'], report_id=report_id,
+                            force_start=force_start,
+                            start_deviations=start_deviations(self.app.adapter.profile, segment, actual))
+            spec = dict(kind='replay', _segment=segment, _force_start=force_start, replay=metadata,
                         _report_path=str(self.app.runtime/'replay_runs'/(report_id+'.json')))
             return self.app.actions.start(spec, sid)

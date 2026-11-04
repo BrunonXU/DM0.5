@@ -21,7 +21,7 @@ LIMITS_BY_SHA256 = {
         for bound, value in zip(("min", "max"), pair)
     }
 }
-# New F1 at 192.168.31.29: independently decoded the installed AND running
+# New F1 at 192.0.2.25: independently decoded the installed AND running
 # executable's 14 arm assignments; values match the previous audited build.
 NEW_F1_SHA256 = "1ec598c860672824d46fe93f8f7c784002ed7612f666d6660c1f925206086ddc"
 LIMITS_BY_SHA256[NEW_F1_SHA256] = dict(LIMITS_BY_SHA256[AUDITED_SHA256])

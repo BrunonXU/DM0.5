@@ -51,7 +51,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--policy-endpoint",
-        default="http://10.130.153.114:7892/process_frame",
+        default="http://192.0.2.1:7892/process_frame",
     )
     parser.add_argument(
         "--policy-transport",

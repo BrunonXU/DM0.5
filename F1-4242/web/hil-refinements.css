@@ -1,0 +1,45 @@
+/* HIL layout refinements; colors, fonts, cards and buttons inherit the original UI. */
+#hil-root.hil-refinements{display:grid;gap:16px;min-width:0}
+#hil-root.hil-refinements>.hil-route-breadcrumb{margin:0}
+#hil-root.hil-refinements>.hil-route-breadcrumb .section-note{margin-top:0}
+#hil-root.hil-refinements>.hil-overview{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 20px;margin:0;padding:16px 20px}
+#hil-root.hil-refinements .hil-title{justify-content:flex-start;gap:16px;flex-wrap:wrap;min-width:0}
+#hil-root.hil-refinements .hil-overview h2{font-size:21px;line-height:1.45;margin:0;white-space:normal}
+#hil-root.hil-refinements .hil-context{margin:0;gap:10px;flex-wrap:wrap;justify-content:flex-end;align-self:center;min-width:0;overflow-wrap:anywhere}
+#hil-root.hil-refinements .hil-next{grid-column:1/-1;margin:0}
+#hil-root.hil-refinements .hil-health{grid-column:1/-1;margin:2px 0 0;padding-top:10px;gap:10px 24px}
+#hil-root.hil-refinements .hil-intervention{grid-column:1/-1;margin:0}
+#hil-root.hil-refinements .hil-overview>.notice{grid-column:1/-1;margin:4px 0}
+#hil-root.hil-refinements [data-home-reason]{overflow-wrap:anywhere}
+#hil-root.hil-refinements>.hil-session{padding-top:16px;padding-bottom:16px}
+#hil-root.hil-refinements .hil-command-title{flex-wrap:wrap}
+#hil-root.hil-refinements .hil-session-help{margin-top:10px}
+#hil-root.hil-refinements .hil-session-help>summary{cursor:pointer;font-size:14px}
+#hil-root.hil-refinements .hil-session-help .section-note{margin-top:8px}
+#hil-root.hil-refinements>.camera-section{margin:0}
+#hil-root.hil-refinements .hil-tools{display:grid;gap:12px}
+#hil-root.hil-refinements .hil-tools>.card{margin:0;padding-top:18px;padding-bottom:18px}
+#hil-root.hil-refinements .hil-workflow>summary{display:flex;align-items:center;gap:14px;cursor:pointer}
+#hil-root.hil-refinements .hil-workflow>summary::before{content:'▸';font-size:12px}
+#hil-root.hil-refinements .hil-workflow[open]>summary::before{content:'▾'}
+#hil-root.hil-refinements .hil-workflow>summary::-webkit-details-marker{display:none}
+#hil-root.hil-refinements .hil-workflow>summary .section-note{margin:0 0 0 auto}
+#hil-root.hil-refinements .hil-step:first-child{margin-top:14px}
+#hil-root.hil-refinements .hil-teaching>summary .section-note{margin-top:0}
+#hil-root.hil-refinements #hil-events{max-height:300px;overflow:auto;overscroll-behavior:contain;margin:12px 0}
+#hil-root.hil-refinements .hil-event>span{min-width:0;overflow-wrap:anywhere}
+#hil-root.hil-refinements #hil-clips{max-height:360px;overflow:auto;overscroll-behavior:contain;margin-top:12px}
+#hil-root.hil-refinements #hil-diagnostic{max-height:360px;overflow:auto}
+@media(max-width:1000px){
+ #hil-root.hil-refinements>.hil-overview{grid-template-columns:minmax(0,1fr)}
+ #hil-root.hil-refinements .hil-context{justify-content:flex-start}
+}
+@media(max-width:700px){
+ #hil-root.hil-refinements .camera-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #hil-root.hil-refinements [data-live-camera=head]{grid-column:1/-1}
+ #hil-root.hil-refinements .camera-title{flex-wrap:wrap;gap:4px}
+ #hil-root.hil-refinements .camera-section-heading{flex-wrap:wrap;gap:6px}
+ #hil-root.hil-refinements .hil-workflow>summary{flex-wrap:wrap;gap:8px}
+ #hil-root.hil-refinements .hil-workflow>summary .section-note{margin-left:0}
+ #hil-root.hil-refinements .hil-title .hil-mode{margin-left:0}
+}

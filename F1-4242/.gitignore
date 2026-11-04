@@ -1,6 +1,7 @@
 # Per-machine configuration and credentials
 configs/installation.env
 configs/robot.json
+configs/site.json
 runtime/
 results/
 .env
