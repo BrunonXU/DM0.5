@@ -1,0 +1,1170 @@
+{
+  "source_run": "web-8821213efb1747d5a5b3bf52830a55d5",
+  "source_trace_sha256": "1d93fc9fe505e93867480c5105eeba926354ee95641125c38e51f7773a4ce146",
+  "scope": "recorded measurements only; no pixel inference or new physical outcome",
+  "samples": [
+    {
+      "observation_id": "ad6d2119ddbf4175afbe04d5eaba02a7:346",
+      "measurements": {
+        "camera": "right",
+        "received_ns": 3277699680553,
+        "state_received_ns": 3277698049793,
+        "source_ns": [
+          1794823395976958496,
+          1794823395975930420
+        ],
+        "stationary_samples": 3,
+        "tracking_samples": 1,
+        "stationary": false,
+        "held": null,
+        "accepted": false,
+        "support_samples": 1,
+        "segment_samples": 1,
+        "motion_m": 0.0,
+        "relative_translation_m": 0.0,
+        "relative_rotation_rad": 4.833124500580732e-07,
+        "gripper_span": 0.0,
+        "boundary_reason": null,
+        "reason": "insufficient_independent_following_samples",
+        "attachment_profile": "coarse_position_following",
+        "translation_tolerance_m": 0.005,
+        "rotation_tolerance_rad": null,
+        "orientation_quality_advisory": false,
+        "nonfollowing": {
+          "accepted": false,
+          "support_samples": 1,
+          "segment_samples": 1,
+          "motion_m": 0.0,
+          "gripper_span": 0.0,
+          "boundary_reason": null,
+          "reason": "insufficient_independent_following_samples",
+          "object_world_displacement_m": 0.0
+        }
+      },
+      "object_pose": [
+        [
+          -0.4013569825765052,
+          -0.9134972326338374,
+          -0.0665986374290933,
+          0.8441868852188977
+        ],
+        [
+          0.9156370676846111,
+          -0.4019827967651223,
+          -0.004311773045561455,
+          -0.3409808477347635
+        ],
+        [
+          -0.022832713789521127,
+          -0.06271074130651079,
+          0.9977705297840682,
+          0.5471180697409934
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "eef_pose": [
+        [
+          -0.5544003351416069,
+          -0.5270224822193427,
+          0.6441176690871299,
+          0.6566978204225473
+        ],
+        [
+          0.8277323817292297,
+          -0.2686360511008804,
+          0.49263960080954267,
+          -0.4431266551264772
+        ],
+        [
+          -0.08659891819032126,
+          0.8062766121402065,
+          0.5851654911937131,
+          0.9332014828786898
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "joints": [
+        -35.96500015258789,
+        -42.26372146606445,
+        74.84974670410156,
+        -76.11337280273438,
+        1.0230125188827515,
+        48.32746887207031,
+        58.378292083740234
+      ],
+      "gripper": 100.0,
+      "frames": [
+        {
+          "camera": "right",
+          "stream": "rgb",
+          "frame_id": "right_wrist_color_optical_frame",
+          "sequence": 1309,
+          "source_ns": 1794823395976958496,
+          "received_ns": 3277701315313,
+          "clock_domain": "unverified_device_ros_time",
+          "width": 640,
+          "height": 480,
+          "encoding": "bgr8",
+          "row_step_bytes": 1920,
+          "is_bigendian": false,
+          "blob_sha256": "d85ca87facb4d9d0f21e911f7cad23b02a5a72e861c34a5f7e52265a8b1c6ef0",
+          "depth_scale_m": null,
+          "camera_info_sha256": "387b0f1d605a91a5c91470f7f969e4d4f2895718b5bc537de061b37beacbecce",
+          "source_epoch": 0,
+          "publisher_id": null
+        },
+        {
+          "camera": "right",
+          "stream": "depth",
+          "frame_id": "right_wrist_depth_optical_frame",
+          "sequence": 1296,
+          "source_ns": 1794823395975930420,
+          "received_ns": 3277699680553,
+          "clock_domain": "unverified_device_ros_time",
+          "width": 640,
+          "height": 480,
+          "encoding": "16UC1",
+          "row_step_bytes": 1280,
+          "is_bigendian": false,
+          "blob_sha256": "661c0b2486a3e6ea1189634315f2962e6fa9de0a6f6702210907fadc433b75fa",
+          "depth_scale_m": 0.001,
+          "camera_info_sha256": "e31590794ec8158936108338cffb71146e60382131479562a9ad9f043eb3987d",
+          "source_epoch": 0,
+          "publisher_id": null
+        }
+      ]
+    },
+    {
+      "observation_id": "ad6d2119ddbf4175afbe04d5eaba02a7:347",
+      "measurements": {
+        "camera": "right",
+        "received_ns": 3278165995593,
+        "state_received_ns": 3278161235786,
+        "source_ns": [
+          1794823396443195801,
+          1794823396442167969
+        ],
+        "stationary_samples": 3,
+        "tracking_samples": 2,
+        "stationary": false,
+        "held": null,
+        "accepted": false,
+        "support_samples": 2,
+        "segment_samples": 2,
+        "motion_m": 7.539741720290617e-05,
+        "relative_translation_m": 0.001770283286987027,
+        "relative_rotation_rad": 0.028014116004887606,
+        "gripper_span": 0.0,
+        "boundary_reason": null,
+        "reason": "insufficient_independent_following_samples",
+        "attachment_profile": "coarse_position_following",
+        "translation_tolerance_m": 0.005,
+        "rotation_tolerance_rad": null,
+        "orientation_quality_advisory": false,
+        "nonfollowing": {
+          "accepted": false,
+          "support_samples": 2,
+          "segment_samples": 2,
+          "motion_m": 7.539741720290617e-05,
+          "gripper_span": 0.0,
+          "boundary_reason": null,
+          "reason": "insufficient_independent_following_samples",
+          "object_world_displacement_m": 0.001991601012445067
+        }
+      },
+      "object_pose": [
+        [
+          -0.42477911968466353,
+          -0.9022866285033277,
+          -0.073766791336124,
+          0.8424211802992534
+        ],
+        [
+          0.9050841812974286,
+          -0.4250338788195577,
+          -0.012993329855847419,
+          -0.3400650463928463
+        ],
+        [
+          -0.019629677660896315,
+          -0.07228445116135893,
+          0.997190871335582,
+          0.5470177271694765
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "eef_pose": [
+        [
+          -0.5542953429037893,
+          -0.5266873153021788,
+          0.6444820747972395,
+          0.6566914352375313
+        ],
+        [
+          0.8278602078638947,
+          -0.26882425214733535,
+          0.49232204672650787,
+          -0.4430753958499697
+        ],
+        [
+          -0.0860473652747278,
+          0.8064328821155614,
+          0.5850315013502008,
+          0.9332564054287499
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "joints": [
+        -35.96599197387695,
+        -42.26171112060547,
+        74.84933471679688,
+        -76.13098907470703,
+        1.0299545526504517,
+        48.37177276611328,
+        58.39455032348633
+      ],
+      "gripper": 100.0,
+      "frames": [
+        {
+          "camera": "right",
+          "stream": "rgb",
+          "frame_id": "right_wrist_color_optical_frame",
+          "sequence": 1321,
+          "source_ns": 1794823396443195801,
+          "received_ns": 3278168911748,
+          "clock_domain": "unverified_device_ros_time",
+          "width": 640,
+          "height": 480,
+          "encoding": "bgr8",
+          "row_step_bytes": 1920,
+          "is_bigendian": false,
+          "blob_sha256": "46014756ea1799ef3970d99a561267aebdf3af591c5e5469b0343ecf103e1ab8",
+          "depth_scale_m": null,
+          "camera_info_sha256": "387b0f1d605a91a5c91470f7f969e4d4f2895718b5bc537de061b37beacbecce",
+          "source_epoch": 0,
+          "publisher_id": null
+        },
+        {
+          "camera": "right",
+          "stream": "depth",
+          "frame_id": "right_wrist_depth_optical_frame",
+          "sequence": 1306,
+          "source_ns": 1794823396442167969,
+          "received_ns": 3278165995593,
+          "clock_domain": "unverified_device_ros_time",
+          "width": 640,
+          "height": 480,
+          "encoding": "16UC1",
+          "row_step_bytes": 1280,
+          "is_bigendian": false,
+          "blob_sha256": "d64dde7f2425bd7434b96f3e2e43abb506dd9512229e61953b2799e8b89e13fe",
+          "depth_scale_m": 0.001,
+          "camera_info_sha256": "e31590794ec8158936108338cffb71146e60382131479562a9ad9f043eb3987d",
+          "source_epoch": 0,
+          "publisher_id": null
+        }
+      ]
+    },
+    {
+      "observation_id": "ad6d2119ddbf4175afbe04d5eaba02a7:348",
+      "measurements": {
+        "camera": "right",
+        "received_ns": 3278664970323,
+        "state_received_ns": 3278656327826,
+        "source_ns": [
+          1794823396942721191,
+          1794823396941693115
+        ],
+        "stationary_samples": 3,
+        "tracking_samples": 3,
+        "stationary": false,
+        "held": null,
+        "accepted": false,
+        "support_samples": 1,
+        "segment_samples": 1,
+        "motion_m": 0.0,
+        "relative_translation_m": 0.0,
+        "relative_rotation_rad": 4.823927300047518e-07,
+        "gripper_span": 0.0,
+        "boundary_reason": "relative_translation_changed",
+        "reason": "insufficient_independent_following_samples",
+        "boundary_metrics": {
+          "relative_translation_m": 0.01886494479285139,
+          "relative_rotation_rad": 0.11131614910436297,
+          "gripper_span": 0.0
+        },
+        "attachment_profile": "coarse_position_following",
+        "translation_tolerance_m": 0.005,
+        "rotation_tolerance_rad": null,
+        "orientation_quality_advisory": false,
+        "nonfollowing": {
+          "accepted": false,
+          "support_samples": 1,
+          "segment_samples": 1,
+          "motion_m": 0.0,
+          "gripper_span": 0.0,
+          "boundary_reason": "relative_translation_changed",
+          "reason": "insufficient_independent_following_samples",
+          "boundary_metrics": {
+            "relative_translation_m": 0.006926082414987597,
+            "relative_rotation_rad": 0.10432083501757757,
+            "gripper_span": 0.0
+          },
+          "object_world_displacement_m": 0.0
+        }
+      },
+      "object_pose": [
+        [
+          -0.47478296735604697,
+          -0.8660558647790104,
+          -0.15661536639319887,
+          0.8491057764041899
+        ],
+        [
+          0.8773200686116989,
+          -0.47986784208599265,
+          -0.0060292074832134475,
+          -0.3405354462594098
+        ],
+        [
+          -0.06993304740769597,
+          -0.14026436900943823,
+          0.9876412687137195,
+          0.5487685888140974
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "eef_pose": [
+        [
+          -0.5509804427377955,
+          -0.5240215418657678,
+          0.6494782331849834,
+          0.6580645761189097
+        ],
+        [
+          0.8306489229569121,
+          -0.2695173795780304,
+          0.4872194052949016,
+          -0.439425572598615
+        ],
+        [
+          -0.0802677924885715,
+          0.8079367585188938,
+          0.583776734482454,
+          0.9524872296866926
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "joints": [
+        -32.889076232910156,
+        -39.11280822753906,
+        70.46607208251953,
+        -77.53114318847656,
+        6.739171504974365,
+        51.06545639038086,
+        56.33546829223633
+      ],
+      "gripper": 100.0,
+      "frames": [
+        {
+          "camera": "right",
+          "stream": "rgb",
+          "frame_id": "right_wrist_color_optical_frame",
+          "sequence": 1329,
+          "source_ns": 1794823396942721191,
+          "received_ns": 3278666843066,
+          "clock_domain": "unverified_device_ros_time",
+          "width": 640,
+          "height": 480,
+          "encoding": "bgr8",
+          "row_step_bytes": 1920,
+          "is_bigendian": false,
+          "blob_sha256": "0f5dcb52fa311e98d1e850f5bdf2089c455b0ffb01e0a281aceefb6faa8cbf9f",
+          "depth_scale_m": null,
+          "camera_info_sha256": "387b0f1d605a91a5c91470f7f969e4d4f2895718b5bc537de061b37beacbecce",
+          "source_epoch": 0,
+          "publisher_id": null
+        },
+        {
+          "camera": "right",
+          "stream": "depth",
+          "frame_id": "right_wrist_depth_optical_frame",
+          "sequence": 1315,
+          "source_ns": 1794823396941693115,
+          "received_ns": 3278664970323,
+          "clock_domain": "unverified_device_ros_time",
+          "width": 640,
+          "height": 480,
+          "encoding": "16UC1",
+          "row_step_bytes": 1280,
+          "is_bigendian": false,
+          "blob_sha256": "ce10ab8a1958f11eb6007467f52d4a12bef65155d50f8c4c1e5d4d3375d8446c",
+          "depth_scale_m": 0.001,
+          "camera_info_sha256": "e31590794ec8158936108338cffb71146e60382131479562a9ad9f043eb3987d",
+          "source_epoch": 0,
+          "publisher_id": null
+        }
+      ]
+    },
+    {
+      "observation_id": "ad6d2119ddbf4175afbe04d5eaba02a7:349",
+      "measurements": {
+        "camera": "right",
+        "received_ns": 3278864881505,
+        "state_received_ns": 3278858642495,
+        "source_ns": [
+          1794823397142532471,
+          1794823397141504639
+        ],
+        "stationary_samples": 3,
+        "tracking_samples": 4,
+        "stationary": false,
+        "held": false,
+        "accepted": false,
+        "support_samples": 1,
+        "segment_samples": 1,
+        "motion_m": 0.0,
+        "relative_translation_m": 0.0,
+        "relative_rotation_rad": 4.837716543897416e-07,
+        "gripper_span": 0.0,
+        "boundary_reason": "relative_translation_changed",
+        "reason": "measured_object_did_not_follow_hand",
+        "boundary_metrics": {
+          "relative_translation_m": 0.013875305304265175,
+          "relative_rotation_rad": 0.1095803702630734,
+          "gripper_span": 0.0
+        },
+        "attachment_profile": "coarse_position_following",
+        "translation_tolerance_m": 0.005,
+        "rotation_tolerance_rad": null,
+        "orientation_quality_advisory": false,
+        "nonfollowing": {
+          "accepted": true,
+          "support_samples": 4,
+          "segment_samples": 4,
+          "motion_m": 0.03292900538298074,
+          "gripper_span": 0.0,
+          "boundary_reason": null,
+          "reason": "measured_object_did_not_follow_hand",
+          "object_world_displacement_m": 0.004108753125663644
+        }
+      },
+      "object_pose": [
+        [
+          -0.3950874476148548,
+          -0.9127614019203817,
+          -0.10379080836725012,
+          0.8450456403755345
+        ],
+        [
+          0.916877305230607,
+          -0.3988056466495122,
+          0.01703124638723399,
+          -0.34116514195102277
+        ],
+        [
+          -0.056937824775928604,
+          -0.08843460501865902,
+          0.9944533195403228,
+          0.5487937087748687
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "eef_pose": [
+        [
+          -0.5541383464593833,
+          -0.5218460902084674,
+          0.6485424821223345,
+          0.6589322890174804
+        ],
+        [
+          0.8286637579824306,
+          -0.27184395711909964,
+          0.4893028092952955,
+          -0.4374126922203273
+        ],
+        [
+          -0.07903840325879122,
+          0.8085651001075715,
+          0.5830741030935404,
+          0.9655538734166048
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "joints": [
+        -30.32569122314453,
+        -36.946205139160156,
+        67.102294921875,
+        -78.28015899658203,
+        10.623188972473145,
+        52.281402587890625,
+        55.07017135620117
+      ],
+      "gripper": 100.0,
+      "frames": [
+        {
+          "camera": "right",
+          "stream": "rgb",
+          "frame_id": "right_wrist_color_optical_frame",
+          "sequence": 1335,
+          "source_ns": 1794823397142532471,
+          "received_ns": 3278866744850,
+          "clock_domain": "unverified_device_ros_time",
+          "width": 640,
+          "height": 480,
+          "encoding": "bgr8",
+          "row_step_bytes": 1920,
+          "is_bigendian": false,
+          "blob_sha256": "64017b131bf78a0ff08cf32d6198940d5bb8aedeaa1f0a1fbf151305b26b7590",
+          "depth_scale_m": null,
+          "camera_info_sha256": "387b0f1d605a91a5c91470f7f969e4d4f2895718b5bc537de061b37beacbecce",
+          "source_epoch": 0,
+          "publisher_id": null
+        },
+        {
+          "camera": "right",
+          "stream": "depth",
+          "frame_id": "right_wrist_depth_optical_frame",
+          "sequence": 1317,
+          "source_ns": 1794823397141504639,
+          "received_ns": 3278864881505,
+          "clock_domain": "unverified_device_ros_time",
+          "width": 640,
+          "height": 480,
+          "encoding": "16UC1",
+          "row_step_bytes": 1280,
+          "is_bigendian": false,
+          "blob_sha256": "6fd5c500fd728c4fc819f9895d4937c721dafa49e9df7b8ad3f846702a977e73",
+          "depth_scale_m": 0.001,
+          "camera_info_sha256": "e31590794ec8158936108338cffb71146e60382131479562a9ad9f043eb3987d",
+          "source_epoch": 0,
+          "publisher_id": null
+        }
+      ]
+    },
+    {
+      "observation_id": "ad6d2119ddbf4175afbe04d5eaba02a7:350",
+      "measurements": {
+        "camera": "right",
+        "received_ns": 3279397766667,
+        "state_received_ns": 3279399053944,
+        "source_ns": [
+          1794823397675349365,
+          1794823397674321533
+        ],
+        "stationary_samples": 3,
+        "tracking_samples": 5,
+        "stationary": false,
+        "held": null,
+        "accepted": false,
+        "support_samples": 1,
+        "segment_samples": 1,
+        "motion_m": 0.0,
+        "relative_translation_m": 0.0,
+        "relative_rotation_rad": 4.819322117804404e-07,
+        "gripper_span": 0.0,
+        "boundary_reason": "relative_translation_changed",
+        "reason": "insufficient_independent_following_samples",
+        "boundary_metrics": {
+          "relative_translation_m": 0.05060850190809377,
+          "relative_rotation_rad": 0.27501485074186605,
+          "gripper_span": 0.0
+        },
+        "attachment_profile": "coarse_position_following",
+        "translation_tolerance_m": 0.005,
+        "rotation_tolerance_rad": null,
+        "orientation_quality_advisory": false,
+        "nonfollowing": {
+          "accepted": false,
+          "support_samples": 1,
+          "segment_samples": 1,
+          "motion_m": 0.0,
+          "gripper_span": 0.0,
+          "boundary_reason": "relative_translation_changed",
+          "reason": "insufficient_independent_following_samples",
+          "boundary_metrics": {
+            "relative_translation_m": 0.011606497375510835,
+            "relative_rotation_rad": 0.24487673694379078,
+            "gripper_span": 0.0
+          },
+          "object_world_displacement_m": 0.0
+        }
+      },
+      "object_pose": [
+        [
+          -0.3807284035861753,
+          -0.9220576066816449,
+          0.06968251332471466,
+          0.8358887865292789
+        ],
+        [
+          0.9091912340109572,
+          -0.38702185236195286,
+          -0.15357534239563675,
+          -0.3340345341587443
+        ],
+        [
+          0.1685739680388843,
+          0.004884235338159863,
+          0.9856769052506865,
+          0.5489250155863853
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "eef_pose": [
+        [
+          -0.5552790640381454,
+          -0.5414060359808066,
+          0.6313039404632863,
+          0.6582761228724625
+        ],
+        [
+          0.8247520188540256,
+          -0.26081416439014277,
+          0.5017569920286947,
+          -0.43385696378502925
+        ],
+        [
+          -0.1070012543717726,
+          0.7992843523158849,
+          0.5913503662853746,
+          1.008298496496281
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "joints": [
+        -21.919818878173828,
+        -31.532711029052734,
+        58.47527313232422,
+        -80.43916320800781,
+        19.469167709350586,
+        54.64208984375,
+        51.72068786621094
+      ],
+      "gripper": 100.0,
+      "frames": [
+        {
+          "camera": "right",
+          "stream": "rgb",
+          "frame_id": "right_wrist_color_optical_frame",
+          "sequence": 1347,
+          "source_ns": 1794823397675349365,
+          "received_ns": 3279399577678,
+          "clock_domain": "unverified_device_ros_time",
+          "width": 640,
+          "height": 480,
+          "encoding": "bgr8",
+          "row_step_bytes": 1920,
+          "is_bigendian": false,
+          "blob_sha256": "48bbf4145421d599c54517a0b1d14b8643c688bc9e3cdbcfebe3e4247b9c6d36",
+          "depth_scale_m": null,
+          "camera_info_sha256": "387b0f1d605a91a5c91470f7f969e4d4f2895718b5bc537de061b37beacbecce",
+          "source_epoch": 0,
+          "publisher_id": null
+        },
+        {
+          "camera": "right",
+          "stream": "depth",
+          "frame_id": "right_wrist_depth_optical_frame",
+          "sequence": 1330,
+          "source_ns": 1794823397674321533,
+          "received_ns": 3279397766667,
+          "clock_domain": "unverified_device_ros_time",
+          "width": 640,
+          "height": 480,
+          "encoding": "16UC1",
+          "row_step_bytes": 1280,
+          "is_bigendian": false,
+          "blob_sha256": "52b9101147d630ee5c13bcc9c70fef15bf8af6445e8e6fda27e48bd9c53e1ccb",
+          "depth_scale_m": 0.001,
+          "camera_info_sha256": "e31590794ec8158936108338cffb71146e60382131479562a9ad9f043eb3987d",
+          "source_epoch": 0,
+          "publisher_id": null
+        }
+      ]
+    },
+    {
+      "observation_id": "ad6d2119ddbf4175afbe04d5eaba02a7:351",
+      "measurements": {
+        "camera": "right",
+        "received_ns": 3279930492990,
+        "state_received_ns": 3279937680978,
+        "source_ns": [
+          1794823398208164063,
+          1794823398207135986
+        ],
+        "held": null
+      },
+      "object_pose": [
+        [
+          -0.43003193879986357,
+          -0.9028136749141757,
+          -9.615981503031425e-15,
+          0.8390624100105055
+        ],
+        [
+          0.9028136749141681,
+          -0.43003193879984947,
+          1.0356813874689021e-13,
+          -0.3407578886806675
+        ],
+        [
+          2.1852679165233962e-18,
+          -7.422421519477709e-18,
+          0.9999999999998911,
+          0.5461410894803431
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "eef_pose": [
+        [
+          -0.5522324762301303,
+          -0.5434184248282155,
+          0.6322465561424268,
+          0.6576089684932932
+        ],
+        [
+          0.8259702185551061,
+          -0.25365861885177665,
+          0.5034188148472799,
+          -0.43470628946006035
+        ],
+        [
+          -0.11319227118831549,
+          0.8002210448616252,
+          0.5889259623278644,
+          1.0088081550361037
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "joints": [
+        -21.94601058959961,
+        -31.31186294555664,
+        58.468353271484375,
+        -80.52371215820312,
+        19.33986473083496,
+        54.65272521972656,
+        51.58692169189453
+      ],
+      "gripper": 100.0,
+      "frames": [
+        {
+          "camera": "right",
+          "stream": "rgb",
+          "frame_id": "right_wrist_color_optical_frame",
+          "sequence": 1360,
+          "source_ns": 1794823398208164063,
+          "received_ns": 3279932810569,
+          "clock_domain": "unverified_device_ros_time",
+          "width": 640,
+          "height": 480,
+          "encoding": "bgr8",
+          "row_step_bytes": 1920,
+          "is_bigendian": false,
+          "blob_sha256": "c2bea7f7dbf7ce0e81fd8715d55f638c332a3d5ef6900fdea63dfb603b853b90",
+          "depth_scale_m": null,
+          "camera_info_sha256": "387b0f1d605a91a5c91470f7f969e4d4f2895718b5bc537de061b37beacbecce",
+          "source_epoch": 0,
+          "publisher_id": null
+        },
+        {
+          "camera": "right",
+          "stream": "depth",
+          "frame_id": "right_wrist_depth_optical_frame",
+          "sequence": 1342,
+          "source_ns": 1794823398207135986,
+          "received_ns": 3279930492990,
+          "clock_domain": "unverified_device_ros_time",
+          "width": 640,
+          "height": 480,
+          "encoding": "16UC1",
+          "row_step_bytes": 1280,
+          "is_bigendian": false,
+          "blob_sha256": "ea0c17a4e84e4c9f4002f70e7a01243f71e013e4f034eb67973df673cb7a154b",
+          "depth_scale_m": 0.001,
+          "camera_info_sha256": "e31590794ec8158936108338cffb71146e60382131479562a9ad9f043eb3987d",
+          "source_epoch": 0,
+          "publisher_id": null
+        }
+      ],
+      "eef_source": "offline_pinocchio_fk_of_recorded_joints",
+      "full22": [
+        68.56204986572266,
+        -92.22477722167969,
+        -88.8671646118164,
+        -89.01966857910156,
+        0.4738883972167969,
+        -1.0296318531036377,
+        -0.6927086114883423,
+        -21.94601058959961,
+        -31.31186294555664,
+        58.468353271484375,
+        -80.52371215820312,
+        19.33986473083496,
+        54.65272521972656,
+        51.58692169189453,
+        0.0022618910297751427,
+        -14.997200012207031,
+        -0.005170036572962999,
+        0.0020599365234375,
+        -0.0061798095703125,
+        -59.74021911621094,
+        -68.18458557128906,
+        -30.211029052734375
+      ],
+      "body_feedback_available_ns": 3279934697534
+    },
+    {
+      "observation_id": "ad6d2119ddbf4175afbe04d5eaba02a7:352",
+      "measurements": {
+        "camera": "right",
+        "received_ns": 3280398804218,
+        "state_received_ns": 3280397767007,
+        "source_ns": [
+          1794823398674439941,
+          1794823398673410889
+        ],
+        "held": null
+      },
+      "object_pose": [
+        [
+          -0.335127901550543,
+          -0.9421726432041734,
+          -9.695214540608414e-15,
+          0.8393880367685775
+        ],
+        [
+          0.9421726432041642,
+          -0.33512790155052946,
+          1.0364214574808367e-13,
+          -0.3419715515440097
+        ],
+        [
+          2.4895325446820023e-17,
+          -6.50877884644567e-18,
+          0.9999999999998911,
+          0.5459192626808071
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "eef_pose": [
+        [
+          -0.5524116799165296,
+          -0.5428680486629779,
+          0.632562738100062,
+          0.6576820858751993
+        ],
+        [
+          0.825863742223885,
+          -0.25347658267853745,
+          0.5036851211953473,
+          -0.4345980127012205
+        ],
+        [
+          -0.11309471770051088,
+          0.8006521740271875,
+          0.5883584630595372,
+          1.0085530086905696
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "joints": [
+        -21.948741912841797,
+        -31.318130493164062,
+        58.42661666870117,
+        -80.51563262939453,
+        19.337949752807617,
+        54.652320861816406,
+        51.578250885009766
+      ],
+      "gripper": 100.0,
+      "frames": [
+        {
+          "camera": "right",
+          "stream": "rgb",
+          "frame_id": "right_wrist_color_optical_frame",
+          "sequence": 1368,
+          "source_ns": 1794823398674439941,
+          "received_ns": 3280398804218,
+          "clock_domain": "unverified_device_ros_time",
+          "width": 640,
+          "height": 480,
+          "encoding": "bgr8",
+          "row_step_bytes": 1920,
+          "is_bigendian": false,
+          "blob_sha256": "ddd6cd073032a3e5e3b4ac57fc737cef84120bdf99d89f2cd6c2f1a21b868ca6",
+          "depth_scale_m": null,
+          "camera_info_sha256": "387b0f1d605a91a5c91470f7f969e4d4f2895718b5bc537de061b37beacbecce",
+          "source_epoch": 0,
+          "publisher_id": null
+        },
+        {
+          "camera": "right",
+          "stream": "depth",
+          "frame_id": "right_wrist_depth_optical_frame",
+          "sequence": 1353,
+          "source_ns": 1794823398673410889,
+          "received_ns": 3280400127819,
+          "clock_domain": "unverified_device_ros_time",
+          "width": 640,
+          "height": 480,
+          "encoding": "16UC1",
+          "row_step_bytes": 1280,
+          "is_bigendian": false,
+          "blob_sha256": "8313cece72017e2ff3e1cb1333be57de12e7ed56a60aa72bdce737be0ba431fa",
+          "depth_scale_m": 0.001,
+          "camera_info_sha256": "e31590794ec8158936108338cffb71146e60382131479562a9ad9f043eb3987d",
+          "source_epoch": 0,
+          "publisher_id": null
+        }
+      ],
+      "eef_source": "offline_pinocchio_fk_of_recorded_joints",
+      "full22": [
+        68.56206512451172,
+        -92.22493743896484,
+        -88.86685180664062,
+        -89.01959228515625,
+        0.4742179811000824,
+        -1.0295768976211548,
+        -0.6929695010185242,
+        -21.948741912841797,
+        -31.318130493164062,
+        58.42661666870117,
+        -80.51563262939453,
+        19.337949752807617,
+        54.652320861816406,
+        51.578250885009766,
+        0.0022618910297751427,
+        -14.997200012207031,
+        -0.005170036572962999,
+        0.0020599365234375,
+        -0.0054931640625,
+        -59.739532470703125,
+        -68.18527221679688,
+        -30.21240234375
+      ],
+      "body_feedback_available_ns": 3280399467204
+    },
+    {
+      "observation_id": "ad6d2119ddbf4175afbe04d5eaba02a7:353",
+      "measurements": {
+        "camera": "right",
+        "received_ns": 3280965803256,
+        "state_received_ns": 3280956486820,
+        "source_ns": [
+          1794823399240645996,
+          1794823399239617920
+        ],
+        "held": null
+      },
+      "object_pose": [
+        [
+          -0.3996221054712427,
+          -0.9166799729560696,
+          -9.68894229450261e-15,
+          0.8400038199044758
+        ],
+        [
+          0.916679972956061,
+          -0.39962210547122845,
+          1.0349492357432854e-13,
+          -0.34269425155718425
+        ],
+        [
+          -8.257723385924045e-19,
+          -1.2678648447550544e-17,
+          0.9999999999998912,
+          0.5449627240951906
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "eef_pose": [
+        [
+          -0.552475037602347,
+          -0.542618518219199,
+          0.6327214841554587,
+          0.6576722698122108
+        ],
+        [
+          0.8258361446876413,
+          -0.2534397554016421,
+          0.5037488982711614,
+          -0.43456303857136086
+        ],
+        [
+          -0.11298670255272797,
+          0.8008329626504882,
+          0.588133123517716,
+          1.0083809743296814
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "joints": [
+        -21.966445922851562,
+        -31.322845458984375,
+        58.421363830566406,
+        -80.51519775390625,
+        19.335683822631836,
+        54.6508903503418,
+        51.571937561035156
+      ],
+      "gripper": 100.0,
+      "frames": [
+        {
+          "camera": "right",
+          "stream": "rgb",
+          "frame_id": "right_wrist_color_optical_frame",
+          "sequence": 1381,
+          "source_ns": 1794823399240645996,
+          "received_ns": 3280965803256,
+          "clock_domain": "unverified_device_ros_time",
+          "width": 640,
+          "height": 480,
+          "encoding": "bgr8",
+          "row_step_bytes": 1920,
+          "is_bigendian": false,
+          "blob_sha256": "092af008457069c9041b11883084a07acbf7e63e5e2028fc331b4ca6f4afd826",
+          "depth_scale_m": null,
+          "camera_info_sha256": "387b0f1d605a91a5c91470f7f969e4d4f2895718b5bc537de061b37beacbecce",
+          "source_epoch": 0,
+          "publisher_id": null
+        },
+        {
+          "camera": "right",
+          "stream": "depth",
+          "frame_id": "right_wrist_depth_optical_frame",
+          "sequence": 1364,
+          "source_ns": 1794823399239617920,
+          "received_ns": 3280967143143,
+          "clock_domain": "unverified_device_ros_time",
+          "width": 640,
+          "height": 480,
+          "encoding": "16UC1",
+          "row_step_bytes": 1280,
+          "is_bigendian": false,
+          "blob_sha256": "dc547e5f2a2923cfb2bdc4b547686b3fc13a8dcd77262ecbece4c2f5819c1e5d",
+          "depth_scale_m": 0.001,
+          "camera_info_sha256": "e31590794ec8158936108338cffb71146e60382131479562a9ad9f043eb3987d",
+          "source_epoch": 0,
+          "publisher_id": null
+        }
+      ],
+      "eef_source": "offline_pinocchio_fk_of_recorded_joints",
+      "full22": [
+        68.56210327148438,
+        -92.22501373291016,
+        -88.86701202392578,
+        -89.0195083618164,
+        0.47442397475242615,
+        -1.0296249389648438,
+        -0.6931686401367188,
+        -21.966445922851562,
+        -31.322845458984375,
+        58.421363830566406,
+        -80.51519775390625,
+        19.335683822631836,
+        54.6508903503418,
+        51.571937561035156,
+        0.0022618910297751427,
+        -14.997200012207031,
+        -0.005170036572962999,
+        0.00274658203125,
+        -0.0061798095703125,
+        -59.74021911621094,
+        -68.18458557128906,
+        -30.210342407226562
+      ],
+      "body_feedback_available_ns": 3280967511395
+    }
+  ],
+  "recomputed_eef": {
+    "observations": [
+      "351",
+      "352",
+      "353"
+    ],
+    "urdf_sha256": "bc21c6f36446aa2741d6ba20c2190836be967b1f3043dfa39eaae0983c95d5c0",
+    "mapping_sha256": "21e1879e2b5e15dfe590a27b1cb3c256626364b161cb950e24c5dd08a86633d5",
+    "note": "Current recorded right-arm joints; nearest archived body/head feedback; identity native/world chain. Numerical computation only."
+  }
+}

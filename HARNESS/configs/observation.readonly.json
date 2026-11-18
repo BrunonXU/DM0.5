@@ -1,0 +1,57 @@
+{
+  "source_clock_verified": false,
+  "cameras": [
+    {
+      "name": "head",
+      "source_clock_domain": "unverified_device_ros_time",
+      "rgb": {
+        "type": "raw",
+        "topic": "/camera/head/color/image_raw",
+        "width": 1280,
+        "height": 720,
+        "camera_info_topic": "/camera/head/color/camera_info"
+      },
+      "depth": {
+        "type": "raw",
+        "topic": "/camera/head/depth/image_raw",
+        "width": 848,
+        "height": 480,
+        "camera_info_topic": "/camera/head/depth/camera_info",
+        "depth_scale_m": 0.001
+      }
+    },
+    {
+      "name": "right",
+      "source_clock_domain": "unverified_device_ros_time",
+      "rgb": {
+        "type": "raw",
+        "topic": "/camera/right_wrist/color/image_raw",
+        "width": 640,
+        "height": 480,
+        "camera_info_topic": "/camera/right_wrist/color/camera_info"
+      },
+      "depth": {
+        "type": "raw",
+        "topic": "/camera/right_wrist/depth/image_rect_raw",
+        "width": 640,
+        "height": 480,
+        "camera_info_topic": "/camera/right_wrist/depth/camera_info",
+        "depth_scale_m": 0.001
+      }
+    }
+  ],
+  "inspection_cameras": [
+    {
+      "name": "left",
+      "source_clock_domain": "unverified_device_ros_time",
+      "rgb": {
+        "type": "compressed",
+        "topic": "/camera/left_wrist/color/image_raw/compressed",
+        "width": 640,
+        "height": 480,
+        "camera_info_topic": "/camera/left_wrist/color/camera_info"
+      }
+    }
+  ],
+  "joint_state": null
+}

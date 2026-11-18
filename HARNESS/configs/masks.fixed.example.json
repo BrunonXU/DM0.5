@@ -1,0 +1,40 @@
+{
+  "port": 19842,
+  "image_shape": [
+    692,
+    922,
+    3
+  ],
+  "prompts": {
+    "square-1": null,
+    "square-hole-1": null
+  },
+  "minimum_score": 0.9,
+  "minimum_area_px": 100,
+  "prompt_padding_px": 20,
+  "maximum_overlap_fraction": 0.05,
+  "optional_ids": [
+    "square-hole-1"
+  ],
+  "scene_validated_overlap_pairs": [
+    [
+      "square-1",
+      "square-hole-1"
+    ]
+  ],
+  "backend": "fixed_color",
+  "color_profiles": {
+    "square-1": {
+      "hsv_lower": null,
+      "hsv_upper": null,
+      "minimum_area_px": null,
+      "maximum_area_px": null
+    },
+    "square-hole-1": {
+      "hsv_lower": null,
+      "hsv_upper": null,
+      "minimum_area_px": null,
+      "maximum_area_px": null
+    }
+  }
+}

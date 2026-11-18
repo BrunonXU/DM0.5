@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "created_date": "2026-11-04",
-  "purpose": "Source pins only; Python dependencies and runtime compatibility are not yet verified.",
+  "purpose": "Pinned upstream sources; core and perception dependencies are separately locked.",
   "repositories": [
     {
       "name": "RPent",
@@ -31,10 +31,19 @@
       "role": "reference only: failure analysis, independent verification, experience promotion",
       "license": "Apache-2.0; model and third-party component licenses differ",
       "pin_basis": "main snapshot researched on 2026-11-04"
+    },
+    {
+      "name": "SAM2",
+      "url": "https://github.com/facebookresearch/sam2.git",
+      "commit": "2b90b9f5ceec907a1c18123530e92e794ad901a4",
+      "path": "third_party/SAM2",
+      "role": "prompt segmentation and bounded video tracking",
+      "license": "Apache-2.0; BSD components retain their terms",
+      "pin_basis": "official main snapshot; CPU inference validated"
     }
   ],
-  "runtime_validation": "not_run",
-  "transitive_dependency_lock": "not_created",
+  "runtime_validation": "see agent/experiments/20261104-software-implementation.md",
+  "transitive_dependency_lock": "uv.lock and perception/uv.lock",
   "upgrade_candidates": [
     {
       "name": "RPent",

@@ -1,0 +1,9 @@
+{
+  "task_id": "square-site-task",
+  "object_id": "square-1",
+  "hole_id": "square-hole-1",
+  "shape": "square",
+  "local_corrections": 2,
+  "regrasp_limit": 1,
+  "calibration_id": "REPLACE_WITH_ACCEPTED_CALIBRATION_ID"
+}

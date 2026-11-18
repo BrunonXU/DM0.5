@@ -1,0 +1,166 @@
+{
+  "schema": "f1-real-face-regression-v1",
+  "run": "web-e51d18f0e7f946ffac2aae7ba3791562",
+  "source_artifact": "artifacts/grasp-evidence-20261110/face-boundary-probe.json",
+  "calibration_id": "coarse-aea05cd220e75f10",
+  "eef_camera": [
+    [
+      -0.9999745101399424,
+      -0.0024773105483230085,
+      0.0066964171616475665,
+      0.023427846278582555
+    ],
+    [
+      -0.006483808351935849,
+      0.7078078937197496,
+      -0.7063752160269292,
+      -0.15631568377038374
+    ],
+    [
+      -0.0029898661529665915,
+      -0.7064006289071596,
+      -0.7078059142024218,
+      0.09176447949444237
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "face_object": [
+    [
+      1.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.0,
+      0.0,
+      0.0
+    ],
+    [
+      0.0,
+      0.0,
+      1.0,
+      -0.06
+    ],
+    [
+      0.0,
+      0.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "records": [
+    {
+      "observation_id": "ac0d9f124dcb4cadb124c68b8678ee04:52",
+      "file": "face-points-52.npz",
+      "sha256": "49a31aa6141e8ff090b4045672923abfa946454f4f871a1d55d919d79ec58454",
+      "selected_points": 7478,
+      "original_eef_object": [
+        [
+          0.40846571271792803,
+          0.9124489860306435,
+          -0.02434265803202835,
+          0.005182557827963369
+        ],
+        [
+          -0.8470091962280545,
+          0.38884089921810017,
+          0.3624612227376043,
+          -0.2719830718314156
+        ],
+        [
+          0.3401927962010004,
+          -0.12743452646435938,
+          0.9316808987048043,
+          -0.04217381756789251
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "observation_id": "ac0d9f124dcb4cadb124c68b8678ee04:53",
+      "file": "face-points-53.npz",
+      "sha256": "8b08dc9f3025e2c6b21a757f6abce7a7882b091502510751efd28e81ed23b397",
+      "selected_points": 7465,
+      "original_eef_object": [
+        [
+          0.34233674718897045,
+          0.9392927084506887,
+          -0.02312588036198876,
+          0.005175936621070076
+        ],
+        [
+          -0.8738160427632339,
+          0.3273262053722884,
+          0.35958742970520113,
+          -0.27175324327836314
+        ],
+        [
+          0.34532755743751614,
+          -0.10289222575197901,
+          0.9328247820761334,
+          -0.042284242154822516
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "observation_id": "ac0d9f124dcb4cadb124c68b8678ee04:56",
+      "file": "face-points-56.npz",
+      "sha256": "c35326ad2068e78e8e5f3aad4db7047d8f197b10c052393f5665a977cc91f700",
+      "selected_points": 7463,
+      "original_eef_object": [
+        [
+          0.26735287563661736,
+          0.9633244759289294,
+          -0.022986551467766115,
+          0.005279175152174048
+        ],
+        [
+          -0.8955814009656113,
+          0.25721402664149534,
+          0.36300811004300343,
+          -0.272039882931469
+        ],
+        [
+          0.35560706082686483,
+          -0.07646493413251856,
+          0.9315024049859033,
+          -0.0421600053719704
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    }
+  ],
+  "source_file_sha256": {
+    "runs/workspace/web-e51d18f0e7f946ffac2aae7ba3791562/planner/trace.jsonl": "35e643b57fbc75e5bc19878ec8f12b72aba180574a3d9c983387cf7cb88fd2ee",
+    "runs/workspace/web-e51d18f0e7f946ffac2aae7ba3791562/site/gateway.local.json": "b6b15cc8a02457a4f0ba424aa13bc983d72a49fc3b97bb91c51c2f04e37bb145",
+    "runs/workspace/web-e51d18f0e7f946ffac2aae7ba3791562/site/masks.local.json": "7bfd5a7bc09884f59dfe066df622b492849d55d51943d9a6c747fc819516ceff"
+  },
+  "limitations": [
+    "Saved post-lift frames only; temporal test motion is explicitly synthetic.",
+    "Original fitted point clouds are selected from immutable RGB-D blobs with the saved fixed-color/plane settings.",
+    "No physical grasp success or calibration precision is certified by the fixture."
+  ]
+}

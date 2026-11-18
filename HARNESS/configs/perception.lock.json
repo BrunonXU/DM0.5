@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "device_validated": "cuda:0",
+  "model": "sam2.1_hiera_tiny",
+  "config": "configs/sam2.1/sam2.1_hiera_t.yaml",
+  "checkpoint_url": "https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_tiny.pt",
+  "checkpoint_sha256": "7402e0d864fa82708a20fbd15bc84245c2f26dff0eb43a4b5b93452deb34be69",
+  "cuda_extension": false,
+  "gpu_latency_validated": true,
+  "gpu_uuid": "GPU-00000000-0000-4000-8000-000000000002",
+  "torch": "2.7.1+cu128",
+  "gpu_validation": "artifacts/sam-rollout-20261110/gpu-benchmark.json",
+  "gpu_geometry_saved_frames": 5,
+  "environment_lock_sha256": "424c0e9e929acb298220316f93bab1416a984ea9f2ce8279ffd1b8f14092c47f"
+}

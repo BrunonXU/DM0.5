@@ -68,7 +68,7 @@ def main() -> int:
             raise ValueError(f"Verification failed: {relative}")
         print(json.dumps({"name": entry["name"], "commit": actual,
                           "clean": True, "path": str(relative)}), flush=True)
-    print("Source pins verified. Dependencies, API and robot runtime have NOT been tested.")
+    print("Source pins verified. This command does not test dependencies, API or robot runtime; see agent/STATUS.md.")
     return 0
 
 

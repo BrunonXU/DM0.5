@@ -1,0 +1,30 @@
+{
+  "port": 19842,
+  "model_config": "configs/sam2.1/sam2.1_hiera_t.yaml",
+  "checkpoint": "models/sam2.1_hiera_tiny.pt",
+  "checkpoint_sha256": "7402e0d864fa82708a20fbd15bc84245c2f26dff0eb43a4b5b93452deb34be69",
+  "device": "cpu",
+  "image_shape": [
+    692,
+    922,
+    3
+  ],
+  "prompts": {
+    "square-1": null,
+    "square-hole-1": null
+  },
+  "minimum_score": 0.9,
+  "minimum_area_px": 100,
+  "prompt_padding_px": 20,
+  "maximum_overlap_fraction": 0.05,
+  "backend": "sam2",
+  "optional_ids": [
+    "square-hole-1"
+  ],
+  "scene_validated_overlap_pairs": [
+    [
+      "square-1",
+      "square-hole-1"
+    ]
+  ]
+}

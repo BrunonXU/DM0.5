@@ -1,0 +1,15 @@
+# ARM Python 3.12 overlay; NumPy 2.2.6 and SciPy 1.18.1 remain in the existing native venv.
+pydantic==2.14.2
+pydantic_core==2.50.2
+annotated-types==0.8.0
+typing-extensions==4.16.0
+typing-inspection==0.4.4
+httpx==0.28.1
+httpcore==1.0.9
+anyio==4.16.0
+idna==3.20
+certifi==2026.10.23
+h11==0.16.0
+opencv-python-headless==4.14.0.94
+PyYAML==6.0.3
+websockets==15.0.1

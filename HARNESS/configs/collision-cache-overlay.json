@@ -1,0 +1,6 @@
+{
+  "schema": "f1-harness-collision-cache-overlay-v1",
+  "base_module_sha256": "631d1b591931322e2a3cb0f16d8ce5326c4b54181abe48ddd4b24ae3c6b779e4",
+  "source": "F1-4242/integrations/pico_upper/vendor/f1_safety/src/python",
+  "scope": "Optional static Coal geometry cache; original collision evaluation retained"
+}

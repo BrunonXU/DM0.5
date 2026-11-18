@@ -1,0 +1,18 @@
+[project]
+name = "f1-harness-perception"
+version = "0.0.0"
+requires-python = ">=3.11,<3.12"
+dependencies = ["sam-2", "torch==2.7.1+cu128", "torchvision==0.22.1+cu128", "opencv-python-headless>=4.10,<5", "httpx>=0.28,<1", "pydantic>=2.10,<3"]
+
+[tool.uv.sources]
+sam-2 = { path = "../third_party/SAM2" }
+torch = { index = "pytorch-cu128" }
+torchvision = { index = "pytorch-cu128" }
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[tool.uv]
+build-constraint-dependencies = ["torch==2.7.1+cu128"]

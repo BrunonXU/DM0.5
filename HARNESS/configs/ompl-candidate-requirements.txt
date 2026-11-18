@@ -1,0 +1,6 @@
+# Optional numerical worker only; no installation into the controller/global env.
+# CPython 3.11 x86_64 development / CPython 3.12 aarch64 candidate wheels.
+# ARM runtime and full release admission remain to be verified before enabling.
+ompl==2.0.1 \
+    --hash=sha256:REDACTED_HOST_FINGERPRINT \
+    --hash=sha256:REDACTED_HOST_FINGERPRINT

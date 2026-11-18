@@ -1,0 +1,13 @@
+{
+  "schema": "f1-harness-owner-config-v1",
+  "owner_socket": "/home/user/Bruno/HARNESS/runtime/owner.sock",
+  "planner_socket": "/home/user/Bruno/HARNESS/runtime/plan.sock",
+  "verifier_socket": "/home/user/Bruno/HARNESS/runtime/verify.sock",
+  "calibration_bundle": null,
+  "integration_validated": false,
+  "feedback_age_ms": 200,
+  "reference_tolerance_deg": 0.5,
+  "stop_delta_deg": null,
+  "stop_window_ms": null,
+  "stop_gripper_delta": null
+}

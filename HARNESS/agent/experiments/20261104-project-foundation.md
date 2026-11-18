@@ -6,7 +6,7 @@
 
 ## 范围与实际完成
 
-- 人类：根 README、`docs/IMPLEMENTATION_PLAN.md`、`docs/UPSTREAM_REUSE.md`；覆盖选型、现有能力复用、ROI／标定、技能协议、失败恢复、经验晋升、效率、积木例子和阶段门槛。
+- 人类：根 README、[当时的实施方案](20261112-implementation-plan.md)、`docs/UPSTREAM_REUSE.md`；覆盖选型、现有能力复用、ROI／标定、技能协议、失败恢复、经验晋升、效率、积木例子和阶段门槛。
 - Agent：稳定 AGENTS、唯一 STATUS、TODO、实验索引与本报告。
 - 源码：三个独立 checkout、固定来源清单和可重复核对的 bootstrap 脚本；不安装上游或下载模型，不初始化第三方子模块。
 - 配置：官方 OpenAI Responses／`codex` runtime／`gpt-6-astra`／`medium` 的示例，默认离线且无动作；未来 launcher 和认证加载器尚未实现。

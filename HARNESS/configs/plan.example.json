@@ -1,0 +1,29 @@
+{
+  "socket": "/home/user/Bruno/HARNESS/runtime/plan.sock",
+  "numerical_socket": "/home/user/Bruno/HARNESS/runtime/numerics.sock",
+  "task": {
+    "task_id": "square-site-task",
+    "object_id": "square-1",
+    "hole_id": "square-hole-1",
+    "shape": "square",
+    "local_corrections": 2,
+    "regrasp_limit": 1,
+    "calibration_id": "REPLACE_WITH_ACCEPTED_CALIBRATION_ID"
+  },
+  "fixture": {
+    "native_frame": null,
+    "object_grasp_eef": null,
+    "approach_clearance_m": null,
+    "transfer_clearance_m": null,
+    "insertion_depth_m": null,
+    "attached_radius_m": null,
+    "effective_clearance_m": null,
+    "obstacles": null,
+    "grasp_opening": null,
+    "release_opening": null,
+    "joint_tolerance_deg": null,
+    "settle_ms": null,
+    "gripper_tolerance": null,
+    "frame_chain": null
+  }
+}

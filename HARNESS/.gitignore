@@ -5,16 +5,27 @@
 /.env.*
 !/configs/*.example.env
 /configs/*.local.*
+/site/
 /secrets/
 
-# Independent, pinned upstream checkouts; configs/upstreams.lock.json is tracked.
+# Independent, pinned upstream checkouts; source identities live in configs/upstreams.lock.json.
 /third_party/
 
 # Local environments and generated evidence (keep references in agent/experiments).
 /.venv/
+/perception/.venv/
+/.tools/
+/.python/
+/.overlay/
+/.pytest_cache/
+/*.egg-info/
+/src/*.egg-info/
 /.cache/
 /artifacts/
 /runs/
+/experience/
+/releases/.registry.lock
+/releases/registry.lock
 /models/
 /weights/
 __pycache__/

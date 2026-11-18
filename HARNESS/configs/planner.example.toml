@@ -1,24 +1,23 @@
-# Design input, not a working HARNESS launcher. No API call is made by this file.
-# Adapter must explicitly map these values to the pinned PyRUA CLI.
+# Loaded by f1-harness; direct Responses driver exposes only python and finish.
 schema_version = 1
 
 [planner]
 provider = "openai"
-runtime = "codex"
+runtime = "responses"
 wire_api = "responses"
 base_url = "https://api.openai.com/v1"
-model = "gpt-6-astra"
-reasoning_effort = "medium"
-api_key_env = "HARNESS_OPENAI_API_KEY"
+model = "gpt-6.2-astra"
+reasoning_effort = "high"
 credentials_file = "API.MD"
-# Future local credential loader: read only in planner process; never send the file
+# Local credential loader: read only in planner process; never send the file
 # to an LLM, echo it, pass it in CLI arguments, or inherit it in code-cell workers.
 
 [execution]
 mode = "offline"
 allow_robot_actions = false
 allow_training = false
-# Real skill gateway, registry and credential loader are still to be implemented.
+# Hardware authority is a bound infra start consumed by the original F1 owner;
+# the legacy physical-START entry remains separate. This config never authorizes motion.
 
 [memory]
 read_scope = "verified_snapshot"
