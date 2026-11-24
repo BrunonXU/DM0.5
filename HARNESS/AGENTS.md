@@ -4,6 +4,8 @@
 
 本页维护协作、现场授权和发布验收规则，适用于用户指定的 `projects/HARNESS` 全树。工作区约定见 [Projects 根规则](../AGENTS.md)和[项目规则与协作习惯](../PROJECT_RULES_AND_PREFERENCES.md)。
 
+Codex 每次开工前，还要读取 [Claude 审阅与执行规格](../Claude-advice/HARNESS/review.md)，按其中的优先级执行改进项。读取、执行和回写的规则见下方[审阅建议的执行](#claude_advice-审阅建议的执行2026-11-24用户确认)；本页的硬保护和发布验收规则始终优先。
+
 ## [HARNESS_MAINLINE] 用户确认的方案主线（2026-11-11）
 
 常规程序、策略判断和学习策略之间的分工见[职责与交权](docs/ARCHITECTURE.md#职责与交权)。单块任务的接续过程见[单块分拣示例](docs/ARCHITECTURE.md#单块分拣示例)。
@@ -16,8 +18,30 @@
 
 设计依据见[观测与重规划](docs/ARCHITECTURE.md#观测与重规划)。实现和审查使用项目内的[推进、重观测与重规划开发方法](skills/progress-observe-replan/SKILL.md)。
 
+### [CLAUDE_ADVICE] 审阅建议的执行（2026-11-24用户确认）
+
+[Claude-advice/HARNESS/review.md](../Claude-advice/HARNESS/review.md) 是 Claude 对 HARNESS 的只读审阅和改进执行规格：前半部分给人看，后半部分给 Codex 逐条执行。分工原则、状态标记、执行顺序、遇 `[!]` 停下询问以及回写格式，统一以 [Claude-advice 说明](../Claude-advice/README.md#codex-执行与回写约定) 为准，本节不重复。下面只写 HARNESS 专属规则。
+
+1. **开工前必读。** Codex 每次在 HARNESS 开工，先读该 review 的状态，再读本页和 STATUS。
+2. **本轮做什么。** 用户没有另行指定本轮任务时，按 review 的优先级处理条目。用户当轮明确指定了别的任务时，先做用户的任务，review 条目顺延，不得夹带执行。
+3. **冲突时以谁为准。** 依次为：用户当轮明确指令 > 本页及 [故障分级](docs/FAULT_POLICY.md) 中的硬保护和发布验收规则 > review 条目 > 其他文档的旧描述。review 与本页冲突时，按本页执行，并把该条目改为 `[!]`，写明冲突点。
+4. **执行范围。** 只改条目列出的文件和行为，不顺手重构、不扩大范围。不改 DAgger、F1-4242、RLinf 和 `third_party/` 上游源码；需要改这些工程的条目另开任务，并先读对应的局部规则。
+5. **硬保护不得移除。** 本清单是 review 执行时的权威，review 只引用它的代码位置。以下保护无论 review 怎么写都保持不变：
+   - 授权与会话身份；
+   - 实时反馈新鲜度与失联撤权；
+   - 原生关节限位、自碰撞、环境碰撞，以及对实际路径的扫掠；
+   - 已发布、部分发布或发布状态未知时不重放，零发布须由 owner 证明；
+   - 相机内参、标定和时钟域身份；
+   - 原始记录写盘失败即停止。
+
+   放宽其他检查时，必须在提交说明中写明它对应的物理失效、适用阶段、故障等级和恢复方式，与上文“实现与执行边界”的要求一致。
+6. **完成后的 HARNESS 额外回写。** 按 README 回写 review 状态之外，涉及部署或真机结论时，还要按本页规则更新 STATUS 和 TODO。
+7. **完成的标准是真机指标。** 条目是否完成，以 [验收指标与执行细节](../Claude-advice/HARNESS/review-acceptance.md) 的真机漏斗指标为准：走到第几阶段、成功几次、耗时、模型调用次数。测试通过和回放通过只是上真机的门票；没有真机试验数据的条目只能标“软件完成，待真机验收”。每个 PR 按该文档的模板附报告，并报告新增拒绝原因数；除六类硬保护外，净增必须为 0。指标未达到时如实报告，不得自行调低阈值或更换口径。基线数据和每批真机试验的报告、运行记录必须按该文档“证据上云”一节上传到 `Claude-advice/HARNESS/evidence/`，随 PR 进入 GitHub；没有上传的结果视为没有做。
+8. **验收不降级。** review 中的验收标准是最低要求；发布前仍须完成本页“每次发布前的全流程零输出验收”。
+
 ## 每轮接续
 
+0. Codex 先按上节读取 [Claude 审阅与执行规格](../Claude-advice/HARNESS/review.md)，确认本轮要执行的条目和待人工确认项。
 1. 核对 STATUS 页首的当前目标、已确认决定、实际完成范围、未验收项和下一步，现场操作前复查实时状态。以最新用户指令与对应证据接续工作。
 2. 设计改动按上方章节核对依据，依赖选型与源码来源查[上游复用清单](docs/UPSTREAM_REUSE.md)。按本轮问题选读实验与代码。
 3. 涉及 F1 积木时，先读其 [AGENTS](../tasks/F1_ComplexyToys/AGENTS.md)与 [STATUS](../tasks/F1_ComplexyToys/STATUS.md)。修改 DAgger、RLinf、F1-4242 或其他工程前，再读对应局部规则；HARNESS 不另维护 F1 当前状态。
@@ -85,6 +109,7 @@
 | 运行故障分级、停止边界与有界恢复规则 | docs/FAULT_POLICY.md |
 | 当前部署、已验证能力、现场缺口和证据 | [agent/STATUS.md](agent/STATUS.md) |
 | 下一步动作、触发条件和完成依据 | [agent/TODO.md](agent/TODO.md) |
+| Claude 审阅建议、Codex 执行规格及执行状态 | [Claude-advice/HARNESS/review.md](../Claude-advice/HARNESS/review.md) |
 | 日常长页归并后的原文 | `agent/history/` 保存注明日期和替代入口的快照。已被引用的早期交接与实施方案保留其历史入口，版本复盘继续承接对应问题的后续追证 |
 | 同一问题的实验结论与完整复盘 | agent/experiments/YYYYMMDD-question.md |
 | 原始日志、逐次输出、测试回执与机器清单 | 所属 artifacts 或实际 run 目录 |
