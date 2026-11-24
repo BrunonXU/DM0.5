@@ -52,6 +52,73 @@ flowchart LR
 | P2 | H-11 | 规划顺序教训经人工确认后发布到 `candidate_order` |
 | P2 | H-12 `[!]` | 开发档的参数和程序经验晋升门槛（属于政策决定） |
 | — | H-13 | 明确不改的项（防止误改） |
+| P1 | H-14 `[!]` | 形状抽象：把方块的 4 重对称、盒体和方孔识别从代码里抽到形状配置 |
+| P0 | H-15 `[!]` | 判抓以夹爪 CAN 为主；闭爪后看不到积木时，用闭爪前的位姿确认积木在夹持区内 |
+| P0 | H-16 `[!]` | 网页开放“确定性程序”模式：见过的场景不调用 Astra，失败再交回 Astra |
+| P1 | H-17 `[!]` | 抓取时预算出的运输路径，交给提交时复用，省掉抓后的串行规划 |
+| P1 | H-18 | 每次运行输出分阶段耗时对照 20 秒预算，只告警、不拦截 |
+
+## 补充问答（2026-11-24，基于 750ca46 核实）
+
+### 1. 扩展到其他形状能否沿用同一套逻辑？
+
+**主干流程可以沿用，但“方块”写死在很多地方，不能直接换形状。** 感知、抓取、运输、对准、插入、验证的流程，以及 owner 硬保护，都与形状无关。真正写死的有四类：
+
+- **形状准入**：`engine.py:123-125` 直接拒绝非方块任务；网页只接受 `square_block`（`web_snapshot.py:14-15`）。
+- **4 重对称**：抓姿、对准、位姿对齐、跟随误差、候选编号都按 4 个 90° 分支写死（`skills.py:216-224,286-290,524-528`、`geometry.py:124-139`、`grasp_tracking.py:14-15`、`contracts.py:491-492`、`remote.py:632`、`engine.py:663-664`、`joint_motion.py:80`）。
+- **物体模型是盒体**：位姿由矩形面边长匹配盒体尺寸得到（`scene.py:35-64`）；碰撞、抓高检查都用 `object_local_box`（`skills.py:33,112-147,317`）。圆柱和三棱柱不适用。
+- **孔位识别只认方孔**：桶盖方孔要求 4 个角点、边长比不超过 1.3（`fixture_tracking.py:66,97-99`）；左腕补孔用三角孔加圆孔作锚点，再按距离认方孔（`aperture_transfer.py:94-153`）。
+
+扩展时需要抽象一个“形状配置”，至少包含：对称阶数（方 4、三角 3、圆形为连续对称）、物体几何（盒体、棱柱、圆柱）、孔口检测器和抓姿模板。详见 H-14。
+
+### 2. 判抓到底用的是什么信号？还在等图像吗？
+
+**CAN 夹爪实测是主信号，但判抓结果仍然要等一帧处理完的 RGB-D 图像才能产出。** 核实如下：
+
+- **夹爪判据**（`gripper_contact.py:40-85`）：读取右夹爪外部 CAN（`socketcan_external`）。闭爪指令发布后，在一个静止窗口（`stationary_window_ns`，0.2–2 秒）内至少 3 个样本，开度波动不超过 `gripper_stationary_delta`，并且停在“既没张开、也没闭到底”的位置，才判为受阻闭合（`measured_blocked_closure`）。空爪闭到底会被拒绝，这正好排除了空抓。
+- **仍要看图的两处**：
+  1. 受阻闭合必须配合同一帧里“积木位于本次闭爪的夹持区内”才算数（`scene_pipeline.py:1131-1134`，`target_in_closure_region`）；
+  2. `verify_grasp` 要求一帧在动作之后采集、积木可见并带证据的观测（`verification.py:18-20`、`skill_services.py:954-990`，最多等 2 秒）。
+
+  也就是说，夹爪是主判据，图像用来确认“夹住的是这块积木”。
+- **耗时**：实测抓持验证约 0.65 秒（`agent/experiments/20261117-local-capabilities.md:234`），ARM 上感知处理 p50 约 301ms（同文件 `:290`），等图并不是瓶颈。真正的风险在于闭爪后夹爪遮挡积木，图像里看不到积木，于是判抓卡在“证据不足”。
+
+**夹爪判抓的可靠性风险**：
+
+| 情形 | 夹爪信号会怎样 |
+|---|---|
+| 夹到积木边角或棱 | 开度同样受阻，但抓持不稳，提起时可能滑落 |
+| 夹到相邻积木或桶沿 | 开度受阻，会误判为抓住 |
+| 积木很薄，接近闭到底 | 代码已明确交给视觉判断（`gripper_contact.py:79-80`） |
+| CAN 断流或时间戳异常 | 已被拒绝，不会误判 |
+
+**应保留的最小图像校验**：闭爪前，积木位于预定夹持区内；提起后，一帧确认积木随手离开了桌面，或者桌面上原位置已经没有积木。
+
+### 3. “新场景问 Astra，见过的场景 20 秒内完成”是否可行？
+
+**思路对，代码里也已经有一半基础，但网页入口没有接通，而且还有串行等待。**
+
+- **PyRUA 在代码里对应什么**：上游 PyRUA-Lean（`pyrualean` 包，`adapters.py:11-13`）提供 Python 沙箱，模型或宿主在里面写程序、调用机器人技能。`recovery_programs.py` 把内置恢复流程编译成 PyRUA 辅助函数（`pick_and_place`、`place_held_block` 等，见 `astra_programs.py:25-28`）。`programs.py:9-40` 的 `SINGLE_BLOCK` 是完全不需要模型的确定性单块程序。
+- **已有的不经 Astra 的路径有两条**：
+  1. CLI 的 `--planner baseline`（`cli.py:17,27`）直接运行 `SINGLE_BLOCK`；
+  2. Astra 模式下，若经验快照里有已晋升的程序，会在第一轮模型调用前先执行（`task_runner.py:562-580`，`try_verified_programs`）。
+- **断点**：网页只允许 `astra` 和 `vla_astra` 两种模式（`web_snapshot.py:18`），baseline 不可选；已晋升程序数为 0；“见过”只按标定、形状、指令和目标匹配，不看场景（`program_experience.py:601-627`）。另外，初始定位常需要 Astra 给提示框，V40 中两轮模型调用花了 29.28 秒（实验记录 `:377-379`）。
+- **运输规划仍是串行的**：抓取时虽然会试算运输（`_grasp_continuation`，`skill_services.py:459`），但明确不提交，结果不复用；抓稳后要重新规划，约 5–7 秒，再加完整复核 2.6–4.5 秒（实验记录 `:256-265`）。
+
+**单块抓放 20 秒预算拆分**（假设场景已见过、零模型调用、规划与执行并行）：
+
+| 阶段 | 预算 | 参考实测与说明 |
+|---|---:|---|
+| 开始 → 首动（定位 + 接近规划 + 复核） | 2.5 s | 感知约 0.3 s；接近规划 0.75–1.6 s（实验 `:42-44`）；复核约 0.6 s |
+| 接近执行 | 4.0 s | 原接近动作 4.10 s（`:147`） |
+| 闭爪 + CAN 静止窗口 | 0.8 s | 窗口 0.3 s（`:282`），加闭爪动作 |
+| 抓持验证 | 0.7 s | 0.65 s（`:234`） |
+| 运输（规划已在抓取时完成，只做复核） | 5.0 s | 运动 4.24–5.76 s（`:168-169`）；复核需与闭爪、验证并行 |
+| 对准（含一次闭环修正） | 2.5 s | 尚无实测，属于估计 |
+| 插入 + 释放 + 放置验证 | 2.5 s | 尚无实测，属于估计 |
+| 合计（到放置验证为止，不含避桶复位） | 18.0 s | 留 2 s 余量；复位另计约 2–3 s |
+
+要达到这个预算，有三个前提：运输规划必须提前（H-17）；初始定位不能依赖 Astra（H-16 `[!]`）；运动速度维持现有 30°/s 配置。用户已决定在首次完整成功之后再做提速。
 
 ---
 
@@ -411,6 +478,142 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 | `motion_already_attempted_use_registered_recovery` | `engine.py:311-312` | 零发布时会恢复 `attempted_motion`（`engine.py:546-553`），只在真实发布后才限制，属于合理保护 |
 | 验证三态 | `verification.py:32-54` | 已按阶段区分：抓取类只看 `held`，三态只用于 `verify_placed` |
 | 帧与反馈时间差 50ms | `live_scene.py:293` | V40 的 30 组采样中只有 1 组因此失败，样本不足，先观察 |
+
+---
+
+## H-14 `[!]` P1：形状抽象（为三角、圆形积木做准备）
+
+**目标**：新增 `HARNESS/src/f1_harness/shapes.py`，集中定义 `ShapeProfile`：
+
+- `symmetry_order`：方 4、三角 3、圆形为 `None`，表示连续对称，采样时用 `circle_samples`；
+- `object_model`：`box`、`prism`、`cylinder`；
+- `aperture_detector`：孔口检测函数名；
+- `grasp_templates`：抓姿模板。
+
+下表各处改为读取该配置，方块配置必须与现状逐位等价。
+
+| 写死位置 | 当前代码 | 改为 |
+|---|---|---|
+| `engine.py:123-125` | `if self.task.shape != 'square': raise HarnessError('first_demo_supports_square_only')` | 改为 `shape not in SHAPE_PROFILES` 时报错 |
+| `web_snapshot.py:14-15` | `body['task_id'] != 'square_block'` | 改为允许已登记的任务 ID 集合 |
+| `geometry.py:124-139` `align_square_pose` | 固定 `(0,π/2,π,3π/2)` | 新增 `align_symmetric_pose(pose, reference, order)`；原函数保留，作为 `order=4` 的封装 |
+| `grasp_tracking.py:14-15` `square_rotation_error` | 调用 `align_square_pose` | 改为按形状阶数调用 |
+| `skills.py:216-224` `_square_goals` | 4 个 90° 分支 | 按 `symmetry_order` 生成分支 |
+| `skills.py:286-290` `candidate_variants` | 写死 `range(4)` | 改为 `range(n)`；连锁修改下面三行 |
+| `skills.py:524-528` | 抓姿 4 次绕 Z 旋转 | 同上 |
+| `contracts.py:491-492` | `candidate_start le=3`、`excluded_candidates max_length=4` | 上限取所有形状中的最大分支数 |
+| `remote.py:632` | `0<=rejected<=3` | 同上 |
+| `engine.py:663-664`、`joint_motion.py:80` | `range(4)`、`shape != 'square'` | 同上 |
+| `scene.py:35-64` `box_frame_from_face` | 用矩形面边长匹配盒体 | 棱柱和圆柱另写配准函数（圆柱：端面圆加轴线） |
+| `fixture_tracking.py:66,97-99` `square_on_lid` | 4 角点、边长比不超过 1.3 | 按孔口形状检测 |
+| `aperture_transfer.py:94-153` | 用三角孔加圆孔锚点识别方孔 | 锚点和目标孔都从配置读取 |
+| `skill_services.py:123` | 只有方块启用抓姿建议 | 按形状启用 |
+| `hybrid.py:83-138` | 提示词和枚举写死方块 | 按形状生成 |
+| `return_observation.py:56`、`host.py:16`、`evaluation.py:49` | `shape='square'`、`square-1` | 从任务配置读取 |
+
+**待人工确认**：
+
+1. 下一批形状的种类和尺寸，以及桶盖上对应的孔；
+2. 圆柱的抓姿（侧抓还是顶抓）；
+3. 三角孔插入时的对称分支，是 3 还是 6（是否允许翻面）。
+
+**验收**：方块的全量 pytest 和全流程零输出回放结果，与改动前逐位一致（同输入、同候选、同输出）。新形状另行验收。
+
+---
+
+## H-15 `[!]` P0：判抓以夹爪 CAN 为主，遮挡时不卡在“缺图像证据”
+
+**当前行为**：
+
+- 受阻闭合（`gripper_contact.py:40-85`）成立后，还要求同一帧中“积木可见且位于夹持区内”（`scene_pipeline.py:1131-1134`）：
+
+```python
+        if proof['accepted'] and self.contact_attachment is None and not target_in_closure_region(
+                relative, contact['expected_eef_object'], cfg.get('search_object_box'),
+                cfg.get('tracking_tolerance_m',cfg['uncertainty_m'])):
+            proof.update(accepted=False, reason='visible_target_outside_published_closure_region')
+```
+
+- `relative` 来自当前帧测得的积木位姿。积木被夹爪挡住时，这一帧根本不会产生 `relative`，`_primary_evidence` 也不会被调用。
+- `verify` 要求 `target.visible and target.evidence_ids`（`verification.py:20`），否则返回 `object_not_observed`，状态变为待审。
+
+**目标行为**：闭爪发布前最后一次已确认的积木位姿 `pre_closure_relative`，如果位于预定夹持区内（复用 `target_in_closure_region`），并且闭爪后 CAN 受阻闭合成立，就判 `held=True`，证据来源标为 `independent_gripper_contact_preclosure_target`，即使闭爪后这帧看不到积木。提起后，正常的跟随证据（`following_evidence`）继续工作：一旦测得积木没有随手离开，照旧判 `held=False`。
+
+**具体改法**（细节须先确认）：
+
+- `grasp_contact` 在 `engine.py:715-720` 写入，现有字段为 `request_id`、`publication_id`、`published_ns`、`object_id`、`target_closure`、`expected_eef_object`。在同一处增加 `pre_closure_relative`，取闭爪发布前最后一次已确认的积木相对位姿；它经 `engine.py:1022-1023` 进入感知上下文。
+- `_measured_contact` 在 `relative` 不可用时，用它做区域检查；
+- `verification.py` 中 `verify_grasp` 这一支，允许 `target.visible=False`，但 `held=True` 的来源必须是上述 CAN 证据。
+
+**待人工确认**：
+
+1. 是否接受“夹到相邻积木或桶沿也会受阻”的误判风险。建议的补偿是：提起后 1 秒内必须出现一次跟随或离桌证据，否则降回未知；
+2. `pre_closure_relative` 从哪一份观测取：发布前最后一次观测，还是接近完成时的观测。Codex 须核对 `engine.py:700-720` 能拿到的观测后报告。
+
+**保留**：实测张开会清除持物状态（`scene_pipeline.py:1189-1190`），CAN 时间和序号校验（`gripper_contact.py:46-67`）不变。
+
+---
+
+## H-16 `[!]` P0：网页开放“确定性程序”模式（见过的场景不调用 Astra）
+
+**当前行为**：
+
+- 网页只接受 `mode in ('astra','vla_astra')`（`web_snapshot.py:18`）。
+- CLI 有 `--planner baseline`（`cli.py:27`），运行 `programs.py:9-40` 的 `SINGLE_BLOCK`，零模型调用，但只能在终端使用。
+- Astra 模式下，若快照中有已晋升程序，会在第一轮模型调用前尝试（`task_runner.py:562-580`），但目前快照中没有已晋升程序。
+
+**目标行为**：网页新增 `mode='program_first'`，流程如下：
+
+1. 先运行 `try_verified_programs`；若没有已晋升程序，就运行 `SINGLE_BLOCK`；
+2. 中途任一步返回 `needs_attention`、待审或候选耗尽，保留现有进度，交回 Astra 接续，即 `task_runner` 现有的“程序尝试后刷新 `initial_summary` 再交给模型”路径（`task_runner.py:581-600`）；
+3. 记录 `model_requests` 和各阶段耗时，用于判断这个场景是否“见过”。
+
+**“见过”的初版判定**（待人工确认）：
+
+- 同一 `calibration_id` 和形状；
+- 初始定位无需 Astra 提示即可得到积木位姿（固定提示框或 SAM 语义播种成功）；
+- 积木姿态类别（立放、平躺、斜靠）在历史成功运行中出现过。
+
+**待人工确认**：
+
+1. 无 Astra 时，初始定位用什么：`masks` 配置的固定提示框，还是 `sam_service.py:128-145` 的语义播种（需要 `seed_provider` 配置了该物体）？现场是否可用？
+2. F1-4242 页面要增加一个模式选项，属于另一个工程，需要另开任务；
+3. 是否把 `program_first` 设为默认。
+
+**验收**：用保存的成功场景做零输出回放，`model_requests=0` 并走完 `verify_placed`；人为注入定位失败后，交回 Astra，且不重复已发布的动作。
+
+---
+
+## H-17 `[!]` P1：抓取时的运输试算结果交给提交时复用
+
+**当前行为**：
+
+- `approach_grasp` 规划时，若 `native_grasp_lookahead` 开启，会试算抓取和运输（`skill_services.py:312-313,403-404,459-470`），但只用作建议（docstring 写明 “never submit future motion”）。
+- 预览复用缓存 `preview_candidates`（`skill_services.py:195-211`）只接收同一请求的预览。
+- 抓稳后，运输重新规划约 5–7 秒（实验记录 `:256-265`）。
+
+**目标行为**：把 lookahead 得到的运输候选，以“未发布预览”的身份放进 `preview_candidates`。`transfer_above_hole` 提交时，由 `rebind_preview_candidate`（`revalidation.py:103`）用当前持物变换完整重扫：通过就直接用，不通过就按原流程重新规划。owner 首发前的检查不变。
+
+**待人工确认**：
+
+1. 已核实：`preview_submission_key`（`revalidation.py:76-101`）要求技能为 `transfer_above_hole`，且键内包含 `target.held` 和 `attached`。lookahead 生成时积木尚未抓住（`held=False`），无法构造出同一个键，需要新增一种“抓前预算运输”的键，或者在抓取验证成功后再登记。具体采用哪种方案，须用户确认；
+2. `native_grasp_lookahead` 在现场是否开启。
+
+**验收**：用 V32/V35 两对真实预览与提交输入回放，对比提交时“新增搜索次数”（期望为 0）和重绑耗时；加一个新障碍的负例，必须仍被拒绝。
+
+---
+
+## H-18 `[ ]` P1：分阶段耗时对照 20 秒预算（只告警）
+
+**位置**：`HARNESS/src/f1_harness/timing_report.py`（运行后由 `run_review.py:36-38` 生成 `timing-report.json`）。
+
+**目标**：
+
+- 在报告中新增 `stage_budget_s`：首动 2.5、接近 4.0、闭爪 0.8、验证 0.7、运输 5.0、对准 2.5、插入释放 2.5，合计 18.0；
+- 逐阶段输出实际耗时、超出量，以及模型调用次数和等待时长；
+- 只写进报告和告警，不进入任何运行判断。这一点与 `HARNESS/AGENTS.md` “耗时预算不替代 watchdog”一致。
+
+**验收**：用一条已有 run 的 trace 生成报告，各阶段字段齐全；`grep` 确认没有任何运行路径读取 `stage_budget_s`。
 
 ---
 
