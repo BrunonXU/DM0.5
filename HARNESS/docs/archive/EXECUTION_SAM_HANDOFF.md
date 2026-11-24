@@ -1,6 +1,6 @@
 # 执行宏与 SAM 视频接线交接
 
-**交接已接续（2026-11-11）：执行宏与SAM视频现已合并至V5并部署；以下“候选／未部署”描述保留为当时证据。** 最新代码范围、部分观测与持物修复、真机待验内容见[STATUS](../agent/STATUS.md)，不再按旧V1隔离包部署。
+**交接已接续（2026-11-11）：执行宏与SAM视频现已合并至V5并部署；以下“候选／未部署”描述保留为当时证据。** 最新代码范围、部分观测与持物修复、真机待验内容见[STATUS](../../agent/STATUS.md)，不再按旧V1隔离包部署。
 
 本轮完成显式执行宏与 SAM 视频候选，未修改模型链路或状态字典。收尾确认另一 agent 已将执行宏与模型合同发布为条件程序交互 V2；SAM 视频调用配置仍未部署。后续必须从 V2 接续，不用本轮隔离的 V1 验证副本覆盖线上。
 
@@ -32,11 +32,11 @@ print(result)
 - 未知／部分执行、STOP、抓取失败不从头重新定位或重放。若接近已经执行，应使用原有阶段恢复入口，不能再次调用初始宏。
 - 未读取或修改模型的 F1 状态字典，也不通过工具 `moved` 字段判断机械臂是否运动。
 
-实现：[recovery_programs.py](../src/f1_harness/recovery_programs.py)。针对检查：[test_localize_and_pick.py](../tests/test_localize_and_pick.py)。回放驱动新增仅供离线测试的 `program=localize_and_pick`，不修改线上模型协议。
+实现：[recovery_programs.py](../../src/f1_harness/recovery_programs.py)。针对检查：[test_localize_and_pick.py](../../tests/test_localize_and_pick.py)。回放驱动新增仅供离线测试的 `program=localize_and_pick`，不修改线上模型协议。
 
 ## SAM 配置合并
 
-候选配置：[masks-video.local.json](../artifacts/v1-followup-20261111/masks-video.local.json)。相对冻结 V1，仅在 `views.head` 与 `views.right` 都显式添加 `sam_streaming: true`，保留 `sam_streaming_objects: ["square-1"]`；桶盖与孔口继续批量图像分割，原标定、几何阈值与控制保护不改。
+候选配置：[masks-video.local.json](../../artifacts/v1-followup-20261111/masks-video.local.json)。相对冻结 V1，仅在 `views.head` 与 `views.right` 都显式添加 `sam_streaming: true`，保留 `sam_streaming_objects: ["square-1"]`；桶盖与孔口继续批量图像分割，原标定、几何阈值与控制保护不改。
 
 同一批50份真实历史快照：V1没有tracking回执；候选右腕47个不同源帧、头部31个，分别保持同一stream，frame_index跨帧递增。两配置均得到47份场景、其中45份完整，3份重复源帧被拒收。顺序回放感知中位162→230ms，视频在这组数据中更慢；它提供时序记忆，不能据此承诺提速或精度提升。
 
@@ -50,7 +50,7 @@ print(result)
 - 模型请求与响应、提示词、状态字典、裁剪、停止后的API用量留证与UI阶段展示。
 - 线上 `workspace.local.json`、冻结 V1、机器人发布器、标定与运动阈值。
 
-另一 agent 的修改已观察到落在 planner、planner_progress、task_runner，本轮保留且未覆盖。[本轮修改范围与哈希](../artifacts/v1-followup-20261111/scope-receipt.json)记录了各文件前后状态。中间一次回放完成后源码又被并发修改，输出审计因此拒收；正式证据改用冻结 V1＋本轮执行宏的隔离副本，不把并发检查失败写成通过。
+另一 agent 的修改已观察到落在 planner、planner_progress、task_runner，本轮保留且未覆盖。[本轮修改范围与哈希](../../artifacts/v1-followup-20261111/scope-receipt.json)记录了各文件前后状态。中间一次回放完成后源码又被并发修改，输出审计因此拒收；正式证据改用冻结 V1＋本轮执行宏的隔离副本，不把并发检查失败写成通过。
 
 请求生命周期／费用回执与网页可见性仍是待办，按用户要求本轮暂不碰模型相关部分。V2已接入宏，后续SAM配置从V2合并，冻结验收后另登记版本。
 
@@ -58,4 +58,4 @@ print(result)
 
 43项执行宏检查与60项原控制检查通过。隔离V1＋本轮宏及视频候选，经正式RPC／PyRUA／owner完成12次技能调用，2502条内存输出全请求审计通过；仅1条保存程序响应，0新增付费API，未发START。53.54秒是模拟链路耗时，初始RGB-D及SAM真实、运动后反馈模拟，不代表真机或模型延迟。
 
-[输出审计](../artifacts/v1-followup-20261111/isolated-cycle/cycle-audit.json)、[回放](../artifacts/v1-followup-20261111/isolated-cycle/sim-f40c03da1b/report.json)、[视频连续源帧](../artifacts/v1-followup-20261111/video-continuity.json)。V2两次真实模型已选择该宏，另见[模型专项](../agent/experiments/20261111-api-cost.md#条件程序交互v2四次受限验证与部署)；本轮独立证据不代替其冻结验收。
+[输出审计](../../artifacts/v1-followup-20261111/isolated-cycle/cycle-audit.json)、[回放](../../artifacts/v1-followup-20261111/isolated-cycle/sim-f40c03da1b/report.json)、[视频连续源帧](../../artifacts/v1-followup-20261111/video-continuity.json)。V2两次真实模型已选择该宏，另见[模型专项](../../agent/experiments/20261111-api-cost.md#条件程序交互v2四次受限验证与部署)；本轮独立证据不代替其冻结验收。

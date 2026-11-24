@@ -49,7 +49,7 @@ SAM2 tiny 在 CPU 上首个分割约 3.51 s，三帧视频流程约 6.64 s，包
 
 ## 可接续产物
 
-人类命令见[运行说明](../../docs/RUNBOOK.md)，标定格式见[交接合同](../../docs/CALIBRATION_HANDOFF.md)，配置模板位于 `configs/*.example.json`。模板中的 `null` 和替换标记明确表示缺少实测输入，不是默认有效参数。
+人类命令见[运行说明](../../docs/operations/RUNBOOK.md)，标定格式见[交接合同](../../docs/operations/CALIBRATION_HANDOFF.md)，配置模板位于 `configs/*.example.json`。模板中的 `null` 和替换标记明确表示缺少实测输入，不是默认有效参数。
 
 开发清单为 `artifacts/software-acceptance-20261104/development-manifest.json`，记录源码与锁文件身份；它不是生产 release，产品 V 号尚未分配。源代码处于共享未提交工作树，保留其他人的改动，不自动提交或推送。
 
@@ -74,4 +74,4 @@ SAM2 tiny 在 CPU 上首个分割约 3.51 s，三帧视频流程约 6.64 s，包
 - [原生开发包身份](../../artifacts/native-baseline-20261104/bundle/manifest.json)：`6bc1681a6249`，位于F1 `/home/user/Bruno/HARNESS/development/6bc1681a6249`。不包含API凭据、模型权重或训练原件；不是生产release，不包含它构建后才增加的本地接口。
 - [配置缺项回执](../../artifacts/baseline-startup-20261104/site-readiness/result.json)：缺少6组local配置，明确未就绪，退出码2，不触发动作。
 
-人类首次操作说明见[FIRST_RUN](../../docs/FIRST_RUN.md)，已登记Why&How阅读目录。单run报告和owner事件导出不等于完成统一真实视频封存；正式启动包与现场Enter／START仍待后续准入，不提供能绕过这些门槛的命令。
+人类首次操作说明见[FIRST_RUN](../../docs/operations/FIRST_RUN.md)，已登记Why&How阅读目录。单run报告和owner事件导出不等于完成统一真实视频封存；正式启动包与现场Enter／START仍待后续准入，不提供能绕过这些门槛的命令。

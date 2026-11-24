@@ -136,4 +136,4 @@ flowchart LR
 | R-4 | 人示教 | 直接复用 DAgger 现有设置，用遥控器（手柄）示教，不新增示教入口 |
 | R-5 | 组件替换 | 优先级低。先把框架搭起来、跑通几条完整流程，之后再议；E-4、F-3 两项对比实验暂缓 |
 
-说明：仓库里的 F1-4242 目录不含任务页的前端源码，R-2 的启动方式是根据 `HARNESS/docs/DIRECT_ROLLOUT.md` 和 `HARNESS/docs/TASK_WORKSPACE_DESIGN.md` 的描述确认的：每次点击“开始任务”保存一份配置快照，对应一次独立运行。
+说明：仓库里的 F1-4242 目录不含任务页的前端源码，R-2 的启动方式是根据 `HARNESS/docs/operations/DIRECT_ROLLOUT.md` 和 `HARNESS/docs/archive/TASK_WORKSPACE_DESIGN.md` 的描述确认的：每次点击“开始任务”保存一份配置快照，对应一次独立运行。
