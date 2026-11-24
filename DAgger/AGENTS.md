@@ -2,6 +2,18 @@
 
 适用于 DAgger 全树。用户当前授权优先；先读本文件、[文档索引](docs/README.md) 和涉及机器的当前状态。工作区协作规则见 `../PROJECT_RULES_AND_PREFERENCES.md`；本文给出本项目可独立执行的要求。
 
+Codex 每次在 DAgger 开工前，还要读取 [Claude 审阅与执行规格](../Claude-advice/DAgger/review.md)，按其中的优先级执行改进项。
+
+## [CLAUDE_ADVICE] 审阅建议的执行
+
+[Claude-advice/DAgger/review.md](../Claude-advice/DAgger/review.md) 是对 DAgger/F1 控制与采集运行时的只读审阅与 Codex 执行规格。分工原则、状态标记、执行顺序、遇 `[!]` 停下询问与回写格式统一以 [Claude-advice 说明](../Claude-advice/README.md#codex-执行与回写约定) 为准，以下仅补充 DAgger 专属约束：
+
+1. **开工前必读。** Codex 每次在 DAgger 开工，先核对 `Claude-advice/DAgger/review.md` 状态，再读本页与 `docs/F1/STATUS.md`。
+2. **冲突优先级。** 用户当轮明确指令 > 本页的现场授权、唯一 owner 与硬件硬保护 > `review.md` 条目 > 旧日期记录。冲突时按本页执行，并将该条目改为 `[!]` 写明冲突点。
+3. **执行范围。** 只改条目列出的 `DAgger/F1/`（及必要时的 `DAgger/shared/`）文件，不顺手重构、不触碰 G2 冻结基线、不改 `tasks/`、`HARNESS/`、`F1-4242/` 或 `third_party/` 上游源码。
+4. **硬保护不得移除。** 真实 F710 START 唯一授权、跨进程 `F1_CONTROL_LOCK`、唯一输出 owner、反馈新鲜度与 200ms watchdog、实时碰撞/限位/50ms 输出门槛、缺失左夹爪零发布以及 shadow 零输出零录制，无论条目如何描述均不得放宽。
+5. **验收不降级。** 条目验收通过后，涉及 F1 控制或打包仍须按本页完成 `python -m pytest`、ARM 清单核对与正式零输出 SHADOW，并同步更新 `docs/F1/STATUS.md`。
+
 ## 入口与文档
 
 - 根 README 给人类，只保留功能与入口；F1/G2/teleop README 简短介绍用途和配置位置。详细启动、配置、原理和验收统一在 `docs/`，不要新增 `doc/` 或平台下的第二份 docs。

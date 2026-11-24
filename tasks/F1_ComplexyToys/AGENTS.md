@@ -4,6 +4,18 @@
 
 当前进度只维护在[STATUS](STATUS.md)，训练与推理各有一份根recipe，完整现场命令只在[STARTUP](inference/STARTUP.md)。本页保存稳定规则，不再累计历次实验和GPU占用。
 
+Codex 每次在本任务开工前，还要读取 [Claude 审阅与执行规格](../../Claude-advice/tasks/F1_ComplexyToys/review.md)，按其中的优先级执行改进项。
+
+## [CLAUDE_ADVICE] 审阅建议的执行
+
+[Claude-advice/tasks/F1_ComplexyToys/review.md](../../Claude-advice/tasks/F1_ComplexyToys/review.md) 是对本任务 DAgger 数据管线与 RLT 在线学习的只读审阅与 Codex 执行规格。分工原则、状态标记、执行顺序、遇 `[!]` 停下询问与回写格式统一以 [Claude-advice 说明](../../Claude-advice/README.md#codex-执行与回写约定) 为准，以下仅补充本任务专属约束：
+
+1. **开工前必读。** Codex 每次在 `tasks/F1_ComplexyToys` 开工，先核对 `Claude-advice/tasks/F1_ComplexyToys/review.md` 状态，再读本页与 `STATUS.md`。
+2. **冲突优先级。** 用户当轮明确指令 > 本页“必须保持的实验与执行合同”及 W&B/数据隔离红线 > `review.md` 条目 > 旧实验报告。冲突时按本页执行，并将该条目改为 `[!]` 写明冲突点。
+3. **执行范围。** 只改条目列出的 `tasks/F1_ComplexyToys/` 文件，不顺手重构，不修改 `DAgger/`、`HARNESS/`、`F1-4242/` 或冻结的上游 `RLinf` 源码。
+4. **硬保护不得移除。** 原始录制与冻结 release 只读、`episode`/`source_group` 严格隔离、因果前缀证明与 `expert_approved` 独立审核、W&B 真实记录以及“未通过受控对照不静默替换 GPU3 生产权重”，无论条目如何描述均不得违反。
+5. **验收不降级。** 涉及训练目标或采样改动必须先在独立目录、`publish_updates=false` 下完成受控离线对照（含 SO(3) 姿态 MAE、释放召回、持物误松与 Critic 倾斜探针），不以单测或 loss 下降直接上线。
+
 ## 每轮怎样接上上下文
 
 1. 先读本页与STATUS，核对**当前目标、已确认决定、验收边界、下一步**。新用户指令优先；历史计划、旧聊天、过期Whereweare摘要不能覆盖已验证的新事实。
