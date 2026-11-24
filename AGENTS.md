@@ -12,6 +12,7 @@
 
 - 涉及 **F1积木分拣**，先读[任务AGENTS](tasks/F1_ComplexyToys/AGENTS.md)和[任务STATUS](tasks/F1_ComplexyToys/STATUS.md)，再按本轮问题选读对应recipe。即使代码改在DAgger、RLinf或F1-4242，也先加载这份任务上下文，再遵守被修改目录的局部规则。不要依赖从Projects根启动时自动读取所有子目录。
 - 人类日常入口为[任务首页](tasks/F1_ComplexyToys/README.md)或[Why&How任务阅读](http://192.0.2.1:4243/?doc=f1-home)。AGENTS保存稳定协作规则，STATUS保存当前事实，日期实验保存证据；不在三处重复追加进度流水账。
+- **审阅建议与执行分工（2026-11-24用户确认）**：Claude 只写审阅、不改业务代码；Codex 负责执行。审阅建议放在 [Claude-advice/](Claude-advice/README.md)，分工、状态标记与回写约定以该目录 README 为准，各项目专属规则写在项目自己的 AGENTS 里。
 
 ## UI 设计与开发
 
