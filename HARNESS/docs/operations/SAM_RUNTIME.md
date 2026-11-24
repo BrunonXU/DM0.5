@@ -6,7 +6,7 @@
 
 **V25补充：模型默认先读数值，只有明确说明数值不足并请求图像，才发送相应视图；旧图退出后续请求。** 这修复发送策略，不代表当前SAM已能独立初始化所有桶孔；本地完整识别、主动接近重观测与真机技能稳定性仍待补。
 
-感知结果怎样进入抓取和放置，见[核心设计的单块分拣示例](ARCHITECTURE.md#单块分拣示例)。历史失败与修复保留在[同一复盘](../agent/experiments/20261110-sam-rollout.md)，本轮模型原始输出在[对照产物目录](../artifacts/perception-selection-20261112/)。
+感知结果怎样进入抓取和放置，见[核心设计的单块分拣示例](../ARCHITECTURE.md#单块分拣示例)。历史失败与修复保留在[同一复盘](../../agent/experiments/20261110-sam-rollout.md)，本轮模型原始输出在[对照产物目录](../../artifacts/perception-selection-20261112/)。
 
 ```mermaid
 flowchart LR
@@ -24,7 +24,7 @@ flowchart LR
 
 ## 当前已部署接线（临时配方V24）
 
-V24已接入可选SAM3种子提供器，两条路线共用，保留V23的旧图初始化与全部执行合同。仅积木的首次分割／空追踪重识别使用SAM3；正常帧仍为SAM2，其他实体与显式点提示仍走原SAM2。未发送START，完整真机抓放与真实脱手恢复仍待验；当前部署以[STATUS](../agent/STATUS.md)为准。
+V24已接入可选SAM3种子提供器，两条路线共用，保留V23的旧图初始化与全部执行合同。仅积木的首次分割／空追踪重识别使用SAM3；正常帧仍为SAM2，其他实体与显式点提示仍走原SAM2。未发送START，完整真机抓放与真实脱手恢复仍待验；当前部署以[STATUS](../../agent/STATUS.md)为准。
 
 - 6000D同一GPU服务常驻SAM3图像模型与SAM2.1 Hiera Tiny；SAM2图像与视频predictor复用同一权重身份。模型随服务预热，不在每次开始时加载，GPU推理仍受同一服务锁串行化。生产进程显存实测约6.34GiB。
 - 当前`wooden block`文字候选须在原提示框内唯一才用作SAM2种子；空候选或多候选显式回退原提示SAM2，并留存原因。框内唯一仍不是身份真值，后续几何与实例检查保持；模型加载／运行错误不会静默伪装成成功。
@@ -35,7 +35,7 @@ V24已接入可选SAM3种子提供器，两条路线共用，保留V23的旧图�
 - 头部六个注册实体为积木、方孔、三角孔、左槽、U槽和桶盖，当前均走SAM，`color_profiles={}`。五个静态实体共享一次图像上传／编码；孔外环深度、桶体参考、几何拟合仍由本地代码处理。现役链没有额外YOLO、GroundingDINO、CLIP识别器或生成式本地VLM。
 - 相同源帧缓存、图像embedding复用和双相机请求并发已经存在；同一头图的静态批次与积木视频仍可能重复上传／编码。静态实体随新头帧重算，尚无独立慢频策略。按阶段与场景变化减少这些开销，不能直接删除支撑桶体定位的锚点。
 
-V23基础接线证据：[冻结源码与配置审计](../artifacts/perception-selection-20261112/v23-architecture-audit.json)。V24增量与验收如下；原日期实验不改写。
+V23基础接线证据：[冻结源码与配置审计](../../artifacts/perception-selection-20261112/v23-architecture-audit.json)。V24增量与验收如下；原日期实验不改写。
 
 ### V24部署验收与临时配方边界
 
@@ -45,13 +45,13 @@ V23基础接线证据：[冻结源码与配置审计](../artifacts/perception-se
 
 配方文件标记`temporary`，将识别提供器与追踪分开；V23冻结包及切换前配置保留，回退时一并恢复代码、site与SAM服务配置并核验。升级SAM3.1或其他追踪器先做同源对照、实例／几何和时序检查，再分配新发布号；不原地修改V24冻结源码。优先补遮挡后重现、多同类互换、抓空／滑落、释放验证以及真正JSON优先的模型上下文，再按实际结果决定长期配方。
 
-证据：[发布验收](../artifacts/sam3-recipe-20261112/release-validation.json) · [三端与双路线](../artifacts/sam3-recipe-20261112/post-activation.json) · [生产模型身份](../artifacts/sam3-recipe-20261112/sam-live-health.json) · [临时配方](../artifacts/sam3-recipe-20261112/sam-service.json) · [模型来源](../artifacts/sam3-recipe-20261112/model-provenance.json)。
+证据：[发布验收](../../artifacts/sam3-recipe-20261112/release-validation.json) · [三端与双路线](../../artifacts/sam3-recipe-20261112/post-activation.json) · [生产模型身份](../../artifacts/sam3-recipe-20261112/sam-live-health.json) · [临时配方](../../artifacts/sam3-recipe-20261112/sam-service.json) · [模型来源](../../artifacts/sam3-recipe-20261112/model-provenance.json)。
 
 ## 2026-11-12：真实数据模型对照与选型
 
 本轮使用12张保存的真实相机图，以及同一右腕约9.96秒的连续100帧，覆盖接近、闭爪、提起／手部移动及部分夹爪遮挡；保留原始图像身份和时间。另有SAM2历史681帧辅助回放。**没有独立逐像素GT，也没有完整遮挡后重现、多同类互换、毫米姿态或本轮真机成功标签。** 以下非空帧数与抽样审核是连续性证据，不是准确率；人工审核框、SAM2输出及不同模型间IoU均不当真值。
 
-SAM3与SAM3.1从用户指定的ModelScope下载原始`.pt`文件，完整SHA256匹配固定版本元数据；未用FP16重打包或随机权重替代。下载首次受代理路径拖慢，改服务器直连CDN并续传后完成。代码来自Meta固定提交，依赖置于隔离目录，三个测试GPU均已释放。[SAM3权重来源](../artifacts/perception-selection-20261112/weights/sam3/provenance.json) · [SAM3.1权重来源](../artifacts/perception-selection-20261112/weights/sam31/provenance.json)
+SAM3与SAM3.1从用户指定的ModelScope下载原始`.pt`文件，完整SHA256匹配固定版本元数据；未用FP16重打包或随机权重替代。下载首次受代理路径拖慢，改服务器直连CDN并续传后完成。代码来自Meta固定提交，依赖置于隔离目录，三个测试GPU均已释放。[SAM3权重来源](../../artifacts/perception-selection-20261112/weights/sam3/provenance.json) · [SAM3.1权重来源](../../artifacts/perception-selection-20261112/weights/sam31/provenance.json)
 
 ### 实测结果
 
@@ -74,7 +74,7 @@ SAM3.1的默认模式有15帧hotstart和16帧后处理／grounding批次；瞬�
 
 本次SAM3.1默认单图会话漏掉两处头部小块，孔类也有误报；将内部检测／新对象阈值降至0.2的独立诊断未改变这36项输出。它与SAM3图像入口的过滤、权重和路径不同，不能用此小样本断言3.1总体精度下降。该固定源码另有默认`offload_state_to_cpu=False`与multiplex接口不匹配，评测适配仅移除此无效参数；64项RoPE实／虚缓存均与权重中的复数精确一致，缺失的训练参数为0，未忽略未初始化权重。
 
-证据：[数据清单](../artifacts/perception-selection-20261112/fixtures.json) · [连续序列](../artifacts/perception-selection-20261112/tracking-sequence.json) · [SAM3结论](../artifacts/perception-selection-20261112/sam3-image/summary.json) · [SAM3→SAM2](../artifacts/perception-selection-20261112/sam3-text-sam2-combined/report.json) · [SAM3.1两种传播汇总](../artifacts/perception-selection-20261112/sam31-summary.json) · [SAM3.1阈值诊断](../artifacts/perception-selection-20261112/sam31-detection-02/report.json) · [YOLOE结论](../artifacts/perception-selection-20261112/yoloe/summary.json) · [独立可视审核](../artifacts/perception-selection-20261112/sam3-visual-review.json)。逐次mask、候选与运行源码身份保存在相邻产物中。
+证据：[数据清单](../../artifacts/perception-selection-20261112/fixtures.json) · [连续序列](../../artifacts/perception-selection-20261112/tracking-sequence.json) · [SAM3结论](../../artifacts/perception-selection-20261112/sam3-image/summary.json) · [SAM3→SAM2](../../artifacts/perception-selection-20261112/sam3-text-sam2-combined/report.json) · [SAM3.1两种传播汇总](../../artifacts/perception-selection-20261112/sam31-summary.json) · [SAM3.1阈值诊断](../../artifacts/perception-selection-20261112/sam31-detection-02/report.json) · [YOLOE结论](../../artifacts/perception-selection-20261112/yoloe/summary.json) · [独立可视审核](../../artifacts/perception-selection-20261112/sam3-visual-review.json)。逐次mask、候选与运行源码身份保存在相邻产物中。
 
 ### 采用什么，保留什么
 
@@ -137,11 +137,11 @@ V25补齐默认无图、显式视觉理由、已消费图像退出后续请求�
 - 冻结源码132项回归通过，包括默认无图、未说明理由不发图、明确请求后仅供下一轮、停止／未知执行不重放、隔离PyRUA与本地完整技能链。
 - 实际旧三轮请求转换保留工具对应关系；第三轮上下文字符数80,660→45,972。图像为日志引用，不能把字符数降幅当真实tokens／时间降幅；没有新Astra生成或真机成功验证。
 - 正式完整零输出与四项实际软件输出审计、ARM只读启动通过。初始RGB-D／SAM真实，模型程序保存回放，后续场景及机械反馈模拟。
-- [发布验收](../artifacts/numeric-first-20261113/release-validation.json) · [保存请求对照](../artifacts/numeric-first-20261113/saved-context-review.json) · [部署核验](../artifacts/numeric-first-20261113/post-activation.json)。
+- [发布验收](../../artifacts/numeric-first-20261113/release-validation.json) · [保存请求对照](../../artifacts/numeric-first-20261113/saved-context-review.json) · [部署核验](../../artifacts/numeric-first-20261113/post-activation.json)。
 
 ### 原子能力审查
 
-2026-11-13后续实测补充：V25新条已完成接近、抓取、抓稳验证；运输卡点经同输入对照定位到精确目标及冗余姿态搜索，不能归为SAM低置信度。原参考点改桶中心或保留原目标修seed，各有一条原生平滑输出通过；另一条中心候选输出扫掠失败，完整对准仍未通过。下表中的旧“7预览全拒”是V24历史条，不覆盖这次进展；当前事实见[运输复算](../agent/experiments/20261110-sam-rollout.md#v25运输目标与搜索复算2026-11-13)。
+2026-11-13后续实测补充：V25新条已完成接近、抓取、抓稳验证；运输卡点经同输入对照定位到精确目标及冗余姿态搜索，不能归为SAM低置信度。原参考点改桶中心或保留原目标修seed，各有一条原生平滑输出通过；另一条中心候选输出扫掠失败，完整对准仍未通过。下表中的旧“7预览全拒”是V24历史条，不覆盖这次进展；当前事实见[运输复算](../../agent/experiments/20261110-sam-rollout.md#v25运输目标与搜索复算2026-11-13)。
 
 | 能力 | 目前可证明 | 仍缺／下一步 |
 |---|---|---|

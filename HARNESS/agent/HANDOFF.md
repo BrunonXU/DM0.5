@@ -57,7 +57,7 @@ V21曾短暂激活，但订阅预热入口核验发现打包覆盖错误，已�
 
 ## 1. 交接引用的资料
 
-当时的组件选型和现场来源见[上游复用清单](../docs/UPSTREAM_REUSE.md)、[同轮现场复盘](experiments/20261110-sam-rollout.md)与[执行和 SAM 的早期交接](../docs/EXECUTION_SAM_HANDOFF.md)。
+当时的组件选型和现场来源见[上游复用清单](../docs/UPSTREAM_REUSE.md)、[同轮现场复盘](experiments/20261110-sam-rollout.md)与[执行和 SAM 的早期交接](../docs/archive/EXECUTION_SAM_HANDOFF.md)。
 
 ## 2. 当时的开发约定
 

@@ -106,7 +106,7 @@ T_native_head_camera = T_native_board · inverse(T_head_camera_board)
 
 **当前状态：本批采集和候选计算完成，实物精度及任务准入未验收。** 机器人留在最后采样姿态，临时控制会话已关闭；没有将候选写入生产控制或自动抓取／插孔参数，也没有据此开启HARNESS真机任务闭环。
 
-后续在同一报告补齐尺度精度、角点物理编号、跨位置／姿态物理检查，并按[交接合同](../../docs/CALIBRATION_HANDOFF.md)补齐RGB-D、TCP、原生参考系到整机base、场景几何及跟踪误差预算。现有候选保留 `accepted=false`、`bundle_admission=false`、`motion_admitted=false`；不能靠改这几个字段代替实测。
+后续在同一报告补齐尺度精度、角点物理编号、跨位置／姿态物理检查，并按[交接合同](../../docs/operations/CALIBRATION_HANDOFF.md)补齐RGB-D、TCP、原生参考系到整机base、场景几何及跟踪误差预算。现有候选保留 `accepted=false`、`bundle_admission=false`、`motion_admitted=false`；不能靠改这几个字段代替实测。
 
 实施合同见[方案第4.2节](20261112-implementation-plan.md#42-a4-棋盘可以用但要完成四层标定)，当前权威状态仍由[STATUS](../STATUS.md)在本轮收尾时合并更新。
 
