@@ -2,7 +2,7 @@
 
 这个目录存放 Claude 对各子项目做只读审阅后形成的改进建议，以及交给 Codex 的执行规格。每个子项目一个目录，每份 `review.md` 是该项目当前的唯一建议正文。Codex 在对应项目开工前读取它，按优先级执行，执行后在原文中回写状态。
 
-目前只有 HARNESS 一个项目：先读[改造计划总览](HARNESS/review-roadmap.md)，再读[核心架构](HARNESS/review-architecture.md)和[验收指标](HARNESS/review-acceptance.md)，逐条代码规格在 [review.md](HARNESS/review.md)。它的结论是：先把可选相机变化、观测准备时限和验证重查次数这几处过度拦截改掉，让推理能跑通；再处理横躺抓取、运输终点和闭环对准。
+目前只有 HARNESS 一个项目：先读[改造计划总览](HARNESS/review-roadmap.md)，再读[核心架构](HARNESS/review-architecture.md)和[验收指标](HARNESS/review-acceptance.md)，逐条代码规格在 [review.md](HARNESS/review.md)，交给 Codex 的开工指令在 [review-handoff.md](HARNESS/review-handoff.md)，验收数据上传到 [evidence/](HARNESS/evidence/README.md)。它的结论是：先把可选相机变化、观测准备时限和验证重查次数这几处过度拦截改掉，让推理能跑通；再处理横躺抓取、运输终点和闭环对准。
 
 ```mermaid
 flowchart LR
