@@ -6,6 +6,7 @@ import pytest
 
 from f1_harness.contracts import SKILLS, Task
 from f1_harness.programs import single_block_program
+from f1_harness.remote import OBSERVATION_READINESS_S
 from test_astra_programs import cell
 from test_candidate_program import OK, setup
 
@@ -134,7 +135,7 @@ def test_fast_align_handoff_requires_fresh_held_observation_and_never_submits(mo
         assert remote.clock.value==0 and remote.calls.count('observe')==1
     else:
         assert result['reason'].startswith('observation_readiness_timeout:')
-        assert remote.clock.value==pytest.approx(15)
+        assert remote.clock.value==pytest.approx(OBSERVATION_READINESS_S)
 
 def test_reobserved_direct_hole_drives_next_align_without_overwriting_request_snapshot(tmp_path):
     measured=inspection(72,measured=True)['geometry']
