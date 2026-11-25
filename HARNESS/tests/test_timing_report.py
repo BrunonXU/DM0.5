@@ -68,3 +68,49 @@ def test_complete_cycle_timing_needs_placement_return_and_same_uninterrupted_sco
         if broken=='missing_arrival':data=[r for r in data if not (r.get('kind')=='harness_measured_waypoint' and r['request_id']=='9')]
         if broken=='unverified_placement':data=[r for r in data if r.get('skill')!='verify_placed']
         assert measured_cycle(data,scope) is None,broken
+
+
+def test_budget_report_uses_owner_intervals_and_charges_model_wait_to_request_start():
+    from f1_harness.timing_report import _budget_report
+    sec = 10**9
+    owner = [dict(kind='harness_skill_first_publication', published_ns=2*sec)]
+    for end, skill in [(7,'approach_grasp'), (8,'grasp'), (10,'verify_grasp'),
+                       (17,'transfer_above_hole'), (20,'align'), (21,'insert'),
+                       (22,'release'), (23,'verify_placed'), (40,'withdraw_reset')]:
+        owner.append(dict(kind='skill_result', skill=skill, monotonic_ns=end*sec,
+                          result={'outcome': 'success'}))
+    planner = [dict(kind='model_request_started', request_id='first', monotonic_ns=100*sec),
+               dict(kind='model_transport_error', request_id='first', automatic_retry=True, elapsed_s=0.25)]
+    for event in owner:
+        stamp = event.get('monotonic_ns', event.get('published_ns'))
+        planner.append(dict(kind='owner_event', record=event, monotonic_ns=100*sec+stamp))
+        if event is owner[0]:
+            planner.append(dict(kind='model_response', request_id='first', elapsed_s=3))
+        if event.get('skill') == 'verify_grasp':
+            planner.extend([dict(kind='model_request_started', request_id='second', monotonic_ns=110*sec),
+                            dict(kind='model_rejected', request_id='second', monotonic_ns=111*sec)])
+    planner.append(dict(kind='model_request_started', request_id='last', monotonic_ns=141*sec))
+    report = _budget_report(owner, planner, 100*sec, True)
+    budget = report['stage_budget_s']
+    assert list(budget.values()) == [2.5, 4.0, 0.8, 0.7, 5.0, 2.5, 2.5]
+    stages = report['stage_timing']
+    assert [stages[k]['actual_s'] for k in budget] == [2, 5, 1, 2, 7, 3, 3]
+    assert stages['start_to_first_publication']['over_budget_s'] == 0
+    assert stages['transport'] == dict(actual_s=7, over_budget_s=2, model_calls=1, model_wait_s=1)
+    assert stages['start_to_first_publication']['model_calls'] == 1
+    assert stages['start_to_first_publication']['model_wait_s'] == 3
+    assert report['placement_target'] == dict(allocated_s=18, target_s=20, actual_s=23, over_budget_s=3)
+    assert report['model_timing'] == dict(model_calls=3, model_wait_s=None)
+    assert report['model_timing_after_placement'] == dict(model_calls=1, model_wait_s=None)
+
+
+def test_missing_or_unbound_trace_keeps_budget_measurements_unknown(tmp_path):
+    report = timing_report(tmp_path)
+    assert all(row == dict(actual_s=None, over_budget_s=None, model_calls=None, model_wait_s=None)
+               for row in report['stage_timing'].values())
+    trace = tmp_path/'planner/trace.jsonl'
+    trace.parent.mkdir()
+    trace.write_text(json.dumps(dict(kind='model_response', monotonic_ns=1)))
+    report = timing_report(tmp_path)
+    assert report['model_timing'] == dict(model_calls=None, model_wait_s=None)
+    assert report['model_response_s'] is None
