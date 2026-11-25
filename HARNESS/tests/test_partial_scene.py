@@ -74,6 +74,35 @@ def test_current_confirmed_depth_survives_missing_pose_without_claiming_held(mon
     finally:pipeline.close()
 
 
+@pytest.mark.parametrize('aperture_observed',[True,False])
+def test_partial_held_measurement_keeps_independent_current_aperture(monkeypatch,aperture_observed):
+    pipeline,original=partial_fixture(monkeypatch)
+    pipeline.config.update(measured_gripper_contact=True,measured_gripper_max_age_ns=200_000_000,
+                           relocalize_visible_fixture=True)
+    monkeypatch.setattr(pipeline.grasp_closure,'measure',lambda *_a,**_kw:{'held':True})
+    pipeline.occlusion={'anchors':{}}
+    pose=np.eye(4);pose[:3,3]=[.03,.04,.95]
+    # Isolate the observation join. The metric fitter has independent pixel
+    # and depth regression coverage; its successful result is frame-specific.
+    def locate(*_args,**_kw):
+        if not aperture_observed:raise ValueError('fixture_relocalization_depth_missing')
+        return pose,{},{}
+    monkeypatch.setattr('f1_harness.fixture_tracking.locate_hole',locate)
+    monkeypatch.setattr(pipeline,'_fixture_visible',lambda *_a:True)
+    try:
+        obs=sample(original,0)
+        result=pipeline.process(obs,base_eef=np.eye(4))
+        assert result.objects[0].held is True and result.objects[0].pose is None
+        hole=next((obj for obj in result.objects if obj.object_id==pipeline.config['hole_id']),None)
+        if aperture_observed:
+            assert hole is not None and hole.visible and hole.pose==tuple(pose.ravel())
+            assert {f.blob_sha256 for f in result.frames if f.camera=='head'}==set(hole.evidence_ids)
+        else:
+            assert hole is None
+            assert 'aperture_unavailable:fixture_relocalization_depth_missing' in result.quality_warnings
+    finally:pipeline.close()
+
+
 @pytest.mark.parametrize('options',[dict(status='unresolved'),dict(stale=True)])
 def test_unresolved_identity_or_old_source_cannot_become_partial_geometry(monkeypatch,options):
     pipeline,original=partial_fixture(monkeypatch,**options)

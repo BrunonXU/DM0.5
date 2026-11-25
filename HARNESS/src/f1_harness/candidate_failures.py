@@ -1,4 +1,4 @@
-"""Classify rejected planning candidates and cache deterministic failures for identical inputs.
+"""Reuse only deterministic failed calculations with exactly identical inputs.
 
 No pose rounding, age gate, success cache, execution result or authorization is
 stored. A different joint measurement, geometry, parameter or scope recomputes.
@@ -9,23 +9,6 @@ from dataclasses import asdict
 import hashlib
 import json
 from threading import Lock
-
-
-# An ordinary rejection can be reported to the caller even when its result
-# depends on a time budget or a measurement and cannot be cached.
-CANDIDATE_FAILURES = frozenset((
-    'numerical_joint_search_no_exact_path','numerical_joint_search_no_valid_goal',
-    'numerical_joint_search_wall_time_exceeded','numerical_joint_search_path_rejected',
-    'bounded_IK_did_not_reach_goal','bounded_IK_wall_time_exceeded',
-    'actual_IK_candidate_collision_rejected','actual_IK_path_tool_sweep_blocked',
-    'actual_IK_path_scene_sweep_blocked','actual_IK_path_attached_object_sweep_blocked',
-    'scene_sweep_blocked','no_clear_square_symmetry_route','grasp_height_outside_registered_object',
-    'grasp_has_no_placement_route','grasp_lift_sweep_blocked','pregrasp_target_outside_wrist_view',
-    'return_route_sweep_blocked','grasp_continuation_unreachable',
-    'regrasp_support_geometry_missing','regrasp_object_not_on_registered_support',
-    'support_release_attachment_unresolved','support_release_contact_unavailable',
-    'support_release_object_not_stationary','support_motion_requires_attachment_and_support',
-    'actual_IK_uncertain_grasp_departure_not_proven'))
 
 
 DETERMINISTIC_FAILURES = frozenset((

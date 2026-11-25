@@ -405,9 +405,7 @@ def test_cancel_queued_start_is_sent_before_authorization(workspace):
 
 def test_each_run_has_distinct_remote_process_evidence(tmp_path):
     from f1_harness.web_process import WorkspaceProcesses
-    # The installed coordinator builds commands without a development CLI in its run root.
-    root = tmp_path / 'coordinator'
-    root.mkdir()
+    root = Path(__file__).resolve().parents[1]
     config = dict(root=str(root), remote_bundle='/home/user/Bruno/HARNESS/development/test',
         host='user@127.0.0.1', port=22009, identity='/tmp/unused-key', known_hosts='/tmp/unused-hosts')
     groups=[]

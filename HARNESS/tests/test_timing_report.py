@@ -2,6 +2,29 @@ import json
 from f1_harness.timing_report import timing_report
 
 
+def test_transport_retry_retains_original_solve_and_counts_only_actual_publication():
+    from f1_harness.timing_report import _transport_timing
+    scope=dict(task_hash='task',session_id='s',owner_instance_id='owner',epoch=1)
+    accepted={r:dict(intent=dict(request_id=r,skill=s,**scope)) for r,s in
+              [('grip','verify_grasp'),('first','transfer_above_hole'),('second','transfer_above_hole')]}
+    rows=[dict(kind='skill_result',monotonic_ns=10_000_000_000,
+               result=dict(request_id='grip',outcome='success',evidence_ids=['can'])),
+          dict(kind='harness_planning_started',request_id='first',monotonic_ns=11_000_000_000),
+          dict(kind='harness_plan_waiting_fresh_revalidation',request_id='first',monotonic_ns=13_000_000_000,
+               candidate=dict(candidate_variant=2)),
+          dict(kind='harness_revalidation_started',request_id='first'),
+          dict(kind='harness_plan_revalidated',proof=dict(request_id='first'))]
+    before=_transport_timing(rows,accepted)
+    assert before['requests'][0]['solves'][0]['seconds']==2
+    assert before['requests'][0]['solve_count']==before['requests'][0]['revalidated_count']==1
+    assert before['verified_grasp_to_first_transfer_publication_s'] is None
+    rows.append(dict(kind='harness_skill_first_publication',request_id='second',published_ns=18_000_000_000))
+    report=_transport_timing(rows,accepted)
+    assert report['first_published_request']=='second' and report['verified_grasp_to_first_transfer_publication_s']==8
+    accepted['second']['intent']['epoch']=2
+    assert _transport_timing(rows,accepted)['verified_grasp_to_first_transfer_publication_s'] is None
+
+
 def test_separate_clocks_and_cancelled_wait_not_complete_cycle(tmp_path):
     path=tmp_path/'collected/owner/harness/trace.jsonl';path.parent.mkdir(parents=True)
     owner=[dict(kind='skill_accepted',monotonic_ns=1000000000,intent={'request_id':'r','skill':'approach_grasp'}),

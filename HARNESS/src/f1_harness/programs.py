@@ -6,7 +6,7 @@ result = robo.skill("approach_grasp")
 
 from .recovery_programs import compile_library
 
-SINGLE_BLOCK = compile_library(2) + '''
+_BASELINE_PICK = '''
 def run_baseline():
     result = motion("approach_grasp")
     if result["outcome"] != "success": return result
@@ -21,25 +21,11 @@ def run_baseline():
         if result["outcome"] != "success": return result
         grasp = skill("verify_grasp")
     if grasp["outcome"] != "success": return grasp
-    for name in ("transfer_above_hole", "inspect_in_hand"):
-        result = motion(name)
-        if result["outcome"] != "success": return result
-    inserted = skill("align")
-    if inserted["outcome"] == "success":
-        inserted = skill("insert")
-    for attempt in range(2):
-        if inserted["outcome"] == "success": break
-        if inserted["outcome"] != "failure": return inserted
-        for name in INSERTION_RECOVERY:
-            result = motion(name)
-            if result["outcome"] != "success": return result
-        inserted = skill("insert")
-    if inserted["outcome"] != "success": return inserted
-    result = skill("release")
-    if result["outcome"] != "success": return result
-    return skill("verify_placed")
+    return place_held_block(withdraw=WITHDRAW)
 result = run_baseline()
 '''
+
+SINGLE_BLOCK = compile_library(2) + _BASELINE_PICK.replace('WITHDRAW', 'False')
 
 
 def baseline_experience(snapshot):
@@ -72,14 +58,10 @@ def baseline_experience(snapshot):
 
 def single_block_program(task, *, experience=None):
     if task.goal == 'approach_grasp': return APPROACH_ONLY
-    code=SINGLE_BLOCK.replace('range(2)', 'range(' + str(task.local_corrections) + ')')
+    code=compile_library(task.local_corrections) + _BASELINE_PICK.replace(
+        'WITHDRAW', repr('withdraw_reset' in task.allowed_skills))
     from .parameter_experience import library_preferences
     code=code.replace('MOTION_PREFERENCES = {}\n',library_preferences(experience,task))
-    if 'withdraw_reset' in task.allowed_skills:
-        code=code.replace('    return skill("verify_placed")',
-            '    placed = skill("verify_placed")\n'
-            '    if placed["outcome"] != "success": return placed\n'
-            '    return motion("withdraw_reset")')
     selected=baseline_experience(experience)
     if selected:
         # Current registered strategies match the built-in recovery program.

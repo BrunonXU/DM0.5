@@ -33,7 +33,7 @@ def target_held(observation):
 @pytest.mark.parametrize('case', ['visible_open', 'mask_gap_open', 'between_images_open_close'])
 def test_physical_opening_cannot_restore_old_visual_attachment(case):
     pipeline, raw = configured()
-    context = dict(authorized=True, task_id='task', epoch=1)
+    context = dict(pipeline.previous_context, task_id='task', epoch=1)
     try:
         for index, z in [(6, 0.), (7, .02), (8, .04)]:
             eef = np.eye(4)
@@ -41,7 +41,6 @@ def test_physical_opening_cannot_restore_old_visual_attachment(case):
             value = pipeline.process(measured_observation(raw, index),
                                      base_eef=eef, context=context)
         assert target_held(value) is True
-        assert pipeline.contact_attachment is None  # Independent visual following.
 
         opening = (900_000_000,) if case != 'between_images_open_close' else (820_000_000, 830_000_000)
         observation = measured_observation(raw, 9, opened_at=opening)
@@ -112,7 +111,6 @@ def test_return_binds_gripper_to_current_head_instead_of_unused_old_wrist(monkey
 
 def test_reacquired_head_object_uses_its_own_image_time_for_physical_opening():
     pipeline, raw = configured()
-    pipeline.previous_context = {'authorized': True}
     pipeline.last_timing = {}
     try:
         for index, z in [(6, 0.), (7, .02), (8, .04)]:

@@ -65,6 +65,8 @@ parser.add_argument('--object-offset-mm',type=float,nargs=3,default=[0.,0.,0.],m
                     help='Synthetic offset in the saved native frame, not measured scene variation')
 parser.add_argument('--hole-offset-mm',type=float,nargs=3,default=[0.,0.,0.],metavar=('X','Y','Z'))
 parser.add_argument('--missing-scene-at',default=None)
+parser.add_argument('--occlude-aperture-after-transfer',action='store_true',
+                    help='Hide the simulated aperture until the held arm moves sideways above the bucket')
 parser.add_argument('--missing-scene-calls',type=int,default=0)
 parser.add_argument('--preview-segments',action='store_true',
                     help='Offline forward-only segment forecasts from current committed smoother state')
@@ -85,6 +87,7 @@ parser.add_argument('--prefetch-transfer',action='store_true',help='FAKE only: r
 parser.add_argument('--transfer-prefetch-delay-s',type=float,default=0.,help='Offline transfer speculation delay injection (0..5 seconds)')
 parser.add_argument('--prefetch-delay-s',type=float,default=0.,help='Offline speculative worker delay (0..5 seconds)')
 parser.add_argument('--cancel-during-prefetch',action='store_true',help='Offline revoke while a speculative job is active')
+parser.add_argument('--simulated-gripper-can',action='store_true',help='Exercise published-close CAN verdicts from the offline actuator plant')
 parser.add_argument('--clock-origin-ns',type=int,default=10_000_000_000,
                     help='Initial monotonic clock for offline time-origin comparisons')
 parser.add_argument('--tick-pattern-ns',type=int,nargs='+',default=[20_000_000],
@@ -246,8 +249,14 @@ class Direct:
 # The client is replaced before any calls: only pure local numerics run.
 service=PlanService(task,fixture,area/'unused-numerics.sock',clock=lambda:clock[0])
 service.numerics=Direct()
-verifier=VerifyService(task,clock=lambda:clock[0])
+verifier=VerifyService(task,clock=lambda:clock[0],independent_grasp=args.simulated_gripper_can)
 verifier_dropout=threading.Event()
+gripper_plant=None
+if args.simulated_gripper_can:
+    from replay_gripper_can import GripperPlant
+    helper=Path(__file__).with_name('replay_gripper_can.py')
+    source_files[str(helper)]=hashlib.sha256(helper.read_bytes()).hexdigest()
+    gripper_plant=GripperPlant(verifier,store,json.loads((site/'gateway.local.json').read_text())['scene'])
 full=np.array(data['full22']);measured=np.array(original.state16);held=measured.copy()
 output_owner=None;output_profile=None
 if args.follower=='approved-output':
@@ -303,8 +312,21 @@ if args.rpc_planner:
         simulation_frame_blobs[(frame.camera,frame.stream)]=store.put_blob(bytes(size))
 def pose(q):return transform(numeric.dispatch('forward_pose',dict(full22=full.tolist(),held16=q.tolist())))
 recovery_anchor=None;recovery_observed=False;miss_injected=False
+aperture_viewpoint = None
+occluded_tcp = None
+cleared_aperture = False
+if args.occlude_aperture_after_transfer:
+    from f1_harness.aperture_view import ApertureViewpoint, planner_view_geometry
+    from f1_harness.frames import FrameChain
+    plan_config = json.loads((site/'plan.local.json').read_text())
+    scene_config = json.loads((site/'gateway.local.json').read_text())['scene']
+    envelope = planner_view_geometry(plan_config,scene_config)
+    if envelope is None:
+        raise ValueError('offline_view_requires_registered_motion_geometry')
+    aperture_viewpoint = ApertureViewpoint(envelope, FrameChain.load(fixture['frame_chain']), geometry)
+
 def observation():
-    global sequence,recovery_anchor,recovery_observed
+    global sequence,recovery_anchor,recovery_observed,occluded_tcp,cleared_aperture
     sequence+=1
     returning=engine.status()['perception_context']['placement_verified']
     relative=np.linalg.inv(transform(hole.pose))@object_pose
@@ -323,6 +345,17 @@ def observation():
         eef_object_pose=tuple(attachment.ravel()) if attachment is not None else None,evidence_ids=evidence))
     if attachment is not None and args.grasp_observation_evidence!='ideal':
         running=engine.running
+        if (args.simulated_gripper_can and args.grasp_observation_evidence=='miss_once_then_observe'
+                and not recovery_observed and miss_injected and still and target.visible
+                and 'verify_grasp' in engine.completed_skills):
+            # A new stationary RGB-D measurement of the regrasped object has
+            # its own pose. Reconstruct its transform from measured FK. The
+            # independent encoder has already confirmed closure.
+            measured_attachment = np.linalg.inv(pose(measured)) @ transform(target.pose)
+            target = target.model_copy(update={'eef_object_pose':tuple(measured_attachment.ravel())})
+            recovery_observed = True
+            injections.append(dict(kind='simulated_attachment_remeasured_after_regrasp',
+                                   observation_id=f'simulation:{sequence}',physical_motion=False))
         if running and running.skill=='recover_grasp':
             current=pose(measured)
             if recovery_anchor is None:recovery_anchor=current.copy()
@@ -334,7 +367,30 @@ def observation():
         blob_sha256=(simulation_frame_blobs[(frame.camera,frame.stream)] if args.rpc_planner else
                      digest(dict(simulation=True,sequence=sequence,camera=frame.camera,stream=frame.stream)))))
         for frame in original.frames if not returning or frame.camera=='head')
-    return original.model_copy(update=dict(synthetic=False,observation_id=f'simulation:{sequence}',
+    objects = tuple(o for o in ((hole,) if returning else (target,hole)) if o.object_id in perception_entities)
+    eef = None
+    if aperture_viewpoint is not None and attachment is not None:
+        eef = object_pose @ np.linalg.inv(attachment)
+        tcp = (aperture_viewpoint.native_world @ eef @ aperture_viewpoint.envelope['tool'])[:3,3]
+        if (occluded_tcp is not None or 'transfer_above_hole' in engine.completed_skills) and not cleared_aperture:
+            if occluded_tcp is None:
+                occluded_tcp = tcp.copy()
+                injections.append(dict(kind='simulated_aperture_hidden',observation_id=f'simulation:{sequence}',
+                                       tcp=tcp.tolist(),physical_motion=False))
+            delta = tcp - occluded_tcp
+            normal = aperture_viewpoint.envelope['normal']
+            lateral = np.linalg.norm(delta - normal * (delta @ normal))
+            if lateral < aperture_viewpoint.envelope['hole_width']/2:
+                objects = tuple(o for o in objects if o.object_id != task.hole_id)
+            else:
+                cleared_aperture = True
+                injections.append(dict(kind='simulated_aperture_visible_after_lateral_displacement',
+                    observation_id=f'simulation:{sequence}', displacement_m=float(lateral),physical_motion=False))
+        # The offline sensor model owns these placeholder frames. Bind its
+        # object measurements to this tick's frame IDs like the real observer.
+        ids = tuple(f.blob_sha256 for f in frames if f.camera==original.geometry_camera)
+        objects = tuple(o.model_copy(update={'evidence_ids':ids}) for o in objects)
+    scene = original.model_copy(update=dict(synthetic=False,observation_id=f'simulation:{sequence}',
         acquisition_instance='offline-simulation',host_boot_id=engine.host_boot_id,clock_domain='virtual_owner',
         received_ns=clock[0],state_received_ns=clock[0],frames=frames,
         pairings=tuple(p for p in original.pairings if not returning or p.camera=='head'),
@@ -342,7 +398,14 @@ def observation():
         geometry_scope='coarse_fixture_return' if returning else 'coarse_static_task',
         geometry_camera='head' if returning else original.geometry_camera,
         fixture=original.fixture if perception_entities else None,
-        objects=tuple(o for o in ((hole,) if returning else (target,hole)) if o.object_id in perception_entities)))
+        objects=objects))
+    if gripper_plant is not None:
+        scene=gripper_plant.observe(scene,engine.status()['perception_context'],
+            measured_closure=measured[15],blocked=attachment is not None,
+            verifier_available=not verifier_dropout.is_set())
+    if eef is not None:
+        aperture_viewpoint.update(scene,engine.status()['perception_context'],eef)
+    return scene
 
 class DeferredExecutor:
     def __init__(self):self.pending=[]
@@ -389,7 +452,7 @@ def verify(intent,after):
         with verifier.condition:verifier.latest=None
         injections.append(dict(skill=intent.skill,request_id=intent.request_id,
             verification_request_id=intent.verification_request_id,after_ns=after))
-    try:result=verifier.dispatch('verify_skill',dict(intent=intent.model_dump(),after_ns=after))
+    try:result=verifier.dispatch('verify_skill',dict(intent=intent.model_dump(),after_ns=after, close_request_id=(engine.grasp_contact or {}).get('request_id')))
     finally:verifier_dropout.clear()
     validated=SkillResult.model_validate(result)
     # Exercise the verifier's actual hardware-contract receipt in RPC fixtures.
@@ -800,8 +863,27 @@ if choices is not None:
     checks['selected_output_sweeps_clear']=bool(actual_audit) and all(a['passed'] for a in actual_audit)
     checks['selected_segments_actually_sampled']=bool(choices.receipts) and all(c['sampled_count']>1 for c in choices.receipts)
 if result and result['outcome']=='success':
-    checks['full_cycle_completed']=set(('approach_grasp','grasp','verify_grasp','inspect_in_hand',
-        'transfer_above_hole','align','insert','release','verify_placed','withdraw_reset'))<=engine.completed_skills
+    required={'approach_grasp','grasp','verify_grasp','inspect_in_hand','transfer_above_hole',
+              'align','insert','release','verify_placed','withdraw_reset'}
+    if args.occlude_aperture_after_transfer:
+        # move_tcp invalidates alignment/transport readiness. The successful
+        # transport receipt remains part of the same session's execution history.
+        completed=[s['skill'] for s in outcomes if s['result']['outcome']=='success' and
+                   s['request']['session_id']==session and s['request']['epoch']==outcomes[-1]['request']['epoch']]
+        suffix=['move_tcp','reobserve','align','insert','release','verify_placed','withdraw_reset']
+        checks['full_cycle_completed']=required.issubset(completed) and completed[-len(suffix):]==suffix
+        checks['occlusion_cleared_by_displacement']=cleared_aperture and [
+            i['kind'] for i in injections if i['kind'].startswith('simulated_aperture_')]==[
+            'simulated_aperture_hidden','simulated_aperture_visible_after_lateral_displacement']
+    elif args.simulated_gripper_can and args.grasp_observation_evidence=='miss_once_then_observe':
+        # "regrasp" replaces the failed first physical grasp in this scenario.
+        completed = {s['skill'] for s in outcomes if s['result']['outcome']=='success' and
+                     s['request']['session_id']==session and s['request']['epoch']==outcomes[-1]['request']['epoch']}
+        checks['full_cycle_completed']=(required-{'grasp'}|{'regrasp'}).issubset(completed)
+        checks['miss_then_remeasured_regrasp'] = [i['kind'] for i in injections]==[
+            'simulated_first_closure_miss','simulated_attachment_remeasured_after_regrasp']
+    else:
+        checks['full_cycle_completed']=required<=engine.completed_skills
 report['checks']=checks
 (run/'report.json').write_text(json.dumps(report,indent=2)+'\n')
 (area/'latest-report.json').write_text(json.dumps(dict(path=str(run/'report.json')),indent=2)+'\n')

@@ -7,8 +7,9 @@ from rpent.utils.rpc.http_rpc import HttpRpcClient
 from rpent.utils.rpc.rpc_client import RpcError
 from .contracts import Mode, Observation, Task, SkillIntent, SkillResult, digest, HarnessError
 from .gateway import OWNER_METHODS
-from .ipc import UnixClient
+from .ipc import UnixClient, GEOMETRY_HTTP_TIMEOUT_S, GEOMETRY_OWNER_TIMEOUT_S
 from .engine import REPLANNABLE_SKILLS
+from .observation import OBSERVATION_WINDOW_S, measured_alignment_pair
 
 
 class ObservationWaitEnded(HarnessError):
@@ -58,13 +59,15 @@ def _needs_visual_prompt(exc):
 class OwnerProxy:
     def __init__(self,path:Path):
         self.client=UnixClient(path,timeout=2,scene_evidence=True)
+        self.geometry_client=UnixClient(path,timeout=GEOMETRY_OWNER_TIMEOUT_S,scene_evidence=True)
         self.preview_client=UnixClient(path,timeout=32,scene_evidence=True)
         self.session=None
 
     def __getattr__(self,name):
         if name not in OWNER_METHODS:raise AttributeError(name)
         def call(**kwargs):
-            value=(self.preview_client if name=='preview_skill' else self.client).call(name,**kwargs)
+            client={'preview_skill':self.preview_client,'geometry_context':self.geometry_client}.get(name,self.client)
+            value=client.call(name,**kwargs)
             if name=='open_session':self.session=value['session_id']
             if name=='close_session':self.session=None
             return value
@@ -158,8 +161,9 @@ class RemoteTaskBackend:
         return SkillResult(request_id=uuid.uuid4().hex,lifecycle='rejected',
             outcome='pending_review',reason=reason,no_motion=True).model_dump()
 
-    def _await_observation(self, *, timeout_s=4., expected_scope=None, skill=None, verification=False,
-                           prompt_handoff=False,viewpoint_handoff=False):
+    def _await_observation(self, *, timeout_s=OBSERVATION_WINDOW_S, expected_scope=None, skill=None, verification=False,
+                           prompt_handoff=False,viewpoint_handoff=False,cancelled=lambda:False,
+                           reobserved_alignment=None):
         """Retry only read-only acquisition before a request ID or action exists.
 
         The runner keeps the existing heartbeat alive. Owner monotonic time is
@@ -188,6 +192,7 @@ class RemoteTaskBackend:
                 raise
 
         def scope(status):
+            if cancelled():raise HarnessError('observation_wait_cancelled')
             context=status.get('perception_context') or {}
             if (status.get('owner_instance_id')!=self.instance or status.get('task_hash')!=digest(self.task)
                     or context.get('session_id')!=self.session or not status.get('authorized')
@@ -196,13 +201,31 @@ class RemoteTaskBackend:
             return (self.instance,self.session,status['task_hash'],status['epoch'])
 
         while time.monotonic()<deadline:
+            if cancelled():raise HarnessError('observation_wait_cancelled')
             attempts+=1
             snapshot=None;snapshot_error=None
+            if reobserved_alignment is not None:
+                # Reobserve made no publication. Its admitted measurement is
+                # still the owner's request snapshot; live perception advances
+                # independently and must revalidate the resulting candidate.
+                source, source_intent, generation = reobserved_alignment
+                reobserved_alignment = None
+                status = read('status')
+                if (scope(status) != (source_intent.owner_instance_id, source_intent.session_id,
+                                     source_intent.task_hash, source_intent.epoch)
+                        or status.get('perception_context', {}).get('task_generation') != generation):
+                    raise HarnessError('observation_wait_epoch_changed')
+                if (status.get('alignment_snapshot_id') == source.observation_id
+                        and status.get('phase') == 'reobserve' and not status.get('motion_wait')
+                        and not status.get('running') and not status.get('pending')):
+                    snapshot = dict(observation=source, status=status)
+                    event('reobserved_alignment_input', observation_id=source.observation_id,
+                          reobserve_request_id=source_intent.request_id, epoch=source_intent.epoch)
             # The advertised combined read already carries the owner's status
             # after ingestion. Avoid a redundant network round trip before it.
             # A failed read still needs status to distinguish camera waiting
             # from revoked authority or an operator-attention condition.
-            if getattr(self,'observation_snapshot_supported',False):
+            if snapshot is None and getattr(self,'observation_snapshot_supported',False):
                 try:snapshot=read('observe_with_status')
                 except _AcquisitionDeadline:break
                 except Exception as exc:
@@ -298,14 +321,28 @@ class RemoteTaskBackend:
                         require_geometry(observation,now_ns=owner_now,max_age_ns=max_age,goal=self.task.goal,
                                          admission_profile=self.task.admission_profile,skill=geometry_skill,
                                          verification=verification,read_only_reference=True,hole_id=self.task.hole_id)
+                    if skill=='transfer_above_hole' and not verification:
+                        target=next((obj for obj in observation.objects if obj.object_id==self.task.object_id),None)
+                        if target is not None and target.held is True and target.eef_object_pose is None:
+                            # CAN can confirm grasp before RGB-D localizes the
+                            # attachment required for the swept-volume check.
+                            raise ValueError('held_object_attachment_transform_pending')
+                        completed=after.get('completed_skills') or ()
+                        if ('verify_grasp' in completed and not {'release','release_supported'}.intersection(completed)
+                                and (target is None or target.held is None)):
+                            raise ValueError('verified_grasp_current_attachment_evidence_pending')
                     if time.monotonic()>=deadline:
                         last_reason='observation_readiness_deadline';break
                 except ValueError as exc:
                     last_reason=str(exc)
-                    if viewpoint_handoff and last_reason=='local_environment_only_supports_world_observation_motion':
-                        # A fresh, usable local scene offers a different action
-                        # now. A missing/invalid local scene still follows normal
-                        # readiness polling and does not authorize a view move.
+                    missing_held_aperture=(skill=='align' and last_reason.startswith('aperture_measurement_required:')
+                        and any(obj.object_id==self.task.object_id and obj.visible and obj.held is True
+                                and obj.eef_object_pose is not None for obj in observation.objects))
+                    if viewpoint_handoff and (missing_held_aperture or (skill=='approach_grasp'
+                            and last_reason=='local_environment_only_supports_world_observation_motion')):
+                        # A valid observation can change the next action before
+                        # the readiness window expires. The recipient still
+                        # has to plan any view move against the current scene.
                         try:
                             require_geometry(observation,now_ns=owner_now,max_age_ns=max_age,goal=self.task.goal,
                                 admission_profile=self.task.admission_profile,skill='reobserve',
@@ -342,6 +379,7 @@ class RemoteTaskBackend:
                 event('waiting_for_stable_observation',reason=last_reason,attempts=attempts)
                 logged_reason=last_reason
             time.sleep(min(.1,max(0.,deadline-time.monotonic())))
+        if cancelled():raise HarnessError('observation_wait_cancelled')
         event('observation_readiness_timeout',reason=last_reason,attempts=attempts,
               waited_ms=(time.monotonic()-started)*1000,submitted=False,
               transport_error=transport_error,first_reason=first_reason)
@@ -380,13 +418,20 @@ class RemoteTaskBackend:
         condition=with_observation_details(condition,status)
         return dict(planned=False,no_motion=True,executable=False,current_scope=True,
             reason=str(exc),planning_diagnostic=diagnostic,condition=condition,
-            geometry_available=False,motion_evidence=False,recovery_hint='refresh_scene'),status
+            geometry_available=False,geometry_status='unavailable',available_skills=[],cartesian_motion=False,
+            search_entities=latest.get('search_entities',{}),motion_authorized=False,
+            motion_evidence=False,recovery_hint='refresh_scene'),status
 
-    def execute_tool(self,name,input_dict,*,prompt_handoff=False):
+    def read_program_target_state(self):
+        return self.execute_tool('geometry_context',{},_target_presence=True)
+
+    def execute_tool(self,name,input_dict,*,prompt_handoff=False,_target_presence=False):
         # Host provenance for this public call, never model-supplied metadata.
         # Internal zero-publication retries must remain attributable to the
         # enclosing program even though only the final receipt is returned.
         self.last_request_chain=[]
+        alignment = getattr(self, '_reobserved_alignment', None)
+        self._reobserved_alignment = None
         if name=='aperture_observation' and not input_dict:
             return self.call('aperture_observation')
         if name=='task_context':
@@ -428,7 +473,7 @@ class RemoteTaskBackend:
             if name=='geometry_context' and input_dict:raise HarnessError('unexpected_geometry_arguments')
             if name!='geometry_context' and set(input_dict)-{'name','parameters'}:
                 raise HarnessError('unexpected_preview_arguments')
-            remaining=4.
+            remaining=OBSERVATION_WINDOW_S
             if getattr(self,'task_deadline',None) is not None:
                 remaining=min(remaining,self.task_deadline-time.monotonic())
             if remaining<=0:raise ObservationWaitEnded('task_budget_exhausted_before_observation')
@@ -440,11 +485,23 @@ class RemoteTaskBackend:
                 if store is not None:store.event('geometric_preview_observation_unavailable',
                     tool=name,skill=input_dict.get('name'),scope=exc.scope,**preview)
                 if name=='geometry_context':return preview
-                if name=='inspect_plan':return dict(preview,preview=preview,geometry={},motion_authorized=False)
+                if name=='inspect_plan':return dict(preview,preview=preview,geometry={key:preview[key] for key in
+                    ('geometry_status','available_skills','cartesian_motion','search_entities','motion_authorized')})
                 return preview
+            catalog=(status.get('observation_readiness') or {}).get('search_entities',{})
             if name=='geometry_context':
+                if _target_presence and status.get('mode')!='fake' and observation.geometry_scope!='coarse_fixture_return':
+                    # _await_observation binds current authority, epoch, calibration,
+                    # camera evidence and owner freshness. The ensuing skill acquires
+                    # its own admissible geometry and goes through normal planning.
+                    target=next((o for o in observation.objects if o.object_id==self.task.object_id),None)
+                    return dict(object_pose=list(target.pose) if target and target.pose is not None else None,
+                        object_id=self.task.object_id,world_frame=target.frame_id if target else None,
+                        observation_id=observation.observation_id,calibration_id=observation.calibration_id,
+                        measurement_received_ns=observation.received_ns,motion_authorized=False)
                 from .planner_geometry import pack_geometry
-                return pack_geometry(self.call(name,session_id=self.session,timeout_s=8))
+                return dict(pack_geometry(self.call(name,session_id=self.session,timeout_s=GEOMETRY_HTTP_TIMEOUT_S)),
+                            search_entities=catalog)
             # Leave transport margin inside the existing preview RPC window.
             # Every stage consumes this same remaining planning budget.
             planning_seconds=25. if self.task.goal=='placed' else 10.
@@ -459,6 +516,8 @@ class RemoteTaskBackend:
             self._progress('planning',skill=intent.skill,preview=True)
             result=self.call('preview_skill',intent=intent.model_dump(),timeout_s=30,
                              **({'include_geometry':True} if name=='inspect_plan' else {}))
+            if name=='inspect_plan' and isinstance(result.get('geometry'),dict):
+                result['geometry']['search_entities']=catalog
             self._progress('ready' if result.get('planned') else 'waiting',skill=intent.skill,
                            reason=result.get('reason'),preview=True)
             if intent.skill == 'align' and not result.get('planned'):
@@ -478,7 +537,7 @@ class RemoteTaskBackend:
             # accepted motion or create a fresh task/authorization deadline.
             deadline=getattr(self,'task_deadline',None)
             if not self.pending and not self._solved:
-                remaining=4. if deadline is None else min(4.,deadline-time.monotonic())
+                remaining=OBSERVATION_WINDOW_S if deadline is None else min(OBSERVATION_WINDOW_S,deadline-time.monotonic())
                 if remaining<=0:
                     self._needs_attention('observe','task_budget_exhausted_before_observation')
                     raise ObservationWaitEnded('task_budget_exhausted_before_observation')
@@ -501,12 +560,14 @@ class RemoteTaskBackend:
                     from .gripper_contact import measurement_summary
                     result['gripper_feedback']=measurement_summary(observation.measured_gripper,
                         min((f.received_ns for f in observation.frames),default=observation.received_ns))
-                if partial:
+                if partial and _target_presence:
+                    result['local_environment_available']=True
+                elif partial:
                     # The owner supplies current TCP and a bounded occupancy
                     # summary. Depth grids remain on the numerical side, even
                     # when a Python cell prints the entire observe() result.
                     from .planner_geometry import pack_geometry
-                    geometry=self.call('geometry_context',session_id=self.session,timeout_s=8)
+                    geometry=self.call('geometry_context',session_id=self.session,timeout_s=GEOMETRY_HTTP_TIMEOUT_S)
                     # observe() ingests a fixed owner snapshot; live updates use
                     # a separate slot. Do not merge another caller's later
                     # observation into this snapshot if a concurrent read races.
@@ -544,7 +605,8 @@ class RemoteTaskBackend:
         # a legacy per-skill 30s cap must not terminate a progressing long path.
         deferred=getattr(self,'deferred_grasp',None)
         if deferred:
-            if ((deferred['ready'] or deferred.get('relocalized')) and input_dict==deferred['arguments']):
+            if ((deferred['ready'] or deferred.get('relocalized'))
+                    and input_dict==deferred.get('arguments',{'name':'approach_grasp'})):
                 # Let this cell return. The host will dispatch the exact frozen
                 # program in a fresh namespace and bind its own owner receipts.
                 return self._needs_attention('approach_grasp','localized_grasp_program_waiting_for_host')
@@ -576,13 +638,20 @@ class RemoteTaskBackend:
             wait_remaining=observation_deadline-time.monotonic()
             if wait_remaining<=0:
                 return preparation_failed('observation_readiness_timeout:readiness_budget_exhausted')
+            bound = (alignment is not None and input_dict['name']=='align'
+                and not input_dict.get('resume_request_id') and not input_dict.get('verification_request_id')
+                and time.monotonic() < alignment[1])
             try:
                 observation,status=self._await_observation(timeout_s=wait_remaining,expected_scope=original_scope,
                     skill=input_dict['name'],verification=bool(input_dict.get('verification_request_id')),
-                    **({'viewpoint_handoff':True} if input_dict.get('resume_request_id')
-                       and input_dict['name']=='approach_grasp' else {}))
+                    **({'reobserved_alignment':alignment[0]} if bound else {}),
+                    **({'viewpoint_handoff':True} if (input_dict.get('resume_request_id')
+                       and input_dict['name']=='approach_grasp') or (input_dict['name']=='align'
+                       and not input_dict.get('resume_request_id') and not input_dict.get('verification_request_id')
+                       and {'move_tcp','reobserve'}.issubset(self.task.allowed_skills)) else {}))
             except ObservationWaitEnded as exc:
                 return preparation_failed(str(exc))
+            alignment = None
             scope=(self.instance,self.session,status['task_hash'],status['epoch'])
             if original_scope is not None and scope!=original_scope:
                 raise HarnessError('replanning_authority_changed')
@@ -611,10 +680,21 @@ class RemoteTaskBackend:
             submitted_at=time.monotonic()
             result=self._submit_and_wait(intent,deadline=deadline)
             self.last_request_chain.append(dict(intent=intent.model_dump(),result=dict(result)))
+            if (intent.skill == 'reobserve' and not intent.verification_request_id
+                    and result['lifecycle'] == 'completed' and result['outcome'] == 'success'
+                    and result.get('no_motion') is True and status.get('alignment_snapshot_id') == observation.observation_id
+                    and measured_alignment_pair(observation, self.task)):
+                # This reference is consumed by the immediately following tool
+                # call. No model-supplied observation can replace the source.
+                generation = status['perception_context']['task_generation']
+                self._reobserved_alignment = ((observation, intent, generation), time.monotonic()+OBSERVATION_WINDOW_S)
+                result = dict(result, alignment_observation=dict(observation_id=observation.observation_id,
+                    received_ns=observation.received_ns, hole_id=self.task.hole_id))
             if (result['lifecycle']=='rejected'
-                    and result['reason'] in ('owner_motion_wait','observation_retired_by_motion_wait',
+                    and (bound and result['reason']=='observation_or_scene_mismatch' or
+                         result['reason'] in ('owner_motion_wait','observation_retired_by_motion_wait',
                                             'stale_observation','stale_observation_measurements',
-                                            'cartesian_motion_attachment_unknown')
+                                            'cartesian_motion_attachment_unknown'))
                     and result['no_motion'] is True):
                 # This ID was explicitly never admitted. Preserve the original
                 # read-only wait deadline and the two numerical-replan credits.

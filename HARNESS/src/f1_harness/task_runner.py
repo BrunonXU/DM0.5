@@ -279,14 +279,14 @@ def _planner_authority_mismatches(backend, authorized_status, current):
     return mismatches
 
 
-def _initial_planner_observation(backend, authorized_status, store, *, cancelled=lambda:False):
+def _initial_planner_observation(backend, authorized_status, store, *, cancelled=lambda:False,program_bootstrap=False):
     """Missing perception is planner input, while lost authority/transport stays fatal.
 
     Only the Astra bootstrap uses this path. No observation is synthesized or
     ingested, and all later geometric/motion tools keep their existing checks.
     """
     try:
-        initial=backend.execute_tool('observe',{},prompt_handoff=True)
+        initial=backend.execute_tool('observe',{},prompt_handoff=True,**({'_target_presence':True} if program_bootstrap else {}))
     except ObservationWaitEnded as exc:
         from .conditions import observation_condition,with_observation_details
         original=str(exc)
@@ -328,7 +328,7 @@ def _initial_planner_observation(backend, authorized_status, store, *, cancelled
     summary={key:measured.get(key) for key in (
         'observation_id','calibration_id','scene_version','stationary','objects','geometry_scope')}
     from .planner_geometry import observation_warnings,has_local_planning_context
-    partial=has_local_planning_context(measured,initial.get('geometry'))
+    partial=initial.get('local_environment_available') is True or has_local_planning_context(measured,initial.get('geometry'))
     summary['quality_warnings']=observation_warnings(measured.get('quality_warnings'))
     summary['geometry_available']=not partial
     if partial:
@@ -336,7 +336,7 @@ def _initial_planner_observation(backend, authorized_status, store, *, cancelled
         summary.update(geometry_status='partial',local_environment_available=True,
             object_pose_available=any(obj.get('object_id')==backend.task.object_id and obj.get('pose') is not None
                 for obj in measured.get('objects',[]) if isinstance(obj,dict)),
-            planning_context=pack_geometry(initial.get('geometry')))
+            planning_context=pack_geometry(initial.get('geometry') or {}))
         if isinstance(initial.get('condition'),dict):
             from .conditions import compact_observation_condition
             summary['condition']=compact_observation_condition(initial['condition'])
@@ -553,8 +553,10 @@ def run_task(args,store,credential_path):
             # Supply the same authorized read that the model otherwise spends
             # a whole round trip asking for. Skills still acquire and revalidate
             # fresh measurements before submitting any motion.
+            from .program_reuse import verified_program_choices
+            program_bootstrap=bool(snapshot and not hybrid_tail and verified_program_choices(snapshot,task))
             initial_summary=_initial_planner_observation(backend,authorized_status,store,
-                cancelled=lambda:stop.is_set() or bool(heartbeat_error))
+                cancelled=lambda:stop.is_set() or bool(heartbeat_error),program_bootstrap=program_bootstrap)
             trial=None
             if not hybrid_tail:
                 trial=_freeze_program_trial(backend,task,snapshot,
@@ -578,17 +580,19 @@ def run_task(args,store,credential_path):
                         source='validation_program' if trial is not None else 'verified_program',model_requests=0),
                         measured=measured_finish,turns=arm.turns,recording_identity=owner_status.get('recording_identity'),
                         session_id=backend.session,evidence_status='awaiting_native_recording_seal',training_ready=False)
-                if reused['attempts']:
+                if reused['attempts'] or program_bootstrap:
                     # Refresh after the attempted program; the original startup
                     # summary no longer describes the current manipulation phase.
+                    awaiting_localization=bool(getattr(backend,'deferred_grasp',None))
                     initial_summary=_initial_planner_observation(backend,authorized_status,store,
-                        cancelled=lambda:stop.is_set() or bool(heartbeat_error))
+                        cancelled=lambda:stop.is_set() or bool(heartbeat_error),program_bootstrap=awaiting_localization)
                     initial_summary['verified_program_attempts']=reused['attempts']
                     if getattr(backend,'deferred_grasp',None):
                         def resume_grasp():
                             # The normal planner completion check closes the owner after this callback.
                             return resume_localized_grasp(arm,backend,task,store,
-                                authority_valid=reuse_authority_valid,finish_completed=lambda:None)
+                                authority_valid=reuse_authority_valid,finish_completed=lambda:None,
+                                cancelled=lambda:stop.is_set() or bool(heartbeat_error))
                         resumed=resume_grasp()
                         if resumed is not None:
                             completed=_finish_completed_task(backend,task)
@@ -601,6 +605,10 @@ def run_task(args,store,credential_path):
                                 cancelled=lambda:stop.is_set() or bool(heartbeat_error))
                             initial_summary['verified_program_attempts']=reused['attempts']+resumed['attempts']
                         elif backend.deferred_grasp:
+                            if initial_summary.get('local_environment_available'):
+                                initial_summary=_initial_planner_observation(backend,authorized_status,store,
+                                    cancelled=lambda:stop.is_set() or bool(heartbeat_error))
+                                initial_summary['verified_program_attempts']=reused['attempts']
                             planner.resume_localized_program=resume_grasp
                             initial_summary['deferred_grasp_program']=dict(
                                 candidate_id=backend.deferred_grasp['item']['id'],
@@ -652,6 +660,7 @@ def run_task(args,store,credential_path):
             try:
                 planner.prepare_connection()
                 planner.local_corrections = task.local_corrections
+                planner.single_visual_consultation = task.goal == 'placed'
                 declared=planner.run(arm,snapshot_text=snapshot_text,continue_run=continue_planning,
                     complete_run=complete_planning,task_text=
                     ('The B1250 VLA executor has ended and handed control to the SAME Harness task program. '

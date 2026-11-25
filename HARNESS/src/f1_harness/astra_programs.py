@@ -105,6 +105,13 @@ If approach already succeeded, call grasp_and_place(). If grasp is already
 verified, call place_held_block(). Never repeat completed motion. Set withdraw=False
 only when withdraw_reset is absent from allowed_skills. Stop the sequence on any
 result whose outcome is not success; program_stage identifies the stopped step.
+On an unsubmitted align blocked by observation, this program refreshes the
+current aperture locally. If needed it previews one bound, previously clear
+held-arm viewpoint, moves there, and remeasures before resuming align. Read
+placement_handoff for the original request, measured holding, missing entity,
+numeric left-wrist observations and any viewpoint already tried. Choose a
+different observation strategy if still unresolved. After obtaining a measured
+aperture, resume_pick(result) rejoins at align without repeating transport.
 An owner-verified grasp miss can use the prepared regrasp budget inside this helper;
 missing visual evidence cannot trigger regrasp. When recover_grasp is authorized,
 the helper can perform one closed-gripper observation motion after unknown grasp

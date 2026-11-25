@@ -80,6 +80,13 @@ def run_rpc_session(ns):
                 assert store.put_blob(data)==sha
     perception=None
     class Observer:
+        def aperture_observation(self):
+            view = ns.get('aperture_viewpoint')
+            result = dict(camera='left', available=False, motion_evidence=False, candidates={})
+            if view is not None and view.move is not None:
+                result['observation_move'] = dict(view.move)
+            return result
+
         def observe(self):
             if perception is not None and not engine.request_publications:
                 result=perception.call('observe',status=engine.status())

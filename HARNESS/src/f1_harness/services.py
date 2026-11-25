@@ -34,7 +34,14 @@ def serve(kind,config_path:Path,store, *, numerical_pool=None):
             from .contracts import Task
             from .skill_services import PlanService,VerifyService
             task=Task.model_validate(config['task'])
-            service=PlanService(task,config['fixture'],Path(config['numerical_socket'])) if kind=='plan' else VerifyService(task,fixture=config.get('fixture'))
+            if kind=='plan':
+                service=PlanService(task,config['fixture'],Path(config['numerical_socket']))
+            else:
+                gateway_path=config_path.with_name('gateway.local.json')
+                gateway=json.loads(gateway_path.read_text()) if gateway_path.is_file() else {}
+                geometry=gateway.get('scene',{}).get('geometry',{})
+                service=VerifyService(task,fixture=config.get('fixture'),
+                                      independent_grasp=bool(geometry.get('measured_gripper_contact')))
             server=UnixServer(Path(config['socket']),service.dispatch,timeout=92 if kind=='plan' else 12,
                              scene_evidence=True).start()
         elif kind=='masks':
@@ -50,6 +57,11 @@ def serve(kind,config_path:Path,store, *, numerical_pool=None):
             if config.get('scene'):
                 from .mask_service import scene_mask_provider
                 from .live_scene import LiveSceneObserver
+                from .aperture_view import planner_view_geometry
+                plan_path = config_path.with_name('plan.local.json')
+                if plan_path.is_file():
+                    config['scene']['aperture_view_geometry'] = planner_view_geometry(
+                        json.loads(plan_path.read_text()), config['scene'])
                 mask_client=scene_mask_provider(config['scene'],config_path.parent)
                 observer=LiveSceneObserver(observer,config['scene'],mask_client,store)
             server=GatewayServer(Gateway(OwnerProxy(Path(config['owner_socket'])),observer,store),port=config['control_port']).start()

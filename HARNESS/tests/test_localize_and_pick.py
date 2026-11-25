@@ -68,6 +68,24 @@ def test_inspect_plan_remains_readonly(tmp_path):
     assert not backend.motions
 
 
+def test_wrong_view_localization_keeps_original_checkpoint_without_a_new_action(tmp_path):
+    backend,arm=make(tmp_path,{},[])
+    rejection=dict(accepted=False,reason='unregistered_entity_hint',search_only=True,motion_evidence=False,
+        search_entities={'head':[dict(object_id='square-hole-1',role='target_aperture')]})
+    def reject(name,arguments,**kwargs):
+        assert name=='locate_entities'
+        backend.calls.append((name,arguments))
+        return rejection
+    backend.execute_tool=reject
+    result=ast.literal_eval(cell(arm,f'localize_and_pick({HINTS!r})')['value'])
+    assert result['no_motion'] and result['reason']==rejection['reason'] and result['localization']==rejection
+    checkpoint=dict(outcome='pending_review',program_stage='grasp',reason='await_verification',
+        verification_request_id='existing-grasp',no_motion=False)
+    resumed=ast.literal_eval(cell(arm,f'resume_pick({checkpoint!r}, {HINTS!r})')['value'])
+    assert resumed==dict(checkpoint,localization=rejection)
+    assert [name for name,_ in backend.calls]==['locate_entities','locate_entities']
+
+
 def test_execution_failure_returns_without_new_localization_or_restart(tmp_path):
     backend,arm=make(tmp_path,dict(planned=True,current_scope=True),[
         dict(outcome='success'),dict(outcome='failure',reason='unknown_publication')])
@@ -104,7 +122,7 @@ def test_no_checkpoint_never_replays_unknown_motion(tmp_path,outcome,reason):
 def test_localize_rejected_default_consumes_geometry_candidates_same_cell():
     from f1_harness.recovery_programs import compile_library
     class Robot:
-        def locate_entities(self,*args):pass
+        def locate_entities(self,*args):return dict(accepted=True)
         def skill(self,*args,**kwargs):
             return dict(outcome='pending_review',no_motion=True,lifecycle='rejected',
                         reason='numerical_plan_rejected:registered_candidates_exhausted')

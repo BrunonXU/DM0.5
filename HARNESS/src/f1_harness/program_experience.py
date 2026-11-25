@@ -66,6 +66,29 @@ def validate_candidate(value):
     return dict(value, source_sha256=digest(value['source']))
 
 
+def uses_only_target_presence(candidate):
+    """Recognize pure presence tests whose values come from the observed target."""
+    predicate=next(f for f in ast.parse(candidate['source']).body if f.name=='applicable')
+    state=predicate.args.args[0].arg
+    def supported(expr):
+        if isinstance(expr,ast.BoolOp):
+            return all(supported(child) for child in expr.values)
+        if isinstance(expr,ast.UnaryOp) and isinstance(expr.op,ast.Not):
+            return supported(expr.operand)
+        if not (isinstance(expr,ast.Compare) and len(expr.ops)==1 and
+                isinstance(expr.ops[0],(ast.Is,ast.IsNot)) and isinstance(expr.comparators[0],ast.Constant)):
+            return False
+        call=expr.left
+        if not (isinstance(call,ast.Call) and isinstance(call.func,ast.Attribute) and call.func.attr=='get'
+                and isinstance(call.func.value,ast.Name) and call.func.value.id==state and not call.keywords
+                and len(call.args)==1 and isinstance(call.args[0],ast.Constant)):
+            return False
+        key,expected=call.args[0].value,expr.comparators[0].value
+        return (key=='object_pose' and expected is None or
+                key=='available' and (expected is None or type(expected) is bool))
+    return supported(predicate.body[-1].value)
+
+
 def invocation_code(candidate):
     """Build code, never evaluate it on the host or inherit earlier cell globals."""
     validated = validate_candidate({key: candidate[key] for key in ('title', 'source', 'claim')})

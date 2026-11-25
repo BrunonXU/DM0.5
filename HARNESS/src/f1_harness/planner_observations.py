@@ -9,9 +9,13 @@ explaining the missing evidence, and explicitly use robo.show for the relevant v
 The left wrist is an additional camera at its operator-set pose. The current motion tools
 control the right arm. For a hidden aperture, use robo.aperture_observation() for candidates in
 raw image pixels; a 2D shape alone is not a world-frame pose. If ambiguity persists
-request robo.show("left") with image_reason. locate_entities accepts head/right RGB-D only.
-Aim for zero image requests, normally at most one image batch for this task. This
-is not a hard quota: a newly unresolved visual ambiguity can justify another.
+request robo.show("left") with image_reason. For localization, read search_entities
+in robo.geometry() or failed inspect_plan geometry. Match the ID to its listed camera
+before requesting pixels; boxes belong only to the displayed frame. A partial scene
+can still support specific skills. Read available_skills and missing_entities;
+inspect_plan checks the requested skill against the current scene and owner.
+Aim for zero image requests. Respect the task's visual consultation budget and
+resolve subsequent visual questions with fresh local numeric evidence when it is spent.
 Images are delivered once. Their source frame references remain available locally;
 never invent boxes on an unseen image. Missing geometry is unknown, not a detection.
 Old tool outputs are summarized; persistent Python variables and original receipts

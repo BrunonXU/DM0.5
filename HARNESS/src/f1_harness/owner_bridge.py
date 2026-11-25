@@ -7,7 +7,6 @@ import threading
 
 import numpy as np
 
-from .candidate_failures import CANDIDATE_FAILURES
 from .contracts import HarnessError, Mode, SkillResult, digest
 from .engine import UNPUBLISHED_FRESHNESS_REASONS, UNPUBLISHED_REPLAN_REASONS, UNPUBLISHED_SCENE_REASONS
 from .gateway import OWNER_METHODS
@@ -16,7 +15,8 @@ from .verification import needs_semantic_evidence
 
 
 PURE_SCENE_AGE_REASONS=frozenset((
-    'scene_expired','perception_latency_exceeds_observation_budget',
+    'scene_expired','camera_sample_feedback_aged:right','camera_sample_feedback_unpaired:right',
+    'perception_latency_exceeds_observation_budget',
     'evidence_archive_exceeds_observation_budget','verification_transport_exceeds_observation_budget',
 ))
 
@@ -165,6 +165,7 @@ class OwnerBridge:
         self.revalidation_proof=None
         self.revalidation_after_ns=None
         self.revalidation_observation=None
+        self.alignment_wait=None
         self.pending_revalidation_plan=None
         self.feedback_age_ns = feedback_age_ns
         self.reference_tolerance_deg = reference_tolerance_deg
@@ -317,6 +318,7 @@ class OwnerBridge:
                     # The numerical RPC has no publisher. Only its recognized
                     # candidate rejections are ordinary preview results. A lost
                     # connection or unknown server failure remains an exception.
+                    from .skill_services import CANDIDATE_FAILURES
                     local_view_rejection=(intent.skill=='move_tcp' and diagnostic['code'] in (
                         'local_observation_space_unknown','local_observation_departure_incomplete',
                         'local_observation_motion_requires_measured_open_gripper'))
@@ -343,7 +345,12 @@ class OwnerBridge:
 
     def status(self):
         """Read-only fresh-owner readiness; never substitutes for a prior STOP receipt."""
-        result=self.engine.status()
+        with self.engine._lock:
+            result=self.engine.status()
+            # A host may use a recently reobserved pose to generate an align
+            # candidate only where this owner has a mandatory before-publish sweep.
+            if self.candidate_revalidator is not None and self.engine.observation is not None:
+                result['alignment_snapshot_id']=self.engine.observation.observation_id
         if hasattr(self,'hybrid_status'):result['hybrid']=self.hybrid_status()
         result['restart_readiness']=self.restart_readiness()
         return result
@@ -757,6 +764,33 @@ class OwnerBridge:
         self._discard_unpublished_plan('owner_candidate_rejected',inputs_unchanged=True)
         return True
 
+    def _wait_for_alignment(self, running, latest, invalid_reason, full22, measured16, stamps16, held16, now):
+        from .revalidation import alignment_measurement_gap
+        from .observation import OBSERVATION_WINDOW_S
+        gap=alignment_measurement_gap(self.plan_observation,latest,task=self.engine.task,skill='align')
+        if gap=='revalidation_attachment_changed':
+            self._discard_unpublished_plan('plan_revalidation_rejected:'+gap)
+            return True
+        waiting=self.alignment_wait
+        if gap and (waiting is None or waiting[0]!=running.request_id):
+            waiting=self.alignment_wait=(running.request_id, now)
+            self.engine.store.event('harness_plan_waiting_live_scene',request_id=running.request_id,
+                reason=gap,latest_observation_id=latest.observation_id,after_ns=self.revalidation_after_ns)
+        if waiting is None or waiting[0]!=running.request_id:
+            return False
+        failure=self._unpublished_reference_failure(self.pending_revalidation_plan,self.plan_observation,
+            full22=full22,measured16=measured16,stamps16=stamps16,held16=held16,now_ns=now)
+        if failure is not None or latest is None and invalid_reason not in PURE_SCENE_AGE_REASONS:
+            self._discard_unpublished_plan(failure or 'revalidation_live_scene_invalidated')
+            return True
+        if gap or latest is None:
+            if now-waiting[1]>=int(OBSERVATION_WINDOW_S*1e9):
+                self._discard_unpublished_plan('plan_revalidation_rejected:revalidation_target_measurement_unavailable',
+                    inputs_unchanged=True)
+            return True
+        self.alignment_wait=None
+        return False
+
     def validate_first_publication(self, *, full22, measured16, stamps16, held16, now_ns):
         """Recheck the original planning inputs immediately before the first real publish.
 
@@ -774,11 +808,16 @@ class OwnerBridge:
             self._discard_unpublished_plan(reason)
             return False
         if self.revalidation_proof is not None:
-            from .revalidation import proof_observation,RevalidationExpired,RevalidationSceneChanged,RevalidationEvidenceUpdated
+            from .revalidation import (proof_observation, RevalidationExpired, RevalidationSceneChanged,
+                                       RevalidationEvidenceUpdated, TRANSPORT_MEASUREMENT_PENDING,
+                                       alignment_measurement_gap)
             try:
                 live=getattr(self.engine,'live_observation',None)
                 from .local_environment import local_scope
-                if (live is not None and live.geometry_scope=='coarse_object_verification'
+                alignment_gap=alignment_measurement_gap(obs,live,task=self.engine.task,skill=running.skill)
+                if alignment_gap=='revalidation_attachment_changed':
+                    raise RevalidationSceneChanged(alignment_gap)
+                if (alignment_gap or live is not None and live.geometry_scope=='coarse_object_verification'
                         and not (local_scope(live) and running.skill in ('move_tcp','reobserve'))):
                     # No movement with object-only evidence: retain the fixed
                     # candidate until the required fixture view is available.
@@ -786,7 +825,8 @@ class OwnerBridge:
                     self.proposal=self.current_target=None
                     self.revalidation_proof=None;self.revalidation_after_ns=now_ns
                     self.engine.store.event('harness_plan_waiting_live_scene',request_id=plan.request_id,
-                        reason='required_camera_pending:head',after_ns=now_ns)
+                        reason=alignment_gap or 'required_camera_pending:head',
+                        after_ns=now_ns)
                     return False
                 temporal_invalidation=getattr(self.engine,'live_observation_invalid_reason',None) in PURE_SCENE_AGE_REASONS
                 if live is None and not temporal_invalidation:
@@ -815,6 +855,9 @@ class OwnerBridge:
                 self.pending_revalidation_plan=plan
                 self.proposal=self.current_target=None
                 self.revalidation_proof=None;self.waypoint_published_ns=None
+                # An incomplete live view cannot be swept, even if the worker
+                # had a complete earlier one. A comparable changed view can.
+                self.revalidation_observation=live if str(exc)==TRANSPORT_MEASUREMENT_PENDING else None
                 self.engine.store.event('harness_plan_waiting_live_scene',request_id=plan.request_id,
                     reason=str(exc),after_ns=self.revalidation_after_ns,
                     latest_observation_id=live.observation_id)
@@ -887,8 +930,11 @@ class OwnerBridge:
                     self.engine.store.event('harness_skill_computation_failed',request_id=running.request_id,
                         epoch=running.epoch,skill=running.skill,phase=self.future_kind,diagnostic=diagnostic)
                     if self.future_kind=='revalidate':
+                        from .revalidation import TRANSPORT_MEASUREMENT_PENDING
                         reason='plan_revalidation_rejected:'+diagnostic['code']
-                        if reason in UNPUBLISHED_FRESHNESS_REASONS:
+                        transport_pending=(running.skill=='transfer_above_hole'
+                                           and diagnostic['code']==TRANSPORT_MEASUREMENT_PENDING)
+                        if reason in UNPUBLISHED_FRESHNESS_REASONS or transport_pending:
                             failure=self._unpublished_reference_failure(self.pending_revalidation_plan,
                                 self.plan_observation,full22=full22,measured16=measured16,
                                 stamps16=stamps16,held16=held16,now_ns=now)
@@ -897,12 +943,15 @@ class OwnerBridge:
                                 or current is None and getattr(self.engine,'live_observation_invalid_reason',None)
                                 in PURE_SCENE_AGE_REASONS)
                             if failure is None and wait_for_current:
-                                # Even if the next scene has not arrived yet,
-                                # keep the unpublished candidate. Repeat its full
-                                # sweep on measurements newer than this failure.
-                                self.revalidation_after_ns=now
+                                # Expired evidence needs fresh timestamps. For a
+                                # missing view, a later sample may already have
+                                # arrived during computation. Keep the original
+                                # planning timestamp and skip the attempted view.
+                                if not transport_pending:self.revalidation_after_ns=now
                                 self.engine.store.event('harness_plan_waiting_live_scene',request_id=running.request_id,
-                                    reason='worker_expired_awaiting_new_measurements',after_ns=now)
+                                    reason=diagnostic['code'] if transport_pending else 'worker_expired_awaiting_new_measurements',
+                                    latest_observation_id=getattr(self.revalidation_observation,'observation_id',None),
+                                    after_ns=self.revalidation_after_ns)
                                 return None
                             if failure is None and current is None:
                                 failure='revalidation_live_scene_invalidated'
@@ -1029,6 +1078,7 @@ class OwnerBridge:
                 return None
             if self.candidate_revalidator is not None and self.future_kind=='plan':
                 self.pending_revalidation_plan=proposal
+                self.revalidation_observation=None
                 self.revalidation_after_ns=now
                 self.revalidation_proof=None
                 from dataclasses import asdict
@@ -1041,16 +1091,30 @@ class OwnerBridge:
                 self.proposal_started=False
         if self.pending_revalidation_plan is not None:
             if self.future is None:
-                from .revalidation import fresh_after
+                from .revalidation import attachment_measurement_pending, fresh_after
                 from .observation import stationary_admitted
                 from .local_environment import local_scope
                 with self.engine._lock:
                     latest=getattr(self.engine,'live_observation',None)
                     running=self.engine.running
+                    invalid_reason=getattr(self.engine,'live_observation_invalid_reason',None)
+                attempted=self.revalidation_observation
+                if (running is not None and running.skill=='align' and self._wait_for_alignment(
+                        running,latest,invalid_reason,full22,measured16,stamps16,held16,now)):
+                    return None
+                if running is not None and running.skill=='transfer_above_hole' and attempted is not None:
+                    if latest is None and invalid_reason not in PURE_SCENE_AGE_REASONS:
+                        self._discard_unpublished_plan('revalidation_live_scene_invalidated')
+                        return None
+                    if (latest is not None and attempted.acquisition_instance==latest.acquisition_instance
+                            and (latest.observation_id==attempted.observation_id
+                                 or latest.received_ns<=attempted.received_ns)):
+                        return None
                 if (running is not None and fresh_after(latest,self.revalidation_after_ns,
                         task=self.engine.task,skill=running.skill)
                         and (latest.geometry_scope!='coarse_object_verification'
                              or local_scope(latest) and running.skill in ('move_tcp','reobserve'))
+                        and not attachment_measurement_pending(self.plan_observation,latest,task=self.engine.task,skill=running.skill)
                         and stationary_admitted(latest,admission_profile=self.engine.task.admission_profile)
                         and not latest.faults):
                     self.future_kind='revalidate'

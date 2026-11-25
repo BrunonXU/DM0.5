@@ -45,6 +45,59 @@ def measured_cycle(owner,accepted):
     return None
 
 
+def _transport_timing(owner, accepted):
+    """Attribute solves, rechecks and first output to the same owner request."""
+    requests = {}
+    pending = {}
+    confirmed = {}
+    first_output = None
+    first_after_grasp = None
+    for row in owner:
+        kind = row['kind']
+        result = row.get('result') or {}
+        request = row.get('request_id') or result.get('request_id') or (row.get('proof') or {}).get('request_id')
+        intent = accepted.get(request, {}).get('intent') or row.get('intent', {})
+        scope = tuple(intent.get(k) for k in ('task_hash', 'session_id', 'owner_instance_id', 'epoch'))
+        if kind == 'skill_result' and intent.get('skill') in ('grasp', 'regrasp', 'release', 'release_supported'):
+            confirmed.pop(scope, None)
+        if (kind == 'skill_result' and intent.get('skill') == 'verify_grasp'
+                and result.get('outcome') == 'success' and result.get('evidence_ids')):
+            confirmed[scope] = row['monotonic_ns']
+        if intent.get('skill') != 'transfer_above_hole':
+            continue
+        request = intent['request_id']
+        item = requests.setdefault(request, dict(request_id=request, solve_count=0,
+            solves=[], revalidation_count=0, revalidated_count=0, first_publication_ns=None))
+        if kind == 'harness_planning_started':
+            item['solve_count'] += 1
+            pending[request] = row['monotonic_ns']
+        elif kind == 'harness_plan_waiting_fresh_revalidation':
+            started = pending.pop(request, None)
+            elapsed = row['monotonic_ns'] - started if started is not None else None
+            candidate = row.get('candidate') or {}
+            stages = candidate.get('geometry_trace') or []
+            evaluation = next((stage['candidate_evaluation'] for stage in stages
+                if isinstance(stage, dict) and stage.get('candidate_evaluation')), {})
+            item['solves'].append(dict(seconds=elapsed/1e9 if elapsed is not None and elapsed >= 0 else None,
+                candidate_variant=candidate.get('candidate_variant'),
+                attempts=[{k:v for k,v in attempt.items() if k in ('variant','elapsed_ns','outcome','route_family')}
+                          for attempt in evaluation.get('attempts', ())]))
+        elif kind == 'harness_revalidation_started':
+            item['revalidation_count'] += 1
+        elif kind == 'harness_plan_revalidated':
+            item['revalidated_count'] += 1
+        elif kind == 'harness_skill_first_publication':
+            stamp = row['published_ns']
+            item['first_publication_ns'] = stamp
+            if first_output is None:
+                first_output = request
+                contact = confirmed.get(scope)
+                if None not in scope and contact is not None and stamp >= contact:
+                    first_after_grasp = (stamp - contact)/1e9
+    return dict(requests=list(requests.values()), first_published_request=first_output,
+                verified_grasp_to_first_transfer_publication_s=first_after_grasp)
+
+
 def timing_report(run):
     root=Path(run)
     owner=_rows(root/'collected/owner/harness/trace.jsonl')
@@ -87,6 +140,7 @@ def timing_report(run):
             'connection_reused','generation_requested') if k in r}
             for r in planner if r.get('kind')=='model_connection_prepared'],
         model_requests_without_receipt=max(0,sum(r.get('kind')=='model_request_started' for r in planner)-len(models)),
+        transport=_transport_timing(owner,accepted),
         owner_steps=steps,full_grasp_place_reset_s=cycle['motion_s'] if cycle else None,
         full_cycle_verified_s=cycle['verified_s'] if cycle else None,
         full_cycle_status='owner_measured_complete' if cycle else 'not_established_without_measured_safe_reset',

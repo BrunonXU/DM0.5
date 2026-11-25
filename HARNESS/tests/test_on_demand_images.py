@@ -60,3 +60,37 @@ def test_planner_receives_real_image_bytes_on_next_turn_without_api(tmp_path,ima
             assert not images  # Local image access is permitted; model delivery is not.
         assert 'base64' not in (tmp_path/'evidence/trace.jsonl').read_text()
     finally:arm.close()
+
+
+def test_single_block_consults_model_with_images_once_across_stages(tmp_path):
+    backend = Images()
+    arm = SandboxedArm(backend, tmp_path / 'task').start()
+    planner = object.__new__(ResponsesPlanner)
+    planner.store = EvidenceStore(tmp_path / 'evidence')
+    calls = [
+        ('python', dict(code='robo.show("left")')),
+        ('python', dict(code='robo.show("head")', image_reason='The fixture landmarks are ambiguous.')),
+        ('python', dict(code='robo.show("right")', image_reason='I need to distinguish the aperture.')),
+        ('finish', dict(status='failure', summary='The aperture pose is unknown.')),
+    ]
+    image_counts = []
+
+    def request(**kwargs):
+        name, args = calls[len(image_counts)]
+        parts = (part for item in kwargs['input'] if isinstance(item.get('content'), list)
+                 for part in item['content'])
+        image_counts.append(sum(part.get('type') == 'input_image' for part in parts))
+        return {'output': [dict(type='function_call', name=name, call_id=str(len(image_counts)),
+                                arguments=json.dumps(args))]}
+
+    planner.request = request
+    planner.single_visual_consultation = True
+    try:
+        planner.run(arm, task_text='single block')
+    finally:
+        arm.close()
+    assert image_counts == [0, 0, 1, 0]
+    assert backend.fetched == ['left.png', 'head.png', 'right.png']
+    events = [json.loads(line) for line in (planner.store.root / 'trace.jsonl').read_text().splitlines()]
+    withheld = [event for event in events if event.get('reason') == 'single_block_visual_consultation_used']
+    assert len(withheld) == 1 and planner.store.blob(withheld[0]['refs'][0]) == backend.data

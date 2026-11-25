@@ -238,6 +238,12 @@ class ResponsesPlanner:
             return dict(outcome='interrupted',reason='task_authority_ended')
         from .planner_observations import POLICY, retire_images, compact_history, deduplicate_feedback
         instructions += "\n" + POLICY
+        single_visual_consultation = getattr(self, 'single_visual_consultation', False)
+        if single_visual_consultation:
+            instructions += (' This single-block task allows one visual consultation across the entire task. '
+                'Use local measurements first. Choose the useful views together when you need that consultation. '
+                'Afterwards use fresh local measurements and read-only previews for subsequent decisions.')
+        visual_consultation_used = False
         for tool in tools:
             if tool["name"] == "python":
                 import copy
@@ -389,9 +395,20 @@ class ResponsesPlanner:
                     self.store.event('planner_no_progress', **decision)
                     return decision
                 if getattr(result,'images',None):
-                    if isinstance(image_reason, str) and image_reason.strip():
+                    if single_visual_consultation and visual_consultation_used:
+                        refs = [self.store.put_blob(data) for data in result.images]
+                        self.store.event('planner_images_withheld',call_id=call['call_id'],refs=refs,
+                                         reason='single_block_visual_consultation_used')
+                        inputs.append(dict(role='user', content='Additional images remain local. Use current numeric '
+                            'measurements, local Python image processing or an observation skill. Only use pixel '
+                            'coordinates established on their exact source frame.'))
+                    elif isinstance(image_reason, str) and image_reason.strip():
                         self.store.event('planner_image_grant',call_id=call['call_id'],reason=image_reason)
-                        append_images(result,'Explicit visual question: '+image_reason,call['call_id'])
+                        label = 'Explicit visual question: ' + image_reason
+                        if single_visual_consultation:
+                            label += ' This is the single visual consultation for this task.'
+                        append_images(result,label,call['call_id'])
+                        visual_consultation_used = True
                     else:
                         # Preserve local evidence even when transmission was not justified.
                         refs=[self.store.put_blob(data) for data in result.images]

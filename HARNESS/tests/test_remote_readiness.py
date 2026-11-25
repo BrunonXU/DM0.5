@@ -642,3 +642,48 @@ def test_slow_unpublished_revalidation_preserves_acquisition_budget_and_receipt(
         assert result['observation_retry_reason'].startswith('observation_readiness_timeout')
         assert b.attention['reason']==result['reason']
     assert b.clock.value<=9.35
+
+@pytest.mark.parametrize('next_read',['direct','slot_changed','intervening_read','expired','replaced_epoch'])
+def test_reobserve_hands_one_matching_alignment_input_to_formal_submit(monkeypatch,next_read):
+    from test_plan_revalidation import observation
+    b=combined_backend(monkeypatch,[True,True])
+    b.task=b.task.model_copy(update={'calibration_id':'coarse','admission_profile':'development_coarse'})
+    rpc=b.call
+    def call(method,**kwargs):
+        result=rpc(method,**kwargs)
+        status=result if method=='status' else result.get('status') if method=='observe_with_status' else None
+        if status is not None:
+            seq=len([name for name in b.wire_calls if name=='observe_with_status'])
+            stamp=status['owner_monotonic_ns']
+            obs=observation(stamp,boot='robot-boot',name=f'frame-{seq}')
+            held=obs.objects[0].model_copy(update={'held':True,'eef_object_pose':obs.objects[0].pose})
+            head=tuple(f.blob_sha256 for f in obs.frames if f.camera=='head')
+            hole=obs.objects[1].model_copy(update={'evidence_ids':head})
+            obs=obs.model_copy(update={'objects':(held,hole)})
+            status.update(mode='hardware',recording_identity={'host_boot_id':obs.host_boot_id},
+                alignment_snapshot_id='other-frame' if next_read=='slot_changed' and method=='status' else obs.observation_id,
+                phase='reobserve' if b.submissions else 'move_tcp')
+            status['perception_context']['task_generation']=1
+            if method=='observe_with_status':
+                result['observation']=obs.model_dump()
+            if next_read=='replaced_epoch' and method=='status':
+                status['epoch']+=1
+        if method=='skill_result':result['no_motion']=True
+        return result
+    b.call=call
+    marked=b.execute_tool('execute_skill',{'name':'reobserve'})
+    assert marked['alignment_observation']['observation_id']=='frame-1'
+    if next_read=='intervening_read':
+        b.execute_tool('task_context',{})
+    if next_read=='expired':
+        b.clock.sleep(4.1)
+    if next_read=='replaced_epoch':
+        with pytest.raises(HarnessError,match='observation_wait_epoch_changed'):
+            b.execute_tool('execute_skill',{'name':'align'})
+        assert len(b.submissions)==1
+        return
+    result=b.execute_tool('execute_skill',{'name':'align'})
+    assert result['outcome']=='success'
+    bound=(next_read=='direct')
+    assert b.submissions[-1]['observation_id']==('frame-1' if bound else 'frame-2')
+    assert len([v for v in b.wire_calls if v=='observe_with_status'])==(1 if bound else 2)

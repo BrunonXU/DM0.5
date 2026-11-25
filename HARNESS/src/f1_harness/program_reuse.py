@@ -72,18 +72,43 @@ def _unsubmitted_grasp(item,binding,store,backend):
     return dict(item=item,arguments=arguments,ready=False)
 
 
-def resume_localized_grasp(arm,backend,task,store,*,authority_valid,finish_completed):
+def _missing_predicate_target(binding, store, task):
+    """Only a single trusted, measurement-bound target read can defer a false predicate."""
+    calls=binding.get('backend_calls',())
+    if (len(calls)!=1 or calls[0].get('name')!='geometry_context'
+            or calls[0].get('projection')!='target_presence' or 'exception_type' in calls[0]):
+        return None
+    try:
+        state=json.loads(store.blob(calls[0]['result_sha256']))
+    except (KeyError,TypeError,ValueError,OSError):
+        return None
+    if (isinstance(state,dict) and state.get('calibration_id')==task.calibration_id
+            and state.get('object_id')==task.object_id and 'object_pose' in state
+            and state['object_pose'] is None and state.get('motion_authorized') is False):
+        return state.get('observation_id')
+    return None
+
+
+def resume_localized_grasp(arm,backend,task,store,*,authority_valid,finish_completed,cancelled=lambda:False):
     deferred=getattr(backend,'deferred_grasp',None)
     if not deferred:return None
-    if deferred and deferred.pop('relocalized',False):
-        from .remote import ObservationWaitEnded
+    first_measurement=deferred.pop('await_first_measurement',False)
+    if deferred.pop('relocalized',False) or (first_measurement and not deferred['ready']):
+        from .remote import OBSERVATION_WINDOW_S, ObservationWaitEnded
         if not authority_valid():raise HarnessError('program_reuse_authority_changed')
-        budget=min(4.,getattr(backend,'task_deadline',None)-time.monotonic()
-                   if getattr(backend,'task_deadline',None) is not None else 4.)
+        # A cold target may require detection then tracking/geometry on a later
+        # RGB-D sample. Reserve two normal read windows, returning on the first
+        # admissible sample. A hint already supplies a search seed.
+        budget=OBSERVATION_WINDOW_S*(2 if first_measurement else 1)
+        if getattr(backend,'task_deadline',None) is not None:
+            budget=min(budget,backend.task_deadline-time.monotonic())
         if budget<=0:return None
         try:
-            backend._await_observation(skill='approach_grasp',timeout_s=budget)
+            backend._await_observation(skill='approach_grasp',timeout_s=budget,
+                                       prompt_handoff=first_measurement,cancelled=cancelled)
         except ObservationWaitEnded as exc:
+            if not str(exc).startswith(('observation_readiness_timeout:','observation_prompt_required:')):
+                raise
             store.event('program_localization_still_unresolved',candidate_id=deferred['item']['id'],
                         reason=str(exc),motion_requested=False)
             return None
@@ -102,6 +127,13 @@ def resume_localized_grasp(arm,backend,task,store,*,authority_valid,finish_compl
         kind=deferred['kind'],after_localization=True)
 
 
+def verified_program_choices(snapshot,task,*,synthetic=False):
+    choices=validated_agent_programs(snapshot,task,synthetic=synthetic)
+    if task.goal=='placed':
+        choices+=validated_agent_programs(snapshot,task,goal='verify_grasp',synthetic=synthetic)
+    return choices
+
+
 def try_verified_programs(arm,backend,task,snapshot,store,*,authority_valid,finish_completed,synthetic=False):
     """Return current receipts on handoff; never restart a failed invocation.
 
@@ -110,9 +142,7 @@ def try_verified_programs(arm,backend,task,snapshot,store,*,authority_valid,fini
     The independently verified grasp case may use the installed placement tail;
     this is a known suffix, not a generated manipulation strategy.
     """
-    choices=validated_agent_programs(snapshot,task,synthetic=synthetic)
-    if task.goal=='placed':
-        choices+=validated_agent_programs(snapshot,task,goal='verify_grasp',synthetic=synthetic)
+    choices=verified_program_choices(snapshot,task,synthetic=synthetic)
     return _run_program_choices(choices,arm,backend,task,store,
         authority_valid=authority_valid,finish_completed=finish_completed,kind='verified_program')
 
@@ -125,6 +155,7 @@ def try_validation_program(item,arm,backend,task,store,*,authority_valid,finish_
 
 def _run_program_choices(choices,arm,backend,task,store,*,authority_valid,finish_completed,kind,after_localization=False):
     attempted=[]
+    missing=None
     for item in choices:
         if not authority_valid():raise HarnessError('program_reuse_authority_changed')
         if backend.pending is not None:raise HarnessError('unresolved_submission_requires_query')
@@ -155,6 +186,11 @@ def _run_program_choices(choices,arm,backend,task,store,*,authority_valid,finish
         # every success decision; arbitrary run_skill return values are ignored.
         if (value==dict(applicable=False,program_invoked=False)
                 and not binding['request_ids']):
+            if kind=='verified_program' and item['goal']=='verify_grasp' and not after_localization and not missing:
+                observation_id=_missing_predicate_target(binding,store,task)
+                if observation_id:
+                    missing=dict(item=item,kind=kind,ready=False,await_first_measurement=True,
+                                 observation_id=observation_id)
             continue
         if item['goal']=='verify_grasp' and _ends_with_verified_grasp(binding,store):
             status=backend.call('status')
@@ -172,7 +208,14 @@ def _run_program_choices(choices,arm,backend,task,store,*,authority_valid,finish
                 if completed is not None:
                     return dict(completed=completed,attempts=attempted,model_requests=0)
         break
-    if attempted:
+    else:
+        # Other verified candidates got their chance before starting a wait.
+        if missing:
+            backend.deferred_grasp=missing
+            store.event('program_waiting_for_grasp_geometry',candidate_id=missing['item']['id'],
+                        source_sha256=missing['item']['source_sha256'],observation_id=missing['observation_id'],
+                        reason='target_pose_not_yet_measured',motion_requested=False)
+    if attempted and not getattr(backend,'deferred_grasp',None):
         store.event(kind+'_handoff',attempts=attempted,model_requests=0,
                     restart_allowed=False)
     return dict(completed=None,attempts=attempted,model_requests=0)

@@ -6,7 +6,6 @@ from copy import deepcopy
 import threading
 import time
 
-from .candidate_failures import CANDIDATE_FAILURES
 from .contracts import HarnessError, Observation, SkillIntent, SkillResult, Task, digest
 from .geometry import transform
 from .ipc import UnixClient
@@ -14,6 +13,21 @@ from .observation import require_geometry
 from .owner_bridge import JointProposal, numerical_failure_detail
 from .skills import SkillGeometry, propose, stage_obstacles, tool_margin, rebase_support_lift
 from .verification import verify, needs_semantic_evidence
+
+
+CANDIDATE_FAILURES = frozenset((
+    'numerical_joint_search_no_exact_path','numerical_joint_search_no_valid_goal',
+    'numerical_joint_search_wall_time_exceeded','numerical_joint_search_path_rejected',
+    'bounded_IK_did_not_reach_goal','bounded_IK_wall_time_exceeded',
+    'actual_IK_candidate_collision_rejected','actual_IK_path_tool_sweep_blocked',
+    'actual_IK_path_scene_sweep_blocked','actual_IK_path_attached_object_sweep_blocked',
+    'scene_sweep_blocked','no_clear_square_symmetry_route','grasp_height_outside_registered_object',
+    'grasp_has_no_placement_route','grasp_lift_sweep_blocked','pregrasp_target_outside_wrist_view',
+    'return_route_sweep_blocked','grasp_continuation_unreachable',
+    'regrasp_support_geometry_missing','regrasp_object_not_on_registered_support',
+    'support_release_attachment_unresolved','support_release_contact_unavailable',
+    'support_release_object_not_stationary','support_motion_requires_attachment_and_support',
+    'actual_IK_uncertain_grasp_departure_not_proven'))
 
 
 class PlanService:
@@ -93,11 +107,30 @@ class PlanService:
             status['fixture_transit_available']=status['fixture_transit_available'] and self.fixture.get('independent_fixture_localization',False)
             if obs.calibration_id!=self.task.calibration_id or obs.faults:
                 raise HarnessError('geometry_context_identity_or_fault')
+            # The read-only scene and optional coarse alternatives describe the
+            # same held feedback sample. Compute FK once, within the outer read.
+            def measured_eef():
+                from .ipc import GEOMETRY_FK_TIMEOUT_S
+                client=self.numerics
+                if isinstance(client,UnixClient):
+                    client=UnixClient(Path(client.path),timeout=GEOMETRY_FK_TIMEOUT_S)
+                return client.call('forward_pose',full22=kwargs['full22'],held16=kwargs['held16'])
             from .local_environment import local_scope
             if local_scope(obs):
                 from .local_environment import build_local_scene,context
-                scene=build_local_scene(self,obs,kwargs['full22'],kwargs['held16'],motion=False)
+                scene=build_local_scene(self,obs,kwargs['full22'],kwargs['held16'],base_eef=measured_eef(),motion=False)
                 return context(scene,obs,task=self.task,fixture=self.fixture)
+            from .observation import require_geometry_identity
+            available=[]
+            for skill in self.task.allowed_skills:
+                if skill=='move_tcp' and not self.fixture.get('cartesian_motion'):continue
+                try:
+                    require_geometry_identity(obs,goal=self.task.goal,admission_profile=self.task.admission_profile,
+                                              skill=skill,hole_id=self.task.hole_id)
+                except ValueError:continue
+                available.append(skill)
+            status.update(geometry_scope=obs.geometry_scope,available_skills=available,
+                          cartesian_motion='move_tcp' in available,motion_authorized=False)
             if status['missing_entities'] and not (status['fixture_transit_available'] and
                     all(row['role']=='aperture' for row in status['missing_entities']) and
                     self.fixture.get('independent_fixture_localization',False)):
@@ -107,7 +140,7 @@ class PlanService:
                        and o.object_id in (self.task.object_id,self.task.hole_id)}
                 if any(o.frame_id!=self.frames.native_frame for o in poses.values()):
                     raise HarnessError('native_frame_chain_not_registered')
-                eef=transform(self.numerics.call('forward_pose',full22=kwargs['full22'],held16=kwargs['held16']))
+                eef=transform(measured_eef())
                 tip=transform(self.fixture['eef_tip_reference'])
                 native=np.linalg.inv(self.frames.world_native)
                 return dict(schema='f1-geometric-tools-v1',world_frame=self.frames.native_frame,pose_format=POSE_FORMAT,
@@ -117,13 +150,14 @@ class PlanService:
                     obstacles=None,obstacle_frame_note='Unavailable collision geometry is not empty space',
                     support=scene_support(self,obs),
                     observation_id=obs.observation_id,calibration_id=obs.calibration_id,
-                    motion_authorized=False,**status)
-            scene=self._scene(obs,kwargs['full22'],kwargs['held16'])
+                    **status)
+            base_eef=measured_eef()
+            scene=self._scene(obs,kwargs['full22'],kwargs['held16'],base_eef=base_eef)
             suggestions=None
             if self.task.shape=='square' and scene.parameterized_grasp and scene.object_held is not True:
                 from .grasp_suggestions import suggest_grasps
                 try:
-                    coarse=(self._scene(obs,kwargs['full22'],kwargs['held16'],skill='approach_grasp')
+                    coarse=(self._scene(obs,kwargs['full22'],kwargs['held16'],base_eef=base_eef,skill='approach_grasp')
                             if self.fixture.get('independent_fixture_localization') else scene)
                     suggestions=suggest_grasps(coarse,placement_scene=scene if scene.aperture_measured else None,
                         prior=self.posture_prior,camera=self.fixture.get('candidate_wrist_camera'))
@@ -155,7 +189,6 @@ class PlanService:
                 obstacle_frame_note='All obstacle poses and halfspaces use native world',
                 approach_clearance_m=scene.approach_clearance_m,
                 continuous_grasp=scene.parameterized_grasp,
-                cartesian_motion=bool(self.fixture.get('cartesian_motion')),
                 observation_id=obs.observation_id,calibration_id=obs.calibration_id,**status)
         if method=='check_waypoint':return self.check_waypoint(**kwargs)
         if method=='revalidate_plan':
@@ -930,13 +963,20 @@ class PlanService:
 
 
 class VerifyService:
-    def __init__(self,task:Task,*,clock=time.monotonic_ns,fixture=None):
+    def __init__(self,task:Task,*,clock=time.monotonic_ns,fixture=None,independent_grasp=False):
         self.task,self.clock=task,clock
         self.fixture=fixture or {}
         self.latest=None
+        self.independent_grasp=independent_grasp
+        self.grasp_measurement=None
         self.condition=threading.Condition()
 
     def dispatch(self,method,kwargs):
+        if method=='update_grasp_measurement':
+            with self.condition:
+                self.grasp_measurement=kwargs
+                self.condition.notify_all()
+            return dict(measured_ns=kwargs['measured_ns'])
         if method=='update_scene':
             observation=Observation.model_validate(kwargs['observation'])
             if observation.synthetic:raise HarnessError('synthetic_scene_forbidden')
@@ -952,13 +992,25 @@ class VerifyService:
         # evidence must return to the orchestrator instead of hiding there for
         # the whole task deadline. No old frame is made fresh by retrying.
         after=kwargs['after_ns'];deadline=time.monotonic()+2
-        last_reason='fresh_post_motion_scene_missing'
+        needs_can = self.independent_grasp and intent.skill in ('verify_grasp','recover_grasp')
+        last_reason='grasp_held_evidence_missing' if needs_can else 'fresh_post_motion_scene_missing'
         last_result=None
         seen_measurements=set()
         with self.condition:
             while True:
+                measurement = self.grasp_measurement
+                if (intent.skill in ('grasp','regrasp','verify_grasp','recover_grasp')
+                        and measurement and measurement['close_request_id']==kwargs.get('close_request_id')
+                        and all(measurement['scope'].get(k)==getattr(intent,k) for k in
+                            ('owner_instance_id','session_id','task_id','task_hash','epoch','request_id'))
+                        and measurement['measured_ns']>after
+                        and 0<=self.clock()-measurement['measured_ns']<=measurement['max_age_ns']
+                        and measurement['held'] is not None):
+                    return SkillResult(request_id=intent.request_id, lifecycle='completed',
+                        outcome='success' if measurement['held'] else 'failure',
+                        reason=measurement['reason'], evidence_ids=(measurement['evidence_id'],)).model_dump()
                 obs=self.latest
-                if obs is not None and obs.received_ns>after:
+                if not needs_can and obs is not None and obs.received_ns>after:
                     if obs.calibration_id!=intent.calibration_id:
                         raise HarnessError('verifier_scope_mismatch')
                     if (any(f.received_ns<=after for f in obs.frames) or intent.skill=='transfer_above_hole'

@@ -191,7 +191,8 @@ def test_prewarm_launch_is_numerical_only_and_filters_credentials(tmp_path, monk
         def wait(self, timeout): seen['waited'] = timeout; return 0
     def popen(argv, **kwargs): seen.update(argv=argv, **kwargs); return Process()
     monkeypatch.setattr('f1_harness.numerical_pool_client.subprocess.Popen', popen)
-    client = WarmNumericalClient(dict(root=str(tmp_path),host='user@127.0.0.1',port=22009,
+    root = Path(__file__).parents[1].resolve()
+    client = WarmNumericalClient(dict(root=str(root),host='user@127.0.0.1',port=22009,
         identity='/tmp/key', known_hosts='/tmp/known', local_site='/tmp/template',
         remote_bundle='/home/user/Bruno/HARNESS/development/frozen'),tmp_path)
     endpoint = client.start()

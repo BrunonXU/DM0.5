@@ -1,5 +1,6 @@
 """Owned process lifecycle for a frozen infra run, with explicit private owner requests."""
 import argparse
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -8,7 +9,6 @@ import signal
 import subprocess
 import time
 
-from . import auxiliary_services
 from .site import _safe_environment
 
 
@@ -33,7 +33,9 @@ class WorkspaceProcesses:
     def __init__(self, config, run):
         self.config, self.run = config, Path(run)
         self.root = Path(config['root'])
-        self.helper = auxiliary_services
+        spec = importlib.util.spec_from_file_location('_workspace_auxiliary', self.root / 'scripts/start_development.py')
+        self.helper = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.helper)
         self.children = []
         self.owner_channels = {}
         import threading

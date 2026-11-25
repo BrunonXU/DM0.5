@@ -202,17 +202,47 @@ def test_fixture_only_batch_does_not_clear_grasp_following(tmp_path):
         dict(object_id='hole',role='target_aperture'),dict(object_id='anchor',role='fixture_anchor')]
 
 
-@pytest.mark.parametrize('fault',['duplicate','frame','unknown'])
+@pytest.mark.parametrize('fault',['duplicate','frame'])
 def test_invalid_entity_batch_does_not_queue_partial_update(tmp_path,fault):
     live,obs,status,context,updates,args=setup(tmp_path)
     live.pipeline.segment.registered_entities=lambda camera:('block','hole')
     values=[dict(args['hint'],object_id='block'),dict(args['hint'],object_id='hole')]
     if fault=='duplicate':values[1]['object_id']='block'
     if fault=='frame':values[1]['frame']=dict(values[1]['frame'],blob_sha256='f'*64)
-    if fault=='unknown':values[1]['object_id']='made-up'
     args['hint']['entity_hints']=values
     with pytest.raises(ValueError):live.locate_target(**args)
     assert not live.pending_target_hints and not updates
+
+
+def test_wrong_view_hint_returns_site_catalog_and_preserves_cell_continuation(tmp_path):
+    live,obs,context,updates,hints=two_view_hints(tmp_path)
+    live.config['geometry']['hole_id']='hole'
+    live.raw.profile=dict(inspection_cameras=[dict(name='left')])
+    live.pipeline.segment.registered_entities=lambda camera:('block','hole') if camera=='head' else ('block',)
+    args=hints['right']
+    args['hint']['entity_hints']=[dict(args['hint'],object_id=key) for key in ('block','hole','absent')]
+    class Backend:
+        def execute_tool(self,name,inputs):
+            assert name=='locate_entities'
+            assert [e['object_id'] for e in inputs['entities']]==['block','hole','absent']
+            return live.locate_target(**args)
+        def solved(self):return False
+        def env_steps(self):return 0
+    arm=ArmToolkit(F1Robot(Backend()),arm='cells',workspace=tmp_path/'wrong-view',images=False)
+    code="""r = robo.locate_entities('right', [{'object_id': i, 'box_normalized': [.1,.1,.9,.9]} for i in ('block','hole','absent')])
+assert r['accepted'] is False
+print(r['reason'])"""
+    reply=arm.execute_tool('python',dict(code=code)).result
+    assert not reply.get('exception') and 'unregistered_entity_hint' in reply['stdout']
+    recorded=reply['primitive_calls'][0]
+    assert recorded['unsupported_entities']==['absent','hole'] and not recorded['motion_evidence']
+    catalog=recorded['search_entities']
+    assert catalog['left']==[]
+    assert [row['object_id'] for row in catalog['right']]==['block']
+    assert dict(role='target_aperture',object_id='hole') in catalog['head']
+    assert not live.pending_target_hints and not updates
+    assert live.locate_target(**hints['head'])['accepted']
+    assert set(live.pending_target_hints)=={'head'}
 
 
 def test_batch_pyrua_tool_has_no_hidden_observation(tmp_path):

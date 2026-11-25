@@ -7,7 +7,7 @@ from .calibration import validate_bundle
 from .contracts import Mode, SkillResult
 from .engine import TaskEngine
 from .evidence import EvidenceStore, AsyncOwnerJournal
-from .ipc import UnixClient
+from .ipc import UnixClient, GEOMETRY_NUMERICAL_TIMEOUT_S
 from .owner_bridge import OwnerBridge, JointProposal
 
 
@@ -49,6 +49,7 @@ def build_bridge(config_path: Path, run: Path, *, powered: bool, web_control: bo
     engine.recording_identity=dict(owner_run_id=run.name,owner_run_path=str(run.resolve()),
         owner_instance_id=engine.instance,host_boot_id=engine.host_boot_id)
     numerical=UnixClient(Path(config['planner_socket']),timeout=92,scene_evidence=True)
+    geometry_client=UnixClient(Path(config['planner_socket']),timeout=GEOMETRY_NUMERICAL_TIMEOUT_S,scene_evidence=True)
     verifier=UnixClient(Path(config['verifier_socket']),timeout=12,scene_evidence=True)
     from .scene_evidence import observation_wire
     def plan(intent,obs,full,held,*,preview=False):
@@ -66,7 +67,9 @@ def build_bridge(config_path: Path, run: Path, *, powered: bool, web_control: bo
             original_observation=observation_wire(original),observation=observation_wire(latest),
             full22=full,held16=held,after_ns=after_ns)
     def verify(intent,after_ns):
-        value=verifier.call('verify_skill',intent=intent.model_dump(),after_ns=after_ns)
+        close=engine.grasp_contact or {}
+        value=verifier.call('verify_skill',intent=intent.model_dump(),after_ns=after_ns,
+                            close_request_id=close.get('request_id'))
         result=SkillResult.model_validate(value)
         if result.request_id!=intent.request_id or result.synthetic:
             raise ValueError('verifier_identity_mismatch')
@@ -84,7 +87,7 @@ def build_bridge(config_path: Path, run: Path, *, powered: bool, web_control: bo
                        stop_gripper_delta=config.get('stop_gripper_delta'),
                        stop_window_ns=int((200 if config.get('stop_window_ms') is None else config['stop_window_ms'])*1e6))
     bridge.preview_planner=lambda intent,obs,full,held:plan(intent,obs,full,held,preview=True)
-    bridge.geometry_provider=lambda obs,full,held:numerical.call('geometry_context',
+    bridge.geometry_provider=lambda obs,full,held:geometry_client.call('geometry_context',
         observation=observation_wire(obs),full22=full,held16=held)
     engine.hardware_ready=bool(development or certificate and config.get('integration_validated') is True)
     engine.required_calibration_id=(development['calibration_id'] if development

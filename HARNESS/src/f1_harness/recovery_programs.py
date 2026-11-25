@@ -60,6 +60,7 @@ def compile_library(local_corrections, regrasp_limit=0, *, grasp_observation_ena
     code='RECOVERY_PROGRAM_IDS = '+repr(identities)+'\n'
     code+='MOTION_PREFERENCES = {}\n'
     code+='OBSERVATION_VIEWS_TRIED = set()\n'
+    code+='PLACEMENT_VIEW = {}\n'
     code+='GRASP_OBSERVATION_ENABLED = '+repr(grasp_observation_enabled)+'\n'
     code+='INSERTION_RECOVERY = '+repr(tuple(registered_program('insert_reobserve_realign')['skills'][:-1]))+'\n'
     code+='''
@@ -266,7 +267,10 @@ def localize_and_pick(hints_by_camera, withdraw=True, **approach_parameters):
         raise ValueError("provide camera names mapped to visible entity hints")
     for camera, entities in hints_by_camera.items():
         if entities:
-            robo.locate_entities(camera, entities)
+            localization = robo.locate_entities(camera, entities)
+            if localization.get("accepted") is not True:
+                return dict(outcome="pending_review", program_stage="localize", no_motion=True,
+                            reason=localization.get("reason"), localization=localization)
     result = motion("approach_grasp", **approach_parameters)
     if result.get("outcome") == "success":
         return grasp_and_place(withdraw=withdraw)
@@ -336,6 +340,119 @@ def pick_with_candidates(candidates, withdraw=True):
     return dict(last, program_stage="approach_grasp", candidate_search=attempts,
                 candidate_search_exhausted=True)
 
+def unsubmitted_alignment_observation(result):
+    reason = result.get("reason") or ""
+    return (result.get("no_motion") is True and result.get("lifecycle") in ("rejected", "completed")
+            and result.get("outcome") in ("failure", "pending_review")
+            and not result.get("resume_request_id") and not result.get("verification_request_id")
+            and (reason.startswith(("observation_readiness_timeout:", "aperture_measurement_required:",
+                                    "observation_viewpoint_required:"))
+                 or (result.get("planning_diagnostic") or {}).get("code") in
+                    ("missing_geometry_entities", "full_scene_required_for_motion")))
+
+def aperture_facts(inspected):
+    geometry = inspected.get("geometry") or {}
+    entities = geometry.get("entities") or []
+    target = next((row for row in entities if row.get("role") == "target_object"), {})
+    aperture = next((row for row in entities if row.get("role") == "aperture"), {})
+    return dict(observation_id=geometry.get("observation_id"),
+                measurement_received_ns=geometry.get("measurement_received_ns"),
+                current_scope=inspected.get("current_scope"), planned=inspected.get("planned"),
+                held=target.get("held"), in_hand_transform=target.get("in_hand_transform_available"),
+                aperture_id=aperture.get("object_id"), aperture_measured=aperture.get("has_pose"),
+                aperture_visible=aperture.get("visible"),
+                fixture_collision_geometry=geometry.get("fixture_collision_geometry_available"),
+                missing=geometry.get("missing_entities") or inspected.get("missing_entities") or [],
+                diagnostic=(inspected.get("planning_diagnostic") or {}).get("code"))
+
+def recover_alignment(result, inspected=None):
+    if not unsubmitted_alignment_observation(result): return result
+    if inspected is None: inspected = robo.inspect_plan("align")
+    before = aperture_facts(inspected)
+    if before["current_scope"] is True and before["planned"] is True:
+        return skill("align")
+    facts = dict(original_align_request=result.get("request_id"),
+                 original_align_reason=result.get("reason"), before=before)
+    view = inspected.get("left_aperture_observation") or {}
+    if view:
+        facts["left_camera"] = dict(available=view.get("available"), frame=view.get("frame"),
+            source_ns=view.get("source_ns"), motion_evidence=view.get("motion_evidence"),
+            centers_px={shape: [item.get("center_px") for item in items]
+                        for shape, items in (view.get("candidates") or {}).items()})
+    candidate = view.get("observation_move") or {}
+    attempted_motion = False
+    if (before["current_scope"] is True and before["held"] is True and before["in_hand_transform"] is True
+            and any(row.get("role") == "aperture" for row in before["missing"])
+            and candidate.get("source_observation_id") and candidate.get("target_frame") == "world"
+            and candidate.get("target_tcp_pose") and (not PLACEMENT_VIEW or
+                PLACEMENT_VIEW.get("missing_fixture") and before["fixture_collision_geometry"] is True)):
+        for _ in range(BUDGET):
+            PLACEMENT_VIEW["source_observation_id"] = candidate["source_observation_id"]
+            PLACEMENT_VIEW["missing_fixture"] = False
+            parameters = dict(target_frame="world", target_tcp_pose=candidate["target_tcp_pose"])
+            observed = move_and_reobserve([parameters])
+            facts["view"] = dict(source_observation_id=candidate["source_observation_id"],
+                target_tcp_pose=parameters["target_tcp_pose"],
+                motion_request_id=(observed.get("motion_result") or {}).get("request_id"),
+                observation_request_id=observed.get("request_id"), outcome=observed.get("outcome"),
+                reason=observed.get("reason"), local_motion_completed=observed.get("local_motion_completed"),
+                no_motion=observed.get("no_motion"))
+            for attempt in observed.get("attempts") or []:
+                diagnostic = (attempt.get("preview") or {}).get("planning_diagnostic") or {}
+                facts["view"]["preview_diagnostic"] = diagnostic.get("code")
+            if observed.get("program_stage") == "move_tcp" and observed.get("outcome") != "success":
+                # This receipt can represent partial/unknown movement. Preserve its
+                # owner checkpoint and stage rather than restarting align or a view.
+                return dict(observed, placement_recovery=facts, resume_placement_from="align")
+            attempted_motion = observed.get("local_motion_completed") is True
+            if (observed.get("reason") == "local_motion_scene_unavailable" and observed.get("no_motion") is True
+                    and before["fixture_collision_geometry"] is False):
+                PLACEMENT_VIEW["missing_fixture"] = True
+            if (observed.get("outcome") != "success" and observed.get("no_motion") is not True
+                    and (not attempted_motion or observed.get("outcome") == "interrupted"
+                         or observed.get("verification_request_id") or observed.get("resume_request_id"))):
+                return dict(observed, placement_recovery=facts, resume_placement_from="align")
+            if attempted_motion and observed.get("outcome") == "success":
+                measured = observed.get("alignment_observation") or {}
+                if (measured.get("hole_id") == before.get("aperture_id")
+                        and measured.get("observation_id") and measured["observation_id"] != before["observation_id"]
+                        and before["measurement_received_ns"] is not None
+                        and measured["received_ns"] > before["measurement_received_ns"]):
+                    return skill("align")
+                after = aperture_facts(robo.inspect_plan("align"))
+                facts["after"] = after
+                if recovered_aperture(before, after):
+                    return skill("align")
+            break
+    facts["view_source_tried"] = PLACEMENT_VIEW.get("source_observation_id")
+    facts["view_reason"] = view.get("observation_move_reason") or view.get("reason")
+    latest = facts.get("after") or before
+    if latest["current_scope"] is not True:
+        facts["next"] = "Check current owner scope and feedback before resuming alignment."
+    elif latest["held"] is not True or latest["in_hand_transform"] is not True:
+        facts["next"] = "Recover current attachment evidence before resuming alignment."
+    elif (latest["fixture_collision_geometry"] is False and
+            (facts.get("view") or {}).get("reason") == "local_motion_scene_unavailable"):
+        facts["next"] = "Recover a current fixture collision reference for the held viewpoint move. Resume at align."
+    elif latest["aperture_measured"] is True and latest["planned"] is not True:
+        facts["next"] = "Choose a new alignment approach from the current aperture measurement and native diagnostic."
+    else:
+        facts["next"] = "Choose a distinct observation to recover current aperture geometry, then resume at align."
+    # Include the compact handoff even when a caller prints only its last stage.
+    print(dict(placement_handoff=facts))
+    return dict(outcome="pending_review", reason="alignment_observation_unresolved",
+                no_motion=False if attempted_motion else result.get("no_motion"),
+                program_stage="align", needs_new_strategy=True, placement_recovery=facts, unsubmitted_align=result)
+
+def recovered_aperture(before, after):
+    return (after["current_scope"] is True and after["planned"] is True
+            and after["aperture_measured"] is True and after["aperture_visible"] is True
+            and after["held"] is True and after["in_hand_transform"] is True
+            and after["aperture_id"] == before.get("aperture_id")
+            and after["observation_id"] and after["observation_id"] != before.get("observation_id")
+            and before.get("measurement_received_ns") is not None and after["measurement_received_ns"] is not None
+            and after["measurement_received_ns"] > before["measurement_received_ns"])
+
 def place_held_block(withdraw=True, *, start="transfer_above_hole"):
     stages = ("transfer_above_hole", "inspect_in_hand", "align", "insert", "release", "verify_placed", "withdraw_reset")
     offset = stages.index(start)
@@ -343,13 +460,13 @@ def place_held_block(withdraw=True, *, start="transfer_above_hole"):
         result = motion(name)
         if result["outcome"] != "success":
             return recover_attachment(dict(result, program_stage=name), withdraw=withdraw)
-    result = skill("align") if offset <= 2 else dict(outcome="success")
-    stage = "align"
-    if result["outcome"] == "success" and offset <= 3:
-        result = skill("insert")
-        stage = "insert"
-    if result.get("reason") == "attachment_lost":
-        return recover_attachment(dict(result, program_stage=stage), withdraw=withdraw)
+        if name == "transfer_above_hole": PLACEMENT_VIEW.clear()
+    if offset <= 2:
+        result = recover_alignment(skill("align"))
+        if result["outcome"] != "success":
+            return recover_attachment(dict(result, program_stage=result.get("program_stage", "align")), withdraw=withdraw)
+    stage = "insert"
+    result = skill("insert") if offset <= 3 else dict(outcome="success")
     for _ in range(BUDGET):
         if result["outcome"] == "success": break
         if result.get("reason") == "attachment_lost":
@@ -357,10 +474,11 @@ def place_held_block(withdraw=True, *, start="transfer_above_hole"):
         if result["outcome"] != "failure": return dict(result, program_stage=stage)
         for name in INSERTION_RECOVERY:
             result = motion(name)
-            if result["outcome"] != "success": return dict(result, program_stage=name)
+            if name == "align": result = recover_alignment(result)
+            if result["outcome"] != "success": return dict(result, program_stage=result.get("program_stage", name))
         result = skill("insert")
         stage = "insert"
-    if result["outcome"] != "success": return dict(result, program_stage=stage)
+    if result["outcome"] != "success": return recover_attachment(dict(result, program_stage=stage), withdraw=withdraw)
     for name in stages[max(offset,4):6]:
         result = skill(name)
         if result["outcome"] != "success": return dict(result, program_stage=name)
@@ -398,8 +516,31 @@ def resume_pick(result, hints_by_camera=None, withdraw=True):
         return recover_attachment(result, withdraw=withdraw)
     if hints_by_camera:
         for camera, entities in hints_by_camera.items():
-            if entities: robo.locate_entities(camera, entities)
+            if entities:
+                localization = robo.locate_entities(camera, entities)
+                if localization.get("accepted") is not True:
+                    return dict(result, localization=localization)
     checked = result
+    if (stage == "align" and result.get("reason") == "alignment_observation_unresolved"
+            and (result.get("placement_recovery") or {}).get("original_align_request")):
+        # A repaired registration can join the unsubmitted alignment directly.
+        # A read-only preview still has to confirm the current owner/scene.
+        inspected = robo.inspect_plan("align")
+        recovery = result["placement_recovery"]
+        current = aperture_facts(inspected)
+        moved = (recovery.get("view") or {}).get("local_motion_completed") is True
+        if (current["planned"] is True and current["current_scope"] is True
+                and (not moved or recovered_aperture(recovery.get("before") or {}, current))):
+            return place_held_block(withdraw=withdraw, start="align")
+        view_available = (inspected.get("left_aperture_observation") or {}).get("observation_move")
+        if (current["current_scope"] is True and view_available and result.get("unsubmitted_align")
+                and (not PLACEMENT_VIEW or PLACEMENT_VIEW.get("missing_fixture")
+                     and current["fixture_collision_geometry"] is True)):
+            aligned = recover_alignment(result["unsubmitted_align"], inspected)
+            if aligned["outcome"] != "success":
+                return dict(aligned, program_stage=aligned.get("program_stage", "align"))
+            return place_held_block(withdraw=withdraw, start="insert")
+        return dict(result, current_geometry=current)
     if result.get("verification_request_id"):
         checked = evidence(stage, result)
     elif result.get("resume_request_id"):

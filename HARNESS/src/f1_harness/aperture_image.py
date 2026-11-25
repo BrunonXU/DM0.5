@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 
 
-def aperture_features(rgb):
+def aperture_features(rgb, *, include_notches=False):
     """Candidates in original pixels. A candidate does not establish fixture identity."""
     gray = cv2.cvtColor(rgb, cv2.COLOR_RGB2GRAY)
     height, width = gray.shape
@@ -14,6 +14,18 @@ def aperture_features(rgb):
     threshold, _ = cv2.threshold(gray, 0, 255, cv2.THRESH_OTSU)
     _, dark = cv2.threshold(gray, .5*threshold, 255, cv2.THRESH_BINARY_INV)
     dark_contours, _ = cv2.findContours(dark, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    if include_notches:
+        # Concavity generates U-slot hypotheses. The measured 3-D registration
+        # resolves their identity, including the case with several dark notches.
+        result['notch'] = []
+        for contour in dark_contours:
+            if not max(45, dark.size * .00015) <= cv2.contourArea(contour) <= dark.size * .075:
+                continue
+            polygon = cv2.approxPolyDP(contour, .025 * cv2.arcLength(contour, True), True)
+            x, y, w, h = cv2.boundingRect(contour)
+            if (len(polygon) > 4 and not cv2.isContourConvex(polygon)
+                    and x > 1 and y > 1 and x+w < width-1 and y+h < height-1):
+                result['notch'].append(dict(corners_px=polygon[:, 0].tolist(), center_px=[x+w/2, y+h/2]))
     contours = sorted((*edge_contours, *dark_contours), key=cv2.contourArea, reverse=True)
     for contour in contours:
         area = cv2.contourArea(contour)

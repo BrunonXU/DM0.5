@@ -1,5 +1,6 @@
 from types import SimpleNamespace
 import threading
+from itertools import chain, count
 
 import numpy as np
 import pytest
@@ -34,7 +35,7 @@ def observer(monkeypatch,*,change_context=False,slow=False):
     verified=[];scene.verifier=SimpleNamespace(call=lambda *args,**kwargs:verified.append(kwargs))
     scene.store=SimpleNamespace(put_blob=lambda value:None)
     scene.archived=set();scene.archive_bytes=0;scene.lock=threading.Lock();scene.latest=None;scene.error=None
-    times=iter([1,600_000_001 if slow else 2,3,4])
+    times=chain([1],count(600_000_001)) if slow else count(1)
     monkeypatch.setattr('f1_harness.live_scene.time.monotonic_ns',lambda:next(times))
     return scene,verified
 
@@ -57,6 +58,65 @@ def test_scene_requests_history_at_image_time_not_latest_feedback(monkeypatch):
     scene.owner.call=recording
     scene._sample()
     assert requested==[{'target_received_ns':1}]
+
+
+def test_real_wrist_pair_arriving_during_owner_call_keeps_its_capture_times(monkeypatch):
+    scene, verified = observer(monkeypatch)
+    raw = scene.raw.observe()
+    # V47 99ce snapshot 42f8ed71 stores these image, acquisition and matched
+    # joint timestamps. The RPC return time below is simulated.
+    frame_times = {'rgb': 31009578242167, 'depth': 31009575276278}
+    acquired_ns = 31009583289249
+    state_ns = 31009584786712
+    frames = tuple(f.model_copy(update={'camera': 'right', 'received_ns': frame_times[f.stream]})
+                   for f in raw.frames)
+    raw = raw.model_copy(update={'frames': frames, 'received_ns': acquired_ns,
+                                 'pairings': (raw.pairings[0].model_copy(update={'camera': 'right'}),)})
+    scene.raw.observe = lambda: raw
+    clock = [acquired_ns]
+    monkeypatch.setattr('f1_harness.live_scene.time.monotonic_ns', lambda: clock[0])
+    call = scene.owner.call
+    def receive(method, **kwargs):
+        feedback = call(method, **kwargs)
+        if method == 'measured_feedback':
+            assert kwargs == {'target_received_ns': 31009576759222}
+            clock[0] = state_ns + 1_000_000
+            return dict(feedback, stamps16=[state_ns] * 16, matched_state_received_ns=state_ns, **kwargs)
+        return feedback
+    scene.owner.call = receive
+    scene._sample()
+    assert verified and scene.ingested
+    assert scene.latest.state_received_ns == state_ns
+    assert scene.latest.received_ns == acquired_ns
+    assert {f.stream: f.received_ns for f in scene.latest.frames} == frame_times
+
+
+@pytest.mark.parametrize(('current_lag_ms', 'reason'), [
+    (3, 'camera_sample_feedback_aged:right'),
+    (201, 'feedback_expired:current'),
+    (-1, 'feedback_expired:current'),
+])
+def test_old_camera_pair_is_waitable_only_with_valid_current_joint_feedback(monkeypatch,current_lag_ms,reason):
+    scene, verified, targets = two_camera_scene(monkeypatch)
+    clock = 1_300_000_000
+    monkeypatch.setattr('f1_harness.live_scene.time.monotonic_ns', lambda: clock)
+    call = scene.owner.call
+    queries = []
+    def measured(method, **kwargs):
+        if method != 'measured_feedback':
+            return call(method, **kwargs)
+        target = kwargs.get('target_received_ns')
+        queries.append(target)
+        if target is None:
+            stamp = clock - current_lag_ms * 1_000_000
+            return dict(host_boot_id=scene.raw.observe().host_boot_id, full22=[0.]*22,
+                        stamps16=[stamp]*16, measured16=[0.]*16)
+        return dict(call(method, **kwargs), target_received_ns=target, matched_state_received_ns=target)
+    scene.owner.call = measured
+    with pytest.raises(ValueError, match=reason):
+        scene._sample()
+    assert queries == [950_000_000, None] and targets == [950_000_000]
+    assert not verified and not scene.ingested
 
 
 def test_polling_same_frame_keeps_old_scene_age_and_does_not_reingest(monkeypatch):
@@ -197,6 +257,43 @@ def test_independent_head_does_not_relax_wrist_feedback_skew(monkeypatch):
     assert not verified
 
 
+@pytest.mark.parametrize(('current_fault','expected_reason'), [
+    (None, 'camera_sample_feedback_unpaired:right'),
+    ('stale', 'feedback_expired:current'),
+    ('clock', 'feedback_clock_mismatch'),
+])
+def test_bad_wrist_pair_keeps_diagnostics_and_requires_live_control_feedback(
+        monkeypatch, current_fault, expected_reason):
+    scene, verified, _ = two_camera_scene(monkeypatch,wrist_delta=-51_000_000)
+    original_call = scene.owner.call
+    invalidations = []
+    def owner_call(method, **kwargs):
+        if method == 'invalidate_live_scene':
+            invalidations.append(kwargs['reason'])
+            return {}
+        if method == 'measured_feedback':
+            target = kwargs.get('target_received_ns')
+            if target is not None:
+                feedback = original_call(method, **kwargs)
+                return dict(feedback, target_received_ns=target, matched_state_received_ns=min(feedback['stamps16'][7:14]))
+            stamp = 799_000_000 if current_fault == 'stale' else 999_000_000
+            return dict(host_boot_id='other-boot' if current_fault=='clock' else scene.raw.observe().host_boot_id,
+                        full22=[0.]*22, measured16=[0.]*16, stamps16=[stamp]*16)
+        return original_call(method, **kwargs)
+    scene.owner.call=owner_call
+    reference=object()
+    scene.pipeline.in_hand_reference=reference
+    scene.pipeline.invalidate=lambda:setattr(scene.pipeline,'in_hand_reference',None)
+    scene.stop=threading.Event()
+    scene.store.event=lambda *args,**kwargs:scene.stop.set()
+    scene._run()
+    assert invalidations==[expected_reason] and not verified and not scene.ingested
+    assert (scene.pipeline.in_hand_reference is reference)==(current_fault is None)
+    if not current_fault:
+        assert scene.error.startswith('frame_feedback_skew:')
+        assert '51.0' in scene.error
+
+
 def test_new_head_only_does_not_clear_primary_temporal_history(monkeypatch):
     scene,verified,_=two_camera_scene(monkeypatch)
     scene._sample()
@@ -307,3 +404,21 @@ def test_head_identity_fault_cannot_hide_behind_duplicate_capture(monkeypatch,ch
     with pytest.raises(ValueError) as error:scene._sample()
     assert not isinstance(error.value,SecondaryCameraUnavailable)
     assert not processed and not verified and not scene.ingested
+
+
+@pytest.mark.parametrize(('history','future','reason'),[
+    (True,False,'camera_sample_feedback_aged:right'),
+    (False,False,'feedback_expired:right'),
+    (True,True,'feedback_expired:right'),
+])
+def test_old_feedback_is_waitable_only_for_an_identified_image_time_sample(monkeypatch,history,future,reason):
+    scene,_=observer(monkeypatch)
+    raw=scene.raw.observe()
+    now=300_000_001
+    target=1
+    stamps=[1]*16
+    if future:stamps[8]=now+1
+    feedback=dict(full22=scene.config['full22_reference'],stamps16=stamps,host_boot_id=raw.host_boot_id)
+    if history:feedback.update(matched_state_received_ns=1,target_received_ns=target)
+    with pytest.raises(ValueError,match=reason):
+        scene._validate_feedback(raw,feedback,now,camera='right',age_ms=200,target_received_ns=target)

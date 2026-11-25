@@ -78,7 +78,7 @@ def observation_condition(reason):
         'owner_perception_stage_advanced',
         'FileNotFoundError','owner_perception_context_missing','owner_perception_context_changed',
         'secondary_camera_pairing_unavailable','unverified_pairing','frame_feedback_skew',
-        'feedback_expired','stationary calibrated observation required',
+        'feedback_expired','camera_sample_feedback_aged:right','stationary calibrated observation required',
         'perception_latency_exceeds_observation_budget','evidence_archive_exceeds_observation_budget',
         'verification_transport_exceeds_observation_budget','primary_evidence_latency',
         'new_consistent_source_frames_required','reacquisition_requires_new_source_frames','owner_motion_wait',
