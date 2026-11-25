@@ -1,0 +1,160 @@
+{
+  "schema": "f1-harness-batch-candidate-v1",
+  "name": "F1 Harness 运输目标区域与分阶段补验 V52",
+  "version": 52,
+  "status": "candidate",
+  "frozen": true,
+  "active_deployment_version_at_freeze": 51,
+  "physical_task_verified": false,
+  "start_sent": false,
+  "bundle_id": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",
+  "source_commit": "1dcadbdf78a340cd6fb1d8d5a5d4f254e3a43aaa",
+  "previous_version": 51,
+  "previous_bundle_id": "d7981daf3e2f7373432e935bca33e4cdbe0d8b88aaa57f936fac002ca3806037",
+  "bundle_files": 371,
+  "bundle_tar_sha256": "5bdcf9cf657dc9039c9f668912fe599e1c56ac0ad338deacc10d6f24f6e09635",
+  "reviewed_runtime_overlays_sha256": {
+    "src/f1_harness/contracts.py": "1c6628c09df7aa73138c0bef046a652e2598eb1066c393fd96001c3afca2a045",
+    "src/f1_harness/development.py": "a8ee805f35c9c8938457f8f7e043174f774f2dd74751a05c83564d66c269fe2f",
+    "src/f1_harness/joint_motion.py": "cafe09d480217ca4ebe127afb24fe869b0166bc345927f12424561e2e793693f",
+    "src/f1_harness/memory.py": "f0f174bdadc1b2638663220c8388350058323f8ce01475c9ea56465c528589d1",
+    "src/f1_harness/recovery_programs.py": "9ca1a719cd7cd4a4c4e1bdbf9d8c71b87f1e5004ef6c63dcd2d0892270442276",
+    "src/f1_harness/skill_services.py": "37391bb3251116fd793f33f7b8efe429c52b24321dc09dd130fba542392c6184",
+    "src/f1_harness/timing_report.py": "6666a56d399a241ad46cc2f8ff8605b988ef287c56e530dea752ba5051584dc1",
+    "src/f1_harness/transport.py": "cf5515465cc70f0728e74350fde302ac35dcc248f144a02e335937185920e43a",
+    "src/f1_harness/web_snapshot.py": "9bd03cd897ea1bff6613049d1e9397eed44c7b71d0849c5133d9c26a195f7297"
+  },
+  "site": {
+    "code_default": {
+      "local_corrections": 2,
+      "regrasp_limit": 1
+    },
+    "code_limit": {
+      "local_corrections": 4,
+      "regrasp_limit": 3
+    },
+    "unchanged_default_task_digest": "c09d48b0dffb18f9e772b2d278c0ea4e2c7f85ae0dc7d65cc1271b7429169ac8",
+    "template_task_hash": "795b11511175399ff885a420d9789eb78d8a32a2c9dbae19b4ce3f943b55ddfd",
+    "template": {
+      "local_corrections": 2,
+      "regrasp_limit": 2
+    },
+    "template_reviewed_files": 9,
+    "planning_flags": {
+      "joint_space_transport": true,
+      "joint_space_free_motion": true,
+      "native_grasp_lookahead": true
+    },
+    "request_snapshots": [
+      {
+        "mode": "astra",
+        "local_corrections": 0,
+        "regrasp_limit": 2,
+        "reviewed_files": 9,
+        "task_hash": "dc4d6eb3d0f61d5489f3dc97370cfe800408f44476e2b393366105e24ea973d4"
+      },
+      {
+        "mode": "astra",
+        "local_corrections": 1,
+        "regrasp_limit": 2,
+        "reviewed_files": 9,
+        "task_hash": "ae4153fa8cc9aff1d0bc59f1040bce5bef14fc33a24cb5b9411c317b6e9fb57f"
+      },
+      {
+        "mode": "astra",
+        "local_corrections": 2,
+        "regrasp_limit": 2,
+        "reviewed_files": 9,
+        "task_hash": "975377be8e3db383b62e2d1cf2ebf2ab56ee79aecdbf581b700328f3a134a791"
+      },
+      {
+        "mode": "astra",
+        "local_corrections": 3,
+        "regrasp_limit": 2,
+        "reviewed_files": 9,
+        "task_hash": "cc1a67df6852f21b951b3438d915bd473f8e2d8ccaf4d84817966e2bc923e177"
+      },
+      {
+        "mode": "astra",
+        "local_corrections": 4,
+        "regrasp_limit": 2,
+        "reviewed_files": 9,
+        "task_hash": "0de3b53b4e5ecbe79072404dcf0034b7fc65a85f54de7d5a799929860db1e2a9"
+      },
+      {
+        "mode": "vla_astra",
+        "local_corrections": 0,
+        "regrasp_limit": 2,
+        "reviewed_files": 9,
+        "task_hash": "dc71f179bfc5a128796239447793542147065996cc6579c230edd7c54985b644"
+      },
+      {
+        "mode": "vla_astra",
+        "local_corrections": 1,
+        "regrasp_limit": 2,
+        "reviewed_files": 9,
+        "task_hash": "9d187df4ec0cf9a49f7ae915d1e33c12f67a3c59692fab3b4cecf97b0e7d1a0e"
+      },
+      {
+        "mode": "vla_astra",
+        "local_corrections": 2,
+        "regrasp_limit": 2,
+        "reviewed_files": 9,
+        "task_hash": "9a521d6cf88a2987152fefeba1ae2e5695f47425cf3c2d42e8a69419a6651e5e"
+      },
+      {
+        "mode": "vla_astra",
+        "local_corrections": 3,
+        "regrasp_limit": 2,
+        "reviewed_files": 9,
+        "task_hash": "5533586c8d021e3cb7af2147c2bac482505f3adcd27f8d5fde7a5cde4d18b122"
+      },
+      {
+        "mode": "vla_astra",
+        "local_corrections": 4,
+        "regrasp_limit": 2,
+        "reviewed_files": 9,
+        "task_hash": "c71131610122c5ef8f7527eb4f405920577ac4d00c5775f56a833cde28a95f83"
+      }
+    ]
+  },
+  "H03": {
+    "read_only_recheck_limit": 6,
+    "historical_program_candidates": {
+      "verify_completed_motion": 9,
+      "resume_known_progress": 4
+    },
+    "other_candidates": 0
+  },
+  "scope": {
+    "physical_motion_parameters_unchanged": true,
+    "native_owner_and_ruckig_source_unchanged": true,
+    "control_source_unchanged": true,
+    "six_protections_reviewed": [
+      "授权与会话身份",
+      "反馈新鲜度与失联撤权",
+      "限位、碰撞及实际扫掠",
+      "未知或已有发布不重放",
+      "相机标定、内参与时钟域",
+      "原始记录写入故障"
+    ],
+    "batch_raise_harness_error_before": 88,
+    "batch_raise_harness_error_after": 88,
+    "new_raise_sites": 0,
+    "new_harness_error_strings": [],
+    "net_new_nonphysical_rejection_reasons": 0,
+    "funnel_reasons_unchanged": true,
+    "modified_prohibited_projects": []
+  },
+  "project_root_relative_sha256": {
+    "HARNESS/artifacts/claude-batch-20261125/reservation.json": "ec11fbc7f426c405db593fcdd5c50d3ccc3898334386fa1f49814ae7ba356268",
+    "HARNESS/artifacts/claude-batch-20261125/prepared-04bc818d7424.json": "d635cc161c0a32b23cdc128d86292f912de734b0f4b7904883d9aa78b20fc63a",
+    "HARNESS/artifacts/claude-batch-20261125/bundle-final/manifest.json": "e07a78442cc0f417aa9741d1dea92ece96cf787fac6461911388b7402344de17",
+    "HARNESS/artifacts/claude-batch-20261125/selected-diff.json": "a778643b42404fed43425b871afb64836544442cf8643eca84602099d1cbb6f3",
+    "HARNESS/artifacts/claude-batch-20261125/reviewed-git-sources.json": "4313006842cfe2ba446ac8a460d501576dc468b3381472caf750fc55c47e672b",
+    "HARNESS/artifacts/claude-batch-20261125/site-qualification.json": "58256d48a6e6919978ad0c9712164ec85e365d604a3f1ebd7c65a2db4cff8807",
+    "HARNESS/artifacts/claude-batch-20261125/budgets/learning-compatibility.json": "8932337c310c14456391467f486649cac0d3c7e81d683a79fb86d0f1e697298b",
+    "HARNESS/artifacts/claude-batch-20261125/budgets/task-digests.json": "e7a4557a096fd3d50263e064ad78c8b3d8a6aa26033f499e3beae292dfe2ad96",
+    "HARNESS/artifacts/claude-batch-20261125/scope-audit.json": "13d2b2ab8cf39540af6133c604c4b1ccabbe0c0c497a05906327aba488a90554"
+  }
+}

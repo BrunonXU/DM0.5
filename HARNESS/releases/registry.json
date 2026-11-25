@@ -931,6 +931,24 @@
       "verification": "/home/user/projects/HARNESS/artifacts/readiness-revalidation-v51-20261125/post-activation.json",
       "deployment_kind": "shared_harness_base_both_strategies",
       "vla_endpoint_available": false
+    },
+    {
+      "version": 52,
+      "name": "F1 Harness 运输目标区域与分阶段补验 V52",
+      "status": "candidate",
+      "artifact_directory": "/home/user/projects/HARNESS/artifacts/claude-batch-20261125",
+      "previous_version": 51,
+      "previous_bundle": "d7981daf3e2f7373432e935bca33e4cdbe0d8b88aaa57f936fac002ca3806037",
+      "source_base_version": 51,
+      "source_base_bundle": "d7981daf3e2f7373432e935bca33e4cdbe0d8b88aaa57f936fac002ca3806037",
+      "start_sent": false,
+      "physical_task_verified": false,
+      "currently_active": false,
+      "bundle_id": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",
+      "manifest": "/home/user/projects/HARNESS/artifacts/claude-batch-20261125/bundle-final/manifest.json",
+      "frozen": true,
+      "validation": "/home/user/projects/HARNESS/artifacts/claude-batch-20261125/release-validation.json",
+      "validation_sha256": "a792f583b5184418f87c9caab3a8bdb6026b9bd4eb22d159d2a3ee2db648aef8"
     }
   ],
   "active_bundle_id": "d7981daf3e2f7373432e935bca33e4cdbe0d8b88aaa57f936fac002ca3806037",

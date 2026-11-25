@@ -1,0 +1,36 @@
+{
+  "schema": "f1-harness-candidate-evidence-v1",
+  "version": 52,
+  "bundle_id": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",
+  "checked_on": "2026-11-25",
+  "files": [
+    {
+      "path": "candidate.json",
+      "bytes": 6717,
+      "sha256": "3aff51b8a9a7a274858c67070734b8441e876be55aa1b8045fac0641c388d66b"
+    },
+    {
+      "path": "field-cases.json",
+      "bytes": 6706,
+      "sha256": "1214d470062336766f76af9010230a141fa270b7745cbb87249cede827d952c2"
+    },
+    {
+      "path": "h04-site.json",
+      "bytes": 460,
+      "sha256": "1f7e2ea809ce77602bb86226c2097b8eea74f67276d2f93157277da561949de7"
+    },
+    {
+      "path": "qualification.json",
+      "bytes": 4119,
+      "sha256": "9645820963216f57f74e34bc753008a78e2609d563f96c7b965866b3d635f49a"
+    },
+    {
+      "path": "report.md",
+      "bytes": 4255,
+      "sha256": "633244982367676b5d2dee81478f9e7e5a1dade425c34f79e7bcffe8952a13a8"
+    }
+  ],
+  "tracked_files_including_manifest": 6,
+  "local_source_dir": "HARNESS/artifacts/claude-batch-20261125",
+  "evidence_tree_tracked_files": 70
+}
