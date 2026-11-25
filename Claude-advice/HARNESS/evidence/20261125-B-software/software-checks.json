@@ -1,0 +1,128 @@
+{
+  "schema": "f1-harness-b-software-checks-v1",
+  "candidate_commit": "b8146c7d0cede7e505c6a600ef7ec0f7dd237fef",
+  "checked_on": "2026-11-25",
+  "junit_attachments": "Local 6000D receipts, identified by filename and SHA-256. Scope and test paths are repository-relative.",
+  "h01_h02_h03_candidate_view_matches_committed_files": [
+    "HARNESS/src/f1_harness/engine.py",
+    "HARNESS/src/f1_harness/owner_bridge.py",
+    "HARNESS/src/f1_harness/remote.py",
+    "HARNESS/src/f1_harness/revalidation.py",
+    "HARNESS/tests/test_remote_readiness.py",
+    "HARNESS/tests/test_revalidation_optional_camera.py",
+    "HARNESS/tests/test_verification_continuation.py"
+  ],
+  "repository_wide_harness_pytest": {
+    "attachment": "candidate-all.xml",
+    "sha256": "a70b20044591fe0826ccbbc1d23e93dbc2113ce368612973f270933f3ce46b14",
+    "suite_declared_tests": 3155,
+    "named_cases": 3155,
+    "passed": 3082,
+    "failed": 3,
+    "errors": 0,
+    "skipped": 70,
+    "scope": "HARNESS/tests",
+    "failures": [
+      {
+        "test": "HARNESS/tests/test_gate_recovery.py::test_missing_observation_returns_before_long_task_budget",
+        "observed_seconds": 15.0,
+        "asserted_seconds": 4.0
+      },
+      {
+        "test": "HARNESS/tests/test_gate_recovery.py::test_total_budget_exhaustion_is_review_without_submission",
+        "observed_seconds": 15.0,
+        "asserted_seconds": 4.0
+      },
+      {
+        "test": "HARNESS/tests/test_placement_observation_recovery.py::test_fast_align_handoff_requires_fresh_held_observation_and_never_submits[False]",
+        "observed_seconds": 15.0,
+        "asserted_seconds": 4.0
+      }
+    ]
+  },
+  "numerics_rerun": {
+    "attachment": "candidate-numerics.xml",
+    "sha256": "27c32fc6bd783de2683578e536c830f4c056b238e68dc7bf3f32968ee95fb051",
+    "suite_declared_tests": 164,
+    "named_cases": 70,
+    "passed": 70,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "matched_skipped_nodeids": 70,
+    "accounting_note": "Only the 70 individually recorded matching cases are credited. The suite header declares 164."
+  },
+  "native_integration": {
+    "attachment": "native-integration.xml",
+    "sha256": "d6d58804d03d3ddcbd8dceefe0c8799a466348c880e70d94256af243eee49c64",
+    "suite_declared_tests": 62,
+    "named_cases": 62,
+    "passed": 62,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "entry": "HARNESS/scripts/check_native_integration.py"
+  },
+  "targeted": {
+    "H-01": {
+      "attachment": "candidate-all.xml",
+      "sha256": "a70b20044591fe0826ccbbc1d23e93dbc2113ce368612973f270933f3ce46b14",
+      "suite_declared_tests": 3155,
+      "named_cases": 7,
+      "passed": 7,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "subset": "HARNESS/tests/test_revalidation_optional_camera.py"
+    },
+    "H-02": {
+      "attachment": "h02/tests.xml",
+      "sha256": "81739764f4e347ea593fd19c0c9695f4d92a132a85cb12340c674836df972d32",
+      "suite_declared_tests": 119,
+      "named_cases": 119,
+      "passed": 119,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "test_files": [
+        "HARNESS/tests/test_observation_deadline.py",
+        "HARNESS/tests/test_planner_bootstrap_observation.py",
+        "HARNESS/tests/test_remote_readiness.py"
+      ]
+    },
+    "H-03": {
+      "attachment": "f1-v50-h03-verifier-recovery.xml",
+      "sha256": "49fcdfb9a98a6987baf3d024bf012ec6391501e4430862278f179aefa10ce276",
+      "suite_declared_tests": 72,
+      "named_cases": 72,
+      "passed": 72,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "test_files": [
+        "HARNESS/tests/test_pending_grasp_evidence.py",
+        "HARNESS/tests/test_recovery_programs.py",
+        "HARNESS/tests/test_unpublished_plan.py",
+        "HARNESS/tests/test_unpublished_retry.py",
+        "HARNESS/tests/test_verification_continuation.py",
+        "HARNESS/tests/test_verifier_wait.py"
+      ],
+      "recheck_limits": {
+        "engine_and_owner_read_only_checkpoint": 6,
+        "internal_verifier_wait_attempts_per_request": 2,
+        "compiled_evidence_helper": {
+          "source_file": "HARNESS/src/f1_harness/recovery_programs.py",
+          "source_sha256": "b1a0671346e9fd92c0d6f2ca72c9ff0d79d86bd7fccb99b443bf22647ee3d2b4",
+          "per_evidence_call_observed_rechecks_by_local_corrections": {
+            "0": 0,
+            "1": 1,
+            "2": 2
+          }
+        }
+      }
+    }
+  },
+  "accounting": "Targeted checks overlap the full suite. The numerics rerun resolves exactly the original 70 skips. The original three failed 4-second expectations remain recorded.",
+  "full_suite_gate_passed": false,
+  "physical_trial_result": null
+}

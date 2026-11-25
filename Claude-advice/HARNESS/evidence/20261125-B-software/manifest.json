@@ -1,0 +1,63 @@
+{
+  "schema": "f1-harness-software-evidence-v1",
+  "checked_on": "2026-11-25",
+  "operator": "Codex (offline software checks on 6000D)",
+  "candidate_commit": "b8146c7d0cede7e505c6a600ef7ec0f7dd237fef",
+  "baseline_commit": "56bbddfadca74b532793f407e5974aba561d2273",
+  "baseline_release": 50,
+  "local_receipts_root": "Artifacts/F1-Harness/20261125-v50-claude-software/",
+  "physical_trials": 0,
+  "full_software_gate_passed": false,
+  "new_rejection_reason_codes": 0,
+  "new_raise_harness_error": 0,
+  "tracked_files_including_manifest": 5,
+  "scope": "软件回执和历史现场输入的离线复核。原现场记录相对 HARNESS，原始软件回执相对本机 local_receipts_root。",
+  "files": [
+    {
+      "path": "report.md",
+      "source": [
+        "Claude-advice/HARNESS/review-handoff.md",
+        "HARNESS/agent/experiments/20261125-first-round-funnel.md",
+        "software-checks.json",
+        "observation-window.json",
+        "replays.json"
+      ],
+      "bytes": 6329,
+      "sha256": "fd336b1340cb37ffa3fadeddf15ec827372e5c03eeb681a29c56a50c5895c815"
+    },
+    {
+      "path": "software-checks.json",
+      "source": [
+        "candidate-all.xml",
+        "candidate-numerics.xml",
+        "native-integration.xml",
+        "h02/tests.xml",
+        "f1-v50-h03-verifier-recovery.xml"
+      ],
+      "bytes": 4667,
+      "sha256": "1632f205603c97e28036eb56949d0eec112dc4acc94009cf0cf62cbf8624e5be"
+    },
+    {
+      "path": "observation-window.json",
+      "source": [
+        "h02/field_replay.json",
+        "h02/field-summary.json",
+        "HARNESS/runs/workspace/"
+      ],
+      "bytes": 5970,
+      "sha256": "b5c7bfd41e001365aae08fc0b52cac99d056e3b1f0acb1a3587f6bd03145401a"
+    },
+    {
+      "path": "replays.json",
+      "source": [
+        "submitted-candidate-replay-binding.json",
+        "rn3/summary.json",
+        "rf2/summary.json",
+        "v40-before.json",
+        "v40-after.json"
+      ],
+      "bytes": 9058,
+      "sha256": "7c796b7386daff2c0e3eaeeac19ba03f250dac3cf24d4f7c849c2e1d28bd84f3"
+    }
+  ]
+}
