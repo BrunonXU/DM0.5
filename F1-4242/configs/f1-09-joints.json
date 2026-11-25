@@ -165,7 +165,7 @@
       "hal_name": "arm_l_j2",
       "group": "left_arm",
       "command_range_deg": [
-        -94,
+        -94.7,
         120
       ],
       "command_source": "driver_command_range",

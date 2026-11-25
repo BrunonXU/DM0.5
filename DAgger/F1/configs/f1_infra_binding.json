@@ -2,7 +2,7 @@
   "schema": "f1_dagger_dependency_binding_v1",
   "description": "Selected F1-infra read-only source/model dependencies; not a machine or motion acceptance.",
   "files": {
-    "configs/f1-09-joints.json": "bf6da224b338eff9d5a268eae65bd9da0a95ba0d624985a870388e951e84bef6",
+    "configs/f1-09-joints.json": "cf3c0cd6817023b31edee23421ffec1476b81dc8024a4ed18480aebcbdb7d11e",
     "configs/model_mapping.json": "21e1879e2b5e15dfe590a27b1cb3c256626364b161cb950e24c5dd08a86633d5",
     "integrations/pico_upper/config/control.json": "4f1e6aadd868ba64826dc84de0b771daf10f006bae6d97d40c469263c4129bed",
     "integrations/pico_upper/src/pico_f1/__init__.py": "1168ba46d0b723f1b63fa94b58c1f6fe9eb39629900e1d3f5f5cd7e2f1675b71",
