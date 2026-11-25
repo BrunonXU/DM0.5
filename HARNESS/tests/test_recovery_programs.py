@@ -50,8 +50,10 @@ def test_notes_and_modified_program_cannot_be_compiled_as_new_actions():
     changed=deepcopy(value);changed['operation']='direct_joint_command'
     with pytest.raises(HarnessError):validate_program(changed)
     with pytest.raises(HarnessError):validate_program({'id':'invented','code':'danger()'})
-    for budget in (True,-1,3,1.5):
+    for budget in (True,-1,5,1.5):
         with pytest.raises(HarnessError):compile_library(budget)
+    for budget in (True,-1,4,1.5):
+        with pytest.raises(HarnessError):compile_library(0,budget)
 
 
 @pytest.mark.parametrize('cancel_stage',['cancel_requested','measured_stationary'])
@@ -86,3 +88,39 @@ def test_known_miss_reobserves_before_requesting_any_regrasp():
     assert result['program_stage']=='reobserve'
     assert result['prior_result']==missed
     assert result['recovery_hint']=='refresh_attachment_evidence'
+
+
+@pytest.mark.parametrize('outcomes,expected_regrasps', [
+    (['success'], 1),
+    (['miss', 'success'], 2),
+    (['miss', 'miss', 'miss'], 3),
+    (['unknown'], 1),
+])
+def test_regrasp_budget_requires_a_current_miss_before_each_attempt(outcomes,expected_regrasps):
+    miss = dict(outcome='failure',reason='grasp_not_attached',cancel_stage='measured_stationary')
+    unknown = dict(outcome='pending_review',reason='grasp_held_evidence_missing')
+    observations = iter(['miss', *outcomes])
+    calls = []
+    class Robot:
+        def skill(self,name,**kwargs):
+            calls.append(name)
+            if name == 'verify_grasp':
+                return {'miss':miss,'unknown':unknown,'success':dict(outcome='success')}[next(observations)]
+            return dict(outcome='success')
+    ns={'robo':Robot()};exec(compile_library(4,3),ns)
+    result=ns['grasp_and_place'](start='verify_grasp')
+    assert calls[:1+3*expected_regrasps] == ['verify_grasp']+['reobserve','regrasp','verify_grasp']*expected_regrasps
+    assert calls.count('regrasp') == expected_regrasps
+    assert result['outcome'] == {'miss':'failure','unknown':'pending_review','success':'success'}[outcomes[-1]]
+
+
+def test_grasp_and_verify_share_the_same_three_regrasp_attempts():
+    miss = dict(outcome='failure',reason='grasp_not_attached',cancel_stage='measured_stationary')
+    calls = []
+    class Robot:
+        def skill(self,name,**kwargs):
+            calls.append(name)
+            return miss if name in ('grasp','verify_grasp') else dict(outcome='success')
+    ns={'robo':Robot()};exec(compile_library(4,3),ns)
+    assert ns['grasp_and_place']() == dict(miss,program_stage='verify_grasp')
+    assert calls == ['grasp','reobserve','regrasp','verify_grasp']+['reobserve','regrasp','verify_grasp']*2

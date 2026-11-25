@@ -258,7 +258,9 @@ def validate_development(config_path):
                                   PLACEMENT_SKILLS+('withdraw_reset','move_tcp'),
                                   PLACEMENT_SKILLS+('withdraw_reset','move_tcp','recover_grasp'), SKILLS)
                 or type(scope.get('local_corrections')) is not int
-                or not 0 <= scope['local_corrections'] <= 2 or scope.get('regrasp_limit') != 1):
+                or not 0 <= scope['local_corrections'] <= 4
+                or type(scope.get('regrasp_limit')) is not int
+                or not 0 <= scope['regrasp_limit'] <= 3):
             raise ValueError('development_full_task_scope_required')
     elif goal == 'approach_grasp':
         allowed_skills = ALLOWED_SKILLS
@@ -293,7 +295,8 @@ def validate_development(config_path):
             or task.calibration_id != data_id or digest(task) != record.get('task_hash')):
         raise ValueError('development_task_scope_or_identity_changed')
     if goal == 'placed' and (getattr(task, 'admission_profile', None) != PROFILE
-                            or task.local_corrections != scope['local_corrections'] or task.regrasp_limit != 1):
+                            or task.local_corrections != scope['local_corrections']
+                            or task.regrasp_limit != scope['regrasp_limit']):
         raise ValueError('development_full_task_profile_or_budget_mismatch')
     for name in ('plan.local.json', 'verify.local.json'):
         if Task.model_validate(configs[name]['task']) != task:

@@ -52,9 +52,9 @@ def compile_library(local_corrections, regrasp_limit=0, *, grasp_observation_ena
     """
     from .engine import VERIFICATION_RECHECK_LIMIT
 
-    if type(local_corrections) is not int or not 0<=local_corrections<=2:
+    if type(local_corrections) is not int or not 0<=local_corrections<=4:
         raise HarnessError('invalid_registered_recovery_budget')
-    if type(regrasp_limit) is not int or not 0<=regrasp_limit<=1:
+    if type(regrasp_limit) is not int or not 0<=regrasp_limit<=3:
         raise HarnessError('invalid_registered_regrasp_budget')
     if type(grasp_observation_enabled) is not bool:
         raise HarnessError('invalid_grasp_observation_enable')
@@ -215,7 +215,7 @@ def recover_attachment(result, withdraw=True):
     return result
 
 def grasp_and_place(withdraw=True, *, start="grasp"):
-    regrasp_used = False
+    remaining_regrasps = REGRASP_BUDGET
     stages = ("grasp", "verify_grasp")
     for name in stages[stages.index(start):]:
         result = motion(name) if name == "grasp" else skill(name)
@@ -229,26 +229,23 @@ def grasp_and_place(withdraw=True, *, start="grasp"):
                        result.get("reason") == "grasp_not_attached" and
                        result.get("cancel_stage") == "measured_stationary")):
                 return dict(result, program_stage="recover_grasp")
-        known_miss = (name == "verify_grasp" and
-                      (result.get("reason") == "grasp_observation" or
-                       result.get("reason") == "grasp_not_attached" and
-                       result.get("cancel_stage") == "measured_stationary") or
-                      name == "grasp" and result.get("reason") == "grasp_not_attached" and
-                      result.get("cancel_stage") == "measured_stationary")
-        if not regrasp_used and result["outcome"] == "failure" and known_miss:
-            for _ in range(REGRASP_BUDGET):
-                regrasp_used = True
-                # The miss is historical evidence, not permission to reopen.
-                # Refresh after measured hold; the owner still requires current
-                # held=False before planning any regrasp/opening motion.
-                refreshed = skill("reobserve")
-                if refreshed["outcome"] != "success":
-                    return dict(refreshed, program_stage="reobserve", prior_result=result,
-                                recovery_hint="refresh_attachment_evidence")
-                recovery = motion("regrasp")
-                if recovery["outcome"] != "success":
-                    return dict(recovery, program_stage="regrasp")
-                result = recovery if name == "grasp" else skill("verify_grasp")
+        for _ in range(remaining_regrasps):
+            known_miss = (result.get("reason") == "grasp_not_attached" and
+                          result.get("cancel_stage") == "measured_stationary" or
+                          name == "verify_grasp" and result.get("reason") == "grasp_observation")
+            if result["outcome"] != "failure" or not known_miss: break
+            remaining_regrasps -= 1
+            # The miss is historical evidence, not permission to reopen.
+            # Refresh after measured hold; the owner still requires current
+            # held=False before planning any regrasp/opening motion.
+            refreshed = skill("reobserve")
+            if refreshed["outcome"] != "success":
+                return dict(refreshed, program_stage="reobserve", prior_result=result,
+                            recovery_hint="refresh_attachment_evidence")
+            recovery = motion("regrasp")
+            if recovery["outcome"] != "success":
+                return dict(recovery, program_stage="regrasp")
+            result = recovery if name == "grasp" else skill("verify_grasp")
         if result["outcome"] != "success":
             return dict(result, program_stage=name)
     return place_held_block(withdraw=withdraw)
@@ -560,5 +557,5 @@ def resume_pick(result, hints_by_camera=None, withdraw=True):
     if stage == "verify_grasp": return place_held_block(withdraw=withdraw)
     if stage == "withdraw_reset": return dict(checked, program_stage=stage)
     return place_held_block(withdraw=withdraw, start=stages[stages.index(stage)+1])
-'''.replace('range(BUDGET)','range('+str(local_corrections)+')').replace('range(REGRASP_BUDGET)','range('+str(regrasp_limit)+')')
+'''.replace('range(BUDGET)','range('+str(local_corrections)+')').replace('REGRASP_BUDGET',str(regrasp_limit))
     return code

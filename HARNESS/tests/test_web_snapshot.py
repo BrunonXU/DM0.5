@@ -11,7 +11,7 @@ from f1_harness.programs import single_block_program
 from f1_harness.web_snapshot import freeze_site
 
 
-@pytest.mark.parametrize('budget', [0, 1, 2])
+@pytest.mark.parametrize('budget', [0, 1, 2, 3, 4])
 def test_run_configuration_is_bound_without_mutating_template(full_site, tmp_path, budget):  # noqa: F811
     root=full_site['root']
     (root/'coarse-calibration.json').write_bytes((root/'coarse.json').read_bytes())

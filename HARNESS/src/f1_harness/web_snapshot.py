@@ -16,7 +16,7 @@ def checked_request(body):
     config = body['config']
     if (not isinstance(config, dict) or set(config) != {'mode', 'instruction', 'corrections', 'note'}
             or config['mode'] not in ('astra','vla_astra') or type(config['corrections']) is not int
-            or config['corrections'] not in (0, 1, 2)):
+            or config['corrections'] not in (0, 1, 2, 3, 4)):
         raise ValueError('执行方式或纠偏预算无效。')
     for key, lo, hi in (('instruction', 1, 1000), ('note', 0, 240)):
         value = config[key]
