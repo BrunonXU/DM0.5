@@ -901,7 +901,7 @@
       "source_base_bundle": "f8fff669f8988e806b5139f1625e359dca775a82395d66dca4abac61fcbdf61b",
       "start_sent": false,
       "physical_task_verified": false,
-      "currently_active": true,
+      "currently_active": false,
       "bundle_id": "757512d19af84178eacc62999b63bc72e98b7b1b0ee2ec4bd9420ec4fb585563",
       "manifest": "/home/user/projects/HARNESS/artifacts/alignment-measurement-v50-20261118/bundle-final/manifest.json",
       "frozen": true,
@@ -910,13 +910,34 @@
       "verification": "/home/user/projects/HARNESS/artifacts/alignment-measurement-v50-20261118/post-activation.json",
       "deployment_kind": "shared_harness_base_both_strategies",
       "vla_endpoint_available": false
+    },
+    {
+      "version": 51,
+      "name": "F1 Harness 相机复核与观测补验 V51",
+      "status": "deployed",
+      "artifact_directory": "/home/user/projects/HARNESS/artifacts/readiness-revalidation-v51-20261125",
+      "previous_version": 50,
+      "previous_bundle": "757512d19af84178eacc62999b63bc72e98b7b1b0ee2ec4bd9420ec4fb585563",
+      "source_base_version": 50,
+      "source_base_bundle": "757512d19af84178eacc62999b63bc72e98b7b1b0ee2ec4bd9420ec4fb585563",
+      "start_sent": false,
+      "physical_task_verified": false,
+      "currently_active": true,
+      "bundle_id": "d7981daf3e2f7373432e935bca33e4cdbe0d8b88aaa57f936fac002ca3806037",
+      "manifest": "/home/user/projects/HARNESS/artifacts/readiness-revalidation-v51-20261125/bundle-final/manifest.json",
+      "frozen": true,
+      "validation": "/home/user/projects/HARNESS/artifacts/readiness-revalidation-v51-20261125/release-validation.json",
+      "activation": "/home/user/projects/HARNESS/artifacts/readiness-revalidation-v51-20261125/activation.json",
+      "verification": "/home/user/projects/HARNESS/artifacts/readiness-revalidation-v51-20261125/post-activation.json",
+      "deployment_kind": "shared_harness_base_both_strategies",
+      "vla_endpoint_available": false
     }
   ],
-  "active_bundle_id": "757512d19af84178eacc62999b63bc72e98b7b1b0ee2ec4bd9420ec4fb585563",
-  "active_version": 50,
+  "active_bundle_id": "d7981daf3e2f7373432e935bca33e4cdbe0d8b88aaa57f936fac002ca3806037",
+  "active_version": 51,
   "active_strategy_versions": {
-    "astra": 50,
-    "vla_astra": 50
+    "astra": 51,
+    "vla_astra": 51
   },
-  "active_coordinator_service_version": 50
+  "active_coordinator_service_version": 51
 }

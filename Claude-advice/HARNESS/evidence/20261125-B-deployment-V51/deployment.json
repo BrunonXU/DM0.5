@@ -1,0 +1,111 @@
+{
+  "product": "F1 Harness 相机复核与观测补验 V51",
+  "version": 51,
+  "previous_version": 50,
+  "previous_bundle_id": "757512d19af84178eacc62999b63bc72e98b7b1b0ee2ec4bd9420ec4fb585563",
+  "bundle_id": "d7981daf3e2f7373432e935bca33e4cdbe0d8b88aaa57f936fac002ca3806037",
+  "test_source_commit": "22c825a40cf906ae09568702e538c996a3e81cb6",
+  "native_control_sha256": "8c0d2f850dec41017c8095eedc46edd7e481685649c5dd1595387afea712e861",
+  "robot_install": {
+    "verified_bundle_files": 371,
+    "mismatches": 0,
+    "verified_site_files": 13
+  },
+  "activation": {
+    "coordinator_version": 51,
+    "strategy_versions": {
+      "astra": 51,
+      "vla_astra": 51
+    },
+    "web_connected": true,
+    "can_start": true,
+    "can_stop": false,
+    "current_run": null,
+    "subscription_pool_preparation": [
+      200,
+      200
+    ],
+    "vla_endpoint_available": false
+  },
+  "qualification": {
+    "full_replays": {
+      "normal": {
+        "stages": 10,
+        "outputs": 2351,
+        "placed_receipt_same_request": true
+      },
+      "grasp-miss": {
+        "stages": 12,
+        "outputs": 2728,
+        "placed_receipt_same_request": true
+      },
+      "aperture-occluded": {
+        "stages": 12,
+        "outputs": 2688,
+        "placed_receipt_same_request": true
+      }
+    },
+    "targeted_frozen": 292,
+    "extra_frozen_checks": {
+      "frozen-native-pinned": 70,
+      "frozen-lifecycle": 82
+    },
+    "primary_frozen_suite_gate": true,
+    "distinct_frozen_tests": {
+      "passed": 3155,
+      "error": 0,
+      "failure": 0,
+      "skipped": 0
+    },
+    "junit_files": {
+      "group-main.xml": {
+        "tests": 3143,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 70,
+        "sha256": "a86ae91169802a26a25a6bc383bb3936e9a309cd889915bee9ebfdf57f64a42a"
+      },
+      "asset-watch.xml": {
+        "tests": 12,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "sha256": "b3729594ced5996ba3b36f6560bd1cb9d2a75a1849e677e3a869fa7e45abc13e"
+      },
+      "numerics.xml": {
+        "tests": 70,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "sha256": "3c00a5c205a28db9cd13e20d27e0718ce509e111c18191237527f719b8df8410"
+      }
+    },
+    "live_observations": {
+      "processed": 32,
+      "scene_available": 31,
+      "both_camera_pairs_accepted": 31,
+      "independent_can_samples": 1120,
+      "distinct_left_rgb_samples_with_intrinsics": 0
+    },
+    "hardware_outputs": 0
+  },
+  "scope": "部署、ARM 现场只读观测和零硬件输出回放。首次真机任务由操作者在 4242 单独启动。",
+  "start_sent_by_deployment": false,
+  "physical_task_verified_by_deployment": false,
+  "local_artifact_directory": "HARNESS/artifacts/readiness-revalidation-v51-20261125",
+  "source_receipts_sha256": {
+    "bundle-final/manifest.json": "fecaf79d68e635a47645ab3920d237dcf60695c47226a7215274609467583b10",
+    "reviewed-git-sources.json": "d2e7fe804f27932314c13fbecb347154cc93902901e57177d069952620a1f6f8",
+    "selected-diff.json": "375e1137243aef4ac69e1682c9df4712c413b8f8a7212fa2b7e61447db426930",
+    "release-install-receipt.json": "f89c2fdb5b265a9d73be95ba7c0e20eccd44272e0de092e99782063df612a69b",
+    "preflight.json": "3e1989af2cb1fc4ddc5aa0fdfd9e9d1172f649b25dd1a75d321befa388bf9c67",
+    "activation.json": "2823b642eff90f6d459ef74853841f815be010f3a1669ed4b67b79d0a4c2be9a",
+    "post-activation.json": "dab2be2ea4963a70130658f0eed50d460b54dcddf2920901fa6cc3341242baff",
+    "release-validation.json": "d464b6ce24449d6765cc3ee952828fd8f31a42fea76b984f8c3203afdc98c67b",
+    "frozen-suite/qualification.json": "46ed80bb7225f4716c4e43cd693987f23a9a1ca0b350323280f66c5c65101c91",
+    "full-validation-pinned/validation-summary.json": "274b2b79ad67b6fd390f2aba511ee7d6c6d9075d2257d881a2b162817a555418",
+    "v51-live-qualification-summary.json": "62a8aa993e833b8e5c8854e38cbbd9885ba7144d5040a36191ecac8e0dc883a4",
+    "workspace-boot-probe.json": "9ae1f3d58471b40855432d38bd5cf9aed89e9c5ae47d8a16e7dda63d55420e38",
+    "archived-scenes/qualification.json": "2aedc9f3194736f47318f0c8c149d1f500840dd9faec2037aab5e9c38d781b06"
+  }
+}
