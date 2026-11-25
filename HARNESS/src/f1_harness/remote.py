@@ -12,6 +12,9 @@ from .engine import REPLANNABLE_SKILLS
 from .observation import OBSERVATION_WINDOW_S, measured_alignment_pair
 
 
+OBSERVATION_READINESS_S = 15.
+
+
 class ObservationWaitEnded(HarnessError):
     """No action was submitted; the task can finish with an explicit review reason."""
 
@@ -617,8 +620,8 @@ class RemoteTaskBackend:
         if getattr(self,'task_deadline',None) is None:self.task_deadline=time.monotonic()+300.
         deadline=self.task_deadline
         # Candidate retries share this read-only deadline, including owner
-        # rejections before admission. Never restart four seconds for each ID.
-        observation_deadline=min(deadline,time.monotonic()+4.)
+        # rejections before admission. Never restart 15 seconds for each ID.
+        observation_deadline=min(deadline,time.monotonic()+OBSERVATION_READINESS_S)
         original_scope=None;attempt=0;candidate_start=0;skill_deadline=None;excluded_candidates=[]
         last_unpublished=None
         def preparation_failed(reason):
@@ -729,7 +732,7 @@ class RemoteTaskBackend:
                     same_authority_scope=original_scope)
             # Only accepted, completed, zero-publication planning is excluded
             # from acquisition time. Pre-admission rejection loops still share
-            # the original four-second allowance and all work shares deadline.
+            # the original readiness allowance and all work shares deadline.
             observation_deadline=min(deadline,observation_deadline+time.monotonic()-submitted_at)
             last_unpublished=dict(result)
             attempt+=1

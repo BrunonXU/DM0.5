@@ -1,7 +1,7 @@
 import pytest
 
 from f1_harness.contracts import HarnessError,Observation,Task,SkillIntent,digest
-from f1_harness.remote import RemoteTaskBackend
+from f1_harness.remote import OBSERVATION_READINESS_S, RemoteTaskBackend
 
 
 class Clock:
@@ -186,9 +186,26 @@ def test_wait_timeout_has_no_request_or_submission(monkeypatch):
     b=backend(monkeypatch,[False])
     result=b.execute_tool('execute_skill',{'name':'approach_grasp'})
     assert result['outcome']=='pending_review' and result['no_motion']
-    assert b.clock.value==pytest.approx(4.) and b.task_deadline==300.
+    assert b.clock.value==pytest.approx(OBSERVATION_READINESS_S) and b.task_deadline==300.
     assert not b.submissions and b.pending is None
     assert b.evidence_store.events[-1]['submitted'] is False
+
+
+@pytest.mark.parametrize('budget, expected', [(4., 'pending_review'), (OBSERVATION_READINESS_S, 'success')])
+def test_skill_accepts_delayed_observation_before_its_original_deadline(monkeypatch, budget, expected):
+    monkeypatch.setattr('f1_harness.remote.OBSERVATION_READINESS_S', budget)
+    b=combined_backend(monkeypatch, [True])
+    read=b.call
+    def call(method, **kwargs):
+        value=read(method, **kwargs)
+        if method=='observe_with_status':
+            value['observation']['stationary']=b.clock.value>=6.
+        return value
+    b.call=call
+    result=b.execute_tool('execute_skill', {'name':'transfer_above_hole'})
+    assert result['outcome']==expected
+    assert len(b.submissions)==int(expected=='success')
+    assert b.clock.value==pytest.approx(6.1 if expected=='success' else budget, abs=0.11)
 
 
 def test_epoch_change_while_observing_aborts_without_submit(monkeypatch):
@@ -338,12 +355,13 @@ def test_absolute_deadline_bounds_submit_poll_heartbeat_and_then_requests_stop(m
 
 
 @pytest.mark.parametrize('rejection',['unpublished_candidate','owner_motion_wait'])
-def test_candidate_retries_share_initial_four_second_readiness_deadline(monkeypatch,rejection):
+def test_candidate_retries_share_initial_skill_readiness_deadline(monkeypatch,rejection):
     b=backend(monkeypatch,[True]);original=b.call
     def call(method,**kwargs):
         if method=='observe':
             value=original(method,**kwargs)
-            value['stationary']=b.clock.value>=1. and not b.submissions
+            # Start the ten-second simulated skill budget late enough to observe the acquisition cap.
+            value['stationary']=b.clock.value>=8. and not b.submissions
             return value
         if method=='submit_skill' and rejection=='owner_motion_wait':
             original(method,**kwargs);b.clock.sleep(1.)
@@ -362,13 +380,13 @@ def test_candidate_retries_share_initial_four_second_readiness_deadline(monkeypa
     if rejection=='owner_motion_wait':
         assert result['outcome']=='pending_review'
         assert result['reason'].startswith('observation_readiness_timeout:')
-        assert b.clock.value==pytest.approx(4.)
+        assert b.clock.value==pytest.approx(OBSERVATION_READINESS_S)
         assert b.evidence_store.events[-1]['submitted'] is False
     else:
         assert result['outcome']=='failure'
         assert result['request_id']==b.submissions[0]['request_id']
         assert result['observation_retry_reason'].startswith('observation_readiness_timeout:')
-        assert b.clock.value==pytest.approx(5.)
+        assert b.clock.value==pytest.approx(OBSERVATION_READINESS_S + 1.)
         assert b.evidence_store.events[-1]['submitted'] is True
 
 
@@ -390,7 +408,7 @@ def test_owner_idle_wait_skips_observe_and_uses_same_readiness_deadline(monkeypa
     b.task_deadline=30.
     result=b.execute_tool('execute_skill',{'name':'approach_grasp'})
     assert result['outcome']=='pending_review' and result['no_motion']
-    assert b.clock.value==pytest.approx(4.) and b.task_deadline==30.
+    assert b.clock.value==pytest.approx(OBSERVATION_READINESS_S) and b.task_deadline==30.
     assert 'observe' not in b.calls and not b.submissions and b.pending is None
 
 
@@ -577,14 +595,14 @@ def test_recheck_observation_wait_is_bounded_without_replaying(monkeypatch):
     b=backend(monkeypatch,[False]);b.task_deadline=300.
     result=b.execute_tool('execute_skill',{'name':'approach_grasp','verification_request_id':'completed-motion'})
     assert result['outcome']=='pending_review' and not b.submissions
-    assert b.clock.value==pytest.approx(4.) and b.task_deadline==300.
+    assert b.clock.value==pytest.approx(OBSERVATION_READINESS_S) and b.task_deadline==300.
 
 
-def test_return_scene_wait_returns_in_four_seconds_without_motion(monkeypatch):
+def test_return_scene_wait_uses_skill_readiness_deadline_without_motion(monkeypatch):
     b=backend(monkeypatch,[False]);b.task_deadline=300.
     result=b.execute_tool('execute_skill',{'name':'withdraw_reset'})
     assert result['outcome']=='pending_review' and not b.submissions
-    assert b.clock.value==pytest.approx(4.)
+    assert b.clock.value==pytest.approx(OBSERVATION_READINESS_S)
 
 
 def test_post_placement_observe_cannot_wait_another_whole_task_budget(monkeypatch):
@@ -641,7 +659,7 @@ def test_slow_unpublished_revalidation_preserves_acquisition_budget_and_receipt(
         assert result['planning_diagnostic']=={'source':'owner'} and result['retryable']
         assert result['observation_retry_reason'].startswith('observation_readiness_timeout')
         assert b.attention['reason']==result['reason']
-    assert b.clock.value<=9.35
+    assert b.clock.value==pytest.approx(5.349406664 if ready else 10.)
 
 @pytest.mark.parametrize('next_read',['direct','slot_changed','intervening_read','expired','replaced_epoch'])
 def test_reobserve_hands_one_matching_alignment_input_to_formal_submit(monkeypatch,next_read):
