@@ -50,6 +50,8 @@ def compile_library(local_corrections, regrasp_limit=0, *, grasp_observation_ena
     Runtime checkpoint scope, budgets and the actual hardware predicates remain
     the owner authority. A client match is only eligibility to request a check.
     """
+    from .engine import VERIFICATION_RECHECK_LIMIT
+
     if type(local_corrections) is not int or not 0<=local_corrections<=2:
         raise HarnessError('invalid_registered_recovery_budget')
     if type(regrasp_limit) is not int or not 0<=regrasp_limit<=1:
@@ -58,6 +60,7 @@ def compile_library(local_corrections, regrasp_limit=0, *, grasp_observation_ena
         raise HarnessError('invalid_grasp_observation_enable')
     identities={name:validate_program(registered_program(name)) for name in PROGRAMS}
     code='RECOVERY_PROGRAM_IDS = '+repr(identities)+'\n'
+    code+='VERIFICATION_RECHECK_LIMIT = '+str(VERIFICATION_RECHECK_LIMIT)+'\n'
     code+='MOTION_PREFERENCES = {}\n'
     code+='OBSERVATION_VIEWS_TRIED = set()\n'
     code+='PLACEMENT_VIEW = {}\n'
@@ -80,7 +83,7 @@ def replaceable_candidate(result):
              or result.get("reason") == "numerical_plan_rejected:registered_candidates_exhausted"))
 
 def evidence(name, result):
-    for _ in range(BUDGET):
+    for _ in range(VERIFICATION_RECHECK_LIMIT):
         checkpoint = result.get("verification_request_id")
         if result["outcome"] != "pending_review" or not checkpoint: break
         result = robo.recheck(name, checkpoint)

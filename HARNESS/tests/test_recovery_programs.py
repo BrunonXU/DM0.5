@@ -12,12 +12,14 @@ class Robot:
 
 
 @pytest.mark.parametrize('budget',[0,1,2])
-def test_program_bounds_verification_only_calls_and_never_replays_completed_motion(budget):
+@pytest.mark.parametrize('resolved', [False, True])
+def test_program_bounds_verification_only_calls_and_never_replays_completed_motion(budget, resolved):
     pending=dict(outcome='pending_review',verification_request_id='completed-motion')
-    robot=Robot(pending,[pending.copy() for _ in range(2)])
+    last = dict(outcome='success') if resolved else pending
+    robot=Robot(pending,[pending.copy() for _ in range(5)]+[last])
     ns={'robo':robot};exec(compile_library(budget),ns)
-    assert ns['skill']('approach_grasp')==pending
-    assert robot.calls==[('skill','approach_grasp')]+[('recheck','approach_grasp','completed-motion')]*budget
+    assert ns['skill']('approach_grasp')==last
+    assert robot.calls==[('skill','approach_grasp')]+[('recheck','approach_grasp','completed-motion')]*6
 
 
 def test_readonly_preparation_failure_returns_latest_reason_with_original_request():
