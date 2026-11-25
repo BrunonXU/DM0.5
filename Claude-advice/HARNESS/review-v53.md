@@ -174,7 +174,7 @@ flowchart LR
 
 执行顺序：上线 V53 → H-20 步骤 A → H-20 步骤 B（胜出环境不是当前环境时，冻结新版本并上线）→ H-22 → H-25 → H-21 → 10 次试验。
 
-## H-20 `[ ]` P0：钉死正式网关的 DDS 传输
+## H-20 `[~]` P0：钉死正式网关的 DDS 传输
 
 **位置**
 
@@ -245,6 +245,8 @@ export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
 - 真机：H-21 的预检连续 3 次通过；之后 10 次任务中，“首个观测为空帧”的次数为 0。空帧的判定：`planner/trace.jsonl` 中首次观测的帧数为 0，或原因含 `observation_unavailable`。
 
 **风险与回滚**：仅 UDP 时大图像可能丢帧，所以判定规则里有回调数不低于 90% 这一条。回滚只需把常量改回一行 `source`。
+
+> 执行记录：2026-11-25，提交 b86bc1c，分支 `harness/v53`；软件完成（步骤 B 代码预置，`ROBOT_SERVICES_ROS_ENV=None` 暂不启用），待 F1-09 联机完成步骤 A（30 次 A/B）与真机验收；验收：全量 pytest 3,111 passed / 0 failed / 70 skipped（原生数值环境限定跳过），`test_preflight_scene.py` 8/8 通过，`check_native_integration.py` 62/62 通过，`check_project_layout.py` 通过，净增 `raise HarnessError` 为 0；偏差：同步将 `fastdds-udp-only.xml` 加入 `HARNESS/scripts/package_native.py` 打包白名单并实测 `build_bundle()` 清单包含该文件；步骤 A 尚待 F1-09 联机，故暂未生成 `evidence/<日期>-H20-dds-ab/`。
 
 ## H-21 `[ ]` P0：V53 上线后的预检和第一批真机试验
 
@@ -346,7 +348,7 @@ Codex 原计划把目标改为 −93.667°。按同样的下垂，静置值会�
 
 **风险与回滚**：风险是把真正的越限当成漂移。容差沿用 4242 已在用的 1.0°，超出照旧拒绝。回滚为还原提交并继续使用 −94.7°。
 
-## H-24 `[ ]` P2：把 V53 留下的不一致记清楚
+## H-24 `[x]` P2：把 V53 留下的不一致记清楚
 
 只改文档和登记，不改运行时。可以离线做。
 
@@ -360,6 +362,8 @@ Codex 原计划把目标改为 −93.667°。按同样的下垂，静置值会�
 3. `HARNESS/agent/TODO.md` “现在做”第一项：把“更新 `arm_l_j2` 至实测停放角”改为“按 H-22 改为 −92.5°”。
 
 **验收**：`python3 HARNESS/scripts/check_project_layout.py` 通过。
+
+> 执行记录：2026-11-25，提交 a5ee5ea，分支 `harness/v53`；验收：`python3 HARNESS/scripts/check_project_layout.py` 通过；偏差：无。
 
 ## H-25 `[ ]` P0：左腕相机掉线
 
