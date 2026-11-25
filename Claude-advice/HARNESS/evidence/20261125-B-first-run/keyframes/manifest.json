@@ -1,0 +1,46 @@
+{
+  "task_id": "web-bcfd8730efd14981bcd2d7429858808b",
+  "release": "V52",
+  "source": "owner native compressed-color recording",
+  "frame_index": "collected/owner/payload/frames.jsonl",
+  "camera_pack_manifest": "collected/owner/payload/manifest.json",
+  "recorded_observations": 1683,
+  "owner_observation_id": 20,
+  "owner_available_monotonic_ns": 12041794116906,
+  "scene_failure_snapshot": "collected/owner/scene/failures/1bf8ed8c10dc460ca92ebc5e71437bb5.json",
+  "scene_observation_id": "f664e73b9246456d881d5658a02265b0:7",
+  "scene_received_monotonic_ns": 12041797499119,
+  "scene_received_minus_owner_available_ns": 3382213,
+  "selection": "Nearest native recording observation by host monotonic availability to the first saved empty scene snapshot; head and right wrist share a recording observation.",
+  "scope": "Two original color JPEGs show the scene on the independent recording path. Scene observation frames and pairings were both empty.",
+  "images": [
+    {
+      "file": "head.jpg",
+      "camera": "head",
+      "frame_id": 62,
+      "source_pack": "head.pack",
+      "source_offset_bytes": 5144358,
+      "host_received_monotonic_ns": 12041793299210,
+      "width": 1280,
+      "height": 720,
+      "bytes": 257182,
+      "original_sha256": "d6cffa0857fe0347fe36b7b4d4e54178c7ffe2e5fefd663bd97aee63663a73b2",
+      "published_sha256": "d6cffa0857fe0347fe36b7b4d4e54178c7ffe2e5fefd663bd97aee63663a73b2",
+      "transformation": "none"
+    },
+    {
+      "file": "right_wrist.jpg",
+      "camera": "right_wrist",
+      "frame_id": 61,
+      "source_pack": "right_wrist.pack",
+      "source_offset_bytes": 1208435,
+      "host_received_monotonic_ns": 12041793463546,
+      "width": 640,
+      "height": 480,
+      "bytes": 60535,
+      "original_sha256": "63438e87740d3e940a90e7c7460762351e86efc4d52062f3312bd84ce1f1419e",
+      "published_sha256": "63438e87740d3e940a90e7c7460762351e86efc4d52062f3312bd84ce1f1419e",
+      "transformation": "none"
+    }
+  ]
+}

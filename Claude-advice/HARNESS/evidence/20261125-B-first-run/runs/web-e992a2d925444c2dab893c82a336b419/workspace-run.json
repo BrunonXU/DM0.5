@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "id": "anon-bdb286846e6d72bc47ae053c",
+  "started_at": 1795598590.4635031,
+  "started_ns": 542643877726519,
+  "status": "error",
+  "config": {
+    "mode": "astra",
+    "instruction": "将桌上的方块放入对应方孔，松爪后确认落入。",
+    "corrections": 1,
+    "note": "[redacted]"
+  },
+  "config_revision": "anon-99468b99dec1b173afded5fd",
+  "summary": "控制端中断：camera_unavailable:three new synchronized camera frames unavailable; stale=left_wrist",
+  "request": {
+    "task_id": "square_block",
+    "config_revision": "anon-99468b99dec1b173afded5fd",
+    "config": {
+      "mode": "astra",
+      "instruction": "将桌上的方块放入对应方孔，松爪后确认落入。",
+      "corrections": 1,
+      "note": "[redacted]"
+    }
+  },
+  "restart_requires_stationary": false,
+  "recovery_of": null,
+  "stop_confirmation": "measured_stationary",
+  "ended_at": 1795598604.5169642
+}

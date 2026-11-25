@@ -326,6 +326,8 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 
 > 执行记录（2026-11-25，分支 `harness/v50-first-run`，提交 5996b41、22c825a、1b40db7）。15 秒窗口和三条旧断言此前已经同步。本轮让三个断言引用 OBSERVATION_READINESS_S，另保留 15 秒规格断言。软件完成，待真机验收。[合修验收与证据](evidence/20261125-B-batch/report.md)
 
+> 2026-11-25，V52 真机第二次启动时，重新观测实际等待 15.00 秒、轮询 77 次，直到结束时仍为空帧。已验证等待时限，取得可用观测并继续执行仍待真机验收。[首批真机记录](evidence/20261125-B-first-run/report.md)
+
 ---
 
 ## H-03 `[~]` P0：只读验证的重查次数独立于动作修正预算

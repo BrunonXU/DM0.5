@@ -1,0 +1,197 @@
+{
+  "schema": "f1-harness-field-run-evidence-v1",
+  "trial_date": "2026-11-25",
+  "timezone": "UTC",
+  "version": 52,
+  "code_commit": "1dcadbdf78a340cd6fb1d8d5a5d4f254e3a43aaa",
+  "bundle_id": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",
+  "code_identity_source": "../20261125-B-deployment-V52/deployment.json",
+  "launch_channel": "Operator via 4242; no individual operator identity in run traces",
+  "source_paths_relative_to": "6000D Projects",
+  "published_paths_relative_to": "this evidence directory",
+  "public_copy": "A-2 field-level exporter preserves one row per original event in original order, pseudonymises local identifiers and removes local paths, site parameters and unchecked free text. The two specific diagnostic messages and their nested causes, the fixed task instruction and both final workspace summaries were reviewed and kept. No raw sensor stream, credentials or local site files are included in these run copies.",
+  "timing_reports": "Copied from the original finalised runs, not regenerated",
+  "runs": [
+    {
+      "run_id": "web-e992a2d925444c2dab893c82a336b419",
+      "started_at": "2026-11-25T09:23:10+00:00",
+      "operator_identity": null,
+      "files": [
+        {
+          "path": "runs/web-e992a2d925444c2dab893c82a336b419/owner-trace.jsonl",
+          "source": "HARNESS/runs/workspace/web-e992a2d925444c2dab893c82a336b419/collected/owner/harness/trace.jsonl",
+          "source_bytes": 11220,
+          "source_sha256": "7d182dae91fab5c2bdcaae59600de14999e20d8665495b4bbb2974777d9053fd",
+          "bytes": 6453,
+          "sha256": "26e025c0198728a98180d37e85c24600d58a99ccb0858af67d35ee1a188d40be",
+          "redacted_fields": {
+            "identifiers": 53,
+            "private_payload_or_site_configuration": 6,
+            "other_free_text_and_unrecognised_values": 1
+          },
+          "records": 16
+        },
+        {
+          "path": "runs/web-e992a2d925444c2dab893c82a336b419/planner-trace.jsonl",
+          "source": "HARNESS/runs/workspace/web-e992a2d925444c2dab893c82a336b419/planner/trace.jsonl",
+          "source_bytes": 22131,
+          "source_sha256": "b8bb3ad125bd50e40e8071d277bdcb9acc88f1f48a46e06713863189cb5dae3b",
+          "bytes": 16303,
+          "sha256": "7ddc26029f7a59ec6e9dedcc07d9d2588b1f72288df2fbb40d6d446826e1c3a9",
+          "redacted_fields": {
+            "identifiers": 117,
+            "private_payload_or_site_configuration": 8,
+            "other_free_text_and_unrecognised_values": 5
+          },
+          "records": 18
+        },
+        {
+          "path": "runs/web-e992a2d925444c2dab893c82a336b419/timing-report.json",
+          "source": "HARNESS/runs/workspace/web-e992a2d925444c2dab893c82a336b419/timing-report.json",
+          "source_bytes": 4867,
+          "source_sha256": "817524de9f1d4f95b34fdd7e129e63011073e403349fa7343e9a3105aeaea6d0",
+          "bytes": 4252,
+          "sha256": "459bc6ba5e184df13d5f29aa29a7f4d4e61bfb8b55895e6d56f360a26cfd9e2f",
+          "redacted_fields": {
+            "other_free_text_and_unrecognised_values": 9
+          }
+        },
+        {
+          "path": "runs/web-e992a2d925444c2dab893c82a336b419/workspace-run.json",
+          "source": "HARNESS/runs/workspace/web-e992a2d925444c2dab893c82a336b419/workspace-run.json",
+          "source_bytes": 885,
+          "source_sha256": "04257f44ba0308cf47f4e63beae09c26f13e4275e01c5e8b2473079f372efd0d",
+          "bytes": 930,
+          "sha256": "6de08459fd54900b35cacdd52c2fc6902f92c3b7a8044c460d28e71fbc68e919",
+          "redacted_fields": {
+            "identifiers": 3,
+            "private_payload_or_site_configuration": 2
+          }
+        }
+      ],
+      "scenario_id": null,
+      "manual_intervention_events": 0,
+      "assisted_skill_results": 0
+    },
+    {
+      "run_id": "web-bcfd8730efd14981bcd2d7429858808b",
+      "started_at": "2026-11-25T09:24:02+00:00",
+      "operator_identity": null,
+      "files": [
+        {
+          "path": "runs/web-bcfd8730efd14981bcd2d7429858808b/owner-trace.jsonl",
+          "source": "HARNESS/runs/workspace/web-bcfd8730efd14981bcd2d7429858808b/collected/owner/harness/trace.jsonl",
+          "source_bytes": 10759,
+          "source_sha256": "6981c2483bfb36e3a60efa74553e60d42d0c1b85f14d25f242f535c2326e543b",
+          "bytes": 6018,
+          "sha256": "e112fb769251451e05f3ca5a7a8572a432b9fa79c6944321c67bccfa70c11ac0",
+          "redacted_fields": {
+            "identifiers": 51,
+            "private_payload_or_site_configuration": 6,
+            "other_free_text_and_unrecognised_values": 1
+          },
+          "records": 14
+        },
+        {
+          "path": "runs/web-bcfd8730efd14981bcd2d7429858808b/planner-trace.jsonl",
+          "source": "HARNESS/runs/workspace/web-bcfd8730efd14981bcd2d7429858808b/planner/trace.jsonl",
+          "source_bytes": 61429,
+          "source_sha256": "388eeeb0c5ee7cda1fd3c167957df9cc8812d358b0b5b8e2725e86c01ae08e10",
+          "bytes": 49730,
+          "sha256": "1fecdbe74d68faecb5fad6b249ddf552ba2103f34a24a43b131b086018ce1795",
+          "redacted_fields": {
+            "identifiers": 213,
+            "private_payload_or_site_configuration": 43,
+            "other_free_text_and_unrecognised_values": 15
+          },
+          "records": 57
+        },
+        {
+          "path": "runs/web-bcfd8730efd14981bcd2d7429858808b/timing-report.json",
+          "source": "HARNESS/runs/workspace/web-bcfd8730efd14981bcd2d7429858808b/timing-report.json",
+          "source_bytes": 6402,
+          "source_sha256": "5bf994fee49dea3d0e4fc664810053b185f6b3bee68c6c51a7242a4d3d50b927",
+          "bytes": 5778,
+          "sha256": "8a0a6426e8910bf2a7701c652e3e59a18882d319c44053cd64df53477f888190",
+          "redacted_fields": {
+            "other_free_text_and_unrecognised_values": 9,
+            "identifiers": 3
+          }
+        },
+        {
+          "path": "runs/web-bcfd8730efd14981bcd2d7429858808b/workspace-run.json",
+          "source": "HARNESS/runs/workspace/web-bcfd8730efd14981bcd2d7429858808b/workspace-run.json",
+          "source_bytes": 956,
+          "source_sha256": "610a61e8ac3348d91253230a68e1992b844534e375e962fc934c8d3c31b4622a",
+          "bytes": 1001,
+          "sha256": "4258c52d23ea560e85fa7e16f2b9585bb440dbb08b8098ce9cb632783e3e0e7d",
+          "redacted_fields": {
+            "identifiers": 3,
+            "private_payload_or_site_configuration": 2
+          }
+        }
+      ],
+      "scenario_id": null,
+      "manual_intervention_events": 0,
+      "assisted_skill_results": 0
+    }
+  ],
+  "public_funnel_verification": {
+    "matches_all_fields": true,
+    "command": "python3 ../../../../HARNESS/scripts/run_funnel.py --workspace runs --output /tmp/v52-field-reproduced.json",
+    "script_sha256": "2246a5eb2093553778423ef771ec4dbcefcf75e987bf0328b55d172106fc6d16",
+    "expected": "funnel.json"
+  },
+  "derived_files": [
+    {
+      "path": "layouts.md",
+      "source": "workspace-run.json and owner-trace.jsonl for both listed runs, and keyframes/manifest.json for the second run",
+      "bytes": 899,
+      "sha256": "ec7118ed98f6ac7f1757f867b91c092b14bfe3c7c2c4f3dc8e2ab638f9309fee"
+    },
+    {
+      "path": "report.md",
+      "source": "two sealed workspace exports, funnel.json, trace-excerpts.json, keyframes/manifest.json and post-run-readonly.json",
+      "bytes": 4636,
+      "sha256": "7b7bf2dca66245892d483ed06592c22e6e120ca87406ddac13efd9c12cada162"
+    },
+    {
+      "path": "funnel.json",
+      "source": "HARNESS/scripts/run_funnel.py using the two original workspace run IDs below",
+      "bytes": 8057,
+      "sha256": "6d8565489efd7ee167c95c5f3a5eb9ddf184fe661dc017c8540240fb0537d2cc"
+    },
+    {
+      "path": "trace-excerpts.json",
+      "source": "selected workspace, owner and planner events; individual source hashes inside",
+      "bytes": 15303,
+      "sha256": "d43da27fbe29fe832d33de0972b035785abae7b40bb0642f43ea8a5447930490"
+    },
+    {
+      "path": "post-run-readonly.json",
+      "source": "6000D SSH read-only connection attempts following the two field runs",
+      "bytes": 805,
+      "sha256": "86130fd65e522050907b600970840714653ac0f3e2ddb90082996c1d81c36ed6"
+    },
+    {
+      "path": "keyframes/manifest.json",
+      "source": "second run camera recording frame index, owner observation and gateway failure snapshot",
+      "bytes": 1979,
+      "sha256": "b4455ff875eaeb5dc336ca5b67f5bdbedb51cb159b911d7d45d02a650ecf40c6"
+    },
+    {
+      "path": "keyframes/head.jpg",
+      "source": "compressed head camera recording; original offsets and hash in keyframes/manifest.json",
+      "bytes": 257182,
+      "sha256": "d6cffa0857fe0347fe36b7b4d4e54178c7ffe2e5fefd663bd97aee63663a73b2"
+    },
+    {
+      "path": "keyframes/right_wrist.jpg",
+      "source": "compressed right wrist camera recording; original offsets and hash in keyframes/manifest.json",
+      "bytes": 60535,
+      "sha256": "63438e87740d3e940a90e7c7460762351e86efc4d52062f3312bd84ce1f1419e"
+    }
+  ],
+  "managed_run_files": 8,
+  "managed_run_file_bytes": 90465
+}
