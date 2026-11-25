@@ -196,3 +196,46 @@ def test_evaluate_scene_sample_and_preflight_pass_and_fail_reasons():
     assert '3d_geometry_missing:square_hole' in joined
     assert 'unexpected_hardware_command_publisher' in joined
     assert 'unexpected_control_ipc_attempt' in joined
+
+
+def _load_start_development():
+    path = Path(__file__).resolve().parents[1] / 'scripts/start_development.py'
+    spec = importlib.util.spec_from_file_location('f1_harness_start_development', path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_fastdds_udp_only_xml_matches_preflight_constant():
+    pf = _load_preflight()
+    xml_path = Path(__file__).resolve().parents[1] / 'configs/fastdds-udp-only.xml'
+    assert xml_path.read_bytes() == pf.FASTDDS_UDP_ONLY_XML.encode('utf-8')
+
+
+def test_production_gateway_prelude_matches_start_development_default():
+    pf = _load_preflight()
+    sd = _load_start_development()
+    bundle = '/home/user/Bruno/HARNESS/development/53af3b1d4406'
+    assert sd.ROBOT_SERVICES_ROS_ENV is None
+    assert pf.PRODUCTION_GATEWAY_ROS_ENV is None
+    preflight_prelude = pf._build_remote_ros_prelude('production-gateway', bundle)
+    assert preflight_prelude.startswith('unset ')
+    after_unset = preflight_prelude.split('\n', 1)[1]
+    assert after_unset == sd.robot_services_ros_prelude(bundle)
+
+
+@pytest.mark.parametrize('mode', ['production-gateway', 'fastdds-udp', 'cyclone'])
+def test_production_gateway_prelude_matches_start_development_all_modes(mode):
+    pf = _load_preflight()
+    sd = _load_start_development()
+    bundle = '/home/user/Bruno/HARNESS/development/53af3b1d4406'
+    preflight_prelude = pf._build_remote_ros_prelude('production-gateway', bundle, production_ros_env=mode)
+    after_unset = preflight_prelude.split('\n', 1)[1]
+    sd_prelude = sd.robot_services_ros_prelude(bundle, ros_env=mode)
+    assert after_unset == sd_prelude
+    if mode == 'fastdds-udp':
+        assert f'export FASTRTPS_DEFAULT_PROFILES_FILE={bundle}/configs/fastdds-udp-only.xml\n' in sd_prelude
+    elif mode == 'cyclone':
+        web_process = (Path(__file__).resolve().parents[1] / 'src/f1_harness/web_process.py').read_text(encoding='utf-8')
+        for line in sd_prelude.splitlines():
+            assert line in web_process

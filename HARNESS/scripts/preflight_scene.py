@@ -1026,13 +1026,52 @@ def _run_local_worker(args: argparse.Namespace) -> int:
     return 0 if report['passed'] else 2
 
 
-def _build_remote_ros_prelude(ros_env: str) -> str:
+# Must stay aligned with start_development.ROBOT_SERVICES_ROS_ENV (verified by unit test).
+PRODUCTION_GATEWAY_ROS_ENV: str | None = None
+
+
+def _build_remote_ros_prelude(
+    ros_env: str,
+    remote_bundle: str | None = None,
+    *,
+    production_ros_env: str | None = None,
+) -> str:
     if ros_env == 'production-gateway':
-        return (
+        unset_line = (
             'unset RMW_IMPLEMENTATION FASTRTPS_DEFAULT_PROFILES_FILE FASTDDS_DEFAULT_PROFILES_FILE '
             'CYCLONEDDS_URI ROS_LOCALHOST_ONLY ROS_STATIC_PEERS\n'
-            'source /opt/ros/jazzy/setup.bash || exit\n'
         )
+        selected = PRODUCTION_GATEWAY_ROS_ENV if production_ros_env is None else production_ros_env
+        if selected is None:
+            return unset_line + 'source /opt/ros/jazzy/setup.bash || exit\n'
+        if selected == 'fastdds-udp':
+            if not remote_bundle:
+                raise ValueError('remote_bundle required for fastdds-udp production-gateway prelude')
+            return (
+                unset_line
+                + 'source /opt/ros/jazzy/setup.bash || exit\n'
+                + 'export RMW_IMPLEMENTATION=rmw_fastrtps_cpp\n'
+                + 'export ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET\n'
+                + f'export FASTRTPS_DEFAULT_PROFILES_FILE={remote_bundle}/configs/fastdds-udp-only.xml\n'
+            )
+        if selected == 'production-gateway':
+            return (
+                unset_line
+                + 'source /opt/ros/jazzy/setup.bash || exit\n'
+                + 'export RMW_IMPLEMENTATION=rmw_fastrtps_cpp\n'
+            )
+        if selected == 'cyclone':
+            return (
+                unset_line
+                + 'source /opt/ros/jazzy/setup.bash || exit\n'
+                + 'source /home/user/workspace/f1/install/setup.bash || exit\n'
+                + 'source /home/user/workspace/agv/install/setup.bash || exit\n'
+                + 'export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp\n'
+                + 'export CYCLONEDDS_URI=/etc/ros/cyclonedds/cyclonedds.xml\n'
+                + 'export ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET\n'
+                + 'unset ROS_LOCALHOST_ONLY ROS_STATIC_PEERS\n'
+            )
+        raise ValueError('unsupported production_ros_env: ' + str(selected))
     if ros_env == 'cyclone':
         return (
             'unset RMW_IMPLEMENTATION FASTRTPS_DEFAULT_PROFILES_FILE FASTDDS_DEFAULT_PROFILES_FILE '
@@ -1116,7 +1155,7 @@ def _run_remote_orchestrator(args: argparse.Namespace) -> int:
         '--sam-url', remote_sam_url,
     ]
     bash_script = (
-        _build_remote_ros_prelude(args.ros_env)
+        _build_remote_ros_prelude(args.ros_env, remote_bundle)
         + 'exec ' + shlex.join(worker_cmd) + '\n'
     )
     ssh_cmd = [

@@ -22,7 +22,7 @@ def build_bundle(output, wheels, *, root=None):
         files['upstream/RPent/'+str(path.relative_to(upstream))]=path
     files['upstream/RPent/LICENSE']=upstream/'LICENSE'
     for path in (root/'configs').glob('*'):
-        if path.name.endswith(('.example.json','.example.toml')) or path.name in ('observation.readonly.json','upstreams.lock.json','collision-cache-overlay.json'):
+        if path.name.endswith(('.example.json','.example.toml')) or path.name in ('observation.readonly.json','upstreams.lock.json','collision-cache-overlay.json','fastdds-udp-only.xml'):
             files['configs/'+path.name]=path
     # A registered, manifest-bound overlay from the canonical shared component;
     # never edit the frozen production infra dependency in place.
