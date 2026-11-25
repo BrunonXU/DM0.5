@@ -1,0 +1,859 @@
+{
+  "schema": "f1-harness-baseline-evidence-v1",
+  "generated_date": "2026-11-25",
+  "timezone": "Asia/Shanghai",
+  "review_branch_base_git_commit": "3dc1af9db443b5325752ec2faa9135af6021cd26",
+  "analysis_source_sha256": {
+    "HARNESS/scripts/run_funnel.py": "2246a5eb2093553778423ef771ec4dbcefcf75e987bf0328b55d172106fc6d16",
+    "HARNESS/scripts/funnel_reasons.json": "eb8844ea2e646285c959a7c3af6f3d057e8ba8b641c400493299da2660ae3d35"
+  },
+  "selection": {
+    "archive_directory": "HARNESS/runs/workspace",
+    "available_workspace_metadata": 129,
+    "ordering": "workspace-run.json started_at descending; all run directories contained a valid start time",
+    "selected_count": 10,
+    "omitted_due_to_size": []
+  },
+  "original_source": "6000D; source paths relative to Projects; byte hashes are over original files on disk",
+  "public_copy": "Every original JSONL record is represented in the same order. Both file SHA-256 values are retained. Active session, request, process and boot identifiers are consistently pseudonymised across the ten runs with a nonpublished keyed digest. Public run folder names and registered bundle hashes are retained. RGB-D and raw sensor bytes, site parameters, credentials-related fields, operator/model free text and unrecognised text are redacted. Numeric counters and timing, stage and reason codes, receipts, synthetic/assisted flags and cross-record associations remain available. The run text copies contain no raw image or site configuration. Two small JPEGs for the selected review cases are indexed separately. The two verified SHA-256 values identify different representations.",
+  "run_code": "owner development_admission.bundle_id joined to the V50 release registry; exact Git commit for the historical on-robot execution is not asserted",
+  "manifest_hash": "The enclosing Git commit identifies this file. The index lists hashes of all other included files.",
+  "runs": [
+    {
+      "run_id": "web-8782aab8cdbe43eb91e2ad4daac2f4b3",
+      "started_at": "2026-11-18T17:56:55+08:00",
+      "operator_identity": null,
+      "launch_channel": "F1infra web authorization recorded",
+      "files": {
+        "owner-trace.jsonl": {
+          "source": "HARNESS/runs/workspace/web-8782aab8cdbe43eb91e2ad4daac2f4b3/collected/owner/harness/trace.jsonl",
+          "source_sha256": "56b9a4ea6be6bf2a8b04dac6f4fc144988fe7afd4fbdb7b6c6718d24b4881194",
+          "source_bytes": 822729,
+          "public_sha256": "23d3bb5e42b1d255f47c82dd165774fa2c3bcf1be7445fd58c622b30608ac3f1",
+          "public_bytes": 741967,
+          "redacted_fields": {
+            "identifiers": 2438,
+            "private_payload_or_site_configuration": 67,
+            "other_free_text_and_unrecognised_values": 61,
+            "raw_sensor_payload": 1430
+          },
+          "events": 157
+        },
+        "planner-trace.jsonl": {
+          "source": "HARNESS/runs/workspace/web-8782aab8cdbe43eb91e2ad4daac2f4b3/planner/trace.jsonl",
+          "source_sha256": "874b6e1c1b2dd0e8439c12cfa11a700c48dcfa160ca3f6c337ea730a9435ffac",
+          "source_bytes": 1461802,
+          "public_sha256": "fc3d15137a6bc3c805724777f3d065d43fedbe3cc44ccad9811c4148d7d34ef9",
+          "public_bytes": 1311732,
+          "redacted_fields": {
+            "identifiers": 4466,
+            "private_payload_or_site_configuration": 158,
+            "other_free_text_and_unrecognised_values": 123,
+            "raw_sensor_payload": 2535
+          },
+          "events": 247
+        },
+        "timing-report.json": {
+          "source": "HARNESS/runs/workspace/web-8782aab8cdbe43eb91e2ad4daac2f4b3/timing-report.json",
+          "source_sha256": "ebfd27d58cb639ecdc14f96fcbf23aec6e816f868ee393beb8b069a00b793104",
+          "source_bytes": 9128,
+          "public_sha256": "f0a64443ef62b890ef92a28538606530784905a094c102e204f587ccec47b64a",
+          "public_bytes": 8739,
+          "redacted_fields": {
+            "other_free_text_and_unrecognised_values": 6,
+            "identifiers": 14
+          }
+        },
+        "workspace-run.json": {
+          "source": "HARNESS/runs/workspace/web-8782aab8cdbe43eb91e2ad4daac2f4b3/workspace-run.json",
+          "source_sha256": "30119a1f35e3593561d3287a955527f479ecdf5bebb6dd8cf06bf63155d15a51",
+          "source_bytes": 1025,
+          "public_sha256": "63c247f3ab4e2a6f2136529e8d2b9ad5cc5373ac001bbc10a278b1c70ff93105",
+          "public_bytes": 732,
+          "redacted_fields": {
+            "identifiers": 3,
+            "private_payload_or_site_configuration": 4,
+            "other_free_text_and_unrecognised_values": 1
+          }
+        }
+      },
+      "bundle_id": "f8fff669f8988e806b5139f1625e359dca775a82395d66dca4abac61fcbdf61b",
+      "framework_version": 49,
+      "fixed_layout_id": null,
+      "layout_photo": null,
+      "archive_status": "review",
+      "owner_manual_intervention_events": 0,
+      "assisted_owner_skill_results": 0
+    },
+    {
+      "run_id": "web-bbdcbca9fac34a7d85ce450fd7043911",
+      "started_at": "2026-11-18T17:50:19+08:00",
+      "operator_identity": null,
+      "launch_channel": "F1infra web authorization recorded",
+      "files": {
+        "owner-trace.jsonl": {
+          "source": "HARNESS/runs/workspace/web-bbdcbca9fac34a7d85ce450fd7043911/collected/owner/harness/trace.jsonl",
+          "source_sha256": "8b9f328be5db8c878fcc138ff3f3a8b3dc7dd1be9a4bc1e9903c3aa2d03f56ec",
+          "source_bytes": 3303986,
+          "public_sha256": "a9c5d921c34ee8aeb2289a4506152ec7c780663b6d4d53665f82e3e53ac33256",
+          "public_bytes": 748547,
+          "redacted_fields": {
+            "identifiers": 2455,
+            "private_payload_or_site_configuration": 70,
+            "other_free_text_and_unrecognised_values": 76,
+            "raw_sensor_payload": 1434
+          },
+          "events": 155
+        },
+        "planner-trace.jsonl": {
+          "source": "HARNESS/runs/workspace/web-bbdcbca9fac34a7d85ce450fd7043911/planner/trace.jsonl",
+          "source_sha256": "d11ea69bbc895ee7a65f513b95da4e8bbfb58e5f43254944c432444b233063ee",
+          "source_bytes": 3090832,
+          "public_sha256": "18fd68184f37f7db538e3b518732d4efcdf8ce801aecb0f9f5cfef30c8ded5ab",
+          "public_bytes": 1231411,
+          "redacted_fields": {
+            "identifiers": 4227,
+            "private_payload_or_site_configuration": 165,
+            "other_free_text_and_unrecognised_values": 134,
+            "raw_sensor_payload": 2342
+          },
+          "events": 245
+        },
+        "timing-report.json": {
+          "source": "HARNESS/runs/workspace/web-bbdcbca9fac34a7d85ce450fd7043911/timing-report.json",
+          "source_sha256": "06471640099babb258cf1a9d76f6ebf0c1c073296750c40b9731c2d42c54ad7e",
+          "source_bytes": 8516,
+          "public_sha256": "651d50235da2f33c780c4db500aea35df936b831ec0ca65644c6bd611a165780",
+          "public_bytes": 8130,
+          "redacted_fields": {
+            "other_free_text_and_unrecognised_values": 6,
+            "identifiers": 13
+          }
+        },
+        "workspace-run.json": {
+          "source": "HARNESS/runs/workspace/web-bbdcbca9fac34a7d85ce450fd7043911/workspace-run.json",
+          "source_sha256": "0ff3b6c565f7e6ce48019a2e9aa58de69695165443b6c9c7f5d60dcc87863a7d",
+          "source_bytes": 878,
+          "public_sha256": "c906fed7297fe78a4150ed2e13c9210c7f94dee4d57758724f663d28a3184ad8",
+          "public_bytes": 733,
+          "redacted_fields": {
+            "identifiers": 3,
+            "private_payload_or_site_configuration": 4,
+            "other_free_text_and_unrecognised_values": 1
+          }
+        }
+      },
+      "bundle_id": "f8fff669f8988e806b5139f1625e359dca775a82395d66dca4abac61fcbdf61b",
+      "framework_version": 49,
+      "fixed_layout_id": null,
+      "layout_photo": null,
+      "archive_status": "review",
+      "owner_manual_intervention_events": 0,
+      "assisted_owner_skill_results": 0
+    },
+    {
+      "run_id": "web-99cece4568cd41f7b96a0810ed879cc0",
+      "started_at": "2026-11-18T17:30:44+08:00",
+      "operator_identity": null,
+      "launch_channel": "F1infra web authorization recorded",
+      "files": {
+        "owner-trace.jsonl": {
+          "source": "HARNESS/runs/workspace/web-99cece4568cd41f7b96a0810ed879cc0/collected/owner/harness/trace.jsonl",
+          "source_sha256": "8a6a8870936a4b9940bfd017a3a017ecb72ea8987ba9ba74f5ff74545e1754e1",
+          "source_bytes": 840760,
+          "public_sha256": "841747e399557737b960e89428d078c3d569fd49f2dcbfabc36d9b6d5c1c1173",
+          "public_bytes": 759321,
+          "redacted_fields": {
+            "identifiers": 2472,
+            "private_payload_or_site_configuration": 68,
+            "other_free_text_and_unrecognised_values": 75,
+            "raw_sensor_payload": 1430
+          },
+          "events": 165
+        },
+        "planner-trace.jsonl": {
+          "source": "HARNESS/runs/workspace/web-99cece4568cd41f7b96a0810ed879cc0/planner/trace.jsonl",
+          "source_sha256": "676cfa3ff21c6dbb08124aafecb42d5bee46cdb6162532444143de086d7f2cb2",
+          "source_bytes": 1568407,
+          "public_sha256": "50ae67a765e2b4aca62e14797bacb3b3d96518c40eb4a5dd18fd5eb089e4c96c",
+          "public_bytes": 1411668,
+          "redacted_fields": {
+            "identifiers": 4817,
+            "private_payload_or_site_configuration": 140,
+            "other_free_text_and_unrecognised_values": 143,
+            "raw_sensor_payload": 2795
+          },
+          "events": 251
+        },
+        "timing-report.json": {
+          "source": "HARNESS/runs/workspace/web-99cece4568cd41f7b96a0810ed879cc0/timing-report.json",
+          "source_sha256": "f4edfff7d1c65d359ca52069eb7abd8852bb31a1116995a284f1a27a69f72f16",
+          "source_bytes": 8036,
+          "public_sha256": "95b2c9e1eae4836b55576796de142d59af7125bef1b518a52ebb2a7ac4cc722f",
+          "public_bytes": 7653,
+          "redacted_fields": {
+            "other_free_text_and_unrecognised_values": 6,
+            "identifiers": 12
+          }
+        },
+        "workspace-run.json": {
+          "source": "HARNESS/runs/workspace/web-99cece4568cd41f7b96a0810ed879cc0/workspace-run.json",
+          "source_sha256": "7695d3aecf945ebb59ccee30574fbf992ca1007db5c23cb96dcf7e2127422a80",
+          "source_bytes": 863,
+          "public_sha256": "772b1ef24c89dd2f0bcdc81d7a44e8def346ae168cd58d75be51e3a39e148425",
+          "public_bytes": 731,
+          "redacted_fields": {
+            "identifiers": 3,
+            "private_payload_or_site_configuration": 4,
+            "other_free_text_and_unrecognised_values": 1
+          }
+        }
+      },
+      "bundle_id": "e85d93e6c9649741fc312bcb6eeb207d3bb67298f9f7ef876bbc252b0819dd2e",
+      "framework_version": 47,
+      "fixed_layout_id": null,
+      "layout_photo": null,
+      "archive_status": "error",
+      "owner_manual_intervention_events": 0,
+      "assisted_owner_skill_results": 0
+    },
+    {
+      "run_id": "web-75f8c9cf80cb4dea9a7d836bd9c7f06f",
+      "started_at": "2026-11-18T17:26:45+08:00",
+      "operator_identity": null,
+      "launch_channel": "F1infra web authorization recorded",
+      "files": {
+        "owner-trace.jsonl": {
+          "source": "HARNESS/runs/workspace/web-75f8c9cf80cb4dea9a7d836bd9c7f06f/collected/owner/harness/trace.jsonl",
+          "source_sha256": "d387281d3264a293aa015ea18d0666a607b984e8bb535c4b43c65fbd8e441df1",
+          "source_bytes": 2329737,
+          "public_sha256": "32dd58ec5aa6147c07f4d43413242686788f8e686c65a43269260d995c772e51",
+          "public_bytes": 764027,
+          "redacted_fields": {
+            "identifiers": 2424,
+            "private_payload_or_site_configuration": 81,
+            "other_free_text_and_unrecognised_values": 68,
+            "raw_sensor_payload": 1434
+          },
+          "events": 139
+        },
+        "planner-trace.jsonl": {
+          "source": "HARNESS/runs/workspace/web-75f8c9cf80cb4dea9a7d836bd9c7f06f/planner/trace.jsonl",
+          "source_sha256": "fd085566b6a4014226c0d75d6049ce21c30523dbb4ffe5b673be285e0a94f11a",
+          "source_bytes": 1528996,
+          "public_sha256": "cc97883a72f79caefcbd232fed335cda1fcf062e8228df09396214594c6a1bdd",
+          "public_bytes": 1363199,
+          "redacted_fields": {
+            "identifiers": 4264,
+            "private_payload_or_site_configuration": 230,
+            "other_free_text_and_unrecognised_values": 186,
+            "raw_sensor_payload": 2340
+          },
+          "events": 249
+        },
+        "timing-report.json": {
+          "source": "HARNESS/runs/workspace/web-75f8c9cf80cb4dea9a7d836bd9c7f06f/timing-report.json",
+          "source_sha256": "b2f32d3b75475058e51caf713f52b2b4bb6b1dec8da0ccd92a4c2be7fdbc1e76",
+          "source_bytes": 8343,
+          "public_sha256": "428a3e484e115905c723f1d67860e2c90c0914e2f39d9a4998e32b6b0f0d8655",
+          "public_bytes": 7960,
+          "redacted_fields": {
+            "other_free_text_and_unrecognised_values": 6,
+            "identifiers": 12
+          }
+        },
+        "workspace-run.json": {
+          "source": "HARNESS/runs/workspace/web-75f8c9cf80cb4dea9a7d836bd9c7f06f/workspace-run.json",
+          "source_sha256": "9550eb99fb380075e231952ba09cd47cb9da66aab546610d77d641ce76d96419",
+          "source_bytes": 830,
+          "public_sha256": "16a57f776c99cb9991d10dfb7546266e95ed710917d93ab80585699126bb5e9f",
+          "public_bytes": 733,
+          "redacted_fields": {
+            "identifiers": 3,
+            "private_payload_or_site_configuration": 4,
+            "other_free_text_and_unrecognised_values": 1
+          }
+        }
+      },
+      "bundle_id": "e85d93e6c9649741fc312bcb6eeb207d3bb67298f9f7ef876bbc252b0819dd2e",
+      "framework_version": 47,
+      "fixed_layout_id": null,
+      "layout_photo": null,
+      "archive_status": "review",
+      "owner_manual_intervention_events": 0,
+      "assisted_owner_skill_results": 0
+    },
+    {
+      "run_id": "web-98a9157409134e989e3e51e652ac739f",
+      "started_at": "2026-11-18T17:06:46+08:00",
+      "operator_identity": null,
+      "launch_channel": "F1infra web authorization recorded",
+      "files": {
+        "owner-trace.jsonl": {
+          "source": "HARNESS/runs/workspace/web-98a9157409134e989e3e51e652ac739f/collected/owner/harness/trace.jsonl",
+          "source_sha256": "7c506a1b08f4c147b99fa9442ba14656d3a6ae63e66bb2d333318aae30540d7f",
+          "source_bytes": 575879,
+          "public_sha256": "547c5e3865dbca549dfa435596a630955b1bfde582a2f4b65e9f01a317f0a1a8",
+          "public_bytes": 519424,
+          "redacted_fields": {
+            "identifiers": 1660,
+            "private_payload_or_site_configuration": 45,
+            "other_free_text_and_unrecognised_values": 66,
+            "raw_sensor_payload": 975
+          },
+          "events": 99
+        },
+        "planner-trace.jsonl": {
+          "source": "HARNESS/runs/workspace/web-98a9157409134e989e3e51e652ac739f/planner/trace.jsonl",
+          "source_sha256": "9a603651648fa90bcb3d576f7599cc8c4f56b1aba1189c7459f73a892008aaab",
+          "source_bytes": 889671,
+          "public_sha256": "5c2c3f29810c628558f8b779d0b64b4f188d2500e8b87d5f705bc9707a11d19e",
+          "public_bytes": 801974,
+          "redacted_fields": {
+            "identifiers": 2760,
+            "private_payload_or_site_configuration": 75,
+            "other_free_text_and_unrecognised_values": 105,
+            "raw_sensor_payload": 1560
+          },
+          "events": 139
+        },
+        "timing-report.json": {
+          "source": "HARNESS/runs/workspace/web-98a9157409134e989e3e51e652ac739f/timing-report.json",
+          "source_sha256": "da3b3d6556fb481b5f1a097bc4832fdccda7af86510a1f6da79e42f1c8b5a8c3",
+          "source_bytes": 6676,
+          "public_sha256": "fd122323fd7a1a5f9d02fbd63103707ba9fb13699596acbf2bffc2c8686a8009",
+          "public_bytes": 6308,
+          "redacted_fields": {
+            "other_free_text_and_unrecognised_values": 6,
+            "identifiers": 7
+          }
+        },
+        "workspace-run.json": {
+          "source": "HARNESS/runs/workspace/web-98a9157409134e989e3e51e652ac739f/workspace-run.json",
+          "source_sha256": "34c0f6334b19963685e2da622f0c1ade77e57befbe852943cfbfe4be710ff847",
+          "source_bytes": 863,
+          "public_sha256": "e842c05b937ed30fbc8371a7233d60b47a6e1988a7cc4c88b78b2e1ee2d1ea02",
+          "public_bytes": 731,
+          "redacted_fields": {
+            "identifiers": 3,
+            "private_payload_or_site_configuration": 4,
+            "other_free_text_and_unrecognised_values": 1
+          }
+        }
+      },
+      "bundle_id": "bb861f0495056b09f83c7497c0920885d34b61d8b8067e089cb6d47f11a3bce3",
+      "framework_version": 46,
+      "fixed_layout_id": null,
+      "layout_photo": null,
+      "archive_status": "error",
+      "owner_manual_intervention_events": 0,
+      "assisted_owner_skill_results": 0
+    },
+    {
+      "run_id": "web-7ed07f03de9d47a48db7e929105358bf",
+      "started_at": "2026-11-18T16:06:57+08:00",
+      "operator_identity": null,
+      "launch_channel": "F1infra web authorization recorded",
+      "files": {
+        "owner-trace.jsonl": {
+          "source": "HARNESS/runs/workspace/web-7ed07f03de9d47a48db7e929105358bf/collected/owner/harness/trace.jsonl",
+          "source_sha256": "e767bbd1e9238f656c313aaa28ec8bc95714e8951bbc6e140c5acd6e8ec7dbaa",
+          "source_bytes": 2309875,
+          "public_sha256": "f8fd116a7dfd5dc01e266aaae65dc76f7e2c8df4e8ec802c1674cc41ef6632af",
+          "public_bytes": 527603,
+          "redacted_fields": {
+            "identifiers": 1699,
+            "private_payload_or_site_configuration": 49,
+            "other_free_text_and_unrecognised_values": 65,
+            "raw_sensor_payload": 977
+          },
+          "events": 109
+        },
+        "planner-trace.jsonl": {
+          "source": "HARNESS/runs/workspace/web-7ed07f03de9d47a48db7e929105358bf/planner/trace.jsonl",
+          "source_sha256": "1d2b4fdaa1e50e29f6d4a72299b9b30d3fd1c3ecd861fe0f0be465c62502ddfe",
+          "source_bytes": 2612575,
+          "public_sha256": "28d9aa2ada73b38c460c1afdd908fb5e2d005098143ce972e5e9edac3fd9bbb2",
+          "public_bytes": 799247,
+          "redacted_fields": {
+            "identifiers": 2773,
+            "private_payload_or_site_configuration": 98,
+            "other_free_text_and_unrecognised_values": 107,
+            "raw_sensor_payload": 1497
+          },
+          "events": 167
+        },
+        "timing-report.json": {
+          "source": "HARNESS/runs/workspace/web-7ed07f03de9d47a48db7e929105358bf/timing-report.json",
+          "source_sha256": "696dd2b63881f065351bd8c94e2ce48febd16e4aa2186d13c043a1621f54e308",
+          "source_bytes": 5785,
+          "public_sha256": "a212a1c37eaf8193a568cc683a06404c48f75750a224dfe5441fe87b13b20dc2",
+          "public_bytes": 5417,
+          "redacted_fields": {
+            "other_free_text_and_unrecognised_values": 6,
+            "identifiers": 7
+          }
+        },
+        "workspace-run.json": {
+          "source": "HARNESS/runs/workspace/web-7ed07f03de9d47a48db7e929105358bf/workspace-run.json",
+          "source_sha256": "2f4c412aaf3868fd8cf97c59f0f8d94d2116c5e0ab951f405c02f874027263c0",
+          "source_bytes": 864,
+          "public_sha256": "36f874b609d2330c63b61297f3f0dd6ca6d921491295407a1d7279d4be83d53e",
+          "public_bytes": 732,
+          "redacted_fields": {
+            "identifiers": 3,
+            "private_payload_or_site_configuration": 4,
+            "other_free_text_and_unrecognised_values": 1
+          }
+        }
+      },
+      "bundle_id": "8e9bbcd8841265910d5aaa824a724f0815cce0a2a741e1de0e3a5e854d457e3a",
+      "framework_version": 44,
+      "fixed_layout_id": null,
+      "layout_photo": null,
+      "archive_status": "error",
+      "owner_manual_intervention_events": 0,
+      "assisted_owner_skill_results": 0
+    },
+    {
+      "run_id": "web-a340e4fd2cb34df3b5d03e5f81ee4214",
+      "started_at": "2026-11-18T14:27:17+08:00",
+      "operator_identity": null,
+      "launch_channel": "F1infra web authorization recorded",
+      "files": {
+        "owner-trace.jsonl": {
+          "source": "HARNESS/runs/workspace/web-a340e4fd2cb34df3b5d03e5f81ee4214/collected/owner/harness/trace.jsonl",
+          "source_sha256": "223a556866e46f84e6726949398142448d55e90a61521c410fdf57dfb1b19ec8",
+          "source_bytes": 2346864,
+          "public_sha256": "70250d28301802d6230252f512527d42d5d207d6a0dee48d027d7476296481b8",
+          "public_bytes": 563029,
+          "redacted_fields": {
+            "identifiers": 1830,
+            "private_payload_or_site_configuration": 54,
+            "other_free_text_and_unrecognised_values": 52,
+            "raw_sensor_payload": 1042
+          },
+          "events": 129
+        },
+        "planner-trace.jsonl": {
+          "source": "HARNESS/runs/workspace/web-a340e4fd2cb34df3b5d03e5f81ee4214/planner/trace.jsonl",
+          "source_sha256": "bc718a26a568c390653a8fc3147433851c8219d7cc4001f0168a7df3b4f34e1f",
+          "source_bytes": 3310521,
+          "public_sha256": "401cb0f83f991bd1e16640aaf239f51c73671600a2e0b2c541f397f01fcce033",
+          "public_bytes": 1420378,
+          "redacted_fields": {
+            "identifiers": 4717,
+            "private_payload_or_site_configuration": 240,
+            "other_free_text_and_unrecognised_values": 192,
+            "raw_sensor_payload": 2732
+          },
+          "events": 268
+        },
+        "timing-report.json": {
+          "source": "HARNESS/runs/workspace/web-a340e4fd2cb34df3b5d03e5f81ee4214/timing-report.json",
+          "source_sha256": "db26a4eadf34f4a6aaa3333fac8d70b7caf62bade3378cff73a8a186722d5116",
+          "source_bytes": 8739,
+          "public_sha256": "df6294414a1be0c9dea4f9414058936d38e21c41655b8e4036cd3f6423276947",
+          "public_bytes": 8353,
+          "redacted_fields": {
+            "other_free_text_and_unrecognised_values": 6,
+            "identifiers": 13
+          }
+        },
+        "workspace-run.json": {
+          "source": "HARNESS/runs/workspace/web-a340e4fd2cb34df3b5d03e5f81ee4214/workspace-run.json",
+          "source_sha256": "3ba577d56f197eea314b8c11c45b03aac0ae8d799622a88b8e1d9cc2eaf4becc",
+          "source_bytes": 885,
+          "public_sha256": "afaa67034b51610d1d71ebbebac2e11aaad9bb92189b2e5b3396591dcdc929dd",
+          "public_bytes": 733,
+          "redacted_fields": {
+            "identifiers": 3,
+            "private_payload_or_site_configuration": 4,
+            "other_free_text_and_unrecognised_values": 1
+          }
+        }
+      },
+      "bundle_id": "d72c0ade998d03bd4dc36b3868b3c5a148f32e73261aaf12e409bd358a734a86",
+      "framework_version": 42,
+      "fixed_layout_id": null,
+      "layout_photo": null,
+      "archive_status": "review",
+      "owner_manual_intervention_events": 0,
+      "assisted_owner_skill_results": 0
+    },
+    {
+      "run_id": "web-257a5ca2c2f24cd9967d25934447a0d8",
+      "started_at": "2026-11-18T13:33:10+08:00",
+      "operator_identity": null,
+      "launch_channel": "F1infra web authorization recorded",
+      "files": {
+        "owner-trace.jsonl": {
+          "source": "HARNESS/runs/workspace/web-257a5ca2c2f24cd9967d25934447a0d8/collected/owner/harness/trace.jsonl",
+          "source_sha256": "668a965c017bd38476c5dbdca28af0bc3dc411eba40ab527be2b00f444d93165",
+          "source_bytes": 2583033,
+          "public_sha256": "f0f9d1851879b48a42cd0b619e987b93490b4262d2a58e8751f2b8a5008fa114",
+          "public_bytes": 736655,
+          "redacted_fields": {
+            "identifiers": 2309,
+            "private_payload_or_site_configuration": 62,
+            "other_free_text_and_unrecognised_values": 64,
+            "raw_sensor_payload": 1367
+          },
+          "events": 127
+        },
+        "planner-trace.jsonl": {
+          "source": "HARNESS/runs/workspace/web-257a5ca2c2f24cd9967d25934447a0d8/planner/trace.jsonl",
+          "source_sha256": "5525bd02c222ddd2d25f09e4df21ad22212c818b199fda9f36139281d56b21d3",
+          "source_bytes": 3925533,
+          "public_sha256": "76b979cc115e685ef6c8ed980d376cd4e0887f9b76f3d8808cb3370e2dd47bee",
+          "public_bytes": 1937838,
+          "redacted_fields": {
+            "identifiers": 6304,
+            "private_payload_or_site_configuration": 243,
+            "other_free_text_and_unrecognised_values": 233,
+            "raw_sensor_payload": 3902
+          },
+          "events": 279
+        },
+        "timing-report.json": {
+          "source": "HARNESS/runs/workspace/web-257a5ca2c2f24cd9967d25934447a0d8/timing-report.json",
+          "source_sha256": "22eabe7ecec3b0a9245b375b7cd7b7f88811067b41f065992385fb29db7156f4",
+          "source_bytes": 8412,
+          "public_sha256": "39444f70b6aba92b16d7a8e383be1f84171488ad40d10ee67eb8aba476a8306f",
+          "public_bytes": 8026,
+          "redacted_fields": {
+            "other_free_text_and_unrecognised_values": 6,
+            "identifiers": 13
+          }
+        },
+        "workspace-run.json": {
+          "source": "HARNESS/runs/workspace/web-257a5ca2c2f24cd9967d25934447a0d8/workspace-run.json",
+          "source_sha256": "f05aac110e7ec0dc262a6cc8d90c0f11f13d09b9c96698ba5e39d9a5311cc9ee",
+          "source_bytes": 906,
+          "public_sha256": "5e4028dcef5c13072647cb49ab9d871c05a56897ad61957f76e66f53553578b1",
+          "public_bytes": 733,
+          "redacted_fields": {
+            "identifiers": 3,
+            "private_payload_or_site_configuration": 4,
+            "other_free_text_and_unrecognised_values": 1
+          }
+        }
+      },
+      "bundle_id": "d72c0ade998d03bd4dc36b3868b3c5a148f32e73261aaf12e409bd358a734a86",
+      "framework_version": 42,
+      "fixed_layout_id": null,
+      "layout_photo": null,
+      "archive_status": "review",
+      "owner_manual_intervention_events": 0,
+      "assisted_owner_skill_results": 0
+    },
+    {
+      "run_id": "web-5329da48dda549d8ab7e8921e88597cd",
+      "started_at": "2026-11-18T12:26:23+08:00",
+      "operator_identity": null,
+      "launch_channel": "F1infra web authorization recorded",
+      "files": {
+        "owner-trace.jsonl": {
+          "source": "HARNESS/runs/workspace/web-5329da48dda549d8ab7e8921e88597cd/collected/owner/harness/trace.jsonl",
+          "source_sha256": "c328bc6ba8b4343b42496a86146a72c8d06c00757cfdaf6b997efb7451ec3b02",
+          "source_bytes": 1959899,
+          "public_sha256": "ab30a4941b37bf05f37febc58b088053c635702dd56f3de5b6f27d15858423cb",
+          "public_bytes": 139822,
+          "redacted_fields": {
+            "identifiers": 462,
+            "private_payload_or_site_configuration": 20,
+            "other_free_text_and_unrecognised_values": 11,
+            "raw_sensor_payload": 262
+          },
+          "events": 25
+        },
+        "planner-trace.jsonl": {
+          "source": "HARNESS/runs/workspace/web-5329da48dda549d8ab7e8921e88597cd/planner/trace.jsonl",
+          "source_sha256": "30108cc40757fa1e63c5b31425da7e58420d62d1245c872e2f8b9a5e1f47781c",
+          "source_bytes": 2546497,
+          "public_sha256": "61b65449ee39c4a582074e49fa3c23d4f440ab5c9337959710647f0d085678df",
+          "public_bytes": 668244,
+          "redacted_fields": {
+            "identifiers": 2193,
+            "private_payload_or_site_configuration": 78,
+            "other_free_text_and_unrecognised_values": 93,
+            "raw_sensor_payload": 1367
+          },
+          "events": 93
+        },
+        "timing-report.json": {
+          "source": "HARNESS/runs/workspace/web-5329da48dda549d8ab7e8921e88597cd/timing-report.json",
+          "source_sha256": "2b50ad18b04d35080e405fa86f29e9ef0f54eee1aa0035ed21dcba807b85de87",
+          "source_bytes": 4269,
+          "public_sha256": "97571b71927fa2da4cd6cdabfa33a8da7ebdc4fc6204585632d95262f47e6d23",
+          "public_bytes": 3913,
+          "redacted_fields": {
+            "other_free_text_and_unrecognised_values": 6,
+            "identifiers": 3
+          }
+        },
+        "workspace-run.json": {
+          "source": "HARNESS/runs/workspace/web-5329da48dda549d8ab7e8921e88597cd/workspace-run.json",
+          "source_sha256": "c13883f434ee59edebec5568637bcd619b16f2459353cbbb766e79f61197d6e8",
+          "source_bytes": 864,
+          "public_sha256": "6c13b497a0405bfdfb899a1f2b857ca224bc68cdf4aee10d09ab8e52b653c487",
+          "public_bytes": 732,
+          "redacted_fields": {
+            "identifiers": 3,
+            "private_payload_or_site_configuration": 4,
+            "other_free_text_and_unrecognised_values": 1
+          }
+        }
+      },
+      "bundle_id": "30d72cc1d69028394ec79843fae9feb82d1a1d1ce76f0f40b1b20f6caa1f16f8",
+      "framework_version": 40,
+      "fixed_layout_id": null,
+      "layout_photo": null,
+      "archive_status": "error",
+      "owner_manual_intervention_events": 0,
+      "assisted_owner_skill_results": 0
+    },
+    {
+      "run_id": "web-be7c48ea17234a97affadd0d3bee53d6",
+      "started_at": "2026-11-18T10:52:10+08:00",
+      "operator_identity": null,
+      "launch_channel": "F1infra web authorization recorded",
+      "files": {
+        "owner-trace.jsonl": {
+          "source": "HARNESS/runs/workspace/web-be7c48ea17234a97affadd0d3bee53d6/collected/owner/harness/trace.jsonl",
+          "source_sha256": "ad474e63b3ad043d58c51cd4bb8e02fb59028b512b28c7e174f4be0172ed517f",
+          "source_bytes": 280182,
+          "public_sha256": "501dafd5b911ee23f583e9554a622c713b48803a6f9a222993abb042a891d948",
+          "public_bytes": 249526,
+          "redacted_fields": {
+            "identifiers": 842,
+            "private_payload_or_site_configuration": 29,
+            "other_free_text_and_unrecognised_values": 21,
+            "raw_sensor_payload": 455
+          },
+          "events": 80
+        },
+        "planner-trace.jsonl": {
+          "source": "HARNESS/runs/workspace/web-be7c48ea17234a97affadd0d3bee53d6/planner/trace.jsonl",
+          "source_sha256": "7feefad9db1ec598ea8c8b3967cb3c6867bdb0f2b6dd8fb4e55cb8a738b14b91",
+          "source_bytes": 676022,
+          "public_sha256": "cb0f040c654383c7c449e43ffe293efcc9ddf135b8129109b20075adfa5159ce",
+          "public_bytes": 602375,
+          "redacted_fields": {
+            "identifiers": 2040,
+            "private_payload_or_site_configuration": 95,
+            "other_free_text_and_unrecognised_values": 83,
+            "raw_sensor_payload": 1105
+          },
+          "events": 132
+        },
+        "timing-report.json": {
+          "source": "HARNESS/runs/workspace/web-be7c48ea17234a97affadd0d3bee53d6/timing-report.json",
+          "source_sha256": "706ab9cb71d06b21091a89a7e67510acde9ef42c156b8a62f1da05f9f1e902f1",
+          "source_bytes": 5063,
+          "public_sha256": "6c1b484dd6ee7051a4ecb2186d79cf9422c1be3caa4cc4d4205c5f4a78815a6d",
+          "public_bytes": 4701,
+          "redacted_fields": {
+            "other_free_text_and_unrecognised_values": 6,
+            "identifiers": 5
+          }
+        },
+        "workspace-run.json": {
+          "source": "HARNESS/runs/workspace/web-be7c48ea17234a97affadd0d3bee53d6/workspace-run.json",
+          "source_sha256": "8192ef031e71ee7961b038b7182f2c0755c824b408a21ccf56bffdb5411c589d",
+          "source_bytes": 905,
+          "public_sha256": "26fa415175b048a006135d65c4e4fec0147341404083ad5288ecf88378e8255b",
+          "public_bytes": 733,
+          "redacted_fields": {
+            "identifiers": 3,
+            "private_payload_or_site_configuration": 4,
+            "other_free_text_and_unrecognised_values": 1
+          }
+        }
+      },
+      "bundle_id": "322a904f8b96b3b2b830e5d35e77a2d912a071dfa8e339a1e3ef55b20e59b842",
+      "framework_version": 38,
+      "fixed_layout_id": null,
+      "layout_photo": null,
+      "archive_status": "review",
+      "owner_manual_intervention_events": 0,
+      "assisted_owner_skill_results": 0
+    }
+  ],
+  "derived_files": {
+    "layouts.md": {
+      "source": "workspace-run.json and both traces from every selected run",
+      "producer": "historical layout audit",
+      "sha256": "47938a0d8cae1eb4878082e6c6c35ee9b12e87a7ab7f09e976b8c430811be265",
+      "bytes": 1650
+    },
+    "funnel.json": {
+      "source": "all 129 HARNESS/runs/workspace/web-* directories",
+      "producer": "HARNESS/scripts/run_funnel.py",
+      "sha256": "0f708f6e1663779a5a007955c02ac659faa79f9ad4a721df66720a2902085b1e",
+      "bytes": 310840
+    },
+    "manual-audit.json": {
+      "source": "selected original workspace/owner/planner records listed in this file",
+      "producer": "independent trace audit",
+      "sha256": "b76710603b442100e01c19626300b89063352451b9d0dc8bf367526595c459cc",
+      "bytes": 13938
+    },
+    "report.md": {
+      "source": "this evidence directory, including funnel.json",
+      "producer": "A-2 baseline analysis",
+      "sha256": "6202018141a3849fbcec70ad70de68df402b078c2093a7440868b5fe7bc48082",
+      "bytes": 5477
+    },
+    "cases/README.md": {
+      "sources": [
+        {
+          "path": "HARNESS/artifacts/fixture-relocalization-20261109/release-ready/manifest.json",
+          "sha256": "f2db3e262ceb4330dfdfea68acdbf9b99de0388e90d5af580bb1addc576cd680"
+        },
+        {
+          "path": "HARNESS/artifacts/grasp-handoff-audit-20261109/diagnosis.json",
+          "sha256": "cb76c9da791142b1d6acd665d1fa25a0c0cc1bbf5eb49339bd9c7f1ff1e8937c"
+        },
+        {
+          "path": "HARNESS/artifacts/offline-closure-20261109/saved-path-revalidation.json",
+          "sha256": "11e6687e9e88ef17dd581b0600b62d9a5fe21b36c5bcaff3068cbf1987cdb710"
+        },
+        {
+          "path": "HARNESS/artifacts/optional-camera-revalidation-v42-20261118/field-request-frozen.json",
+          "sha256": "f32dc379bf8a4a3fe4eb544779ae9c1ed690c721921db288aca8fd98dcfa5202"
+        },
+        {
+          "path": "HARNESS/artifacts/optional-camera-revalidation-v42-20261118/field-request-v40-control.json",
+          "sha256": "73518a66b053aafda80f218bc859195b23ca31bcdfc09dd277d0b64f56474b82"
+        },
+        {
+          "path": "HARNESS/artifacts/optional-camera-revalidation-v42-20261118/field-request-v40.json",
+          "sha256": "9388099808cc80e5cfd914eca6589886bd166597547f31f9bc65294578811bbe"
+        },
+        {
+          "path": "HARNESS/runs/workspace/web-5329da48dda549d8ab7e8921e88597cd/collected/owner/harness/trace.jsonl",
+          "sha256": "c328bc6ba8b4343b42496a86146a72c8d06c00757cfdaf6b997efb7451ec3b02"
+        },
+        {
+          "path": "HARNESS/runs/workspace/web-5329da48dda549d8ab7e8921e88597cd/workspace-run.json",
+          "sha256": "c13883f434ee59edebec5568637bcd619b16f2459353cbbb766e79f61197d6e8"
+        },
+        {
+          "path": "HARNESS/runs/workspace/web-f7234e2584884f6a9310f5ef3d1ea8c1/collected/owner/harness/trace.jsonl",
+          "sha256": "57c7c0802f91cece86b1f00b1ad5d622124d1dcf8777c9f18e9527952b4027a7"
+        },
+        {
+          "path": "HARNESS/runs/workspace/web-f7234e2584884f6a9310f5ef3d1ea8c1/workspace-run.json",
+          "sha256": "0d4c4d880edb4b4bc41952f6154dc0aaca8ae05af4a83370c1d84904f325e2a2"
+        }
+      ],
+      "bytes": 2957,
+      "sha256": "b8a982c6310878b61f02e71a4bbcaabd4de85e26b63370a73695ad11e12fd3b9"
+    },
+    "cases/endpoint-clearance.json": {
+      "sources": [
+        {
+          "path": "HARNESS/artifacts/fixture-relocalization-20261109/release-ready/manifest.json",
+          "sha256": "f2db3e262ceb4330dfdfea68acdbf9b99de0388e90d5af580bb1addc576cd680"
+        },
+        {
+          "path": "HARNESS/artifacts/grasp-handoff-audit-20261109/diagnosis.json",
+          "sha256": "cb76c9da791142b1d6acd665d1fa25a0c0cc1bbf5eb49339bd9c7f1ff1e8937c"
+        },
+        {
+          "path": "HARNESS/artifacts/offline-closure-20261109/saved-path-revalidation.json",
+          "sha256": "11e6687e9e88ef17dd581b0600b62d9a5fe21b36c5bcaff3068cbf1987cdb710"
+        },
+        {
+          "path": "HARNESS/runs/workspace/web-f7234e2584884f6a9310f5ef3d1ea8c1/collected/owner/harness/trace.jsonl",
+          "sha256": "57c7c0802f91cece86b1f00b1ad5d622124d1dcf8777c9f18e9527952b4027a7"
+        },
+        {
+          "path": "HARNESS/runs/workspace/web-f7234e2584884f6a9310f5ef3d1ea8c1/workspace-run.json",
+          "sha256": "0d4c4d880edb4b4bc41952f6154dc0aaca8ae05af4a83370c1d84904f325e2a2"
+        }
+      ],
+      "bytes": 9680,
+      "sha256": "37c1a131d03634e7a30c6ccc030379a7ecb7ca8373b4fdea6ad27af8d79d58f9"
+    },
+    "cases/endpoint-right-38.jpg": {
+      "source": "HARNESS/runs/workspace/web-f7234e2584884f6a9310f5ef3d1ea8c1/planner/blobs/2d01bfdebe6857eeabec461f66ab8d414c0bdb78b638845b2e0916e212326a65",
+      "source_sha256": "2d01bfdebe6857eeabec461f66ab8d414c0bdb78b638845b2e0916e212326a65",
+      "source_bytes": 921600,
+      "sha256": "7f829ac82a2b81d846c136d53d467c44555aee2e30f305be7fbc8147d69ae17b",
+      "bytes": 21068,
+      "frame_binding": {
+        "observation_id": "909f35faf2c54da8a55edbb480817430:38",
+        "camera": "right",
+        "sequence": 303,
+        "source_ns": 1794221288711707764,
+        "encoding": "bgr8"
+      },
+      "transformation": "Full frame, original resolution, Pillow JPEG quality 80, 4:2:0, no crop/mask/overlay/metadata. Raw bgr8 converted to RGB when needed."
+    },
+    "cases/optional-camera.json": {
+      "sources": [
+        {
+          "path": "HARNESS/artifacts/optional-camera-revalidation-v42-20261118/field-request-frozen.json",
+          "sha256": "f32dc379bf8a4a3fe4eb544779ae9c1ed690c721921db288aca8fd98dcfa5202"
+        },
+        {
+          "path": "HARNESS/artifacts/optional-camera-revalidation-v42-20261118/field-request-v40-control.json",
+          "sha256": "73518a66b053aafda80f218bc859195b23ca31bcdfc09dd277d0b64f56474b82"
+        },
+        {
+          "path": "HARNESS/artifacts/optional-camera-revalidation-v42-20261118/field-request-v40.json",
+          "sha256": "9388099808cc80e5cfd914eca6589886bd166597547f31f9bc65294578811bbe"
+        },
+        {
+          "path": "HARNESS/runs/workspace/web-5329da48dda549d8ab7e8921e88597cd/collected/owner/harness/trace.jsonl",
+          "sha256": "c328bc6ba8b4343b42496a86146a72c8d06c00757cfdaf6b997efb7451ec3b02"
+        },
+        {
+          "path": "HARNESS/runs/workspace/web-5329da48dda549d8ab7e8921e88597cd/workspace-run.json",
+          "sha256": "c13883f434ee59edebec5568637bcd619b16f2459353cbbb766e79f61197d6e8"
+        }
+      ],
+      "bytes": 11193,
+      "sha256": "61bff64df0b018152525318e125c5c4e2a44363cf3003ca556dc1c31a28e10ee"
+    },
+    "cases/v40-head-109.jpg": {
+      "source": "HARNESS/runs/workspace/web-5329da48dda549d8ab7e8921e88597cd/planner/blobs/5b8fc1c740658892a468ee8347c31c36c04da2ba1737873458e6ba030461f41a",
+      "source_sha256": "5b8fc1c740658892a468ee8347c31c36c04da2ba1737873458e6ba030461f41a",
+      "source_bytes": 2764800,
+      "sha256": "db254bc703c27b88da07ad9f3d8d583020ead29229c7283f16882c07cff106d1",
+      "bytes": 97666,
+      "frame_binding": {
+        "observation_id": "4e7b3123b6824389ba1f21f10ee5f862:109",
+        "camera": "head",
+        "sequence": 492,
+        "source_ns": 1794976028954624000,
+        "encoding": "rgb8"
+      },
+      "transformation": "Full frame, original resolution, Pillow JPEG quality 80, 4:2:0, no crop/mask/overlay/metadata. Raw bgr8 converted to RGB when needed."
+    }
+  },
+  "public_copy_reproduction": {
+    "runs_compared": 10,
+    "all_per_run_fields_identical": true,
+    "event_rows_preserved": 3255,
+    "raw_bytes": 39045650,
+    "public_bytes": 17374510
+  },
+  "verify_from_evidence_directory": {
+    "cwd": "Claude-advice/HARNESS/evidence/20261125-A2-baseline",
+    "requirements": "Python 3, checkout containing the analysis source SHA-256 recorded above",
+    "file_hashes_python_c": "import hashlib,json,pathlib; p=pathlib.Path('.'); m=json.loads((p/'manifest.json').read_bytes()); files={p/'runs'/r['run_id']/name:info['public_sha256'] for r in m['runs'] for name,info in r['files'].items()}; files.update({p/name:info['sha256'] for name,info in m['derived_files'].items()}); bad=[str(f) for f,h in files.items() if not f.is_file() or hashlib.sha256(f.read_bytes()).hexdigest()!=h]; assert not bad,bad; print('Verified files',len(files))",
+    "run": [
+      "python3",
+      "../../../../HARNESS/scripts/run_funnel.py",
+      "--workspace",
+      "runs",
+      "--output",
+      "/tmp/f1-a2-published-funnel.json"
+    ],
+    "compare_python_c": "import json,pathlib; load=lambda p:{r['run_id']:r for r in json.loads(pathlib.Path(p).read_bytes())['runs']}; expected=load('funnel.json'); observed=load('/tmp/f1-a2-published-funnel.json'); assert len(observed)==10 and all(expected[k]==v for k,v in observed.items()); print('Matching published runs',len(observed))"
+  },
+  "review_case_policy": "Two original business requests and their associated frame IDs and owner results; one RGB planning keyframe each. JPEG source and exported byte hashes are listed. Published by operator request. Site configuration, active authorization secrets, raw sensor dumps and videos are excluded."
+}

@@ -1,0 +1,428 @@
+{
+  "schema": "f1-funnel-independent-audit-v1",
+  "review_date": "2026-11-25",
+  "method": "按场景取五条有控制端与规划端原件的运行。逐条只读查阅事件种类、原件行号、请求和时间戳，独立写下预期，再对照 run_funnel.py 的输出。行号从 1 开始，源文件相对各自运行目录为 collected/owner/harness/trace.jsonl 与 planner/trace.jsonl。",
+  "metric_notes": {
+    "first_motion_s": "第一条真实首发事件的 published_ns 减控制端授权的 monotonic_ns。",
+    "model_wait_s": "在每个逻辑请求仅取一次终态 elapsed_s，成功用响应，失败用最后的错误。错误 elapsed_s 可包含连接重试的累计等待。",
+    "revocation": "逐行区分保护撤权、用户停止和 task_finished/session_closed/owner_bridge_closed 等收尾事件。按“仅排除用户停止”口径，保护与收尾相加。",
+    "stop_reasons": "控制端最后失败和规划端末次失败/注意事项分别记录。两端单调时钟不能直接比较大小。"
+  },
+  "samples": [
+    {
+      "run": "web-bbdcbca9fac34a7d85ce450fd7043911",
+      "why_selected": "运输到位后补观测且四次调用模型，检查 S5 与 S6 的边界。",
+      "source": {
+        "owner_sha256": "8b9f328be5db8c878fcc138ff3f3a8b3dc7dd1be9a4bc1e9903c3aa2d03f56ec",
+        "planner_sha256": "d11ea69bbc895ee7a65f513b95da4e8bbfb58e5f43254944c432444b233063ee",
+        "task_prepared_owner_line": 3,
+        "first_stage_event_owner_line": {
+          "S0": 5,
+          "S1": 15,
+          "S2": 31,
+          "S3": 64,
+          "S4": 69,
+          "S5": 97
+        },
+        "unpublished_failure_owner_lines": [],
+        "reviewed_planner_lines": [
+          189,
+          194,
+          195,
+          203,
+          208,
+          209,
+          220,
+          223,
+          224,
+          231,
+          233,
+          234,
+          238,
+          241
+        ],
+        "matched_skill_accepted_owner_line": {
+          "S2": 9,
+          "S3": 33,
+          "S4": 67,
+          "S5": 72
+        }
+      },
+      "expected": {
+        "stages": [
+          "S0",
+          "S1",
+          "S2",
+          "S3",
+          "S4",
+          "S5"
+        ],
+        "furthest_stage": "S5",
+        "autonomous_s8": false,
+        "task_s": null,
+        "first_motion_s": 5.34516,
+        "model_requests_started": 4,
+        "transport_attempts": 4,
+        "origin_write_confirmed_requests": 4,
+        "model_wait_s": 59.699723,
+        "physical_unpublished_failures": 0,
+        "nonphysical_unpublished_failures": 0,
+        "authority_revoked_fault_events": 0,
+        "authority_revoked_user_stop_events": 1,
+        "authority_revoked_teardown_events": 3,
+        "last_owner_skill_failure": null,
+        "last_planner_failure_or_attention": "planner_no_progress_budget_exhausted",
+        "stage_interval_s": {
+          "S0": 0.0,
+          "S1": 5.34516,
+          "S2": 3.292354,
+          "S3": 7.881528,
+          "S4": 1.173368,
+          "S5": 22.600773
+        },
+        "stage_skill_duration_s": {
+          "S2": 7.142181,
+          "S3": 7.726553,
+          "S4": 0.163565,
+          "S5": 21.166756
+        }
+      },
+      "comparison": {
+        "matched": true,
+        "checked_fields": [
+          "active_fault_revocations",
+          "assisted_results",
+          "complete_success",
+          "eligible",
+          "first_motion_s",
+          "furthest_stage",
+          "last_failure_reason",
+          "manual_interventions",
+          "model_calls",
+          "model_requests_with_origin_evidence",
+          "model_transport_attempts_recorded",
+          "model_wait_s",
+          "nonphysical_rejections",
+          "physical_rejections",
+          "revocations",
+          "revocations_raw",
+          "stage_interval_s",
+          "stage_skill_duration_s",
+          "stages",
+          "task_s"
+        ]
+      }
+    },
+    {
+      "run": "web-98a9157409134e989e3e51e652ac739f",
+      "why_selected": "程序零模型完成判抓，随后两次未发布运输；区分零模型与整程成功。",
+      "source": {
+        "owner_sha256": "7c506a1b08f4c147b99fa9442ba14656d3a6ae63e66bb2d333318aae30540d7f",
+        "planner_sha256": "9a603651648fa90bcb3d576f7599cc8c4f56b1aba1189c7459f73a892008aaab",
+        "task_prepared_owner_line": 3,
+        "first_stage_event_owner_line": {
+          "S0": 5,
+          "S1": 15,
+          "S2": 30,
+          "S3": 62,
+          "S4": 66
+        },
+        "unpublished_failure_owner_lines": [
+          79,
+          90
+        ],
+        "reviewed_planner_lines": [
+          127
+        ],
+        "matched_skill_accepted_owner_line": {
+          "S2": 10,
+          "S3": 32,
+          "S4": 65
+        }
+      },
+      "expected": {
+        "stages": [
+          "S0",
+          "S1",
+          "S2",
+          "S3",
+          "S4"
+        ],
+        "furthest_stage": "S4",
+        "autonomous_s8": false,
+        "task_s": null,
+        "first_motion_s": 5.964775,
+        "model_requests_started": 0,
+        "transport_attempts": 0,
+        "origin_write_confirmed_requests": 0,
+        "model_wait_s": 0.0,
+        "physical_unpublished_failures": 0,
+        "nonphysical_unpublished_failures": 2,
+        "authority_revoked_fault_events": 1,
+        "authority_revoked_user_stop_events": 1,
+        "authority_revoked_teardown_events": 3,
+        "last_owner_skill_failure": "plan_revalidation_rejected:revalidation_camera_identity_changed",
+        "last_planner_failure_or_attention": "plan_revalidation_rejected:revalidation_camera_identity_changed",
+        "stage_interval_s": {
+          "S0": 0.0,
+          "S1": 5.964775,
+          "S2": 3.866261,
+          "S3": 8.127218,
+          "S4": 0.998584
+        },
+        "stage_skill_duration_s": {
+          "S2": 7.747163,
+          "S3": 7.935588,
+          "S4": 0.2075
+        }
+      },
+      "comparison": {
+        "matched": true,
+        "checked_fields": [
+          "active_fault_revocations",
+          "assisted_results",
+          "complete_success",
+          "eligible",
+          "first_motion_s",
+          "furthest_stage",
+          "last_failure_reason",
+          "manual_interventions",
+          "model_calls",
+          "model_requests_with_origin_evidence",
+          "model_transport_attempts_recorded",
+          "model_wait_s",
+          "nonphysical_rejections",
+          "physical_rejections",
+          "revocations",
+          "revocations_raw",
+          "stage_interval_s",
+          "stage_skill_duration_s",
+          "stages",
+          "task_s"
+        ]
+      }
+    },
+    {
+      "run": "web-5329da48dda549d8ab7e8921e88597cd",
+      "why_selected": "V40 可选左图导致首动前撤权，两个模型请求均有成功响应。",
+      "source": {
+        "owner_sha256": "c328bc6ba8b4343b42496a86146a72c8d06c00757cfdaf6b997efb7451ec3b02",
+        "planner_sha256": "30108cc40757fa1e63c5b31425da7e58420d62d1245c872e2f8b9a5e1f47781c",
+        "task_prepared_owner_line": 3,
+        "first_stage_event_owner_line": {
+          "S0": 5
+        },
+        "unpublished_failure_owner_lines": [
+          16
+        ],
+        "reviewed_planner_lines": [
+          48,
+          49,
+          50,
+          58,
+          60,
+          61,
+          81
+        ],
+        "matched_skill_accepted_owner_line": {}
+      },
+      "expected": {
+        "stages": [
+          "S0"
+        ],
+        "furthest_stage": "S0",
+        "autonomous_s8": false,
+        "task_s": null,
+        "first_motion_s": null,
+        "model_requests_started": 2,
+        "transport_attempts": 2,
+        "origin_write_confirmed_requests": 2,
+        "model_wait_s": 29.28012,
+        "physical_unpublished_failures": 0,
+        "nonphysical_unpublished_failures": 1,
+        "authority_revoked_fault_events": 1,
+        "authority_revoked_user_stop_events": 1,
+        "authority_revoked_teardown_events": 3,
+        "last_owner_skill_failure": "plan_revalidation_rejected:revalidation_camera_identity_changed",
+        "last_planner_failure_or_attention": "plan_revalidation_rejected:revalidation_camera_identity_changed",
+        "stage_interval_s": {
+          "S0": 0.0
+        },
+        "stage_skill_duration_s": {}
+      },
+      "comparison": {
+        "matched": true,
+        "checked_fields": [
+          "active_fault_revocations",
+          "assisted_results",
+          "complete_success",
+          "eligible",
+          "first_motion_s",
+          "furthest_stage",
+          "last_failure_reason",
+          "manual_interventions",
+          "model_calls",
+          "model_requests_with_origin_evidence",
+          "model_transport_attempts_recorded",
+          "model_wait_s",
+          "nonphysical_rejections",
+          "physical_rejections",
+          "revocations",
+          "revocations_raw",
+          "stage_interval_s",
+          "stage_skill_duration_s",
+          "stages",
+          "task_s"
+        ]
+      }
+    },
+    {
+      "run": "web-2585a72884bd4c8aa76f264bdfb6b4a5",
+      "why_selected": "同一运行分别出现过期观测、路径扫掠受阻与目标改变，核对物理分类的分母。",
+      "source": {
+        "owner_sha256": "6a4421fda92cef9eb062ce8d45dcd093c481aaea92c24be19496a3db8a90c6d2",
+        "planner_sha256": "5c81b9014872d2137cea92c7e8610622715d001cb9fcedd13e02b1563ad927cf",
+        "task_prepared_owner_line": 3,
+        "first_stage_event_owner_line": {
+          "S0": 5
+        },
+        "unpublished_failure_owner_lines": [
+          16,
+          28,
+          41
+        ],
+        "reviewed_planner_lines": [
+          63
+        ],
+        "matched_skill_accepted_owner_line": {}
+      },
+      "expected": {
+        "stages": [
+          "S0"
+        ],
+        "furthest_stage": "S0",
+        "autonomous_s8": false,
+        "task_s": null,
+        "first_motion_s": null,
+        "model_requests_started": 0,
+        "transport_attempts": 0,
+        "origin_write_confirmed_requests": 0,
+        "model_wait_s": 0.0,
+        "physical_unpublished_failures": 1,
+        "nonphysical_unpublished_failures": 2,
+        "authority_revoked_fault_events": 0,
+        "authority_revoked_user_stop_events": 1,
+        "authority_revoked_teardown_events": 4,
+        "last_owner_skill_failure": "plan_revalidation_rejected:revalidation_object_or_hole_changed",
+        "last_planner_failure_or_attention": "plan_revalidation_rejected:revalidation_object_or_hole_changed",
+        "stage_interval_s": {
+          "S0": 0.0
+        },
+        "stage_skill_duration_s": {}
+      },
+      "comparison": {
+        "matched": true,
+        "checked_fields": [
+          "active_fault_revocations",
+          "assisted_results",
+          "complete_success",
+          "eligible",
+          "first_motion_s",
+          "furthest_stage",
+          "last_failure_reason",
+          "manual_interventions",
+          "model_calls",
+          "model_requests_with_origin_evidence",
+          "model_transport_attempts_recorded",
+          "model_wait_s",
+          "nonphysical_rejections",
+          "physical_rejections",
+          "revocations",
+          "revocations_raw",
+          "stage_interval_s",
+          "stage_skill_duration_s",
+          "stages",
+          "task_s"
+        ]
+      }
+    },
+    {
+      "run": "web-f7dbb17ecbf04ae8bbb6e2ea44cc3290",
+      "why_selected": "第二个逻辑请求重试且未开始写入源站，核对失败请求不会重复累计等待。",
+      "source": {
+        "owner_sha256": "206bbeb6316434bdcdc45fa159b41abb460cab20c1c60433f350c3742ee30216",
+        "planner_sha256": "97bc5a4df09f9eb7dd6e4b8e61d13909d9898430e8ef651912b210e5ef0e31b0",
+        "task_prepared_owner_line": 3,
+        "first_stage_event_owner_line": {
+          "S0": 5
+        },
+        "unpublished_failure_owner_lines": [],
+        "reviewed_planner_lines": [
+          16,
+          20,
+          21,
+          31,
+          32,
+          33,
+          34
+        ],
+        "matched_skill_accepted_owner_line": {}
+      },
+      "expected": {
+        "stages": [
+          "S0"
+        ],
+        "furthest_stage": "S0",
+        "autonomous_s8": false,
+        "task_s": null,
+        "first_motion_s": null,
+        "model_requests_started": 2,
+        "transport_attempts": 3,
+        "origin_write_confirmed_requests": 1,
+        "model_wait_s": 19.724543,
+        "physical_unpublished_failures": 0,
+        "nonphysical_unpublished_failures": 0,
+        "authority_revoked_fault_events": 0,
+        "authority_revoked_user_stop_events": 1,
+        "authority_revoked_teardown_events": 3,
+        "last_owner_skill_failure": null,
+        "last_planner_failure_or_attention": "model_read_timeout",
+        "stage_interval_s": {
+          "S0": 0.0
+        },
+        "stage_skill_duration_s": {}
+      },
+      "comparison": {
+        "matched": true,
+        "checked_fields": [
+          "active_fault_revocations",
+          "assisted_results",
+          "complete_success",
+          "eligible",
+          "first_motion_s",
+          "furthest_stage",
+          "last_failure_reason",
+          "manual_interventions",
+          "model_calls",
+          "model_requests_with_origin_evidence",
+          "model_transport_attempts_recorded",
+          "model_wait_s",
+          "nonphysical_rejections",
+          "physical_rejections",
+          "revocations",
+          "revocations_raw",
+          "stage_interval_s",
+          "stage_skill_duration_s",
+          "stages",
+          "task_s"
+        ]
+      }
+    }
+  ],
+  "comparison": {
+    "samples_checked": 5,
+    "samples_matched": 5,
+    "timing_precision_s": 1e-06,
+    "method": "按样本检查所有十个阶段、已达阶段间隔与技能耗时、首动与任务时间、完成结果、介入、模型请求/传输/等待、零动作拒绝、三种撤权口径和最终原因。时间按微秒与独立原件取值比较。"
+  }
+}

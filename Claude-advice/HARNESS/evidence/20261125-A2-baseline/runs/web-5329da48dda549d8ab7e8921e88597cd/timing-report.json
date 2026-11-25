@@ -1,0 +1,133 @@
+{
+  "schema": "f1-harness-timing-v1",
+  "run": "[redacted]",
+  "owner_startup": {
+    "source": "owner.log",
+    "status": "complete",
+    "stages": [
+      {
+        "stage": "runtime_contract",
+        "elapsed_s": 1.302680271999634,
+        "since_start_s": 1.4028467079988332,
+        "complete": true
+      },
+      {
+        "stage": "ros_transport",
+        "elapsed_s": 0.42839040299986664,
+        "since_start_s": 1.8675611069993465,
+        "complete": true
+      },
+      {
+        "stage": "first_valid_feedback",
+        "elapsed_s": 1.0098593139991863,
+        "since_start_s": 2.8790759629991953,
+        "complete": true
+      },
+      {
+        "stage": "collision_gate",
+        "elapsed_s": 0.6274197200000344,
+        "since_start_s": 3.5086399350002466,
+        "complete": true
+      },
+      {
+        "stage": "arm_model",
+        "elapsed_s": 0.020992156998545397,
+        "since_start_s": 3.5297832139985985,
+        "complete": true
+      },
+      {
+        "stage": "owner_initialize",
+        "elapsed_s": 0.006741933000739664,
+        "since_start_s": 3.5367959569994127,
+        "complete": true
+      },
+      {
+        "stage": "ik_warmup",
+        "elapsed_s": 0.04975378999915847,
+        "since_start_s": 3.5870412539989047,
+        "complete": true
+      },
+      {
+        "stage": "harness_bridge",
+        "elapsed_s": 0.05833360099859419,
+        "since_start_s": 3.6567769269986456,
+        "complete": true
+      }
+    ],
+    "expected_stage_count": 8,
+    "invalid_records": 0,
+    "scan_truncated": false,
+    "measured_stage_s": 3.504171189995759,
+    "observed_span_s": 3.6567769269986456,
+    "native_entry": {
+      "source_integrity_s": 0.03106249799930083,
+      "native_import_s": 0.004754610001327819,
+      "entry_to_owner_main_s": 0.9100084450001305
+    },
+    "static_model": {
+      "static_prepare_s": 2.0631415719999495,
+      "remaining_wait_s": 0.6210600689992134,
+      "feedback_bind_s": 0.005121457999848644,
+      "overlapped_prepare_s": 1.4420815030007361
+    }
+  },
+  "click_to_first_publication_receipt_s": null,
+  "model_response_s": 29.280120315030217,
+  "model_responses": 2,
+  "model_transport": [
+    {
+      "kind": "model_transport_timing",
+      "request_id": "anon-476a6af5770d027a131fe552",
+      "attempt": 1,
+      "phase_s": {
+        "request_write": 0.00020842580124735832,
+        "response_headers": 2.089732757769525,
+        "response_body": 11.754660430829972
+      },
+      "last_phase": "response_body",
+      "connection_reused": true,
+      "origin_write_started": true
+    },
+    {
+      "kind": "model_transport_timing",
+      "request_id": "anon-4819b8f8975a5e0e6223fc97",
+      "attempt": 1,
+      "phase_s": {
+        "tcp_connect": 0.00012535694986581802,
+        "proxy_connect": 0.23710076557472348,
+        "tls_connect": 0.1884363079443574,
+        "request_write": 0.00041685253381729126,
+        "response_headers": 4.606135942041874,
+        "response_body": 10.233012279961258
+      },
+      "last_phase": "response_body",
+      "connection_reused": false,
+      "origin_write_started": true
+    }
+  ],
+  "model_connection_preparation": [],
+  "model_requests_without_receipt": 0,
+  "owner_steps": [
+    {
+      "skill": "approach_grasp",
+      "request_id": "anon-45e9f0a4b789d1c61e0d7d5c",
+      "outcome": "failure",
+      "accepted_to_first_publication_s": null,
+      "first_publication_to_last_measured_waypoint_s": null,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 3.979960179
+    }
+  ],
+  "full_grasp_place_reset_s": null,
+  "full_cycle_verified_s": null,
+  "full_cycle_status": "not_established_without_measured_safe_reset",
+  "full_cycle_interval": "first_approach_publication_to_measured_return_arrival",
+  "limitations": [
+    "[redacted]",
+    "[redacted]",
+    "[redacted]",
+    "[redacted]",
+    "[redacted]"
+  ]
+}

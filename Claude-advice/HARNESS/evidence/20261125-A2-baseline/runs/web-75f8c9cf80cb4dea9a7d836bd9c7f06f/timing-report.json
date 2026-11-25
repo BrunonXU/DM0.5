@@ -1,0 +1,252 @@
+{
+  "schema": "f1-harness-timing-v1",
+  "run": "[redacted]",
+  "owner_startup": {
+    "source": "owner.log",
+    "status": "complete",
+    "stages": [
+      {
+        "stage": "runtime_contract",
+        "elapsed_s": 0.6122852939988661,
+        "since_start_s": 0.7116348810013733,
+        "complete": true
+      },
+      {
+        "stage": "ros_transport",
+        "elapsed_s": 0.4367036840012588,
+        "since_start_s": 1.1800134280019847,
+        "complete": true
+      },
+      {
+        "stage": "first_valid_feedback",
+        "elapsed_s": 1.0065268340003968,
+        "since_start_s": 2.1880091990024084,
+        "complete": true
+      },
+      {
+        "stage": "collision_gate",
+        "elapsed_s": 0.5294431160000386,
+        "since_start_s": 2.71861637800248,
+        "complete": true
+      },
+      {
+        "stage": "arm_model",
+        "elapsed_s": 0.021394996998424176,
+        "since_start_s": 2.7403865560008853,
+        "complete": true
+      },
+      {
+        "stage": "owner_initialize",
+        "elapsed_s": 0.006913533001352334,
+        "since_start_s": 2.747578055001213,
+        "complete": true
+      },
+      {
+        "stage": "ik_warmup",
+        "elapsed_s": 0.04798376899998402,
+        "since_start_s": 2.7961007760022767,
+        "complete": true
+      },
+      {
+        "stage": "harness_bridge",
+        "elapsed_s": 0.060085616998549085,
+        "since_start_s": 2.8691772610000044,
+        "complete": true
+      }
+    ],
+    "expected_stage_count": 8,
+    "invalid_records": 0,
+    "scan_truncated": false,
+    "measured_stage_s": 2.72133684399887,
+    "observed_span_s": 2.8691772610000044,
+    "native_entry": {
+      "source_integrity_s": 0.03873850000309176,
+      "native_import_s": 0.007348232997173909,
+      "entry_to_owner_main_s": 0.9379425510014698
+    },
+    "static_model": {
+      "static_prepare_s": 1.9697755650013278,
+      "remaining_wait_s": 0.5238912039967545,
+      "feedback_bind_s": 0.00504251500024111,
+      "overlapped_prepare_s": 1.4458843610045733
+    }
+  },
+  "click_to_first_publication_receipt_s": 123.423885927,
+  "model_response_s": 133.42608305811882,
+  "model_responses": 7,
+  "model_transport": [
+    {
+      "kind": "model_transport_timing",
+      "request_id": "anon-316cac185ca10ad57ce8d7e6",
+      "attempt": 1,
+      "phase_s": {
+        "request_write": 0.0002800626680254936,
+        "response_headers": 6.928486757911742,
+        "response_body": 18.777972659096122
+      },
+      "last_phase": "response_body",
+      "connection_reused": true,
+      "origin_write_started": true
+    },
+    {
+      "kind": "model_transport_timing",
+      "request_id": "anon-083641365326c3b235f660d9",
+      "attempt": 1,
+      "phase_s": {
+        "tcp_connect": 8.607795462012291e-05,
+        "proxy_connect": 2.2445816094987094,
+        "tls_connect": 0.6807284820824862,
+        "request_write": 0.00047206878662109375,
+        "response_headers": 12.311342747882009,
+        "response_body": 6.938515086192638
+      },
+      "last_phase": "response_body",
+      "connection_reused": false,
+      "origin_write_started": true
+    },
+    {
+      "kind": "model_transport_timing",
+      "request_id": "anon-17b0d69cf78cc16d2a4172e6",
+      "attempt": 1,
+      "phase_s": {
+        "request_write": 0.00044415006414055824,
+        "response_headers": 7.541732729878277,
+        "response_body": 10.881409991998225
+      },
+      "last_phase": "response_body",
+      "connection_reused": true,
+      "origin_write_started": true
+    },
+    {
+      "kind": "model_transport_timing",
+      "request_id": "anon-b5a2f65229be82a13e1acfec",
+      "attempt": 1,
+      "phase_s": {
+        "tcp_connect": 8.065765723586082e-05,
+        "proxy_connect": 0.15754288900643587,
+        "tls_connect": 0.23755595507100224,
+        "request_write": 0.00021012453362345695,
+        "response_headers": 2.5568089596927166,
+        "response_body": 14.451621083077043
+      },
+      "last_phase": "response_body",
+      "connection_reused": false,
+      "origin_write_started": true
+    },
+    {
+      "kind": "model_transport_timing",
+      "request_id": "anon-69b1cf1056106022eb366f10",
+      "attempt": 1,
+      "phase_s": {
+        "tcp_connect": 0.00023592496290802956,
+        "proxy_connect": 0.14397614262998104,
+        "tls_connect": 0.5283138337545097,
+        "request_write": 0.0003093229606747627,
+        "response_headers": 2.717289153020829,
+        "response_body": 9.890583331231028
+      },
+      "last_phase": "response_body",
+      "connection_reused": false,
+      "origin_write_started": true
+    },
+    {
+      "kind": "model_transport_timing",
+      "request_id": "anon-126307126c43d26c651b1849",
+      "attempt": 1,
+      "phase_s": {
+        "request_write": 0.00041918084025382996,
+        "response_headers": 6.467758198734373,
+        "response_body": 7.56014060927555
+      },
+      "last_phase": "response_body",
+      "connection_reused": true,
+      "origin_write_started": true
+    },
+    {
+      "kind": "model_transport_timing",
+      "request_id": "anon-e12af488723683386c93aabd",
+      "attempt": 1,
+      "phase_s": {
+        "tcp_connect": 0.00013884715735912323,
+        "proxy_connect": 0.1294598812237382,
+        "tls_connect": 0.1680664150044322,
+        "request_write": 0.00021831505000591278,
+        "response_headers": 3.309606655035168,
+        "response_body": 6.415090275928378
+      },
+      "last_phase": "response_body",
+      "connection_reused": false,
+      "origin_write_started": true
+    }
+  ],
+  "model_connection_preparation": [],
+  "model_requests_without_receipt": 0,
+  "transport": {
+    "requests": [],
+    "first_published_request": null,
+    "verified_grasp_to_first_transfer_publication_s": null
+  },
+  "owner_steps": [
+    {
+      "skill": "approach_grasp",
+      "request_id": "anon-83ae6a58d4756903d8fe86cd",
+      "outcome": "pending_review",
+      "accepted_to_first_publication_s": null,
+      "first_publication_to_last_measured_waypoint_s": null,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 0.081218466
+    },
+    {
+      "skill": "approach_grasp",
+      "request_id": "anon-2b0e8aef5d3ab511910e55f4",
+      "outcome": "pending_review",
+      "accepted_to_first_publication_s": null,
+      "first_publication_to_last_measured_waypoint_s": null,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 0.079557708
+    },
+    {
+      "skill": "approach_grasp",
+      "request_id": "anon-758b7659738f35b66a7c972f",
+      "outcome": "success",
+      "accepted_to_first_publication_s": 2.852090865,
+      "first_publication_to_last_measured_waypoint_s": 3.452892689,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 7.751790456
+    },
+    {
+      "skill": "grasp",
+      "request_id": "anon-ebd43073d4d4036ec9674eb5",
+      "outcome": "pending_review",
+      "accepted_to_first_publication_s": null,
+      "first_publication_to_last_measured_waypoint_s": null,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 0.067059541
+    },
+    {
+      "skill": "regrasp",
+      "request_id": "anon-399231aa5ff12ed2c4ac9e8d",
+      "outcome": "failure",
+      "accepted_to_first_publication_s": 4.089852753,
+      "first_publication_to_last_measured_waypoint_s": 4.794564943,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 10.312564248
+    }
+  ],
+  "full_grasp_place_reset_s": null,
+  "full_cycle_verified_s": null,
+  "full_cycle_status": "not_established_without_measured_safe_reset",
+  "full_cycle_interval": "first_approach_publication_to_measured_return_arrival",
+  "limitations": [
+    "[redacted]",
+    "[redacted]",
+    "[redacted]",
+    "[redacted]",
+    "[redacted]"
+  ]
+}

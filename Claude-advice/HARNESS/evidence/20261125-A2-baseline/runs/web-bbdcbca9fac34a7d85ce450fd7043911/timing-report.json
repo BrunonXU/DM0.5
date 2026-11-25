@@ -1,0 +1,259 @@
+{
+  "schema": "f1-harness-timing-v1",
+  "run": "[redacted]",
+  "owner_startup": {
+    "source": "owner.log",
+    "status": "complete",
+    "stages": [
+      {
+        "stage": "runtime_contract",
+        "elapsed_s": 0.6272092190010881,
+        "since_start_s": 0.7294088099988585,
+        "complete": true
+      },
+      {
+        "stage": "ros_transport",
+        "elapsed_s": 0.4445854830009921,
+        "since_start_s": 1.2057243739982368,
+        "complete": true
+      },
+      {
+        "stage": "first_valid_feedback",
+        "elapsed_s": 1.0174884410007508,
+        "since_start_s": 2.2246990489984455,
+        "complete": true
+      },
+      {
+        "stage": "collision_gate",
+        "elapsed_s": 0.5950557729993307,
+        "since_start_s": 2.820846910999535,
+        "complete": true
+      },
+      {
+        "stage": "arm_model",
+        "elapsed_s": 0.024876070998288924,
+        "since_start_s": 2.8459663379981066,
+        "complete": true
+      },
+      {
+        "stage": "owner_initialize",
+        "elapsed_s": 0.00941397999849869,
+        "since_start_s": 2.8554594019988144,
+        "complete": true
+      },
+      {
+        "stage": "ik_warmup",
+        "elapsed_s": 0.041584151000279235,
+        "since_start_s": 2.897743702000298,
+        "complete": true
+      },
+      {
+        "stage": "harness_bridge",
+        "elapsed_s": 0.0653693550011667,
+        "since_start_s": 2.9715543950005667,
+        "complete": true
+      }
+    ],
+    "expected_stage_count": 8,
+    "invalid_records": 0,
+    "scan_truncated": false,
+    "measured_stage_s": 2.825582473000395,
+    "observed_span_s": 2.9715543950005667,
+    "native_entry": {
+      "source_integrity_s": 0.03116949799732538,
+      "native_import_s": 0.004683564002334606,
+      "entry_to_owner_main_s": 0.9212854759971378
+    },
+    "static_model": {
+      "static_prepare_s": 2.054350557998987,
+      "remaining_wait_s": 0.5894341599996551,
+      "feedback_bind_s": 0.0054134990023158025,
+      "overlapped_prepare_s": 1.4649163979993318
+    }
+  },
+  "click_to_first_publication_receipt_s": 13.329455307,
+  "model_response_s": 59.699723032768816,
+  "model_responses": 4,
+  "model_transport": [
+    {
+      "kind": "model_transport_timing",
+      "request_id": "anon-44f7aae584c467c13726554a",
+      "attempt": 1,
+      "phase_s": {
+        "request_write": 0.00020302599295973778,
+        "response_headers": 3.0833299667574465,
+        "response_body": 3.7092380677349865
+      },
+      "last_phase": "response_body",
+      "connection_reused": true,
+      "origin_write_started": true
+    },
+    {
+      "kind": "model_transport_timing",
+      "request_id": "anon-1f22c0a65f13f95b558594dd",
+      "attempt": 1,
+      "phase_s": {
+        "tcp_connect": 7.39777460694313e-05,
+        "proxy_connect": 0.44577423110604286,
+        "tls_connect": 0.7405881979502738,
+        "request_write": 0.0005786288529634476,
+        "response_headers": 8.591191648039967,
+        "response_body": 10.527851931285113
+      },
+      "last_phase": "response_body",
+      "connection_reused": false,
+      "origin_write_started": true
+    },
+    {
+      "kind": "model_transport_timing",
+      "request_id": "anon-63b41ea1861643c378890b8f",
+      "attempt": 1,
+      "phase_s": {
+        "tcp_connect": 7.648766040802002e-05,
+        "proxy_connect": 0.5775660127401352,
+        "tls_connect": 0.4023053953424096,
+        "request_write": 0.0001993263140320778,
+        "response_headers": 4.905677121132612,
+        "response_body": 12.31055182730779
+      },
+      "last_phase": "response_body",
+      "connection_reused": false,
+      "origin_write_started": true
+    },
+    {
+      "kind": "model_transport_timing",
+      "request_id": "anon-c73497cce900b3302b0357b1",
+      "attempt": 1,
+      "phase_s": {
+        "request_write": 0.00039679091423749924,
+        "response_headers": 2.88193941116333,
+        "response_body": 6.112982213031501
+      },
+      "last_phase": "response_body",
+      "connection_reused": true,
+      "origin_write_started": true
+    }
+  ],
+  "model_connection_preparation": [],
+  "model_requests_without_receipt": 0,
+  "transport": {
+    "requests": [
+      {
+        "request_id": "anon-3c3127eea99a119471b6f8fe",
+        "solve_count": 1,
+        "solves": [
+          {
+            "seconds": 10.145347766,
+            "candidate_variant": 2,
+            "attempts": [
+              {
+                "variant": 0,
+                "outcome": "rejected",
+                "elapsed_ns": 1741903482
+              },
+              {
+                "variant": 1,
+                "outcome": "rejected",
+                "elapsed_ns": 1020105842
+              },
+              {
+                "variant": 2,
+                "outcome": "planned",
+                "route_family": "joint_space_transport",
+                "elapsed_ns": 7363612072
+              }
+            ]
+          }
+        ],
+        "revalidation_count": 1,
+        "revalidated_count": 1,
+        "first_publication_ns": 32205137940376
+      }
+    ],
+    "first_published_request": "anon-3c3127eea99a119471b6f8fe",
+    "verified_grasp_to_first_transfer_publication_s": 17.830920444
+  },
+  "owner_steps": [
+    {
+      "skill": "approach_grasp",
+      "request_id": "anon-6542e782827eb071fb0e059d",
+      "outcome": "success",
+      "accepted_to_first_publication_s": 3.84982607,
+      "first_publication_to_last_measured_waypoint_s": 2.126674286,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 7.142180561
+    },
+    {
+      "skill": "grasp",
+      "request_id": "anon-110e1dd00b06a3571d4b04fa",
+      "outcome": "success",
+      "accepted_to_first_publication_s": 3.21093105,
+      "first_publication_to_last_measured_waypoint_s": 4.219532856,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 7.726553178
+    },
+    {
+      "skill": "verify_grasp",
+      "request_id": "anon-1b39b4b4ffbbb415aff7d621",
+      "outcome": "success",
+      "accepted_to_first_publication_s": null,
+      "first_publication_to_last_measured_waypoint_s": null,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 0.1635647
+    },
+    {
+      "skill": "transfer_above_hole",
+      "request_id": "anon-3c3127eea99a119471b6f8fe",
+      "outcome": "success",
+      "accepted_to_first_publication_s": 16.396902844,
+      "first_publication_to_last_measured_waypoint_s": 3.879678236,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 21.166755868
+    },
+    {
+      "skill": "inspect_in_hand",
+      "request_id": "anon-b23ee878fea4a9905d58756c",
+      "outcome": "success",
+      "accepted_to_first_publication_s": null,
+      "first_publication_to_last_measured_waypoint_s": null,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 0.457148145
+    },
+    {
+      "skill": "move_tcp",
+      "request_id": "anon-beed532894f17a1b6834b16e",
+      "outcome": "success",
+      "accepted_to_first_publication_s": 2.151150572,
+      "first_publication_to_last_measured_waypoint_s": 2.173711642,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 5.155745012
+    },
+    {
+      "skill": "reobserve",
+      "request_id": "anon-188a3ee2e8760d5184815359",
+      "outcome": "success",
+      "accepted_to_first_publication_s": null,
+      "first_publication_to_last_measured_waypoint_s": null,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 0.550337901
+    }
+  ],
+  "full_grasp_place_reset_s": null,
+  "full_cycle_verified_s": null,
+  "full_cycle_status": "not_established_without_measured_safe_reset",
+  "full_cycle_interval": "first_approach_publication_to_measured_return_arrival",
+  "limitations": [
+    "[redacted]",
+    "[redacted]",
+    "[redacted]",
+    "[redacted]",
+    "[redacted]"
+  ]
+}

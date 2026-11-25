@@ -1,0 +1,249 @@
+{
+  "schema": "f1-harness-timing-v1",
+  "run": "[redacted]",
+  "owner_startup": {
+    "source": "owner.log",
+    "status": "complete",
+    "stages": [
+      {
+        "stage": "runtime_contract",
+        "elapsed_s": 3.5357931010003085,
+        "since_start_s": 3.6211235289993056,
+        "complete": true
+      },
+      {
+        "stage": "ros_transport",
+        "elapsed_s": 0.4313361260028614,
+        "since_start_s": 4.062192582001444,
+        "complete": true
+      },
+      {
+        "stage": "first_valid_feedback",
+        "elapsed_s": 1.02521892599907,
+        "since_start_s": 5.087487526998302,
+        "complete": true
+      },
+      {
+        "stage": "collision_gate",
+        "elapsed_s": 0.5494990440020047,
+        "since_start_s": 5.639863126001728,
+        "complete": true
+      },
+      {
+        "stage": "arm_model",
+        "elapsed_s": 0.02649492199998349,
+        "since_start_s": 5.666782274998695,
+        "complete": true
+      },
+      {
+        "stage": "owner_initialize",
+        "elapsed_s": 0.004551484002149664,
+        "since_start_s": 5.6713930100013386,
+        "complete": true
+      },
+      {
+        "stage": "ik_warmup",
+        "elapsed_s": 0.04216719100077171,
+        "since_start_s": 5.714205235999543,
+        "complete": true
+      },
+      {
+        "stage": "harness_bridge",
+        "elapsed_s": 0.06540727499668719,
+        "since_start_s": 5.7837414239984355,
+        "complete": true
+      }
+    ],
+    "expected_stage_count": 8,
+    "invalid_records": 0,
+    "scan_truncated": false,
+    "measured_stage_s": 5.680468069003837,
+    "observed_span_s": 5.7837414239984355,
+    "native_entry": {
+      "source_integrity_s": 0.03095076299723587,
+      "native_import_s": 0.005170980002731085,
+      "entry_to_owner_main_s": 0.9838176039993414
+    },
+    "static_model": {
+      "static_prepare_s": 2.0010599699999148,
+      "remaining_wait_s": 0.5418378659996961,
+      "feedback_bind_s": 0.007476028000382939,
+      "overlapped_prepare_s": 1.4592221040002187
+    }
+  },
+  "click_to_first_publication_receipt_s": 16.432094761,
+  "model_response_s": 35.55093487119302,
+  "model_responses": 2,
+  "model_transport": [
+    {
+      "kind": "model_transport_timing",
+      "request_id": "anon-e3065a31274e8d062b8ff798",
+      "attempt": 1,
+      "phase_s": {
+        "request_write": 0.00018966570496559143,
+        "response_headers": 3.1538284332491457,
+        "response_body": 7.882838532328606
+      },
+      "last_phase": "response_body",
+      "connection_reused": true,
+      "origin_write_started": true
+    },
+    {
+      "kind": "model_transport_timing",
+      "request_id": "anon-473ef8014547e819420688da",
+      "attempt": 1,
+      "phase_s": {
+        "tcp_connect": 8.826795965433121e-05,
+        "proxy_connect": 0.20312363607808948,
+        "tls_connect": 0.892679943703115,
+        "request_write": 0.0004034810699522495,
+        "response_headers": 9.092228422872722,
+        "response_body": 14.142668360378593
+      },
+      "last_phase": "response_body",
+      "connection_reused": false,
+      "origin_write_started": true
+    }
+  ],
+  "model_connection_preparation": [],
+  "model_requests_without_receipt": 0,
+  "transport": {
+    "requests": [
+      {
+        "request_id": "anon-c10fed5b7ff8200925b13264",
+        "solve_count": 1,
+        "solves": [
+          {
+            "seconds": 8.298438183,
+            "candidate_variant": 1,
+            "attempts": [
+              {
+                "variant": 0,
+                "outcome": "rejected",
+                "elapsed_ns": 1993102725
+              },
+              {
+                "variant": 1,
+                "outcome": "planned",
+                "elapsed_ns": 6256357866
+              }
+            ]
+          }
+        ],
+        "revalidation_count": 1,
+        "revalidated_count": 1,
+        "first_publication_ns": 31026489460767
+      },
+      {
+        "request_id": "anon-d6ba05c42a2d02bb6e0a5b05",
+        "solve_count": 1,
+        "solves": [
+          {
+            "seconds": 0.320887569,
+            "candidate_variant": 1,
+            "attempts": [
+              {
+                "variant": 0,
+                "outcome": "rejected",
+                "elapsed_ns": 157449155
+              },
+              {
+                "variant": 1,
+                "outcome": "planned",
+                "elapsed_ns": 112889276
+              }
+            ]
+          }
+        ],
+        "revalidation_count": 1,
+        "revalidated_count": 1,
+        "first_publication_ns": 31075317104936
+      }
+    ],
+    "first_published_request": "anon-c10fed5b7ff8200925b13264",
+    "verified_grasp_to_first_transfer_publication_s": 10.06366539
+  },
+  "owner_steps": [
+    {
+      "skill": "approach_grasp",
+      "request_id": "anon-00290160e339b53600129082",
+      "outcome": "success",
+      "accepted_to_first_publication_s": 4.951573825,
+      "first_publication_to_last_measured_waypoint_s": 3.004467414,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 8.952552806
+    },
+    {
+      "skill": "grasp",
+      "request_id": "anon-c796e9d8834aed0e0d7e971e",
+      "outcome": "success",
+      "accepted_to_first_publication_s": 3.310269529,
+      "first_publication_to_last_measured_waypoint_s": 4.473311294,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 7.942650905
+    },
+    {
+      "skill": "verify_grasp",
+      "request_id": "anon-a84acd73dfb04df1b55e46fc",
+      "outcome": "success",
+      "accepted_to_first_publication_s": null,
+      "first_publication_to_last_measured_waypoint_s": null,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 0.17656487
+    },
+    {
+      "skill": "transfer_above_hole",
+      "request_id": "anon-c10fed5b7ff8200925b13264",
+      "outcome": "failure",
+      "accepted_to_first_publication_s": 9.3228737,
+      "first_publication_to_last_measured_waypoint_s": null,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 14.494895723
+    },
+    {
+      "skill": "transfer_above_hole",
+      "request_id": "anon-d6ba05c42a2d02bb6e0a5b05",
+      "outcome": "success",
+      "accepted_to_first_publication_s": 1.55779253,
+      "first_publication_to_last_measured_waypoint_s": 0.963469444,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 3.781094247
+    },
+    {
+      "skill": "inspect_in_hand",
+      "request_id": "anon-bd55a82b0613eb391ea17a45",
+      "outcome": "success",
+      "accepted_to_first_publication_s": null,
+      "first_publication_to_last_measured_waypoint_s": null,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 0.808969694
+    },
+    {
+      "skill": "move_tcp",
+      "request_id": "anon-0084f7e9e8bcc3a592636f70",
+      "outcome": "failure",
+      "accepted_to_first_publication_s": null,
+      "first_publication_to_last_measured_waypoint_s": null,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 2.385617073
+    }
+  ],
+  "full_grasp_place_reset_s": null,
+  "full_cycle_verified_s": null,
+  "full_cycle_status": "not_established_without_measured_safe_reset",
+  "full_cycle_interval": "first_approach_publication_to_measured_return_arrival",
+  "limitations": [
+    "[redacted]",
+    "[redacted]",
+    "[redacted]",
+    "[redacted]",
+    "[redacted]"
+  ]
+}
