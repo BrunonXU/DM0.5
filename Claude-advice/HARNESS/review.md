@@ -4,6 +4,7 @@
 - 分工：Claude 只写审阅、不改业务代码；Codex 按第二部分执行。分工原则与执行、回写约定见 [Claude-advice 说明](../README.md)，HARNESS 专属规则见 [HARNESS/AGENTS.md](../../HARNESS/AGENTS.md#claude_advice-审阅建议的执行2026-11-24用户确认)。
 - 配套文档：[改造计划总览](review-roadmap.md)（先读）、[核心架构与模块职责](review-architecture.md)、[验收指标与执行细节](review-acceptance.md)。本文各 H 条目的“验收”是软件层面的最低要求；是否完成，以验收文档中的真机漏斗指标为准。
 - 状态：带 `[!]` 的条目须先由用户确认，汇总见第一部分末尾的[待人工确认决策表](#待人工确认决策表)。
+- 第二轮复审（2026-11-26，基线 `harness/v53` 的 `04e0ee3`）见 [review-v53.md](review-v53.md)：逐条核对本文 H-01 至 H-19 的完成情况，并新增 H-20 至 H-24。下一轮先执行那份文档。
 
 2026-11-25 复审基线为 PR #5 的 `97b0a4d`。用户与 Claude 已通过 PR #4 的历史基线，两类现场案例均按 nonphysical 统计。A-3 固定点位登记取消，直立方块自然随机摆放。本轮合修已部署为 V52，4242 已显示该版本，首次自主放置待真机验收。执行状态与原审阅基线分别保留。[本轮验收](evidence/20261125-B-batch/report.md)
 
