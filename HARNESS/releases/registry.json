@@ -953,6 +953,25 @@
       "verification": "/home/user/projects/HARNESS/artifacts/claude-batch-20261125/post-activation.json",
       "deployment_kind": "shared_harness_base_both_strategies",
       "vla_endpoint_available": false
+    },
+    {
+      "version": 53,
+      "name": "F1 Harness 左臂新基线与场景预检 V53",
+      "status": "candidate",
+      "artifact_directory": "/home/user/projects/HARNESS/artifacts/left-baseline-preflight-v53-20261125",
+      "previous_version": 52,
+      "previous_bundle": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",
+      "source_base_version": 52,
+      "source_base_bundle": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",
+      "start_sent": false,
+      "physical_task_verified": false,
+      "currently_active": false,
+      "bundle_id": "53af3b1d4406d13244f7758de32023bb100e4c9d330b8795717910fc6e9dec78",
+      "manifest": "/home/user/projects/HARNESS/artifacts/left-baseline-preflight-v53-20261125/bundle-final/manifest.json",
+      "frozen": true,
+      "validation": "/home/user/projects/HARNESS/artifacts/left-baseline-preflight-v53-20261125/release-validation.json",
+      "validation_sha256": "3af19260d8ac6b8222cb580058c72d74306a1e8984344148b5592da319f4bd4d",
+      "deployment_pending_reason": "F1-09 offline (127.0.0.1:22009 refused); ARM install, activation, presets.json update, and live preflight_scene.py deferred until robot reconnects."
     }
   ],
   "active_bundle_id": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",

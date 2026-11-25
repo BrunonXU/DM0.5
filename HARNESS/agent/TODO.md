@@ -1,12 +1,12 @@
 # HARNESS 当前待办
 
-**V52 在用。正式网关已取得双相机 RGB-D 与同刻关节反馈，当前关节读数使正运动学计算被拒，4242 抓放试验暂缓。** [网关实测](../../Claude-advice/HARNESS/evidence/20261125-B-gateway-check/report.md)
+**V52 在用，V53 候选（`53af3b1d4406`）已冻结并通过 6000D 离线验收；F1-09 当前离线，4242 抓放试验继续暂缓。** [V53 证据报告](../../Claude-advice/HARNESS/evidence/20261125-V53-left-baseline-preflight/report.md) · [V52 网关实测](../../Claude-advice/HARNESS/evidence/20261125-B-gateway-check/report.md)
 
-先由现场按已批准的流程核对左臂第 2 关节姿态，再复验三维场景。首次自主放置、逐次停点和恢复效果均按实际运行编号复盘。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
+待 F1-09 联机并确认 PR 审核意见后，先完成 V53 ARM 部署、`presets.json` 左臂 J2 停放值同步与原位只读预检，再启动单块真机试验。首次自主放置、逐次停点和恢复效果均按实际运行编号复盘。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
 
 ## 现在做
 
-- [ ] **在原位复验三维场景。** 左臂第 2 关节实测约 −94.15°，现场配置下限为 −94°。现场核对姿态，并实测控制端的 `/hal/joint_states` 持续收包，再用正式网关和 SAM 连续做至少 10 秒零动作预检，检查头部和右腕 RGB-D 与同刻关节反馈、直立方块与桶孔几何，以及左腕连续供帧。[网关实测](../../Claude-advice/HARNESS/evidence/20261125-B-gateway-check/report.md)
+- [ ] **F1-09 联机后上线 V53、同步 home 预设并跑原位预检。** 在 ARM 安装不可变 V53 束与站点、`robot-v23.json`、`v53-arm-l-j2` 依赖目录，更新 `presets.json` 中「积木demoV3-左腕观测」的 `arm_l_j2` 至实测停放角，切换上线并确认 4242 显示 V53；随后运行 `HARNESS/scripts/preflight_scene.py` 连续采样至少 10 秒，核对全 22 轴限位与实测 FK、头部/右腕 RGB-D 反馈配对、左腕连续出帧及方块/桶/方孔三维几何，并上传回执至 `Claude-advice/HARNESS/evidence/`。[预检脚本](../scripts/preflight_scene.py) · [V53 证据报告](../../Claude-advice/HARNESS/evidence/20261125-V53-left-baseline-preflight/report.md)
 - [ ] **三维场景预检通过后，从空爪和自然随机摆放的一块直立积木开始。** 操作者在 4242 点一次「开始任务」。记录实际生效版本、首动、抓稳、运输、对准、插入和释放，用同一请求的放置回执核对 S8，另记退回 S9。场景编号可空。[任务页操作](../docs/operations/DIRECT_ROLLOUT.md)
 - [ ] **逐次汇总当前版本的自然摆放试验。** 以运行编号追踪最远阶段、耗时、失败原因、人工介入与非物理拒绝。撤权主看有效授权期的故障，并列展示含正常收尾的撤权总数。历史基线分别为 22 次、376 次。[本轮候选与指标](../../Claude-advice/HARNESS/evidence/20261125-B-batch/report.md)
 
