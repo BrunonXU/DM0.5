@@ -557,8 +557,8 @@ class PlanService:
             if intent.skill=='transfer_above_hole':
                 if self.fixture.get('joint_space_transport') is not True or variant!=2:
                     raise HarnessError('numerical_joint_transport_not_enabled')
-                from .transport import joint_transport_goal
-                proposal=joint_transport_goal(scene)
+                from .transport import joint_transport_goal, joint_transport_offsets
+                proposal=joint_transport_goal(scene, joint_transport_offsets(self.fixture))
             else:
                 from .joint_motion import eligible,propose_joint_motion
                 if not eligible(self.fixture,intent.skill,scene):
@@ -721,6 +721,8 @@ class PlanService:
                     posture_references_deg=stage['posture_references_deg'])
             if stage.get('route_family'):
                 geometry_trace[-1]['route_family']=stage['route_family']
+            if 'goal_region_offset_m' in stage:
+                geometry_trace[-1]['goal_region_offset_m']=stage['goal_region_offset_m']
             if stage.get('approach_route'):
                 geometry_trace[-1]['approach_route']=stage['approach_route']
             if stage.get('pregrasp_adjustment_object_m') is not None:
