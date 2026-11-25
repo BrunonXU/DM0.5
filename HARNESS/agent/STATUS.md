@@ -1,8 +1,10 @@
 # F1 Harness 当前状态
 
-**F1 Harness 运输目标区域与分阶段补验 V52 已部署，4242 已核对版本。11 月 25 日两次现场任务均停在启动阶段 S0，技能动作首发为零，抓放仍待实测。** 第一次左腕相机未供帧，第二次任务的观测接口拿到空帧集。两次收尾均实测静止。[现场复盘](../../Claude-advice/HARNESS/evidence/20261125-B-first-run/report.md) · [部署回执](../../Claude-advice/HARNESS/evidence/20261125-B-deployment-V52/deployment.json)
+**F1 Harness 运输目标区域与分阶段补验 V52 在用，暂缓在 4242 点击「开始任务」。** 原服务环境与动作控制端的 ROS 环境均已收到头部、右腕 RGB-D 和左腕画面。正式任务网关已配对头部、右腕图像与拍摄时刻的关节反馈，但左臂第 2 关节实测约 −94.15°，超出现场配置下限 −94°。正运动学计算被拒，任务尚未取得三维场景。机器人到 6000D 目前仍走 Wi-Fi。[网关与连接实测](../../Claude-advice/HARNESS/evidence/20261125-B-gateway-check/report.md)
 
-先在任务实际使用的观测接口上，只读验证连续 RGB-D 帧能与采集时刻的关节反馈配对。确认后，操作者自然随机摆放一块直立积木，在 4242 选择「Harness Agentic」点一次「开始任务」。按运行编号记录 S0–S9，场景编号可空。首次无人介入且有同请求放置回执计 M0，避桶复位另记 S9。[发布登记](../releases/registry.json)
+原服务能收到关节话题，控制端的 Cyclone 环境在同一 10 秒收包为零。现场按已批准的流程核对姿态，并复核控制端恢复收到关节反馈后，在原位用正式网关和 SAM 连续做至少 10 秒零动作预检。确认能持续取得积木、桶与孔的实测三维几何且左腕持续供帧，再由操作者开始单块任务。11 月 25 日已记录的两次 V52 任务均停在 S0，技能动作首发为零，收尾均实测静止。[现场复盘](../../Claude-advice/HARNESS/evidence/20261125-B-first-run/report.md) · [部署回执](../../Claude-advice/HARNESS/evidence/20261125-B-deployment-V52/deployment.json)
+
+现场采用自然随机摆放的直立方块，按运行编号记录 S0–S9，场景编号可空。首次无人介入且有同请求放置回执计 M0，避桶复位另记 S9。[发布登记](../releases/registry.json)
 
 ## 已验证的范围
 

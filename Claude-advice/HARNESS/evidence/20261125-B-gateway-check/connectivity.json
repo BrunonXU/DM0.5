@@ -1,0 +1,63 @@
+{
+  "schema": "f1-harness-network-observation-v1",
+  "time_utc": "2026-11-25T09:53:26.611266+00:00",
+  "scope": "Field gateway follow-up, F1 ARM to 6000D and the registered management connection.",
+  "server_uplink_interface": "enx00e04c0b3fb8",
+  "robot_route_to_6000d": {
+    "interface_before_ping": "wlan0",
+    "interface_after_ping": "wlan0",
+    "type": "wifi",
+    "wired_profile": "f1-router-wired",
+    "wired_interface": "enP3p1s0f3",
+    "wired_carrier_before_after": [
+      0,
+      0
+    ],
+    "ethernet_carrier_flag": "NO-CARRIER",
+    "autoconnect": true
+  },
+  "ssh_from_6000d": {
+    "registered reverse SSH tunnel": {
+      "exit_code": 0,
+      "elapsed_s": 0.222,
+      "result": "connected"
+    },
+    "registered wired direct": {
+      "exit_code": 255,
+      "elapsed_s": 7.026,
+      "result": "connect timeout"
+    },
+    "registered wireless direct": {
+      "exit_code": 255,
+      "elapsed_s": 7.026,
+      "result": "connect timeout"
+    }
+  },
+  "ping_from_robot_to_6000d": {
+    "sent": 100,
+    "received": 100,
+    "loss_pct": 0.0,
+    "elapsed_s": 49.594,
+    "rtt_ms": {
+      "min": 2.48,
+      "mean": 5.137,
+      "max": 30.766,
+      "mdev": 4.768
+    }
+  },
+  "scope_limit": "Single observation window over the robot wireless route; wired traffic was not observed.",
+  "sources": [
+    {
+      "path": "HARNESS/artifacts/v53-camera-base-investigation/network-first.json",
+      "sha256": "1f5f54258dde8d9359421a4320e888769bfecf0a15d08ae611752082bce6af07"
+    },
+    {
+      "path": "HARNESS/artifacts/v53-camera-base-investigation/robot-link.txt",
+      "sha256": "f5c011167d59803d2b36e519696de866c2c88a1c80fea0bc6c35911e6a742ccc"
+    },
+    {
+      "path": "HARNESS/artifacts/v53-camera-base-investigation/robot-stability.txt",
+      "sha256": "4dcecc1531e3d54f0ffae482b98fc85c311930d64344a3771f0f876b599a62d2"
+    }
+  ]
+}

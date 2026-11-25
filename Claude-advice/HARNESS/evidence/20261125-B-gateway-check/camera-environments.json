@@ -1,0 +1,250 @@
+{
+  "schema": "f1-harness-field-camera-environment-v1",
+  "sample_date_utc": "2026-11-25",
+  "bundle_id": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",
+  "gateway_config_sha256": "b547b2c64e97554f78f8d989c14e91ca340c7db125cd7b44bcab3b32b89c744c",
+  "source_probe": {
+    "path": "HARNESS/artifacts/first-field-v52-20261125/readonly_frames.py",
+    "sha256": "3fc9e66ed193e937a0583bfb002942fd57055a32ece44f36dbe5a5024ba15446"
+  },
+  "clock_note": "receipt_only is the frozen observer RGB/depth pairing. These samples do not measure owner feedback or compute a SAM scene.",
+  "profiles": {
+    "production_service": "Jazzy then the frozen site._safe_environment filter",
+    "production_owner_environment": "Jazzy + F1 + AGV overlays with explicit CycloneDDS and subnet discovery",
+    "owner_with_camera_overlays": "production owner environment plus the two camera setup scripts used during boot recheck"
+  },
+  "topics": {
+    "head.rgb": "/camera/head/color/image_raw",
+    "head.rgb.info": "/camera/head/color/camera_info",
+    "head.rgb.recording": "/camera/head/color/image_raw/compressed",
+    "head.depth": "/camera/head/depth/image_raw",
+    "head.depth.info": "/camera/head/depth/camera_info",
+    "right.rgb": "/camera/right_wrist/color/image_raw",
+    "right.rgb.info": "/camera/right_wrist/color/camera_info",
+    "right.rgb.recording": "/camera/right_wrist/color/image_raw/compressed",
+    "right.depth": "/camera/right_wrist/depth/image_rect_raw",
+    "right.depth.info": "/camera/right_wrist/depth/camera_info",
+    "left.rgb": "/camera/left_wrist/color/image_raw/compressed",
+    "left.rgb.info": "/camera/left_wrist/color/camera_info"
+  },
+  "passes_in_acquisition_order": [
+    {
+      "mode": "production_service",
+      "rmw": "rmw_fastrtps_cpp",
+      "seconds": 12.046,
+      "callback_counts": {
+        "head.rgb": 358,
+        "head.depth": 358,
+        "right.rgb": 296,
+        "right.depth": 296,
+        "left.rgb": 325
+      },
+      "distinct_images": {
+        "head.rgb": 60,
+        "head.depth": 60,
+        "right.rgb": 49,
+        "right.depth": 49,
+        "left.rgb": 50
+      },
+      "pairs": {
+        "head.receipt_only": 57,
+        "head.invalid": 3,
+        "right.receipt_only": 49
+      },
+      "faults": {
+        "duplicate_source_stamp:head": 3
+      },
+      "errors": [],
+      "snapshot_count": 60,
+      "snapshots_both_rgbd_accepted": 47,
+      "discovery_range": null,
+      "cyclonedds_config": null,
+      "publication_counts_by_stream_at_end": {
+        "head.rgb": 1,
+        "head.rgb.info": 1,
+        "head.rgb.recording": 1,
+        "head.depth": 1,
+        "head.depth.info": 1,
+        "right.rgb": 1,
+        "right.rgb.info": 1,
+        "right.rgb.recording": 1,
+        "right.depth": 1,
+        "right.depth.info": 1,
+        "left.rgb": 1,
+        "left.rgb.info": 1
+      },
+      "source": {
+        "path": "HARNESS/artifacts/v53-camera-base-investigation/dds-first-comparison/01-production_service.json",
+        "sha256": "a519773768f4b55142df72a6e9d6b383950e58d87100ed3194564eef26ded234"
+      }
+    },
+    {
+      "mode": "production_owner_environment",
+      "rmw": "rmw_cyclonedds_cpp",
+      "seconds": 12.047,
+      "callback_counts": {
+        "head.rgb": 329,
+        "head.depth": 330,
+        "right.rgb": 330,
+        "right.depth": 330,
+        "left.rgb": 331
+      },
+      "distinct_images": {
+        "head.rgb": 55,
+        "head.depth": 55,
+        "right.rgb": 55,
+        "right.depth": 55,
+        "left.rgb": 55
+      },
+      "pairs": {
+        "head.receipt_only": 53,
+        "right.receipt_only": 55,
+        "head.invalid": 2
+      },
+      "faults": {
+        "duplicate_source_stamp:head": 2
+      },
+      "errors": [],
+      "snapshot_count": 60,
+      "snapshots_both_rgbd_accepted": 53,
+      "discovery_range": "SUBNET",
+      "cyclonedds_config": "/etc/ros/cyclonedds/cyclonedds.xml",
+      "publication_counts_by_stream_at_end": {
+        "head.rgb": 1,
+        "head.rgb.info": 1,
+        "head.rgb.recording": 1,
+        "head.depth": 1,
+        "head.depth.info": 1,
+        "right.rgb": 1,
+        "right.rgb.info": 1,
+        "right.rgb.recording": 1,
+        "right.depth": 1,
+        "right.depth.info": 1,
+        "left.rgb": 1,
+        "left.rgb.info": 1
+      },
+      "source": {
+        "path": "HARNESS/artifacts/v53-camera-base-investigation/dds-first-comparison/02-production_owner_environment.json",
+        "sha256": "db16f6fa0b4af18d05a52c62df0a8b408e455b1ed261bc57307d22570854186a"
+      },
+      "stderr": {
+        "lines": 175,
+        "discovery_type_hash_warnings": 175,
+        "source": {
+          "path": "HARNESS/artifacts/v53-camera-base-investigation/dds-first-comparison/02-production_owner_environment.stderr",
+          "sha256": "cb9367259e91b3a4b7ded3f461cb5d2cc1b3a4ed5be74e48d1475be29d42f158"
+        }
+      }
+    },
+    {
+      "mode": "owner_with_camera_overlays",
+      "rmw": "rmw_cyclonedds_cpp",
+      "seconds": 12.047,
+      "callback_counts": {
+        "head.rgb": 359,
+        "head.depth": 359,
+        "right.rgb": 360,
+        "right.depth": 360,
+        "left.rgb": 331
+      },
+      "distinct_images": {
+        "head.rgb": 60,
+        "head.depth": 60,
+        "right.rgb": 60,
+        "right.depth": 60,
+        "left.rgb": 48
+      },
+      "pairs": {
+        "head.invalid": 5,
+        "right.receipt_only": 60,
+        "head.receipt_only": 55
+      },
+      "faults": {
+        "duplicate_source_stamp:head": 5
+      },
+      "errors": [],
+      "snapshot_count": 60,
+      "snapshots_both_rgbd_accepted": 55,
+      "discovery_range": "SUBNET",
+      "cyclonedds_config": "/etc/ros/cyclonedds/cyclonedds.xml",
+      "publication_counts_by_stream_at_end": {
+        "head.rgb": 1,
+        "head.rgb.info": 1,
+        "head.rgb.recording": 1,
+        "head.depth": 1,
+        "head.depth.info": 1,
+        "right.rgb": 1,
+        "right.rgb.info": 1,
+        "right.rgb.recording": 1,
+        "right.depth": 1,
+        "right.depth.info": 1,
+        "left.rgb": 1,
+        "left.rgb.info": 1
+      },
+      "source": {
+        "path": "HARNESS/artifacts/v53-camera-base-investigation/dds-first-comparison/03-owner_with_camera_overlays.json",
+        "sha256": "9a907605352528d975a3ba64f563069c0b6708cfe289233e80306171021393b8"
+      },
+      "stderr": {
+        "lines": 175,
+        "discovery_type_hash_warnings": 175,
+        "source": {
+          "path": "HARNESS/artifacts/v53-camera-base-investigation/dds-first-comparison/03-owner_with_camera_overlays.stderr",
+          "sha256": "50fe915a2b1fb159c24bbd34efe833d0cbddbe4bdb8fadb5a486702265cfab76"
+        }
+      }
+    },
+    {
+      "mode": "production_service",
+      "rmw": "rmw_fastrtps_cpp",
+      "seconds": 12.045,
+      "callback_counts": {
+        "head.rgb": 359,
+        "head.depth": 359,
+        "right.rgb": 361,
+        "right.depth": 360,
+        "left.rgb": 361
+      },
+      "distinct_images": {
+        "head.rgb": 60,
+        "head.depth": 60,
+        "right.rgb": 60,
+        "right.depth": 60,
+        "left.rgb": 53
+      },
+      "pairs": {
+        "head.receipt_only": 53,
+        "right.receipt_only": 60,
+        "head.invalid": 7
+      },
+      "faults": {
+        "duplicate_source_stamp:head": 7
+      },
+      "errors": [],
+      "snapshot_count": 60,
+      "snapshots_both_rgbd_accepted": 53,
+      "discovery_range": null,
+      "cyclonedds_config": null,
+      "publication_counts_by_stream_at_end": {
+        "head.rgb": 1,
+        "head.rgb.info": 1,
+        "head.rgb.recording": 1,
+        "head.depth": 1,
+        "head.depth.info": 1,
+        "right.rgb": 1,
+        "right.rgb.info": 1,
+        "right.rgb.recording": 1,
+        "right.depth": 1,
+        "right.depth.info": 1,
+        "left.rgb": 1,
+        "left.rgb.info": 1
+      },
+      "source": {
+        "path": "HARNESS/artifacts/v53-camera-base-investigation/dds-first-comparison/04-production_service.json",
+        "sha256": "b1c6b0642c09c93255921bce11f6626e9aeff2fc352362854549f69b9030e656"
+      }
+    }
+  ],
+  "observation": "All environments delivered callbacks for both cameras in RGB and depth and for the left wrist compressed color stream. The field no-frame failure did not recur during this comparison.",
+  "motion_authorization_sent": false
+}

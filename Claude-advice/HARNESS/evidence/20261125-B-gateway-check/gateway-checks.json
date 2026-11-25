@@ -1,0 +1,314 @@
+{
+  "scope": "Installed V52 native task gateway/verify/numerics, protected production perception settings and real SAM endpoint, isolated loopback ports, model caches and private read-only feedback IPC. Actual camera and joint subscriptions, no physical owner or control authorization. A/B/C are zero-output checks outside the trial funnel.",
+  "active_4242": {
+    "execution": {
+      "connected": true,
+      "offline_preview": false
+    },
+    "capabilities": {
+      "can_start": true,
+      "can_stop": false,
+      "reason": "F1 Harness 运输目标区域与分阶段补验 V52，gpt-6.2-astra high。"
+    },
+    "current_run": null
+  },
+  "registered_version": 52,
+  "deployed_new_version": false,
+  "checks": [
+    {
+      "bundle_id": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",
+      "gateway_rpc": "observe_with_status",
+      "passed": false,
+      "required_contiguous_s": 12.0,
+      "longest_paired_window_s": 0.0,
+      "callback_counts": {
+        "valid_joints": 2749,
+        "left_images": 1645
+      },
+      "topic_publishers": {
+        "/camera/right_wrist/depth/image_rect_raw": 1,
+        "/camera/head/depth/image_raw": 1,
+        "/camera/left_wrist/color/image_raw/compressed": 1,
+        "/hal/joint_states": 1,
+        "/camera/right_wrist/color/image_raw": 1,
+        "/camera/head/color/image_raw": 1
+      },
+      "matched_joint_feedback": null,
+      "one_mirrored_fk_request": null,
+      "request_outcomes": {
+        "observe_with_status: frame_feedback_skew:no_frames": 1,
+        "observe_with_status: RuntimeError": 263
+      },
+      "owner_ipc_methods": {
+        "status": 488,
+        "invalidate_live_scene": 487,
+        "measured_feedback": 972
+      },
+      "denied_ipc": [],
+      "request_publications": 0,
+      "final_authorized": false,
+      "start_sent": false,
+      "rmw": "rmw_fastrtps_cpp",
+      "name": "v52-formal-service-a",
+      "mode": "service",
+      "acquire_window_s": 48,
+      "requests": 264,
+      "geometry_examples": 0,
+      "sam_requests_start": 0,
+      "sam_requests_end": 0,
+      "sam_hash": "7402e0d864fa82708a20fbd15bc84245c2f26dff0eb43a4b5b93452deb34be69",
+      "timing_summary": {
+        "events": 122,
+        "timing_rows": 48,
+        "matched_both": 47,
+        "forward_success_rows": 0,
+        "pipeline_rows": 0
+      },
+      "gateway_trace_sha256": "301cf686bd2c53d62d978f97cb2a048241c56f3d4d5517e7b55d21840b424e0a",
+      "source_result": "v52-formal-service-a/result.json",
+      "source_sha256": "9503a3fc0813f53519e471a0d900ea1d7aafb5c6aa56e07919737def2710c6d6",
+      "script_sha256": "d15550b367f49137f50b42fdf388d854e9f0a7b7822ab234ad6727d23fbb45b6",
+      "children_exit_codes": {
+        "verify": 0,
+        "numerics": 0,
+        "gateway": 0
+      }
+    },
+    {
+      "bundle_id": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",
+      "gateway_rpc": "observe_with_status",
+      "passed": false,
+      "required_contiguous_s": 12.0,
+      "longest_paired_window_s": 0.0,
+      "callback_counts": {
+        "left_images": 902
+      },
+      "topic_publishers": {
+        "/camera/right_wrist/color/image_raw": 1,
+        "/camera/right_wrist/depth/image_rect_raw": 1,
+        "/hal/joint_states": 0,
+        "/camera/head/color/image_raw": 1,
+        "/camera/left_wrist/color/image_raw/compressed": 1,
+        "/camera/head/depth/image_raw": 1
+      },
+      "matched_joint_feedback": {
+        "name": "arm_l_j2",
+        "packets": 0,
+        "samples_below_min": 0,
+        "unique": 0,
+        "limits_deg": [
+          -94.0,
+          120.0
+        ]
+      },
+      "one_mirrored_fk_request": null,
+      "request_outcomes": {
+        "observe_with_status: frame_feedback_skew:no_frames": 4,
+        "observe_with_status: RuntimeError": 128
+      },
+      "owner_ipc_methods": {
+        "status": 248,
+        "invalidate_live_scene": 247,
+        "measured_feedback": 239
+      },
+      "denied_ipc": [],
+      "request_publications": 0,
+      "final_authorized": false,
+      "start_sent": false,
+      "rmw": "rmw_cyclonedds_cpp",
+      "name": "v52-formal-cyclone-b",
+      "mode": "overlays",
+      "acquire_window_s": 24,
+      "requests": 132,
+      "geometry_examples": 0,
+      "sam_requests_start": 0,
+      "sam_requests_end": 0,
+      "sam_hash": "7402e0d864fa82708a20fbd15bc84245c2f26dff0eb43a4b5b93452deb34be69",
+      "timing_summary": {
+        "events": 55,
+        "timing_rows": 25,
+        "matched_both": 0,
+        "forward_success_rows": 0,
+        "pipeline_rows": 0
+      },
+      "gateway_trace_sha256": "e653e3a713ef327f0d1e9034865220cd4bff8a84ce324de72f649929a9997482",
+      "source_result": "v52-formal-cyclone-b/result.json",
+      "source_sha256": "a1d58fa35d37371a8d7e646dfcb5e1056ee9446e28ba14e0858abf15a697b686",
+      "script_sha256": "7d8fc9fcf21fd4fedc3f87935fb26499a9f7f6dee398f6404f4a470eb5b69289",
+      "children_exit_codes": {
+        "verify": 0,
+        "numerics": 0,
+        "gateway": 0
+      }
+    },
+    {
+      "bundle_id": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",
+      "gateway_rpc": "observe_with_status",
+      "passed": false,
+      "required_contiguous_s": 12.0,
+      "longest_paired_window_s": 0.0,
+      "callback_counts": {
+        "valid_joints": 1560,
+        "left_images": 937
+      },
+      "topic_publishers": {
+        "/camera/head/color/image_raw": 1,
+        "/camera/left_wrist/color/image_raw/compressed": 1,
+        "/camera/right_wrist/depth/image_rect_raw": 1,
+        "/hal/joint_states": 1,
+        "/camera/right_wrist/color/image_raw": 1,
+        "/camera/head/depth/image_raw": 1
+      },
+      "matched_joint_feedback": {
+        "name": "arm_l_j2",
+        "packets": 496,
+        "samples_below_min": 294,
+        "unique": 294,
+        "limits_deg": [
+          -94.0,
+          120.0
+        ],
+        "min_deg": -94.1558837890625,
+        "max_deg": -94.15580749511719,
+        "first_matched_state_ns": 14230407139346,
+        "last_matched_state_ns": 14255147047661
+      },
+      "one_mirrored_fk_request": {
+        "target_received_ns": 14230407060340,
+        "state_received_ns": 14230407139346,
+        "full22": [
+          53.47599792480469,
+          -94.15584564208984,
+          -83.97372436523438,
+          -126.32302856445312,
+          13.893303871154785,
+          53.53683853149414,
+          -52.0703125,
+          -72.00483703613281,
+          -87.68817138671875,
+          92.21226501464844,
+          -85.50064086914062,
+          -2.7892158031463623,
+          0.7563331723213196,
+          -2.9942824840545654,
+          0.0022618910297751427,
+          -14.997200012207031,
+          -0.005062327720224857,
+          0.001373291015625,
+          -0.001373291015625,
+          -59.59327697753906,
+          -68.79295349121094,
+          -29.968643188476562
+        ],
+        "measured16": [
+          53.47599792480469,
+          -94.15584564208984,
+          -83.97372436523438,
+          -126.32302856445312,
+          13.893303871154785,
+          53.53683853149414,
+          -52.0703125,
+          -72.00483703613281,
+          -87.68817138671875,
+          92.21226501464844,
+          -85.50064086914062,
+          -2.7892158031463623,
+          0.7563331723213196,
+          -2.9942824840545654,
+          0.0,
+          0.0
+        ],
+        "actual_stamps16": [
+          14230407139346,
+          14230407139346,
+          14230407139346,
+          14230407139346,
+          14230407139346,
+          14230407139346,
+          14230407139346,
+          14230407139346,
+          14230407139346,
+          14230407139346,
+          14230407139346,
+          14230407139346,
+          14230407139346,
+          14230407139346,
+          null,
+          null
+        ],
+        "gripper_slots": "unmeasured and invalid",
+        "method": "forward_pose",
+        "issued_monotonic_ns": 14230441522777,
+        "error_type": "RuntimeError",
+        "error": "ArmLimitRejected: arm target outside F1 HAL limits",
+        "completed_monotonic_ns": 14230442893330
+      },
+      "request_outcomes": {
+        "observe_with_status: RuntimeError": 132
+      },
+      "owner_ipc_methods": {
+        "status": 249,
+        "measured_feedback": 496,
+        "invalidate_live_scene": 248
+      },
+      "denied_ipc": [],
+      "request_publications": 0,
+      "final_authorized": false,
+      "start_sent": false,
+      "rmw": "rmw_fastrtps_cpp",
+      "name": "v52-formal-service-c",
+      "mode": "service",
+      "acquire_window_s": 24,
+      "requests": 132,
+      "geometry_examples": 0,
+      "sam_requests_start": 0,
+      "sam_requests_end": 0,
+      "sam_hash": "7402e0d864fa82708a20fbd15bc84245c2f26dff0eb43a4b5b93452deb34be69",
+      "timing_summary": {
+        "events": 52,
+        "timing_rows": 25,
+        "matched_both": 25,
+        "forward_success_rows": 0,
+        "pipeline_rows": 0
+      },
+      "gateway_trace_sha256": "66c7171272babfe1a5eef7ca7006af242091dc5425873fcdfcbb1312239fc685",
+      "source_result": "v52-formal-service-c/result.json",
+      "source_sha256": "e0f76215e6988d27497d921233d917de71addc55a6d6c4a430c5d3907162ecc3",
+      "script_sha256": "7d8fc9fcf21fd4fedc3f87935fb26499a9f7f6dee398f6404f4a470eb5b69289",
+      "children_exit_codes": {
+        "verify": 0,
+        "numerics": 0,
+        "gateway": 0
+      }
+    }
+  ],
+  "field_journal_comparison": [
+    {
+      "run": "web-e992a2d925444c2dab893c82a336b419",
+      "rows_valid": 158,
+      "joint": "arm_l_j2",
+      "units": "HAL degrees",
+      "min": -93.9015121459961,
+      "max": -93.68107604980469,
+      "first": -93.68107604980469,
+      "last": -93.9015121459961,
+      "below_minus_94": 0,
+      "source": "web-e992a2d925444c2dab893c82a336b419/collected/owner/journal/control.jsonl",
+      "sha256": "87734dead75286d20c501b52036a3eefd4aabc7e8fedbdf1954e38aab53e658e"
+    },
+    {
+      "run": "web-bcfd8730efd14981bcd2d7429858808b",
+      "rows_valid": 5487,
+      "joint": "arm_l_j2",
+      "units": "HAL degrees",
+      "min": -94.15396881103516,
+      "max": -93.92121124267578,
+      "first": -93.92121887207031,
+      "last": -94.15396118164062,
+      "below_minus_94": 5474,
+      "source": "web-bcfd8730efd14981bcd2d7429858808b/collected/owner/journal/control.jsonl",
+      "sha256": "5dd9fcca81fd274370b3ec2f39e7ec184608d09db16059b7fe1b18c9ae812ca4"
+    }
+  ],
+  "profile_sha256": "43a042ef5db386e64640f0066b85ebfddf8058f0671caca4ccedc5889c9bbc83"
+}

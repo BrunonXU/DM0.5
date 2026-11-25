@@ -1,0 +1,183 @@
+{
+  "probe_finished_utc": "2026-11-25T10:01:52.219897+00:00",
+  "topic": "/hal/joint_states",
+  "type": "sensor_msgs/msg/JointState",
+  "qos": "sensor_data",
+  "groups": [
+    {
+      "label": "production_service",
+      "start_monotonic_s": 14293.679396875,
+      "duration_s": 10,
+      "init_before_start_s": 7.4385,
+      "rmw": "rmw_fastrtps_cpp",
+      "domain": 0,
+      "cyclonedds_uri": null,
+      "discovery_range": null,
+      "callbacks": 500,
+      "callbacks_by_1s": [
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50,
+        50
+      ],
+      "first_receipt_s": 14293.686968118,
+      "last_receipt_s": 14303.6669316,
+      "first_header_ns": 1795600901907627144,
+      "last_header_ns": 1795600911887602385,
+      "publisher_info_at_end": [
+        {
+          "node": "motor_ctl",
+          "namespace": "/",
+          "type": "sensor_msgs/msg/JointState",
+          "reliability": "RELIABLE"
+        }
+      ],
+      "publisher_counts_by_1s": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "label": "production_owner_environment",
+      "start_monotonic_s": 14293.679396875,
+      "duration_s": 10,
+      "init_before_start_s": 7.0528,
+      "rmw": "rmw_cyclonedds_cpp",
+      "domain": 0,
+      "cyclonedds_uri": "/etc/ros/cyclonedds/cyclonedds.xml",
+      "discovery_range": "SUBNET",
+      "callbacks": 0,
+      "callbacks_by_1s": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "first_receipt_s": null,
+      "last_receipt_s": null,
+      "first_header_ns": null,
+      "last_header_ns": null,
+      "publisher_info_at_end": [],
+      "publisher_counts_by_1s": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "label": "owner_with_camera_overlays",
+      "start_monotonic_s": 14293.679396875,
+      "duration_s": 10,
+      "init_before_start_s": 6.5871,
+      "rmw": "rmw_cyclonedds_cpp",
+      "domain": 0,
+      "cyclonedds_uri": "/etc/ros/cyclonedds/cyclonedds.xml",
+      "discovery_range": "SUBNET",
+      "callbacks": 0,
+      "callbacks_by_1s": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "first_receipt_s": null,
+      "last_receipt_s": null,
+      "first_header_ns": null,
+      "last_header_ns": null,
+      "publisher_info_at_end": [],
+      "publisher_counts_by_1s": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "physical_owner": {
+    "profile_name": "robot-v22.json",
+    "profile_sha256": "9d921978148c375e79a40aa3f4c0cee6f303616bac68d394c5c45b9ac0f9f5f5",
+    "adapter_sha256": "6374020fe8a741cc101200128d83b4cc9a6ba7e1d519f0e8f420c46501bacc45",
+    "topic": "/hal/joint_states",
+    "filtered_subscription_lines": [
+      {
+        "line": 211,
+        "text": "from rclpy.qos import qos_profile_sensor_data"
+      },
+      {
+        "line": 227,
+        "text": "bindings = [(JointState, topics['joints'], self.store.update_joints),"
+      },
+      {
+        "line": 241,
+        "text": "self.subscriptions = [self.node.create_subscription(t, topic, cb, qos_profile_sensor_data)"
+      }
+    ],
+    "input_path": "cli.py constructs RosTransport(profile, store) and RosObservationSource(store, profile, config). feedback() reads the stored joints. harness_runtime updates the owner bridge from that feedback."
+  },
+  "sources": [
+    {
+      "path": "HARNESS/artifacts/v53-camera-base-investigation/joint_topic_probe.py",
+      "sha256": "4407a163ab11b4f2b9a18771594894c1718cec10375979e76ccc37956fa75ffa"
+    },
+    {
+      "path": "HARNESS/artifacts/v53-camera-base-investigation/joint-topic-raw.json",
+      "sha256": "2294525354a48dc5001f7b41687bd6152be52af67cd39a25cfc2cdb8c9ae2947"
+    },
+    {
+      "path": "HARNESS/artifacts/v53-camera-base-investigation/owner-joint-profile.json",
+      "sha256": "1e2daa4993412249b7703599be622c7a9c62f9281c6e57a6a9c6de8801462d1c"
+    },
+    {
+      "path": "HARNESS/artifacts/claude-batch-20261125/coordinator-04bc818d7424/control/src/f1dagger/cli.py",
+      "sha256": "453315946c8951d13ab8bdad13da63394931a47a8dcb70517dcfc8fed4b7d8a7"
+    },
+    {
+      "path": "HARNESS/artifacts/claude-batch-20261125/coordinator-04bc818d7424/control/src/f1dagger/observation.py",
+      "sha256": "75637cebadd9a35253c639d4ba5d31bd6aa14c4f452b198fbd30f8d5c244db6b"
+    },
+    {
+      "path": "HARNESS/artifacts/claude-batch-20261125/coordinator-04bc818d7424/control/src/f1dagger/harness_runtime.py",
+      "sha256": "f59280f78ee926124acc9a7e13cec2870468a5b0a13f454c74ca9abb83413c39"
+    }
+  ],
+  "scope": "Simultaneous three-environment 10-second read-only sampling of one ROS joint topic. No camera, CAN, inference, task authorization or robot-command publisher within these probes."
+}
