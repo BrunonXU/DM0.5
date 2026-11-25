@@ -74,7 +74,7 @@ flowchart LR
 | P0 | H-01 | 只比较本动作必需的相机，可选相机变化改为重扫 |
 | P0 | H-02 | 观测准备 4 秒改为 15 秒 |
 | P0 | H-03 | 只读验证重查次数独立计数（上限 6），不再占用动作修正预算 |
-| P0 | H-04 `[!]` | 确认现场已开启 `joint_space_transport` 和 `joint_space_free_motion` |
+| P0 | H-04 `[~]` | 确认现场已开启 `joint_space_transport` 和 `joint_space_free_motion` |
 | P0 | H-05 `[!]` | 恢复预算上限放宽（只改 schema 上限，实际取值由用户定） |
 | P1 | H-06 | 运输终点改为孔口上方的小区域（复用现有 15mm 自由空间容差） |
 | P1 | H-07 `[!]` | 闭环对准程序：左腕孔位加小步 `move_tcp` 修正 |
@@ -360,7 +360,7 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 
 ---
 
-## H-04 `[!]` P0：确认现场已开启关节空间搜索（仅改配置）
+## H-04 `[~]` P0：确认现场已开启关节空间搜索（仅改配置）
 
 **位置**：现场 `HARNESS/site/plan.local.json` 中的 `fixture`。该文件不在仓库中，属于本地私有配置。
 
@@ -378,6 +378,8 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 **明确不改**：`skill_services.py:365` 的 `len(attempts)>=2` 保持不变。依据是同一份实验第 256-260 行：首次失败就调用 OMPL，两例都比原顺序慢（7.164 秒对 7.872 秒，5.439 秒对 6.848 秒）。
 
 ---
+
+> 执行记录（2026-11-25，`harness/v50-first-run`）。用户确认开启关节空间规划。V51 生效模板的运输、自由移动和抓取前瞻三个开关均为 true。保留原有触发顺序，冻结候选时复核同一配置。软件完成，待真机验收。[生效配置回执](evidence/20261125-B-batch/h04-site.json)
 
 ## H-05 `[!]` P0：恢复预算的 schema 上限放宽（默认值不变）
 

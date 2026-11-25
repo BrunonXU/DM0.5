@@ -1,0 +1,13 @@
+{
+  "checked_on": "2026-11-25",
+  "active_version": 51,
+  "active_bundle_id": "d7981daf3e2f7373432e935bca33e4cdbe0d8b88aaa57f936fac002ca3806037",
+  "plan_sha256": "3f00768221ec951016e2730e79fa773b0f919b035b19e508b056f74cdd0365fa",
+  "fixture": {
+    "joint_space_transport": true,
+    "joint_space_free_motion": true,
+    "native_grasp_lookahead": true
+  },
+  "source": "active workspace.local.json → local_site → plan.local.json",
+  "start_sent": false
+}
