@@ -453,8 +453,14 @@ def _measurement_identity(original,latest,*,task=None,skill=None):
                     and hole.evidence_ids == (head['rgb'].blob_sha256, head['depth'].blob_sha256)):
                 return True  # New source must be swept in the worker before publication.
             raise RevalidationSceneChanged('revalidation_scene_evidence_changed')
-        if before!=after:raise HarnessError('revalidation_camera_identity_changed')
-        return
+        shared = before.keys() & after.keys()
+        # Precision observations can omit the single-camera selector. Their
+        # existing geometry contract uses both calibrated RGB-D pairs.
+        cameras = {c for c in (original.geometry_camera, latest.geometry_camera) if c} or {'head', 'right'}
+        required = {(camera, stream) for camera in cameras for stream in ('rgb', 'depth')}
+        if not required <= shared or any(before[key] != after[key] for key in shared):
+            raise HarnessError('revalidation_camera_identity_changed')
+        return before.keys() != after.keys()
     from .geometry_context import FIXTURE_TRANSIT_SKILLS
     if (task is None or task.admission_profile!='development_coarse' or task.goal!='placed'
             or skill not in FIXTURE_TRANSIT_SKILLS
