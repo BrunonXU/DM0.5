@@ -37,6 +37,7 @@ UNPUBLISHED_SCENE_REASONS=frozenset(prefix+code for prefix in
     ('plan_revalidation_rejected:','revalidation_proof_rejected:') for code in UNPUBLISHED_SCENE_CODES)
 UNPUBLISHED_REPLAN_REASONS=UNPUBLISHED_FRESHNESS_REASONS | UNPUBLISHED_SCENE_REASONS | {'owner_candidate_rejected'}
 REPLANNABLE_SKILLS = MOTION_SKILLS
+VERIFICATION_RECHECK_LIMIT = 6
 
 
 class TaskEngine:
@@ -291,7 +292,7 @@ class TaskEngine:
             checkpoint = self.verification_checkpoints.get(intent.verification_request_id)
             if (not checkpoint or checkpoint['skill'] != intent.skill
                     or checkpoint['epoch'] != self.epoch or checkpoint['task_hash'] != digest(self.task)
-                    or checkpoint['attempts'] >= self.task.local_corrections
+                    or checkpoint['attempts'] >= VERIFICATION_RECHECK_LIMIT
                     or checkpoint.get('claimed_by') not in (None, intent.request_id)):
                 raise HarnessError('verification_checkpoint_or_budget_invalid')
         if intent.resume_request_id:

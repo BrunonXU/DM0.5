@@ -8,7 +8,8 @@ import threading
 import numpy as np
 
 from .contracts import HarnessError, Mode, SkillResult, digest
-from .engine import UNPUBLISHED_FRESHNESS_REASONS, UNPUBLISHED_REPLAN_REASONS, UNPUBLISHED_SCENE_REASONS
+from .engine import (UNPUBLISHED_FRESHNESS_REASONS, UNPUBLISHED_REPLAN_REASONS,
+                     UNPUBLISHED_SCENE_REASONS, VERIFICATION_RECHECK_LIMIT)
 from .gateway import OWNER_METHODS
 from .ipc import UnixServer
 from .verification import needs_semantic_evidence
@@ -1052,7 +1053,7 @@ class OwnerBridge:
                     checkpoint['after_ns']=max(checkpoint['after_ns'],self.verification_after_ns)
                     proposal=proposal.model_copy(update=dict(
                         reason='post_motion_verification_unavailable:'+reason,
-                        verification_request_id=key if checkpoint['attempts']<self.engine.task.local_corrections else None))
+                        verification_request_id=key if checkpoint['attempts'] < VERIFICATION_RECHECK_LIMIT else None))
                     self.engine.store.event('harness_verification_escalated',request_id=running.request_id,
                         reason=reason,attempts=attempts,after_ns=self.verification_after_ns,
                         motion_replayed=False)

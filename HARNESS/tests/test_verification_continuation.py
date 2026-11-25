@@ -1,6 +1,8 @@
 from rejection_assertions import assert_rejected
 import pytest
-from f1_harness.contracts import SkillResult, HarnessError
+from f1_harness.contracts import SceneObject, SkillResult, HarnessError
+from f1_harness.engine import VERIFICATION_RECHECK_LIMIT
+from f1_harness.verification import verify
 from test_unpublished_plan import make_bridge
 from test_unpublished_retry import fresh_observation
 
@@ -85,15 +87,70 @@ def test_no_unbounded_rechecks_or_rechecking_a_different_skill(tmp_path):
         checkpoint=e.verification_checkpoints[original.request_id]
         bad=original.model_copy(update=dict(request_id='wrong',skill='grasp',verification_request_id=original.request_id))
         assert_rejected(e.submit_skill(bad.model_dump()), 'verification_checkpoint')
-        for i in range(e.task.local_corrections):
+        for i in range(VERIFICATION_RECHECK_LIMIT):
             intent=original.model_copy(update=dict(request_id=f'check-{i}',verification_request_id=original.request_id))
             e.submit_skill(intent.model_dump());poll()
             for _ in range(2):
                 b.future.set_result(SkillResult(request_id=intent.request_id,lifecycle='completed',
                     reason='fresh_post_motion_scene_missing'))
                 poll()
-        assert checkpoint['attempts']==2
+        assert checkpoint['attempts'] == 6
+        assert e.corrections == 0
+        assert set(e.request_publications) == {original.request_id}
         assert e.results[intent.request_id].verification_request_id is None
         bad=original.model_copy(update=dict(request_id='exhausted',verification_request_id=original.request_id))
         assert_rejected(e.submit_skill(bad.model_dump()), 'verification_checkpoint')
     finally:b.close()
+
+
+def test_sixth_read_only_recheck_confirms_a_previously_unknown_grasp(tmp_path):
+    engine, bridge, clock, _, poll, _ = make_bridge(tmp_path)
+    try:
+        approach = engine.pending
+        grasp = approach.model_copy(update={'skill': 'grasp', 'request_id': 'grasp'})
+        for motion in (approach, grasp):
+            if motion == grasp:
+                assert engine.submit_skill(motion.model_dump())['lifecycle'] == 'accepted'
+            assert engine.take_pending() == motion
+            engine.record_skill_publication(motion.request_id, publication_id=motion.request_id, now_ns=clock[0])
+            engine.complete(motion.request_id, SkillResult(request_id=motion.request_id, lifecycle='completed',
+                            outcome='success', evidence_ids=('fixture-arrival',)))
+
+        original = approach.model_copy(update={'skill': 'verify_grasp', 'request_id': 'verify-original'})
+        for attempt in range(7):  # The first verification creates the checkpoint; six continuations follow.
+            latest = engine.observation
+            intent = original if attempt == 0 else original.model_copy(update={
+                'request_id': f'verify-{attempt}', 'verification_request_id': original.request_id,
+                'observation_id': latest.observation_id, 'scene_version': latest.scene_version,
+            })
+            assert engine.submit_skill(intent.model_dump())['lifecycle'] == 'accepted'
+            assert poll() is None
+            held = True if attempt == 6 else None
+            for _ in range(1 if held else 2):
+                future, function, (running, after_ns) = bridge.executor.jobs[-1]
+                assert function == bridge.verifier and running == intent
+                clock[0] += 1_000_000
+                obj = SceneObject(object_id=engine.task.object_id, shape='square', held=held,
+                                  evidence_ids=(f'grasp-evidence-{clock[0]}',))
+                latest = fresh_observation(engine.observation, clock[0]).model_copy(update={
+                    'objects': (obj,), 'observation_id': f'grasp-scene-{clock[0]}',
+                })
+                assert latest.received_ns > after_ns
+                engine.update_observation(latest)
+                future.set_result(verify(intent.skill, engine.task, latest, intent.request_id))
+                assert poll() is None
+            result = engine.results[intent.request_id]
+            assert result.no_motion
+            if held:
+                assert result.outcome == 'success' and result.evidence_ids == obj.evidence_ids
+            else:
+                assert result.outcome == 'pending_review'
+                assert result.verification_request_id == original.request_id
+                assert engine.verification_checkpoints[original.request_id]['attempts'] == attempt
+
+        extra = intent.model_copy(update={'request_id': 'verify-7'})
+        assert_rejected(engine.submit_skill(extra.model_dump()), 'verification_checkpoint_or_budget_invalid')
+        assert engine.corrections == 0
+        assert set(engine.request_publications) == {approach.request_id, grasp.request_id}
+    finally:
+        bridge.close()
