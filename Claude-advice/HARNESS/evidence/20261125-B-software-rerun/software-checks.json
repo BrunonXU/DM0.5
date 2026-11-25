@@ -1,0 +1,144 @@
+{
+  "software_test_commit": "22c825a40cf906ae09568702e538c996a3e81cb6",
+  "runtime_matches_commit": "b8146c7d0cede7e505c6a600ef7ec0f7dd237fef",
+  "previous_report_commit": "1e0ca422c5e75f15596eca2feab37fc9eb7353f8",
+  "changed_assertions": [
+    "HARNESS/tests/test_gate_recovery.py::test_missing_observation_returns_before_long_task_budget",
+    "HARNESS/tests/test_gate_recovery.py::test_total_budget_exhaustion_is_review_without_submission",
+    "HARNESS/tests/test_placement_observation_recovery.py::test_fast_align_handoff_requires_fresh_held_observation_and_never_submits[False]"
+  ],
+  "runtime_files_changed_in_this_rerun": 0,
+  "new_rejection_reasons": 0,
+  "primary_full_suite": {
+    "attachment": "qa/candidate-all.xml",
+    "sha256": "f20ba5031c3735eab2e0aa26674ce5e32f4fa9d0660eadd87532438423d07c3b",
+    "named_cases": 3155,
+    "passed": 3084,
+    "failed": 1,
+    "errors": 0,
+    "skipped": 70
+  },
+  "numeric_rerun": {
+    "attachment": "qa/candidate-numerics.xml",
+    "sha256": "79260f44ab93aa5d50ac1bdf31c428c043df86b34f295ba73186e57cb4ca5635",
+    "named_cases": 70,
+    "passed": 70,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "matched_original_skipped_test_ids": 70
+  },
+  "native_integration": {
+    "attachment": "native/native-integration.xml",
+    "sha256": "779299aca19ebd8e198a79b352ef742b7929cec82c3baa2afaafb9f06ae99278",
+    "named_cases": 62,
+    "passed": 62,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "infrastructure_failure": {
+    "nodeid": "tests.test_audit_assets::test_change_notifications_avoid_rehashing_unchanged_files",
+    "original_errno": "ENOSPC",
+    "original_inotify_watch_limit": 524288,
+    "fallback": "content_hash_per_check",
+    "clean_uid_file_rerun": {
+      "attachment": "qa/isolated-audit-assets.xml",
+      "sha256": "d421a2da50d3c3ac414c25dd5a4a8514853b3fb9d4b4850708921e862c34a523",
+      "named_cases": 12,
+      "passed": 12,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "result": "该节点在独立普通账号重跑通过，运行前对真实 Linux 内核注册 watch 成功。"
+  },
+  "distinct_cases_with_at_least_one_success": 3155,
+  "complete_split_suite": {
+    "nodeids_verified_against": "qa/candidate-all.xml",
+    "disjoint_main_and_assets": true,
+    "distinct_cases": 3155,
+    "main_harness": {
+      "attachment": "qa/main-shard.xml",
+      "sha256": "ea2e557f834bcfbdd97b979e76baf423a34d8c2e508916008f980be141a0dfe5",
+      "named_cases": 3143,
+      "passed": 3073,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 70
+    },
+    "linux_asset_watch": {
+      "attachment": "qa/isolated-audit-assets.xml",
+      "sha256": "d421a2da50d3c3ac414c25dd5a4a8514853b3fb9d4b4850708921e862c34a523",
+      "named_cases": 12,
+      "passed": 12,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "native_numerics": {
+      "attachment": "qa/candidate-numerics.xml",
+      "sha256": "79260f44ab93aa5d50ac1bdf31c428c043df86b34f295ba73186e57cb4ca5635",
+      "named_cases": 70,
+      "passed": 70,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "all_cases_passed": true,
+    "overlapping_initial_cases": 0,
+    "missing_original_cases": 0,
+    "extra_cases_vs_original": 0,
+    "node_set_hash_full_and_union": "74e8e2177e1f055194b4df65e955217b17bd9704c1aad4ae8d23987e6e153d03",
+    "node_set_hash_format": "SHA-256 of lexicographically sorted unique module[.Class]::name records, UTF-8, newline delimited with final newline.",
+    "local_summary_report": "qa/grouped-full-checks.json",
+    "summary_sha256": "8ef56d184c7fe3e2ecb21ac08f7ba0c6d9564955ea54cd00d95e84d9c3b41187"
+  },
+  "diagnostic_container_full": {
+    "attachment": "qa/clean-uid/full.xml",
+    "sha256": "f1959feed9a8a2f6a8a19002508d27b94e1cd7074064a7107737bef87cd30edb",
+    "named_cases": 3155,
+    "passed": 2931,
+    "failed": 96,
+    "errors": 39,
+    "skipped": 89,
+    "scope": "独立文件监听环境另试整套，仅作环境对照。轻量镜像及局部挂载缺少部分宿主工具和测试夹具。",
+    "environment_failure_categories": {
+      "sandbox_executable_absent_and_nested_namespace_unavailable": 80,
+      "audit_launcher_refuses_container_pid_one_parent": 20,
+      "optional_dashboard_fixture_missing_preview_worker": 2,
+      "private_point_fixture_not_mounted": 3,
+      "clean_owner_subprocess_missing_host_editable_import_path": 1,
+      "native_packager_fixture_not_mounted": 1,
+      "optional_dashboard_fixture_missing_task_service": 28
+    },
+    "diagnostic_sha256": "66c42540aaf999cb9896f5a39914a5e06e2cd1762abcdc8c502d5db6f9df8ad0"
+  },
+  "host_watch_probe": {
+    "attachment": "qa/inotify-host.json",
+    "sha256": "97fb5734fe1bde41f32511454bf0c382e33a0d0fd3afeb57d0e818a61f679609"
+  },
+  "isolated_watch_probe": {
+    "attachment": "qa/isolated-audit-assets-environment.json",
+    "sha256": "9f492245a6e8ed40c8122eceaa7a388fccd4c549b3224241781bd8d42cc92083",
+    "inotify_add_watch_errno": 0
+  },
+  "targeted_regression": {
+    "attachment": "targeted.xml",
+    "sha256": "e672dee02dfe7fc15e107627b6594b065ac527da7dd5ef83bb109894b60b6396",
+    "named_cases": 12,
+    "passed": 12,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "coverage": "原三条时限、另一持物分支、0.25 秒任务剩余、撤权与暂停、更换 epoch、第六秒有效输入在两个窗口的对照。"
+  },
+  "historical_evidence": "../20261125-B-software/report.md",
+  "physical_trials": 0,
+  "local_receipts_root": "Artifacts/F1-Harness/20261125-v50-h02-rerun/",
+  "tests_counting": "按 JUnit 具名用例逐项核对。定向用例与全量套件重叠。",
+  "layout_check": {
+    "command": "python HARNESS/scripts/check_project_layout.py",
+    "exit_code": 0
+  }
+}

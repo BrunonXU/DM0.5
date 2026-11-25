@@ -1,0 +1,185 @@
+{
+  "schema": "f1-harness-h02-contract-rerun-replays-v1",
+  "candidate_commit": "22c825a40cf906ae09568702e538c996a3e81cb6",
+  "runtime_unchanged_since": "b8146c7d0cede7e505c6a600ef7ec0f7dd237fef",
+  "committed_runtime_trees": {
+    "HARNESS/src": "901b7ab94efb4769fbf539afb0da6acf46bff691",
+    "HARNESS/scripts": "bc823ef40e2d22a191698dceb743edaed7ddaa3d",
+    "HARNESS/native": "516fea85d738533751be73ef0dab93d5dc9a79e5",
+    "HARNESS/configs": "b65fd2e096a550cee092d94e77e5a30579dccb8a"
+  },
+  "verified_runtime_python_files": 221,
+  "runtime_source_check": "全部受版本控制的 src、scripts、configs 和 native 文件与提交逐字节核对；控制与 infra 复用 V50 固定版本。",
+  "candidate_offline_manifest": "efafedac10571beb5fa95585dc378b88e714628ae672419f382fcc6c30e75e82",
+  "control_manifest_sha256": "8c0d2f850dec41017c8095eedc46edd7e481685649c5dd1595387afea712e861",
+  "normal": {
+    "passed": true,
+    "hardware_outputs": 0,
+    "physical_task_verified": false,
+    "stages": [
+      "approach_grasp",
+      "grasp",
+      "verify_grasp",
+      "transfer_above_hole",
+      "inspect_in_hand",
+      "align",
+      "insert",
+      "release",
+      "verify_placed",
+      "withdraw_reset"
+    ],
+    "actual_first_publication_events": 7,
+    "owner_mock_output_samples": 2368,
+    "own_placement_receipt_same_request": true,
+    "sam_requests": 5,
+    "sam_process_closed": true,
+    "result_checks": {
+      "no_uncaught_error": true,
+      "expected_outcome": true,
+      "simulation_scope_confirmed": true,
+      "source_unchanged": true,
+      "rechecks_never_publish": true,
+      "rechecks_never_replan": true,
+      "verification_calls_bounded": true,
+      "full_cycle_completed": true
+    },
+    "output_checks": {
+      "complete_publications": true,
+      "immutable_left_arm": true,
+      "sampled_speed_within_profile": true,
+      "input_identity_unchanged": true,
+      "rechecks_hold_unchanged": true,
+      "covered_output_sweeps_clear": true,
+      "completed_stages_have_sweeps": true
+    },
+    "output_sweeps_checks": {
+      "all_request_outputs_covered": true,
+      "all_sweeps_clear": true,
+      "read_only_holds_unchanged": true,
+      "complete_publications": true,
+      "left_fixed": true,
+      "sampled_speed_within_profile": true,
+      "all_anonymous_outputs_stationary": true
+    },
+    "uncovered_requests": [],
+    "cycle_audits": {
+      "replay_output": 0,
+      "grasp_output": 0,
+      "cycle_output": 0
+    },
+    "sampled_max_speed_deg_s": 30.00000000000048,
+    "virtual_s": 47.530278428,
+    "wall_s": 51.5281713049626,
+    "source_files": {
+      "artifacts/offline-closed-loop-20261110/formal-hint-sam-rgbd-final/chain-inputs.json": "35e2cdba73afa432ff8ec6283e374ab20b167030c90a557732b550a3c836b481",
+      "artifacts/v1-followup-20261111/localize-request.json": "31f3249fb1696ef1200f607bb247e61e5942324914115e2c88059daf85315e37",
+      "artifacts/sam-live-latency-20261110/replay/continuous-window/capture.json": "60461f3e8b1f06f50c1962994cc8af2c0e93408d7ac4c4ed0c527e259d1aa0e3",
+      "artifacts/offline-closed-loop-20261110/astra-entity-hints-actual/hints.json": "4094a82037da7a1aefed0864fed276a56be4306500b530f88eeb2dd293e16d53",
+      "artifacts/offline-closed-loop-20261110/astra-right-hints-actual/hints.json": "eb5519579e9b8388d0d18cecf1e8671d29804c8d3c10a167f95811f4d5939166"
+    },
+    "scope": "初始输入为保存的 RGB-D，使用实际 SAM、录制的 Astra 回复与原生 F1Owner/Ruckig。执行端在内存中，后续关节、抓持与观测反馈为模拟。"
+  },
+  "recent_field_failure": {
+    "run": "web-8782aab8cdbe43eb91e2ad4daac2f4b3",
+    "passed": true,
+    "input_files": {
+      "runs/workspace/web-8782aab8cdbe43eb91e2ad4daac2f4b3/planner/trace.jsonl": "874b6e1c1b2dd0e8439c12cfa11a700c48dcfa160ca3f6c337ea730a9435ffac",
+      "runs/workspace/web-8782aab8cdbe43eb91e2ad4daac2f4b3/collected/owner/harness/trace.jsonl": "56b9a4ea6be6bf2a8b04dac6f4fc144988fe7afd4fbdb7b6c6718d24b4881194"
+    },
+    "archived_prefix": [
+      "approach_grasp",
+      "grasp",
+      "verify_grasp",
+      "transfer_above_hole",
+      "inspect_in_hand"
+    ],
+    "received_frame": "62562f599a1b4a6e81236d8bc4656779:144",
+    "replay_archived_planner_line": 173,
+    "same_reason": "observation_viewpoint_required:aperture_measurement_required:square-hole-1:fixture_aperture_not_detected_in_search_region",
+    "calls": [
+      "observe_with_status"
+    ],
+    "submissions": 0,
+    "candidate_publications": 0,
+    "hardware_outputs": 0,
+    "scope": "对准断点复用原始观测与已完成的前五阶段，离线授权，经真实 Gateway、TaskEngine 与 RemoteTaskBackend。"
+  },
+  "prior_field_regression": {
+    "run": "web-bbdcbca9fac34a7d85ce450fd7043911",
+    "passed": true,
+    "input_files": {
+      "runs/workspace/web-bbdcbca9fac34a7d85ce450fd7043911/planner/trace.jsonl": "d11ea69bbc895ee7a65f513b95da4e8bbfb58e5f43254944c432444b233063ee",
+      "runs/workspace/web-bbdcbca9fac34a7d85ce450fd7043911/collected/owner/harness/trace.jsonl": "8b9f328be5db8c878fcc138ff3f3a8b3dc7dd1be9a4bc1e9903c3aa2d03f56ec",
+      "runs/workspace/web-bbdcbca9fac34a7d85ce450fd7043911/collected/owner/payload/frames.jsonl": "8cfd082e72aa7a9330b0f486e6164058f29bddde361cd9ca6b72fac12a447699",
+      "runs/workspace/web-bbdcbca9fac34a7d85ce450fd7043911/collected/owner/journal/control.jsonl": "d59baf6d59ec3c8de34a64fd9a0ec0402a42d1db507d76f7d41fef984ea40ec2",
+      "artifacts/field-alignment-bbdc-20261118/replay_alignment.py": "85b6200797f9a4649b656955eca8adaabc11b488f60e49628158cd3e1c9413ea"
+    },
+    "checks": {
+      "raw_source_plans_once": true,
+      "bad_frame_does_not_publish": true,
+      "field_wait_matches": true,
+      "independent_full_proof": true,
+      "corrupt_binding_rejected": true,
+      "stale_feedback_zero": true,
+      "dropped_object_zero": true,
+      "bound_reobserve": true,
+      "host_plan_retained": true,
+      "three_partial_reads": true,
+      "two_fresh_verifications": true
+    },
+    "source149_waypoints": 24,
+    "source152_candidates_retained": true,
+    "field_output_publications": 0,
+    "independent_synthetic_first_publications": 1,
+    "hardware_outputs": 0,
+    "scope": "第149帧实测方孔建立候选，第152帧缺孔继续保留。独立的模拟场景另外检验首发。"
+  },
+  "v40_optional_left_camera": {
+    "run_id": "web-5329da48dda549d8ab7e8921e88597cd",
+    "request_id": "8dbcccb38c734963b051f0cd2741d56c",
+    "passed": true,
+    "original": "4e7b3123b6824389ba1f21f10ee5f862:109",
+    "latest": "4e7b3123b6824389ba1f21f10ee5f862:118",
+    "before": [
+      "head/rgb",
+      "head/depth",
+      "right/rgb",
+      "right/depth"
+    ],
+    "after": [
+      "head/rgb",
+      "head/depth",
+      "right/rgb",
+      "right/depth",
+      "left/rgb"
+    ],
+    "changed_common_identities": [],
+    "timestamps_preserved": true,
+    "reference_points": 3,
+    "new_searches": 0,
+    "owner_proof_valid": true,
+    "memory_output_rows": 76,
+    "postpublication_feedback": "simulated ideal following",
+    "sweep_samples": 140,
+    "sweep_failures": [],
+    "hardware_outputs": 0,
+    "source_files": {
+      "runs/workspace/web-5329da48dda549d8ab7e8921e88597cd/collected/owner/harness/trace.jsonl": "c328bc6ba8b4343b42496a86146a72c8d06c00757cfdaf6b997efb7451ec3b02",
+      "artifacts/optional-camera-revalidation-v42-20261118/check_field_request.py": "beffd6a5bedbeb252bde72b22924170a27e1640e774b4785207d7b1f46a44e76"
+    },
+    "scope": "原始第109与118帧、原三路点与时间戳；左腕图像加入后重验，原生控制端在内存中首发。"
+  },
+  "local_evidence_sha256": {
+    "n2/normal/replay/sim-00be4bfbe8/report.json": "bb4449eac4adde0c0f39b7266fe2b24c93ed237eb3c02b340e8709a228921fbf",
+    "n2/normal/replay/sim-00be4bfbe8/collected/owner/harness/trace.jsonl": "ccaac88b5fb63237dbd1126b3008b35d07f75bebfdb12953de31bb6d0fc26577",
+    "n2/normal-audits/replay_output.json": "7e4d99b6e4519326324a46f09478dc802135cee79c58d98ad40a365173ac5552",
+    "n2/normal-audits/grasp_output.json": "8f906be6f6975ee3882258510085090cd88c0eea5bf722144a15496faedfa76b",
+    "n2/normal-audits/cycle_output.json": "00ada1d950f68e559ec356aa1d511bacc1fe0597de9f6cd60da35bb61dbec65c",
+    "f2/8782/report.json": "0aa758a481a643887bffdc1f7f421b6a55d07274bd86349ae0292c8e09f5300d",
+    "f2/bbdc.json": "060e79a126a1925ad3a14f6c7c0cb2c7c228e6cb7b456cea06cc1377bc3a4cf8",
+    "f2/v40.json": "ed3cf68e2a8b7fb75fe7315fab2e40d9b4a33a8246eff58811598bc286b478a2",
+    "qualify_candidate_replays.py": "ab93850d4bc782f9ec4545451a80794435553cc6693791c232a38283fe577dd4",
+    "field_8782.py": "e6cba59b872a81ca2932b4dd2f78e3f62f9f2f69edc82abc2993b91dd142fe9e"
+  },
+  "acceptance_scope": "本轮为三条 H-02 测试合同修订后的零硬件输出软件复验。当前无本轮新增现场数据。真实固定布局 S8/S9 和非物理拒绝率需现场验收。"
+}
