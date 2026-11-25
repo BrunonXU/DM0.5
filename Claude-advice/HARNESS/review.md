@@ -5,6 +5,8 @@
 - 配套文档：[改造计划总览](review-roadmap.md)（先读）、[核心架构与模块职责](review-architecture.md)、[验收指标与执行细节](review-acceptance.md)。本文各 H 条目的“验收”是软件层面的最低要求；是否完成，以验收文档中的真机漏斗指标为准。
 - 状态：带 `[!]` 的条目须先由用户确认，汇总见第一部分末尾的[待人工确认决策表](#待人工确认决策表)。
 
+2026-11-25 复审基线为 PR #5 的 `97b0a4d`。用户与 Claude 已通过 PR #4 的历史基线，两类现场案例均按 nonphysical 统计。A-3 固定点位登记取消，直立方块自然随机摆放。本轮合修已部署为 V52，4242 已显示该版本，首次自主放置待真机验收。执行状态与原审阅基线分别保留。[本轮验收](evidence/20261125-B-batch/report.md)
+
 **结论：推理一直跑不通，主要原因是“默认拒绝、例外放行”的倾向，而不是缺某一项能力。** 同一个动作要在感知、引擎、规划复核、首发前几层反复核对身份、哈希和相机集合。现场一旦出现没预料到的组合，就会零发布或撤权，例如多出一路左腕图（V40）、观测包变大（V36）。每次修复只给这个组合加一条特例：两周登记了 42 个版本，仍没有一次完整的单块抓放成功。真正必须保留的硬保护只有少数几类，其余检查都应尽量变成“用最新测量重扫后继续”或有界等待。
 
 **最快让推理跑通的顺序：** 先把可选相机与证据的变化改成“重扫同一路径”，不再判为身份故障；拉长观测准备时限；把只读验证的重查次数与动作修正预算拆开；确认现场已开启关节空间搜索。之后再做三个难点（横躺抓取、运输终点、闭环对准），最后打通 RSI 的检索和排序回流。速度方面，“新场景问 Astra、见过的场景走确定性程序、20 秒内完成”的方向可行，但需要先接通网页入口，并把运输规划提前。
@@ -74,8 +76,8 @@ flowchart LR
 | P0 | H-01 | 只比较本动作必需的相机，可选相机变化改为重扫 |
 | P0 | H-02 | 观测准备 4 秒改为 15 秒 |
 | P0 | H-03 | 只读验证重查次数独立计数（上限 6），不再占用动作修正预算 |
-| P0 | H-04 `[!]` | 确认现场已开启 `joint_space_transport` 和 `joint_space_free_motion` |
-| P0 | H-05 `[!]` | 恢复预算上限放宽（只改 schema 上限，实际取值由用户定） |
+| P0 | H-04 `[~]` | 确认现场已开启 `joint_space_transport` 和 `joint_space_free_motion` |
+| P0 | H-05 `[~]` | 恢复预算上限放宽（只改 schema 上限，实际取值由用户定） |
 | P1 | H-06 | 运输终点改为孔口上方的小区域（复用现有 15mm 自由空间容差） |
 | P1 | H-07 `[!]` | 闭环对准程序：左腕孔位加小步 `move_tcp` 修正 |
 | P1 | H-08 `[!]` | 横躺积木抓姿对称改为绕支撑轴；预抓终点允许沿用接近前已确认的物体位姿 |
@@ -241,7 +243,7 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 
 ---
 
-## H-01 `[ ]` P0：复核时只比较必需相机，可选相机集合变化改为重扫
+## H-01 `[~]` P0：复核时只比较必需相机，可选相机集合变化改为重扫
 
 **位置**：`HARNESS/src/f1_harness/revalidation.py:289-363`，函数 `_measurement_identity`；需要修改的是第 348 行。
 
@@ -289,9 +291,11 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 
 **风险与回滚**：风险是相机被换掉但共有流身份不变，代码会把它当成“可选流变化”。由于 `identity()` 包含 `camera_info_sha256`、`publisher_id` 和 `source_epoch`，这种情况的概率很低。回滚只需还原这一处提交。
 
+> 执行记录（2026-11-25，分支 `harness/v50-first-run`，提交 1992125）。V51 已覆盖可选流变化后重扫原路径。本批继承该代码，V40 左腕加流的旧例已在 V50 通过。软件完成，待真机验收。[合修验收与证据](evidence/20261125-B-batch/report.md)
+
 ---
 
-## H-02 `[ ]` P0：观测准备时限 4 秒改为 15 秒
+## H-02 `[~]` P0：观测准备时限 4 秒改为 15 秒
 
 **位置**：`HARNESS/src/f1_harness/remote.py:559`。
 
@@ -320,9 +324,13 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 
 **风险与回滚**：真缺帧时，返回 Astra 会晚 11 秒，但这仍然比一轮模型调用短。回滚只需改回常量。
 
+> 执行记录（2026-11-25，分支 `harness/v50-first-run`，提交 5996b41、22c825a、1b40db7）。15 秒窗口和三条旧断言此前已经同步。本轮让三个断言引用 OBSERVATION_READINESS_S，另保留 15 秒规格断言。软件完成，待真机验收。[合修验收与证据](evidence/20261125-B-batch/report.md)
+
+> 2026-11-25，V52 真机第二次启动时，重新观测实际等待 15.00 秒、轮询 77 次，直到结束时仍为空帧。已验证等待时限，取得可用观测并继续执行仍待真机验收。[首批真机记录](evidence/20261125-B-first-run/report.md)
+
 ---
 
-## H-03 `[ ]` P0：只读验证的重查次数独立于动作修正预算
+## H-03 `[~]` P0：只读验证的重查次数独立于动作修正预算
 
 **位置**：
 
@@ -358,9 +366,11 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 
 **风险与回滚**：持续缺证据时最多多花 4 次补验（每次约 2 秒等待，见 `skill_services.py:954`），之后照旧上报。回滚只需还原常量。
 
+> 执行记录（2026-11-25，分支 `harness/v50-first-run`，提交 b8146c7、715ecbf）。正式生成的 evidence() 对动作预算 0、1、2 都可补验六次，无动作重放。静态 PROGRAMS 未改，13 份真实学习候选通过原哈希校验。软件完成，待真机验收。[合修验收与证据](evidence/20261125-B-batch/report.md)
+
 ---
 
-## H-04 `[!]` P0：确认现场已开启关节空间搜索（仅改配置）
+## H-04 `[~]` P0：确认现场已开启关节空间搜索（仅改配置）
 
 **位置**：现场 `HARNESS/site/plan.local.json` 中的 `fixture`。该文件不在仓库中，属于本地私有配置。
 
@@ -373,13 +383,15 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 
 **目标**：两个开关在现场均为 `true`。
 
-**待人工确认**：当前站点配置的实际取值。Codex 只读 6000D 上的 `HARNESS/site/plan.local.json`，报告这两个值；用户确认后才能修改并走发布流程。
+**原核查项（已确认，见本项执行记录）**：当前站点配置的实际取值。Codex 只读 6000D 上的 `HARNESS/site/plan.local.json`，报告这两个值；用户确认后才能修改并走发布流程。
 
 **明确不改**：`skill_services.py:365` 的 `len(attempts)>=2` 保持不变。依据是同一份实验第 256-260 行：首次失败就调用 OMPL，两例都比原顺序慢（7.164 秒对 7.872 秒，5.439 秒对 6.848 秒）。
 
+> 执行记录（2026-11-25，分支 `harness/v50-first-run`，提交 f714426）。V51 生效模板和冻结的 V52 模板中 joint_space_transport、joint_space_free_motion、native_grasp_lookahead 均为 true，沿用原有触发顺序。软件完成，待真机验收。[合修验收与证据](evidence/20261125-B-batch/report.md)
+
 ---
 
-## H-05 `[!]` P0：恢复预算的 schema 上限放宽（默认值不变）
+## H-05 `[~]` P0：恢复预算的 schema 上限放宽（默认值不变）
 
 **位置与当前代码**：
 
@@ -398,7 +410,7 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 
 **目标**：只把上限放宽为 `local_corrections le=4`、`regrasp_limit le=3`，并同步修改 `recovery_programs.py:53-56` 和 `web_snapshot.py:19`（改为 `in (0,1,2,3,4)`）。默认值保持 2 和 1，这样未改配置时 `digest(task)` 和 task_hash 都不变，历史回放兼容。
 
-**待人工确认**：
+**原决策项（已确认，见本项执行记录）**：
 
 1. 用户希望现场实际使用的取值；
 2. F1-4242 页面的修正次数选择器是否同步扩展。页面不在本规格范围内，需要另开任务。
@@ -408,9 +420,11 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 
 **风险**：同一失败会被重复更多次。总时间仍受 300 秒约束，物理保护不变。
 
+> 执行记录（2026-11-25，分支 `harness/v50-first-run`，提交 ca72c1e）。用户批准恢复预算上限 4/3。Task 代码默认 2/1，候选站点采用 2/2。任务、开发档和模板的身份同步核对；一次重抓成功即结束该重抓循环。软件完成，待真机验收。[合修验收与证据](evidence/20261125-B-batch/report.md)
+
 ---
 
-## H-06 `[ ]` P1：运输终点由单点改为孔口上方的小区域
+## H-06 `[~]` P1：运输终点由单点改为孔口上方的小区域
 
 **位置**：`HARNESS/src/f1_harness/transport.py:72-92`，`joint_transport_goal`；以及 `propose_transport` 第 135-142 行的 `object_goal`。
 
@@ -432,6 +446,8 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 3. 用 V25 困难输入回放（`HARNESS/artifacts/latency-repair-20261117/`），对比改动前后的成功率与耗时。
 
 **风险**：终点偏离孔中心最多 r，align 阶段的移动距离会变长。回滚只需还原该函数。
+
+> 执行记录（2026-11-25，分支 `harness/v50-first-run`，提交 9477941）。关节空间运输按中心与孔平面四个偏移依次检查；新旧观测按同一个偏移复核。V25 困难输入仍选中心，偏移点与新障碍由定向回归覆盖。软件完成，待真机验收。[合修验收与证据](evidence/20261125-B-batch/report.md)
 
 ---
 
@@ -514,7 +530,7 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 
 ---
 
-## H-10 `[ ]` P2：经验检索不再精确匹配 `operator_instruction`
+## H-10 `[~]` P2：经验检索不再精确匹配 `operator_instruction`
 
 **位置**：`HARNESS/src/f1_harness/memory.py:400-401`，以及第 428 行和 exploration 的 scope 比较（第 449-450 行）。
 
@@ -527,6 +543,8 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 **验收**：新增用例：两条运行指令不同、其余 scope 相同，经验能被检索到；`calibration_id` 不同则检索不到。
 
 **风险**：指令语义不同（例如目标不同）的经验可能混入；`goal` 和 `shape` 仍参与匹配。
+
+> 执行记录（2026-11-25，分支 `harness/v50-first-run`，提交 46e7ac2）。历史经验检索允许任务措辞变化，保留模拟身份、标定、形状和目标匹配；历史和当前指令各自的哈希可追溯。软件完成，待真机验收。[合修验收与证据](evidence/20261125-B-batch/report.md)
 
 ---
 
@@ -698,7 +716,7 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 
 ---
 
-## H-18 `[ ]` P1：分阶段耗时对照 20 秒预算（只告警）
+## H-18 `[~]` P1：分阶段耗时对照 20 秒预算（只告警）
 
 **位置**：`HARNESS/src/f1_harness/timing_report.py`（运行后由 `run_review.py:36-38` 生成 `timing-report.json`）。
 
@@ -709,6 +727,8 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 - 只写进报告和告警，不进入任何运行判断。这一点与 `HARNESS/AGENTS.md` “耗时预算不替代 watchdog”一致。
 
 **验收**：用一条已有 run 的 trace 生成报告，各阶段字段齐全；`grep` 确认没有任何运行路径读取 `stage_budget_s`。
+
+> 执行记录（2026-11-25，分支 `harness/v50-first-run`，提交 1dcadbd）。20 秒预算按阶段报告实际耗时、超出量、模型调用次数与等待。129 份历史记录的全程模型统计与漏斗一致；预算字段仅供事后报告。软件完成，待真机验收。[合修验收与证据](evidence/20261125-B-batch/report.md)
 
 ---
 

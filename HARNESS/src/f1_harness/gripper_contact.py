@@ -77,12 +77,65 @@ def blocked_closure(packet, *, frame_ns, after_ns, target, open_max, window_ns,
     if not np.isfinite(values).all() or np.ptp(values) > tolerance:
         return dict(result, reason='independent_gripper_still_closing')
     # Quantization is a sensor property. A closed empty gripper at the commanded
-    # endpoint is indistinguishable from a thin object; leave that to vision.
+    # endpoint does not demonstrate blockage by the registered sorting block.
     resolution = packet.get('position_resolution', 100/255)
     if (values.min() <= open_max or target <= open_max
             or values.max() >= target-max(tolerance, 2*resolution)):
         return dict(result, reason='independent_gripper_no_blocked_closure')
     return dict(result, accepted=True, reason='measured_blocked_closure')
+
+
+class GraspClosureEpisode:
+    """Bind fresh CAN decisions to one published close; a release retires that close."""
+
+    def __init__(self):
+        self.key = None
+        self.source = None
+        self.first_hold_ns = None
+        self.retired = None
+
+    def measure(self, observation, context, config, *, at_ns):
+        contact = context.get('grasp_contact') or {}
+        key = tuple(context.get(k) for k in (
+            'owner_instance_id', 'session_id', 'task_id', 'task_generation', 'epoch')) + (
+            contact.get('request_id'), contact.get('published_ns'), observation.host_boot_id)
+        if key != self.key or not context.get('authorized'):
+            self.key, self.source, self.first_hold_ns, self.retired = key, None, None, None
+        packet = observation.measured_gripper
+        age = config['measured_gripper_max_age_ns']
+        opening = max(config['gripper_open_range'])
+        position = fresh_position(packet, frame_ns=at_ns, max_age_ns=age, boot_id=observation.host_boot_id)
+        open_now = position is not None and position <= opening
+        if (not context.get('authorized') or not contact.get('request_id')
+                or contact.get('object_id') != config['object_id'] or at_ns <= contact['published_ns']):
+            return dict(held=False if open_now else None, accepted=False,
+                        reason='gripper_open' if open_now else 'measured_contact_scope_or_time_mismatch')
+        proof = blocked_closure(packet, frame_ns=at_ns, after_ns=contact['published_ns'],
+            target=contact['target_closure'], open_max=opening, window_ns=config['stationary_window_ns'],
+            tolerance=config['gripper_stationary_delta'], max_age_ns=age, boot_id=observation.host_boot_id)
+        proof.update(request_id=contact['request_id'], held=None)
+        if position is None:
+            return proof
+        samples = packet.samples
+        if self.source is not None and packet.source_instance != self.source:
+            self.retired = 'gripper_source_changed_after_close'
+        elif self.first_hold_ns is not None and any(
+                row.time_valid and self.first_hold_ns < row.received_ns-row.queue_delay_ns <= at_ns
+                and row.closure_percent <= opening for row in samples):
+            self.retired = 'physical_opening_after_hold'
+        empty = proof['reason'] == 'independent_gripper_no_blocked_closure' and not open_now
+        if empty:
+            self.retired = 'measured_empty_closure'
+        if self.retired:
+            return dict(proof, accepted=False, held=False if open_now or empty else None, reason=self.retired)
+        if proof['accepted']:
+            self.source = packet.source_instance
+            if self.first_hold_ns is None:
+                self.first_hold_ns = proof['last_ns']
+            proof['held'] = True
+        elif open_now:
+            proof.update(held=False, reason='gripper_open')
+        return proof
 
 
 def target_in_closure_region(relative, expected, box, tolerance):

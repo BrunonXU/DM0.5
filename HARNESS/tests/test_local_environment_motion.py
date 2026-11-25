@@ -82,6 +82,57 @@ def test_read_context_survives_missing_or_closed_gripper_but_motion_does_not(clo
         service._scene(obs,[0.]*22,state,skill='move_tcp')
 
 
+@pytest.mark.parametrize("visible_hole",[True,False])
+def test_held_partial_geometry_keeps_each_entity_and_only_admits_passive_observation(tmp_path,visible_hole):
+    from f1_harness.engine import TaskEngine
+    from f1_harness.evidence import EvidenceStore
+    from f1_harness.skill_services import VerifyService
+    service,obs,intent,clock=partial_setup()
+    engine=TaskEngine(EvidenceStore(tmp_path),mode='hardware',clock=lambda:clock[0])
+    session=engine.open_session()['session_id']
+    engine.prepare_task(session,service.task.model_dump())
+    engine.hardware_ready=True;engine.local_start(physical_event=True,feedback_healthy=True)
+    engine.completed_skills.add('inspect_in_hand')
+    obj=obs.objects[0].model_copy(update=dict(held=True))
+    hole=obj.model_copy(update=dict(object_id=service.task.hole_id,held=None,
+        pose=tuple(np.eye(4).ravel()),stationary=True))
+    objects=(obj,hole) if visible_hole else (obj,)
+    obs=obs.model_copy(update=dict(objects=objects,host_boot_id=engine.host_boot_id))
+    intent=intent.model_copy(update=dict(session_id=session,owner_instance_id=engine.instance,epoch=engine.epoch))
+    engine.update_observation(obs)
+    ctx=service.dispatch('geometry_context',dict(observation=obs.model_dump(),
+        full22=[0.]*22,held16=list(obs.state16)))
+    assert ctx['object_held'] is True and ctx['object_pose'] is None
+    assert ctx['hole_pose']==(list(hole.pose) if visible_hole else None)
+    assert ctx['available_skills']==['reobserve'] and ctx['cartesian_motion'] is False
+    assert {m['role'] for m in ctx['missing_entities']}==(
+        {'target_object'} if visible_hole else {'target_object','aperture'})
+
+    refresh=intent.model_copy(update=dict(skill='reobserve',parameters=MotionParameters()))
+    require_planning_geometry(obs,intent=refresh,task=service.task,now_ns=clock[0],max_age_ns=500_000_000)
+    assert engine.prepare_skill(refresh.model_dump())['ready']
+    assert engine.submit_skill(refresh.model_dump())['lifecycle']=='accepted'
+    assert engine.take_pending().skill=='reobserve'
+    verifier=VerifyService.__new__(VerifyService);verifier.task=service.task
+    result=verifier._verify_observation(refresh,obs)
+    assert result.outcome=='success'
+    engine.complete(refresh.request_id,result)
+    assert engine.request_publications=={}
+    for skill,reason in [('align','full_scene_required_for_motion'),('move_tcp','cartesian_motion_attachment_unknown')]:
+        attempt=intent.model_copy(update=dict(skill=skill,request_id=skill+'-partial',
+            parameters=intent.parameters if skill=='move_tcp' else MotionParameters()))
+        with pytest.raises(HarnessError,match=reason):
+            engine.prepare_skill(attempt.model_dump())
+    with pytest.raises(HarnessError,match='unloaded_world_observation_motion'):
+        service._scene(obs,[0.]*22,list(obs.state16),skill='move_tcp')
+
+    mismatch=obs.model_copy(update=dict(local_collision_evidence=obs.local_collision_evidence.model_copy(
+        update=dict(measured_at_ns=obs.received_ns+1))))
+    with pytest.raises(HarnessError,match='local_environment_binding_mismatch'):
+        service.dispatch('geometry_context',dict(observation=mismatch.model_dump(),
+            full22=[0.]*22,held16=list(obs.state16)))
+
+
 def test_depth_hole_is_unknown_and_fine_pixels_can_resolve_a_coarse_tile():
     service,obs,intent,_=partial_setup()
     scene=service._scene(obs,[0.]*22,obs.state16,skill='move_tcp')

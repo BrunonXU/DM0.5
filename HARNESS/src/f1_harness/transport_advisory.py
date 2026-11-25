@@ -2,7 +2,6 @@
 from dataclasses import replace
 import numpy as np
 
-from .candidate_failures import CANDIDATE_FAILURES
 from .contracts import HarnessError, MotionParameters
 from .geometry import transform
 from .owner_bridge import numerical_failure_detail
@@ -10,6 +9,7 @@ from .skills import candidate_variants
 
 
 def native_transport_advisory(service,intent,scene,grasp,full,deadline_ns):
+    from .skill_services import CANDIDATE_FAILURES
     report=dict(status='unavailable',predicted_attachment_only=True,
         source='predicted_native_grasp_endpoint',motion_authorized=False,
         actual_transfer_requires_new_measurements=True,checked_variants=[],feasible_variant=None)

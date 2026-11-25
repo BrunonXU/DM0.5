@@ -1,6 +1,9 @@
 import hashlib
 import json
 import threading
+from copy import deepcopy
+from types import SimpleNamespace
+import numpy as np
 
 from f1_harness.evidence import EvidenceStore, FrameCache
 from f1_harness.scene_failures import SceneFailureRecorder
@@ -172,3 +175,88 @@ def test_early_failures_reserve_existing_budget_for_transport(tmp_path):
         assert writer.status()['accepted']==5
     finally:writer.close()
     assert any(r['context']['phase']=='transfer_above_hole' for r in saved(store))
+
+
+def test_post_transport_partial_keeps_one_synchronized_diagnostic(tmp_path,monkeypatch):
+    from f1_harness.contracts import SceneObject
+    from test_phase_live_scene import observer
+    live,verified=observer(monkeypatch)
+    cache=FrameCache();original=live.raw.observe();frames=[]
+    for camera in ('head','right','left'):
+        for f in original.frames:
+            if camera=='left' and f.stream=='depth':continue
+            frames.append(f.model_copy(update=dict(camera=camera,frame_id=camera+'_wrist_color_optical_frame',
+                blob_sha256=cache.put_blob((camera+f.stream).encode()),camera_info_sha256=cache.put_blob(f.stream.encode()))))
+    pairs=tuple(original.pairings[0].model_copy(update={'camera':c}) for c in ('head','right'))
+    raw=original.model_copy(update=dict(host_boot_id='boot',frames=tuple(frames),pairings=pairs))
+    live.raw.observe=lambda:raw
+    live.raw.store=cache
+    view=dict(rgb_info_sha256=cache.put_blob(b'rgb'),depth_info_sha256=cache.put_blob(b'depth'))
+    live.config['geometry']=dict(view,camera='right',hole_camera=dict(view,camera='head'),object_id='block',hole_id='hole',calibration_id='test-cal',
+        cross_view_aperture=dict(max_pair_skew_ns=50_000_000))
+    live.head_model=SimpleNamespace(pose=lambda full:np.eye(4))
+    original_call=live.owner.call
+    def call(method,**kwargs):
+        value=original_call(method,**kwargs)
+        if method=='status':
+            value['perception_context'].update(authorized=True,phase='inspect_in_hand',task_id='field')
+            value['completed_skills']=['transfer_above_hole']
+        if method=='measured_feedback':value['host_boot_id']='boot'
+        return value
+    live.owner.call=call
+    def process(obs,**kw):
+        wrist=tuple(f for f in obs.frames if f.camera=='right')
+        target=SceneObject(object_id='block',shape='square',held=True,pose=tuple(np.eye(4).ravel()),
+            eef_object_pose=tuple(np.eye(4).ravel()),evidence_ids=tuple(f.blob_sha256 for f in wrist))
+        return obs.model_copy(update=dict(objects=(target,),frames=wrist,pairings=(pairs[1],),
+            calibration_id='test-cal',geometry_scope='coarse_object_verification',quality_warnings=('fixture_unavailable:aperture_not_detected',)))
+    live.pipeline.process=process
+    writer=live.failure_recorder=SceneFailureRecorder(EvidenceStore(tmp_path))
+    try:
+        early=inputs(cache)
+        for i in range(7):
+            if i==4:early['context']['phase']='inspect_in_hand'
+            assert writer.offer('ordinary'+str(i),early,cache.blob)
+            writer.queue.join()
+        assert not writer.offer('other',early,cache.blob)
+        live._sample()
+        assert len(live.ingested)==len(verified)==1 and {f.camera for f in live.latest.frames}=={'right'}
+        writer.queue.join()
+        assert not writer.offer_held_aperture(live.failure_input,live.latest,cache.blob,now_ns=4,max_age_ns=500_000_000)
+    finally:writer.close()
+    records=saved(writer.store);assert len(records)==8
+    matched=[r for r in records if 'held_aperture' in r]
+    assert len(matched)==1
+    row=matched[0]
+    assert row['complete'] and row['diagnostic_only'] and row['reason']=='fixture_unavailable:aperture_not_detected'
+    assert {f['camera'] for f in row['held_aperture']['owner_frames']}=={'right'}
+    assert row['held_aperture']['target']['held'] is True and len(row['observation']['frames'])==5
+    assert row['base_eef']==row['head_camera_pose']==np.eye(4).tolist() and row['held_aperture']['matched_window_ns']==0
+    assert all(writer.archive.blob(f['blob_sha256'])==cache.blob(f['blob_sha256']) for f in row['observation']['frames'])
+
+    other=SceneFailureRecorder(EvidenceStore(tmp_path/'controls'))
+    try:
+        def offer(snapshot=None,scene=None,lookup=None,now=4):
+            return other.offer_held_aperture(snapshot or live.failure_input,scene or live.latest,
+                lookup or cache.blob,now_ns=now,max_age_ns=500_000_000)
+        for fault in ('missing_left','wrong_skew','wrong_image_id','missing_fk','feedback_epoch','calibration','missing_camera_time'):
+            sample=deepcopy(live.failure_input)
+            if fault=='missing_left':sample['observation']['frames']=sample['observation']['frames'][:-1]
+            if fault=='wrong_skew':sample['observation']['frames'][-1]['received_ns']+=51_000_000
+            if fault=='wrong_image_id':sample['observation']['observation_id']='another'
+            if fault=='missing_fk':sample['base_eef']=None
+            if fault=='feedback_epoch':sample['camera_feedback']['head']['host_boot_id']='old'
+            if fault=='calibration':sample['observation']['frames'][0]['camera_info_sha256']='9'*64
+            if fault=='missing_camera_time':sample['observation']['frames'][0]['source_ns']=None
+            assert not offer(sample),fault
+        assert not offer(now=600_000_000)
+        obj=live.latest.objects[0].model_copy(update=dict(held=None))
+        assert not offer(scene=live.latest.model_copy(update={'objects':(obj,)}))
+        assert not offer(lookup=lambda sha:None)
+        assert other.status().get('accepted',0)==0
+        assert offer(lookup=lambda sha:b'wrong contents')
+        other.queue.join()
+        assert other.status()['held_aperture_write_failures']==1 and other.status()['reserved_bytes']==0
+        assert not saved(other.store)
+        assert offer()
+    finally:other.close()

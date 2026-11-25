@@ -37,6 +37,7 @@ UNPUBLISHED_SCENE_REASONS=frozenset(prefix+code for prefix in
     ('plan_revalidation_rejected:','revalidation_proof_rejected:') for code in UNPUBLISHED_SCENE_CODES)
 UNPUBLISHED_REPLAN_REASONS=UNPUBLISHED_FRESHNESS_REASONS | UNPUBLISHED_SCENE_REASONS | {'owner_candidate_rejected'}
 REPLANNABLE_SKILLS = MOTION_SKILLS
+VERIFICATION_RECHECK_LIMIT = 6
 
 
 class TaskEngine:
@@ -291,7 +292,7 @@ class TaskEngine:
             checkpoint = self.verification_checkpoints.get(intent.verification_request_id)
             if (not checkpoint or checkpoint['skill'] != intent.skill
                     or checkpoint['epoch'] != self.epoch or checkpoint['task_hash'] != digest(self.task)
-                    or checkpoint['attempts'] >= self.task.local_corrections
+                    or checkpoint['attempts'] >= VERIFICATION_RECHECK_LIMIT
                     or checkpoint.get('claimed_by') not in (None, intent.request_id)):
                 raise HarnessError('verification_checkpoint_or_budget_invalid')
         if intent.resume_request_id:
@@ -396,7 +397,12 @@ class TaskEngine:
         from .local_environment import local_scope,require_local_evidence
         local_observation_motion=local_scope(obs) and intent.skill in ('move_tcp','reobserve')
         if obs.geometry_scope=='coarse_local_environment' or local_observation_motion:
-            require_local_evidence(self.task,obs)
+            require_local_evidence(self.task,obs,motion=intent.skill=='move_tcp')
+            # A stationary read can report a confirmed hold without a fitted
+            # object pose. Manipulation still needs the attachment geometry.
+            if (intent.skill not in ('move_tcp','reobserve') and
+                    any(o.object_id==self.task.object_id and o.held is True for o in obs.objects)):
+                raise HarnessError('full_scene_required_for_motion')
             if (intent.skill not in ('move_tcp','reobserve') or intent.skill=='move_tcp' and (
                     intent.parameters.target_frame!='world' or intent.parameters.support_contact
                     or self.attempted_motion.intersection(('grasp','regrasp','recover_grasp'))

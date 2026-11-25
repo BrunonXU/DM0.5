@@ -39,9 +39,9 @@
 
 最新推理框架、RTC参数、延迟对比、执行频率及平滑细节统一查阅[任务推理主文档](tasks/F1_ComplexyToys/INFERENCE_RECIPE.md)；维护规则见[任务AGENTS](tasks/F1_ComplexyToys/AGENTS.md#f1_inference_current-当前推理文档)。讨论或修改本任务推理时先读此tag，运行状态与完整命令分别以任务STATUS和STARTUP为准，不把旧实验配置当当前默认。
 
-## 最近在做什么（2026-11-04）
+## 最近在做什么（2026-11-25）
 
-- **F1 Harness（2026-11-04）**：用户指定的 HARNESS 已建立固定上游与实施方案，复用现有控制、推理和录制；下一步只读回放与标定准备，尚无机器人闭环。见 [HARNESS 状态](HARNESS/agent/STATUS.md)及[人类方案](HARNESS/docs/IMPLEMENTATION_PLAN.md)。
+- **F1 Harness（2026-11-25）** V52 在用，正式网关已取得双相机 RGB-D 与关节反馈。左臂第 2 关节读数约 −94.15°，超出现场下限 −94°。三维场景仍待验，暂停 4242 开始任务，现场核对姿态后先复测。[HARNESS 状态](HARNESS/agent/STATUS.md)
 - **F1 RLT（2026-11-03）**：控制V45已部署，Windows整包待安装；13条可信数据重建、清洁BC/Q与异步预检完成，尚无真机能力改善结论。下一步短条及固定版本对照，见[任务状态](tasks/F1_ComplexyToys/STATUS.md)。
 - **工作区整理（2026-10-23）**：历史项目已移至同级Archive，工具至Tools，OpenPI/LeRobot至Libraries并加入同一工作区；Whereweare继续搁置；泡沫派生载荷清理51.64 GiB，F1积木两套模型包完整保留。后续H20源码包已排除重复教学产物，范围与回执见[Projects首页](README.md)。
 - **文档与Why&How（2026-10-21）**：F1入口按当前进度、操作配方、原理教学和历史证据排序；任务规则采用按需读取与交接更新，见[任务首页](tasks/F1_ComplexyToys/README.md)。

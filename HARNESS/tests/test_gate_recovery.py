@@ -5,6 +5,7 @@ import pytest
 from f1_harness.observation import ObservationBuffer, require_geometry
 from f1_harness.contracts import HarnessError, Task, SkillIntent, digest
 from f1_harness.skill_services import PlanService
+from f1_harness.remote import OBSERVATION_READINESS_S
 from test_observation import frame
 from test_remote_readiness import backend
 from test_full_development_scene import full_scene, sample
@@ -40,14 +41,15 @@ def test_missing_observation_returns_before_long_task_budget(monkeypatch):
     b=backend(monkeypatch,[False]*310+[True]);b.task_deadline=60.
     result=b.execute_tool('execute_skill',{'name':'approach_grasp'})
     assert result['outcome']=='pending_review' and result['no_motion'] and not b.submissions
-    assert b.clock.value==pytest.approx(4.) and b.task_deadline==60.
+    assert OBSERVATION_READINESS_S == 15.
+    assert b.clock.value==pytest.approx(OBSERVATION_READINESS_S) and b.task_deadline==60.
 
 
 def test_total_budget_exhaustion_is_review_without_submission(monkeypatch):
     b=backend(monkeypatch,[False]);b.task_deadline=45.
     result=b.execute_tool('execute_skill',{'name':'approach_grasp'})
     assert result['outcome']=='pending_review' and result['no_motion'] and not b.submissions
-    assert b.clock.value==pytest.approx(4.) and b.task_deadline==45.
+    assert b.clock.value==pytest.approx(OBSERVATION_READINESS_S) and b.task_deadline==45.
 
 
 def test_head_sampling_fault_cannot_admit_motion_but_allows_wrist_verification():

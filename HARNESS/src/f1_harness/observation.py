@@ -11,6 +11,23 @@ from pathlib import Path
 from .contracts import Frame, Observation, Pairing
 
 
+OBSERVATION_WINDOW_S = 4.
+
+
+def measured_alignment_pair(observation, task):
+    """Direct aperture and held-block poses on this measurement, before planning."""
+    if observation.geometry_scope not in ('coarse_static_task', 'precision') or observation.faults:
+        return False
+    target = next((o for o in observation.objects if o.object_id == task.object_id), None)
+    hole = next((o for o in observation.objects if o.object_id == task.hole_id), None)
+    if (target is None or not target.visible or target.held is not True or not target.evidence_ids
+            or target.pose is None or target.eef_object_pose is None
+            or hole is None or not hole.visible or hole.pose is None):
+        return False
+    head = {f.stream: f.blob_sha256 for f in observation.frames if f.camera == 'head'}
+    return all(head.get(stream) and head[stream] in hole.evidence_ids for stream in ('rgb', 'depth'))
+
+
 class ObservationBuffer:
     def __init__(self, *, source_clock_verified: bool = False, max_skew_ns: int = 20_000_000,
                  capacity: int = 8, common_camera_window_ns: int | None = None, clock=time.monotonic_ns):

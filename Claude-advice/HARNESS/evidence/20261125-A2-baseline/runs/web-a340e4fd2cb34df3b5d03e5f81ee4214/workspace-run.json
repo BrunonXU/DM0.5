@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "id": "anon-a41473ac372b309555b5e1e6",
+  "started_at": 1794983237.4947445,
+  "started_ns": 2926469914455898,
+  "status": "review",
+  "config": {
+    "mode": "astra",
+    "instruction": "[redacted]",
+    "corrections": 1,
+    "note": "[redacted]"
+  },
+  "config_revision": "anon-99468b99dec1b173afded5fd",
+  "summary": "[redacted]",
+  "request": {
+    "task_id": "square_block",
+    "config_revision": "anon-99468b99dec1b173afded5fd",
+    "config": {
+      "mode": "astra",
+      "instruction": "[redacted]",
+      "corrections": 1,
+      "note": "[redacted]"
+    }
+  },
+  "restart_requires_stationary": false,
+  "recovery_of": null,
+  "stop_confirmation": "measured_stationary",
+  "ended_at": 1794983430.9739776
+}

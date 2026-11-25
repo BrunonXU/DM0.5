@@ -1,0 +1,61 @@
+{
+  "scope": "network and zero-motion observation follow-up, not an additional field task",
+  "date": "2026-11-25",
+  "release": 52,
+  "bundle_id": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",
+  "base": "23ae84d9193f28766847b8c118486eaad8b48459",
+  "originals": "HARNESS/artifacts/v53-camera-base-investigation/ unless specified",
+  "temporary_sam_tunnel_closed": true,
+  "production_sam_healthy_after_cleanup": true,
+  "sam_route_receipt_sha256": "90e659963eafacf165b34d253141f255bc579f879f9ce030a3d6093dd0cab1b3",
+  "files": [
+    {
+      "file": "connectivity.json",
+      "bytes": 1867,
+      "sha256": "c795a9f8349355a55bb5c0ff34102bfde213bafe4de39a4eabf7518872de7ec4",
+      "source": "network-first.json, robot-link.txt, robot-stability.txt"
+    },
+    {
+      "file": "camera-environments.json",
+      "bytes": 8310,
+      "sha256": "aa8c0cdb8d731ca9f1d09bfd8e5f2647e672618f2b0fa6583bf875d7df593011",
+      "source": "dds-first-comparison/*"
+    },
+    {
+      "file": "historical.json",
+      "bytes": 9017,
+      "sha256": "892f3db188886ce887827f5f5d8c41c5f574841de7deba9f34aa529994a7f89b",
+      "source": "historical/summary.json, historical/arm-window.json"
+    },
+    {
+      "file": "gateway-checks.json",
+      "bytes": 10474,
+      "sha256": "5a11fe1bd2d4a71ab56bf0af77d7b137c057159220c4a25dbf7b8076d151814d",
+      "source": "v52-formal-{service-a,cyclone-b,service-c}/{result.json,remote-events.json}, field-run-joint-comparison.json, 4242-state.json"
+    },
+    {
+      "file": "joint-topic.json",
+      "bytes": 5042,
+      "sha256": "3f29fc8a10a4f77b572e2a2cd29bfbea77c0c0c94281ff4f1961e12546cab214",
+      "source": "joint-topic-raw.json and owner-joint-profile.json"
+    },
+    {
+      "file": "qualify_gateway.py",
+      "bytes": 20852,
+      "sha256": "7d8fc9fcf21fd4fedc3f87935fb26499a9f7f6dee398f6404f4a470eb5b69289",
+      "source": "HARNESS/artifacts/first-field-v52-20261125/qualify_gateway.py; ARM-side diagnostic, use the active frozen bundle and saved site"
+    },
+    {
+      "file": "readonly_frames.py",
+      "bytes": 9029,
+      "sha256": "3fc9e66ed193e937a0583bfb002942fd57055a32ece44f36dbe5a5024ba15446",
+      "source": "HARNESS/artifacts/first-field-v52-20261125/readonly_frames.py; run in original 6000D artifact layout"
+    },
+    {
+      "file": "report.md",
+      "bytes": 4872,
+      "sha256": "dfe87c3f6eb3010af9e038be8c7898d2882fe476f4d9ec6f8cce5e89024382bd",
+      "source": "network, historical, DDS and native gateway checks"
+    }
+  ]
+}

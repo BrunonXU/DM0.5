@@ -1,0 +1,47 @@
+{
+  "schema": "f1-funnel-reasons-v1",
+  "scope": "离线统计。只分类控制端 skill_result 中 outcome=failure 且 no_motion=true 的拒绝。分类表的调整不参与授权、规划和执行。",
+  "source": "Claude-advice/HARNESS/review-acceptance.md §二；V50 revalidation.py、owner_bridge.py、live_scene.py、engine.py；截至 2026-11-25 的历史 owner trace。",
+  "default": "nonphysical",
+  "physical_exact": [
+    "feedback_expired",
+    "not_authorized",
+    "owner_feedback_missing",
+    "owner_or_epoch_mismatch",
+    "plan_revalidation_rejected:revalidation_actual_path_sweep_blocked",
+    "plan_revalidation_rejected:scene_sweep_blocked",
+    "preview_feedback_expired",
+    "revalidation_actual_path_sweep_blocked",
+    "scene_sweep_blocked",
+    "session_mismatch",
+    "skill_not_authorized"
+  ],
+  "physical_prefix": [
+    "feedback_expired:",
+    "plan_revalidation_rejected:scene_sweep_blocked:",
+    "scene_sweep_blocked:"
+  ],
+  "nonphysical_exact": [
+    "numerical_plan_rejected:numerical_stage_failed",
+    "numerical_plan_rejected:planning_measurements_expired",
+    "plan_revalidation_rejected:ValueError",
+    "plan_revalidation_rejected:revalidation_camera_identity_changed",
+    "plan_revalidation_rejected:revalidation_endpoint_outside_remaining_clearance",
+    "plan_revalidation_rejected:revalidation_fixture_changed",
+    "plan_revalidation_rejected:revalidation_goal_changed",
+    "plan_revalidation_rejected:revalidation_measurements_expired",
+    "plan_revalidation_rejected:revalidation_object_or_hole_changed",
+    "plan_revalidation_rejected:revalidation_scene_evidence_changed",
+    "plan_revalidation_rejected:revalidation_scene_object_set_changed",
+    "revalidation_proof_rejected:revalidation_attachment_changed",
+    "revalidation_proof_rejected:revalidation_live_scene_invalidated",
+    "revalidation_proof_rejected:revalidation_proof_expired"
+  ],
+  "interpretation": {
+    "physical": "指标约定排除的授权失效、实时反馈丢失、实际限位、碰撞或路径扫掠失败。对受测路径的几何拒绝不证明实物发生了碰撞。",
+    "unknown": "未列出、缺失或原因不足以确认时计入非物理。在新布局中遇到新的物理证据时，先核原始记录，再用同一版分类表重算前后数据。",
+    "plan_revalidation_rejected:revalidation_camera_identity_changed": "此码同时覆盖可选相机集合变化和真实身份变化。单凭该码不能确认物理原因。相机内参、标定、时钟域保护仍由原控制端执行。",
+    "plan_revalidation_rejected:revalidation_endpoint_outside_remaining_clearance": "V50 在已扫掠路段后比较候选端点与新目标是否满足 _near。此码不证明实物碰撞或实际路径扫掠被障碍挡住。",
+    "evidence_changes": "夹持、对象、场景或测量发生变化须重新取证。原因码本身不足以证明实际限位、碰撞、实时反馈失联或授权失效。"
+  }
+}

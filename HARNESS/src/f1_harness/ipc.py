@@ -35,6 +35,14 @@ def send(sock, value, maximum=MAX_MESSAGE):
     sock.sendall(struct.pack("!I", len(data)) + data)
 
 
+# Allow each read-only geometry hop to relay the downstream timeout. Motion
+# planning, ordinary status reads and task-specific recovery retain their budgets.
+GEOMETRY_FK_TIMEOUT_S = 5.
+GEOMETRY_NUMERICAL_TIMEOUT_S = 8.
+GEOMETRY_OWNER_TIMEOUT_S = GEOMETRY_NUMERICAL_TIMEOUT_S + 1.
+GEOMETRY_HTTP_TIMEOUT_S = GEOMETRY_OWNER_TIMEOUT_S + 1.
+
+
 class UnixClient:
     def __init__(self, path: Path, *, timeout=15., maximum=MAX_MESSAGE, scene_evidence=False):
         self.scene_evidence = scene_evidence

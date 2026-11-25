@@ -48,10 +48,17 @@ class SandboxedArm:
             call = dict(ordinal=len(execution['calls']), name=kwargs['name'],
                         input_sha256=execution['store'].put_blob(json.dumps(
                             kwargs['input_dict'], sort_keys=True, allow_nan=False).encode()))
+            # Only the frozen wrapper's initial geometry read supplies applicable().
+            # Later reads originate in run_skill and keep the full geometry contract.
+            target_state=(call['ordinal']==0 and kwargs=={'name':'geometry_context','input_dict':{}}
+                          and execution.get('target_presence') and
+                          callable(getattr(self.backend,'read_program_target_state',None)))
+            if target_state:call['projection']='target_presence'
             execution['calls'].append(call)
             execution['store'].event('program_backend_call', **execution['identity'], **call)
         try:
-            result = getattr(self.backend, method)(**kwargs)
+            result = (self.backend.read_program_target_state() if execution is not None and target_state
+                      else getattr(self.backend, method)(**kwargs))
         except Exception as exc:
             if execution is not None:
                 call['exception_type'] = type(exc).__name__
@@ -142,7 +149,7 @@ class SandboxedArm:
         deliberately makes no verification or automatic-promotion decision.
         """
         import uuid
-        from .program_experience import validate_candidate, invocation_code
+        from .program_experience import validate_candidate, invocation_code, uses_only_target_presence
         candidate = validate_candidate(value)
         code = invocation_code(candidate)
         if self._program_execution is not None:
@@ -152,7 +159,7 @@ class SandboxedArm:
                         source_blob_sha256=store.put_blob(candidate['source'].encode()),
                         call_id=call_id, model_request_id=request_id,
                         origin='sandbox_host')
-        execution = dict(identity=identity, store=store, calls=[])
+        execution = dict(identity=identity, store=store, calls=[],target_presence=uses_only_target_presence(candidate))
         store.event('program_execution_started', **identity, verified=False)
         self._program_execution = execution
         status = 'worker_failed'

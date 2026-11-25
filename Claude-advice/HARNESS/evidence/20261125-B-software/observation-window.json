@@ -1,0 +1,133 @@
+{
+  "schema": "f1-harness-h02-observation-window-v1",
+  "software_commit": "5996b411340bc1ec25b3e22be3f75dcf10867af2",
+  "test_mode": "offline; archived geometry, recorded historical clocks, and simulated deadline tests",
+  "new_hardware_outputs": 0,
+  "prospective_field_result": null,
+  "latest_field_timeout": {
+    "run_id": "web-99cece4568cd41f7b96a0810ed879cc0",
+    "registered_version": 47,
+    "source": {
+      "owner": {
+        "workspace_path": "HARNESS/runs/workspace/web-99cece4568cd41f7b96a0810ed879cc0/collected/owner/harness/trace.jsonl",
+        "sha256": "8a6a8870936a4b9940bfd017a3a017ecb72ea8987ba9ba74f5ff74545e1754e1"
+      },
+      "planner": {
+        "workspace_path": "HARNESS/runs/workspace/web-99cece4568cd41f7b96a0810ed879cc0/planner/trace.jsonl",
+        "sha256": "676cfa3ff21c6dbb08124aafecb42d5bee46cdb6162532444143de086d7f2cb2"
+      }
+    },
+    "skill": "transfer_above_hole",
+    "original_request_state": "motion_stalled; resume_request_id refers to a partially executed transfer",
+    "waited_s": 4.000061,
+    "saved_frame_sequence": 123,
+    "saved_frame_at_s": 4.236393,
+    "geometry_scope": "coarse_object_verification",
+    "owner_scope": "epoch 1; frame received after web_authorization and before first authority_revoked",
+    "per_read_owner_clock_and_status_saved": false,
+    "v50_geometry_identity_result": "coarse_geometry_cannot_authorize_precision_task",
+    "same_skill_ready_by_15s": "not demonstrated; the only saved frame still fails"
+  },
+  "all_history_screen": {
+    "selection": "Planner observation_readiness_timeout with waited_ms between 3800 and 4300 and the next non-owner/non-wait event a task_needs_attention citing observation_readiness_timeout. Geometry evaluated against that event's skill and owner checkpoint type; observation time is planner time relative to acquisition start.",
+    "explicit_handoffs": 35,
+    "excluded_missing_owner_trace": 11,
+    "paired_handoffs": 24,
+    "with_saved_frame_before_15s": 6,
+    "without_saved_frame_before_15s": 18,
+    "same_skill_geometry_passes": 0,
+    "observed_geometry_reasons": {
+      "coarse_geometry_cannot_authorize_precision_task": 5,
+      "aperture_measurement_required:square-hole-1:secondary_camera_pairing_unavailable": 1
+    },
+    "paired_inputs_sha256": "69e63172608991b21332e57c4545fb1bd8311b82ac037619e4dc42ad2abfc7ea",
+    "paired_inputs_hash_format": "UTF-8 sorted lines: run_id, planner timeout event_id, owner trace SHA-256, planner trace SHA-256 separated by one space, ending in newline.",
+    "samples": [
+      {
+        "run_id": "web-257a5ca2c2f24cd9967d25934447a0d8",
+        "skill": "approach_grasp",
+        "after_start_s": 4.107724,
+        "frame_sequence": 16,
+        "result": "coarse_geometry_cannot_authorize_precision_task"
+      },
+      {
+        "run_id": "web-257a5ca2c2f24cd9967d25934447a0d8",
+        "skill": "align",
+        "after_start_s": 12.333941,
+        "frame_sequence": 210,
+        "result": "aperture_measurement_required:square-hole-1:secondary_camera_pairing_unavailable"
+      },
+      {
+        "run_id": "web-99cece4568cd41f7b96a0810ed879cc0",
+        "skill": "transfer_above_hole",
+        "after_start_s": 4.236393,
+        "frame_sequence": 123,
+        "result": "coarse_geometry_cannot_authorize_precision_task"
+      },
+      {
+        "run_id": "web-a340e4fd2cb34df3b5d03e5f81ee4214",
+        "skill": "approach_grasp",
+        "after_start_s": 4.182851,
+        "frame_sequence": 14,
+        "result": "coarse_geometry_cannot_authorize_precision_task"
+      },
+      {
+        "run_id": "web-efc44a6c96c24d6681d4271129131786",
+        "skill": "approach_grasp",
+        "after_start_s": 4.338014,
+        "frame_sequence": 16,
+        "result": "coarse_geometry_cannot_authorize_precision_task"
+      },
+      {
+        "run_id": "web-efc44a6c96c24d6681d4271129131786",
+        "skill": "transfer_above_hole",
+        "after_start_s": 14.374621,
+        "frame_sequence": 162,
+        "result": "coarse_geometry_cannot_authorize_precision_task"
+      }
+    ]
+  },
+  "independent_delayed_admission": {
+    "run_id": "web-cc4c77d86e3448cb893fac00e88f9d02",
+    "registered_version": null,
+    "source": {
+      "owner": {
+        "workspace_path": "HARNESS/runs/workspace/web-cc4c77d86e3448cb893fac00e88f9d02/collected/owner/harness/trace.jsonl",
+        "sha256": "4bfc0b6279c639dc8be061a740d616866a9dd141f1e0bba14116f00bafc2ae78"
+      },
+      "planner": {
+        "workspace_path": "HARNESS/runs/workspace/web-cc4c77d86e3448cb893fac00e88f9d02/planner/trace.jsonl",
+        "sha256": "881653cb5f32190a41520e647ca9403ed4d9b0f43161bfabe70eb2d3fcc9b55c"
+      }
+    },
+    "timing": "Seconds from that read window's start, using planner monotonic time. Frame age is computed separately on the owner clock.",
+    "age_limit_ms": 500,
+    "cases": [
+      {
+        "skill": "approach_grasp",
+        "frame_sequence": 52,
+        "frame_logged_at_s": 5.63262,
+        "ready_at_s": 5.633526,
+        "age_at_owner_acceptance_ms": 359.319,
+        "confirmed_epoch": 1,
+        "before_4s_frames_failing_stationarity": 5,
+        "v50_require_geometry_at_owner_acceptance": "passed",
+        "recorded_owner_outcome": "success",
+        "recorded_owner_reason": "owner_arrival_and_fresh_scene"
+      },
+      {
+        "skill": "grasp",
+        "frame_sequence": 118,
+        "frame_logged_at_s": 4.684398,
+        "ready_at_s": 4.685194,
+        "age_at_owner_acceptance_ms": 298.151,
+        "confirmed_epoch": 1,
+        "before_4s_frames_failing_stationarity": 6,
+        "v50_require_geometry_at_owner_acceptance": "passed",
+        "recorded_owner_outcome": "pending_review",
+        "recorded_owner_reason": "numerical_plan_rejected:registered_candidates_exhausted"
+      }
+    ]
+  },
+  "scope": "Window coverage of material already recorded. The two independent admissions do not establish that a longer window fixes the latest transfer or predicts physical success."
+}

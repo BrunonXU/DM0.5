@@ -13,6 +13,7 @@ from .images import decode_cached as decode
 from .scene import object_from_mask
 from .conditions import object_measurement_recoverable
 from .gripper_state import observed_open
+from .gripper_contact import GraspClosureEpisode, target_in_closure_region
 
 
 class SecondaryCameraUnavailable(ValueError):
@@ -37,7 +38,7 @@ class CalibratedScenePipeline:
         self.not_in_hand_reference=None
         self.in_hand_gripper=None
         self.contact_attachment=None
-        self.consumed_contact_requests=set()
+        self.grasp_closure=GraspClosureEpisode()
         self.gripper_seen=None
         self.in_hand_quarantine=None
         self.in_hand_recovery_deadline_ns=None
@@ -55,6 +56,7 @@ class CalibratedScenePipeline:
         self.live_hole=None
         self.live_fixture_anchors=None
         self.measured_fixture=None
+        self.lid_registration=None
         self.search_hint=None
         self.return_history=deque(maxlen=256)
         self.return_stamps=None
@@ -203,7 +205,9 @@ class CalibratedScenePipeline:
         rectified=time.perf_counter()
         masks=self._segment_view(rgb,observation,config['camera'],search_boxes)
         result=(depth,evidence,masks)
-        self.secondary_cache=(key,result)
+        # Keep the rectified pixels with their validated RGB-D identity. A
+        # second current-frame measurement can use them without another decode.
+        self.secondary_cache=(key,result,rgb)
         return (*result,dict(head_view_ms=(rectified-start)*1000,
             head_mask_ms=(time.perf_counter()-rectified)*1000,head_cache_hit=False))
 
@@ -219,6 +223,59 @@ class CalibratedScenePipeline:
             return source_bound(rgb,view=camera,source=source,boxes=boxes)
         return (self.segment.with_search_boxes(rgb,view=camera,boxes=boxes) if boxes
                 else self.segment(rgb,view=camera))
+
+    def _locate_bucket_for_object(self, observation, object_camera, head_view):
+        """Register a bucket body against this observation's head RGB-D and FK."""
+        from .fixture_tracking import locate_fixture, locate_unprompted_bucket
+        depth,evidence,masks=head_view
+        cfg=self.config
+        camera=cfg['hole_camera']
+        anchors=self.occlusion['anchors']
+        registration=camera,self.fixture_reference_camera,cfg['base_hole'],anchors
+        from .lid_registration import LidRegistration
+        current={(f.camera,f.stream):f.blob_sha256 for f in observation.frames}
+        calibrated_head=camera['camera']=='head' and cfg.get('measured_head_pose')
+        current_head=(calibrated_head and self.secondary_cache is not None and self.secondary_cache[1][1]==evidence
+            and evidence==(current.get(('head','rgb')),current.get(('head','depth'))))
+        rgb=self.secondary_cache[2] if current_head else None
+        tolerance=cfg['planning_margin_m']
+        measured_anchors=None
+        try:
+            pose,measured_anchors,details=locate_fixture(depth,masks,*registration,identity_tolerance_m=tolerance)
+        except ValueError as exc:
+            if (not calibrated_head or object_camera!='right'
+                    or not str(exc).startswith('fixture_relocalization_anchor_missing:')):
+                raise
+            if not current_head:
+                raise ValueError('bucket_landmark_frame_identity_changed') from exc
+            # The contour fallback must not replace contradictory prompted identities.
+            prompted=any(key in masks and np.any(masks[key]) for key in (*anchors,cfg['hole_id']))
+            if not prompted:
+                try:
+                    pose,measured_anchors,details=locate_unprompted_bucket(rgb,depth,*registration,
+                        identity_tolerance_m=tolerance)
+                    self.last_timing['bucket_landmark_bootstrap']=dict(primary_error=str(exc))
+                except ValueError as missing:
+                    if (getattr(self,'lid_registration',None) is None
+                            or str(missing)!='bucket_landmark_registration_unavailable'):
+                        raise
+            if measured_anchors is None:
+                if getattr(self,'lid_registration',None) is None:
+                    raise
+                pose,details=self.lid_registration.measure(rgb,depth,camera,tolerance,cfg['hole_clearance_m'])
+                if prompted:
+                    from .lid_registration import verify_remaining_anchors
+                    verify_remaining_anchors(pose,depth,masks,*registration,tolerance)
+        if current_head and measured_anchors is not None and getattr(self,'lid_registration',None) is None:
+            try:
+                self.lid_registration=LidRegistration.from_landmarks(rgb,depth,camera,pose,measured_anchors,
+                    evidence,tolerance)
+            except ValueError:
+                pass  # The directly measured three-anchor fixture remains usable.
+        self.last_timing['independent_fixture']=details
+        return FixturePose(fixture_id=self.occlusion['fixture_id'],pose=tuple(pose.ravel()),
+            reference_pose=tuple(transform(cfg['base_hole']).ravel()),frame_id=cfg['native_frame'],
+            evidence_ids=evidence,measured_at_ns=observation.received_ns)
 
     def _object_search_hints(self,observation,config,base_camera,*,enabled,base_eef=None):
         """Old object evidence narrows image search only, never supplies a pose.
@@ -250,7 +307,7 @@ class CalibratedScenePipeline:
         identity=tuple(context.get(k) for k in ('owner_instance_id','session_id','task_id','task_hash','task_generation','epoch'))
         previous=self.previous_context or {}
         if identity!=self.context_identity or (previous.get('authorized') and not context.get('authorized')):
-            self.consumed_contact_requests.clear()
+            self.lid_registration=None
             if self.context_identity is not None:
                 reset=getattr(self.segment,'reset_visual_tracking',None)
                 if reset is not None:reset()
@@ -270,7 +327,9 @@ class CalibratedScenePipeline:
                 if self.coarse:
                     self.last_timing['quality_warnings']=['measurement_gap']
                 else:self.reject_measurement('measurement_gap')
-            else:self.invalidate()
+            else:
+                self.invalidate()
+                self.lid_registration=None
         self.context_identity=identity
         self.previous_context=dict(context)
         return context
@@ -411,6 +470,9 @@ class CalibratedScenePipeline:
                 partial=self._partial_observation(observation,str(exc))
                 if partial is not None:
                     accepted_views=(partial.geometry_camera,)
+                    if any(o.object_id==self.config['hole_id'] and o.visible and o.pose is not None
+                           for o in partial.objects):
+                        accepted_views=tuple(dict.fromkeys((*accepted_views,self.config['hole_camera']['camera'])))
                     return partial
             raise
         finally:
@@ -439,6 +501,7 @@ class CalibratedScenePipeline:
                 or observation.state_received_ns is None or measured_object is not None and measured_object.held is True):return None
         from .partial_scene import observed_free_space_view,local_collision_evidence
         cfg=self.config
+        head_sample=None
         # An unavailable target in the head image does not erase independently
         # registered depth there. Failed/unsynchronised views are never added.
         if self.secondary_future is not None:
@@ -448,6 +511,7 @@ class CalibratedScenePipeline:
                 full=np.zeros((rgb.height,rgb.width),float);x0,y0,x1,y1=view_cfg['roi']
                 full[y0:y1,x0:x1]=depth
                 self._partial_views[view_cfg['camera']]=(full,view_cfg,transform(view_cfg['base_camera']))
+                head_sample=(view_cfg,depth,head_masks,head_evidence)
                 if measured_object is None and self.fixture_reference_camera is not None:
                     from .fixture_tracking import locate_fixture
                     try:
@@ -477,9 +541,29 @@ class CalibratedScenePipeline:
         if target['camera'] not in {view.camera for view in views}:return None
         evidence=local_collision_evidence(observation,cfg,target['bounds'],views)
         source=tuple(f.blob_sha256 for f in observation.frames if f.camera==target['camera'])
-        obj=measured_object or SceneObject(object_id=cfg['object_id'],shape='square',pose=None,held=None,
+        partial_hold = None
+        if measured_object is None and cfg.get('measured_gripper_contact'):
+            stamp = min(f.received_ns for f in observation.frames if f.camera==target['camera'])
+            partial_hold = self.grasp_closure.measure(observation, self.previous_context or {}, cfg, at_ns=stamp)['held']
+        obj=measured_object or SceneObject(object_id=cfg['object_id'],shape='square',pose=None,held=partial_hold,
             visible=True,stationary=None,frame_id=cfg['native_frame'],evidence_ids=source,
             planning_margin_m=cfg['planning_margin_m'])
+        objects=(obj,)
+        aperture_sources=()
+        aperture_error=None
+        if obj.held is True and head_sample is not None and cfg.get('relocalize_visible_fixture'):
+            try:pose,ids,visible,error=self._direct_aperture(observation,*head_sample,placing=True)
+            except ValueError as exc:
+                if str(exc)!='hole_behind_camera':raise
+                aperture_error=str(exc)
+            else:
+                if visible and error is None:
+                    objects+=(SceneObject(object_id=cfg['hole_id'],shape='square',pose=tuple(pose.ravel()),
+                        frame_id=cfg['native_frame'],planning_margin_m=cfg['planning_margin_m'],
+                        evidence_ids=ids,visible=True,stationary=True),)
+                    aperture_sources=ids
+                else:
+                    aperture_error=error or 'aperture_not_directly_visible'
         self.revision+=1
         self.last_stamps=tuple(next(f.source_ns for f in observation.frames
             if f.camera==cfg['camera'] and f.stream==stream) for stream in ('rgb','depth'))
@@ -497,7 +581,8 @@ class CalibratedScenePipeline:
                 near_depth_m=view.near_depth_m,near_depth_source='positive_optical_ray_before_valid_first_return') for view in views],
             unobserved_space='depth_holes_outside_view_and_beyond_first_surface_remain_unknown',motion_evidence=False)
         warnings=tuple(dict.fromkeys((*(observation.quality_warnings if quality_warnings is None else quality_warnings),
-            *(('object_pose_unavailable:'+target['reason'],) if measured_object is None else ()))))
+            *(('object_pose_unavailable:'+target['reason'],) if measured_object is None else ()),
+            *(('aperture_unavailable:'+aperture_error,) if aperture_error else ()))))
         valid_cameras={view.camera for view in views}
         secondary=cfg.get('hole_camera',{}).get('camera')
         faults=observation.faults
@@ -505,14 +590,17 @@ class CalibratedScenePipeline:
             self.last_timing['partial_secondary_sampling_faults']=list(faults)
             warnings=(*warnings,*('secondary_view_unavailable:'+fault for fault in faults))
             faults=()
-        return observation.model_copy(update=dict(objects=(obj,),fixture=fixture,stationary=stationary,
+        frames=tuple(f for f in observation.frames if f in evidence.source_frames or f.blob_sha256 in aperture_sources)
+        return observation.model_copy(update=dict(objects=objects,fixture=fixture,stationary=stationary,
             local_collision_evidence=evidence,
             geometry_scope='coarse_local_environment' if measured_object is None else 'coarse_object_verification',
             geometry_camera=target['camera'],
-            frames=evidence.source_frames,pairings=tuple(p for p in observation.pairings if p.camera in valid_cameras),
+            frames=frames,pairings=tuple(p for p in observation.pairings if p.camera in valid_cameras),
             faults=faults,
             quality_warnings=warnings,calibration_id=cfg['calibration_id'],
-            scene_version=digest(dict(revision=self.revision,object=obj.model_dump(),local_collision_evidence=evidence.model_dump()))))
+            scene_version=digest(dict(revision=self.revision,object=obj.model_dump(),
+                local_collision_evidence=evidence.model_dump(),
+                **({'aperture':objects[1].model_dump()} if aperture_sources else {})))))
 
     def _mark(self,name):
         now=time.perf_counter();self.last_timing[name]=(now-self._timing_at)*1000;self._timing_at=now
@@ -530,6 +618,7 @@ class CalibratedScenePipeline:
                 reset=getattr(self.segment,'reset_visual_tracking',None)
                 if reset is not None:reset()
             self.invalidate();self.invalidate_secondary()
+            self.lid_registration=None
             self.return_stamps=None
             self.search_hint=None
             self.last_stamps=None;self.last_received_ns=None
@@ -876,8 +965,10 @@ class CalibratedScenePipeline:
         self._mark('right_surface_ms')
         if self.development:
             return self._static_approach(observation,obj,base_object,stamps)
-        base_hole=transform(cfg['base_hole']);eef=transform(base_eef)
+        eef=transform(base_eef)
         relative,stationary,object_still,held=self._primary_evidence(observation,base_object,eef,object_stamps,camera=object_camera)
+        measured_attachment = (tuple(relative.ravel()) if held and
+            (not cfg.get('measured_gripper_contact') or self.contact_attachment is not None) else None)
         quality_warnings=tuple(dict.fromkeys((*observation.quality_warnings,
             *self.last_timing.get('quality_warnings',()))))
         self.last_stamps=stamps
@@ -886,7 +977,7 @@ class CalibratedScenePipeline:
             # Exact target pose and observed local space are separate capabilities;
             # a missing hole does not discard valid evidence of either.
             measured=obj.model_copy(update=dict(pose=tuple(base_object.ravel()),held=held,
-                eef_object_pose=tuple(relative.ravel()) if held else None,stationary=object_still,
+                eef_object_pose=measured_attachment,stationary=object_still,
                 uncertainty_m=None,planning_margin_m=cfg['planning_margin_m']))
             self.invalidate_secondary()
             self.last_timing['fixture_unavailable']=str(reason)
@@ -928,19 +1019,11 @@ class CalibratedScenePipeline:
             self._mark('head_wait_ms');self.last_timing.update(timing)
         else:
             hole_depth=aligned[y0:y1,x0:x1];hole_masks=masks;hole_evidence=evidence
-        hx0,hy0,hx1,hy1=hole_cfg['roi']
         fixture=None
         if self.fixture_reference_camera is not None:
-            from .fixture_tracking import locate_fixture
             try:
-                pose,_,details=locate_fixture(hole_depth,hole_masks,hole_cfg,
-                    self.fixture_reference_camera,cfg['base_hole'],self.occlusion['anchors'],
-                    identity_tolerance_m=cfg['planning_margin_m'])
-                fixture=FixturePose(fixture_id=self.occlusion['fixture_id'],pose=tuple(pose.ravel()),
-                    reference_pose=tuple(transform(cfg['base_hole']).ravel()),frame_id=cfg['native_frame'],
-                    evidence_ids=hole_evidence,measured_at_ns=observation.received_ns)
+                fixture=self._locate_bucket_for_object(observation,object_camera,(hole_depth,hole_evidence,hole_masks))
                 self.measured_fixture=fixture
-                self.last_timing['independent_fixture']=details
             except ValueError as exc:
                 self.measured_fixture=None
                 self.last_timing['independent_fixture']=dict(available=False,reason=str(exc))
@@ -950,7 +1033,7 @@ class CalibratedScenePipeline:
             # inventing an aperture or treating a nominal hole as inserted.
             self.live_hole=None
             measured=obj.model_copy(update=dict(pose=tuple(base_object.ravel()),held=held,
-                eef_object_pose=tuple(relative.ravel()) if held else None,stationary=object_still,
+                eef_object_pose=measured_attachment,stationary=object_still,
                 inserted=None,inserted_hole_id=None,uncertainty_m=None,planning_margin_m=cfg['planning_margin_m']))
             self.revision+=1
             self.last_timing['aperture_unavailable']=reason
@@ -961,49 +1044,12 @@ class CalibratedScenePipeline:
                 scene_version=digest(dict(revision=self.revision,object=measured.model_dump(),
                                           fixture=fixture.model_dump()))))
 
-        # A measured fixture pose is usable only while its current visual hole matches.
-        camera_hole=np.linalg.inv(transform(hole_cfg['base_camera']))@base_hole
-        if camera_hole[2,3]<=0:raise ValueError('hole_behind_camera')
-        projected,_=cv2.projectPoints(camera_hole[:3,3].reshape(1,3),np.zeros(3),np.zeros(3),
-                                      np.asarray(hole_cfg['k_rgb'],float),np.zeros(5))
-        center=projected.reshape(2)-[hx0,hy0]
-        hole_mask=hole_masks.get(cfg['hole_id'],np.zeros((hy1-hy0,hx1-hx0),bool))
-        object_mask=hole_masks.get(cfg['object_id'],np.zeros_like(hole_mask))
-        overlap=np.logical_and(hole_mask,object_mask).sum()/max(1,min(hole_mask.sum(),object_mask.sum()))
-        yy,xx=np.nonzero(hole_mask)
-        directly_visible=(len(xx)>=20 and overlap<=cfg.get('maximum_overlap_fraction',.05))
-        head_error = None
-        if directly_visible:
-            if cfg.get('relocalize_visible_fixture') is True:
-                from .fixture_tracking import locate_hole
-                if not self.coarse or self.occlusion is None:
-                    raise ValueError('fixture_relocalization_requires_registered_coarse_anchors')
-                try:
-                    base_hole,anchors,details=locate_hole(hole_mask,hole_depth,hole_masks,hole_cfg,
-                        cfg['base_hole'],self.occlusion['anchors'],identity_tolerance_m=cfg['planning_margin_m'])
-                except ValueError as exc:
-                    head_error = str(exc)
-                else:
-                    self.live_hole=base_hole.copy();self.live_fixture_anchors=anchors
-                    self.last_timing['fixture_relocalization']=details
-            elif np.linalg.norm(center-[np.mean(xx),np.mean(yy)])>cfg['hole_reprojection_px']:
-                raise ValueError('fixture_or_hole_moved_reestimate_required')
-            if head_error is None and self.occlusion is not None and not self._fixture_visible(hole_masks,hole_depth):
-                head_error = 'fixture_anchor_changed_or_occluded'
-            if head_error is None:
-                self.hole_last_visible_ns=observation.received_ns
-
         placing = held is True or (context or {}).get('phase') in (
             'transfer_above_hole', 'inspect_in_hand', 'align', 'insert', 'release')
-        if placing and (not directly_visible or head_error):
-            measured = self._cross_view_aperture(observation, hole_depth)
-            if measured is not None:
-                base_hole, left_id = measured
-                hole_evidence = (*hole_evidence, left_id)
-                directly_visible = True
-                head_error = None
+        base_hole,hole_evidence,directly_visible,head_error=self._direct_aperture(
+            observation,hole_cfg,hole_depth,hole_masks,hole_evidence,placing=placing)
         if head_error:
-            if head_error == 'fixture_anchor_changed_or_occluded':
+            if head_error == 'fixture_anchor_changed_or_occluded' and fixture is None:
                 raise ValueError(head_error)
             if fixture is not None:return fixture_only(head_error)
             if self.coarse:return object_only(head_error)
@@ -1037,7 +1083,7 @@ class CalibratedScenePipeline:
                           tolerance_m=cfg.get('insertion_depth_tolerance_m',0.) if self.coarse else 0.)
                       and yaw_error<=cfg['yaw_tolerance_rad'] and tilt<=cfg['tilt_tolerance_rad'])
         obj=obj.model_copy(update=dict(pose=tuple(base_object.ravel()),held=held,
-            eef_object_pose=tuple(relative.ravel()) if held else None,inserted=inserted,
+            eef_object_pose=measured_attachment,inserted=inserted,
             inserted_hole_id=cfg['hole_id'] if inserted else None,stationary=object_still))
         if self.coarse:
             obj=obj.model_copy(update=dict(uncertainty_m=None,planning_margin_m=cfg['planning_margin_m']))
@@ -1052,6 +1098,52 @@ class CalibratedScenePipeline:
             geometry_scope='coarse_static_task' if self.coarse else 'precision',
             geometry_camera=object_camera if self.coarse else None,
             calibration_id=cfg['calibration_id'],scene_version=digest(dict(revision=self.revision,objects=[obj.model_dump(),hole.model_dump()]))))
+
+    def _direct_aperture(self,observation,hole_cfg,hole_depth,hole_masks,hole_evidence,*,placing):
+        import cv2
+        cfg=self.config
+        base_hole=transform(cfg['base_hole'])
+        hx0,hy0,hx1,hy1=hole_cfg['roi']
+        # A measured fixture pose is usable only while its current visual hole matches.
+        camera_hole=np.linalg.inv(transform(hole_cfg['base_camera']))@base_hole
+        if camera_hole[2,3]<=0:raise ValueError('hole_behind_camera')
+        projected,_=cv2.projectPoints(camera_hole[:3,3].reshape(1,3),np.zeros(3),np.zeros(3),
+                                      np.asarray(hole_cfg['k_rgb'],float),np.zeros(5))
+        center=projected.reshape(2)-[hx0,hy0]
+        hole_mask=hole_masks.get(cfg['hole_id'],np.zeros((hy1-hy0,hx1-hx0),bool))
+        object_mask=hole_masks.get(cfg['object_id'],np.zeros_like(hole_mask))
+        overlap=np.logical_and(hole_mask,object_mask).sum()/max(1,min(hole_mask.sum(),object_mask.sum()))
+        yy,xx=np.nonzero(hole_mask)
+        directly_visible=(len(xx)>=20 and overlap<=cfg.get('maximum_overlap_fraction',.05))
+        head_error = None
+        if directly_visible:
+            if cfg.get('relocalize_visible_fixture') is True:
+                from .fixture_tracking import locate_hole
+                if not self.coarse or self.occlusion is None:
+                    raise ValueError('fixture_relocalization_requires_registered_coarse_anchors')
+                try:
+                    base_hole,anchors,details=locate_hole(hole_mask,hole_depth,hole_masks,hole_cfg,
+                        cfg['base_hole'],self.occlusion['anchors'],identity_tolerance_m=cfg['planning_margin_m'])
+                except ValueError as exc:
+                    head_error = str(exc)
+                else:
+                    self.live_hole=base_hole.copy();self.live_fixture_anchors=anchors
+                    self.last_timing['fixture_relocalization']=details
+            elif np.linalg.norm(center-[np.mean(xx),np.mean(yy)])>cfg['hole_reprojection_px']:
+                raise ValueError('fixture_or_hole_moved_reestimate_required')
+            if head_error is None and self.occlusion is not None and not self._fixture_visible(hole_masks,hole_depth):
+                head_error = 'fixture_anchor_changed_or_occluded'
+            if head_error is None:
+                self.hole_last_visible_ns=observation.received_ns
+
+        if placing and (not directly_visible or head_error):
+            measured = self._cross_view_aperture(observation, hole_depth)
+            if measured is not None:
+                base_hole, left_id = measured
+                hole_evidence = (*hole_evidence, left_id)
+                directly_visible = True
+                head_error = None
+        return base_hole,hole_evidence,directly_visible,head_error
 
     def _cross_view_aperture(self, observation, depth):
         if not self.config.get('cross_view_aperture') or self.fixture_reference_camera is None:
@@ -1085,6 +1177,7 @@ class CalibratedScenePipeline:
         if rows:
             self.gripper_seen=(source,rows[-1]['sequence'])
             if any(observed_open(r['closure_percent'],self.config['gripper_open_range']) for r in rows):
+                self.grasp_closure.measure(observation,self.previous_context or {},self.config,at_ns=sample_time)
                 self._clear_following()
 
     def _gripper_value(self, observation, *, frame_ns=None):
@@ -1112,27 +1205,6 @@ class CalibratedScenePipeline:
             return measured is not None and observed_open(measured,self.config.get('gripper_open_range'))
         return bool(observation.state_valid_mask[15] and
                     observed_open(observation.state16[15],self.config.get('gripper_open_range')))
-
-    def _measured_contact(self, observation, relative, sample_time):
-        from .gripper_contact import blocked_closure, target_in_closure_region
-        cfg = self.config
-        contact = (self.previous_context or {}).get('grasp_contact')
-        if not cfg.get('measured_gripper_contact') or not contact:
-            return dict(accepted=False, reason='measured_contact_not_enabled_or_unpublished')
-        if (not self.previous_context.get('authorized') or contact.get('object_id') != cfg['object_id']
-                or sample_time <= contact['published_ns']):
-            return dict(accepted=False, reason='measured_contact_scope_or_time_mismatch')
-        proof = blocked_closure(observation.measured_gripper, frame_ns=sample_time,
-            after_ns=contact['published_ns'], target=contact['target_closure'],
-            open_max=max(cfg['gripper_open_range']), window_ns=cfg['stationary_window_ns'],
-            tolerance=cfg['gripper_stationary_delta'],
-            max_age_ns=cfg['measured_gripper_max_age_ns'], boot_id=observation.host_boot_id)
-        proof['request_id'] = contact['request_id']
-        if proof['accepted'] and self.contact_attachment is None and not target_in_closure_region(
-                relative, contact['expected_eef_object'], cfg.get('search_object_box'),
-                cfg.get('tracking_tolerance_m',cfg['uncertainty_m'])):
-            proof.update(accepted=False, reason='visible_target_outside_published_closure_region')
-        return proof
 
     def _primary_evidence(self,observation,base_object,eef,stamps,*,camera=None):
         """Only measured wrist/object evidence; independent of fixture pixels."""
@@ -1207,21 +1279,29 @@ class CalibratedScenePipeline:
         following.update(attachment_profile='coarse_position_following' if self.coarse else 'rigid_pose_following',
             translation_tolerance_m=tracking_tolerance,rotation_tolerance_rad=tracking_rotation,
             orientation_quality_advisory=bool(self.coarse and following['relative_rotation_rad']>=cfg['yaw_tolerance_rad']))
-        contact=self._measured_contact(observation,relative,sample_time)
-        if self.contact_attachment is not None:
-            if (not contact['accepted'] or contact.get('source_instance') != self.contact_attachment['source_instance']
-                    or contact.get('request_id') != self.contact_attachment['request_id']):
-                # Contact alone must not silently become retained visual proof
-                # when the independent sensor disappears or changes epoch.
-                self.in_hand_reference=self.in_hand_gripper=None
-                self.contact_attachment=None
-        if (contact['accepted'] and not grip_open and grip_valid
-                and contact['request_id'] not in self.consumed_contact_requests
-                and self.in_hand_reference is None and self.in_hand_quarantine is None
-                and self.not_in_hand_reference is None):
-            self.in_hand_reference=relative.copy();self.in_hand_gripper=sample['gripper']
-            self.contact_attachment=dict(contact)
-            self.consumed_contact_requests.add(contact['request_id'])
+        contact = dict(accepted=False, reason='measured_contact_not_enabled')
+        if cfg.get('measured_gripper_contact'):
+            context = self.previous_context or {}
+            contact = self.grasp_closure.measure(observation, context, cfg, at_ns=sample_time)
+            held = contact['held']
+            # Only current measured geometry in the published grasp region can
+            # become a collision attachment. Its absence changes no CAN verdict.
+            associated = bool(held and target_in_closure_region(relative,
+                context['grasp_contact']['expected_eef_object'], cfg.get('search_object_box'),
+                tracking_tolerance))
+            self.contact_attachment = contact if associated else None
+            self.in_hand_reference = relative.copy() if associated else None
+            self.in_hand_gripper = sample['gripper'] if associated else None
+            self.in_hand_quarantine = self.in_hand_recovery_deadline_ns = self.not_in_hand_reference = None
+            self.last_stamps = stamps
+            self.last_received_ns = sample_time
+            self.last_timing['primary_evidence'] = dict(camera=camera, received_ns=sample_time,
+                state_received_ns=observation.state_received_ns, source_ns=list(stamps),
+                stationary_samples=len(self.stationary_history), tracking_samples=len(self.tracking_history),
+                stationary=stationary, held=held, measured_contact=contact, independent_closure=independent_closure,
+                attachment_geometry_available=associated, attachment_profile='independent_gripper_contact',
+                reason=contact['reason'], visual_following=following)
+            return relative, stationary, object_still, held
         if following['accepted']:
             self.contact_attachment=None
             self.not_in_hand_reference=None

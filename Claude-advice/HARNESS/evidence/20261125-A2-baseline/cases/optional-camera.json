@@ -1,0 +1,345 @@
+{
+  "web_run_id": "web-5329da48dda549d8ab7e8921e88597cd",
+  "started_at": "2026-11-18T12:26:23+08:00",
+  "owner_admission_bundle_id": "30d72cc1d69028394ec79843fae9feb82d1a1d1ce76f0f40b1b20f6caa1f16f8",
+  "workspace_metadata": {
+    "path": "HARNESS/runs/workspace/web-5329da48dda549d8ab7e8921e88597cd/workspace-run.json",
+    "sha256": "c13883f434ee59edebec5568637bcd619b16f2459353cbbb766e79f61197d6e8"
+  },
+  "owner_trace": {
+    "path": "HARNESS/runs/workspace/web-5329da48dda549d8ab7e8921e88597cd/collected/owner/harness/trace.jsonl",
+    "sha256": "c328bc6ba8b4343b42496a86146a72c8d06c00757cfdaf6b997efb7451ec3b02"
+  },
+  "request_id": "8dbcccb38c734963b051f0cd2741d56c",
+  "skill": "approach_grasp",
+  "owner_events": [
+    {
+      "source_line": 9,
+      "kind": "observation_quality_warning",
+      "event_id": "53c99c00a6684fbfad534ea3130f901c",
+      "monotonic_ns": 12772574198585
+    },
+    {
+      "source_line": 11,
+      "kind": "harness_planning_started",
+      "event_id": "789bd3ded24f4bce9cc7a0965757dbbb",
+      "monotonic_ns": 12772587826067
+    },
+    {
+      "source_line": 12,
+      "kind": "harness_plan_waiting_fresh_revalidation",
+      "event_id": "b9027f99ff9a477caadf441537525743",
+      "monotonic_ns": 12775834928451
+    },
+    {
+      "source_line": 13,
+      "kind": "harness_revalidation_started",
+      "event_id": "9e245c02c8f443c383baf5051481d4a7",
+      "monotonic_ns": 12776519269170
+    },
+    {
+      "source_line": 14,
+      "kind": "harness_skill_computation_failed",
+      "event_id": "2425475a586a41689684bfc837911568",
+      "monotonic_ns": 12776553840786
+    },
+    {
+      "source_line": 15,
+      "kind": "harness_plan_discarded",
+      "event_id": "68da9dc79f3b4810ba4f5fd8b3118248",
+      "monotonic_ns": 12776553894010
+    },
+    {
+      "source_line": 16,
+      "kind": "skill_result",
+      "event_id": "da3bbd38f18241c4961530a6d5579ada",
+      "monotonic_ns": 12776554242163
+    }
+  ],
+  "publication_count_at_revalidation": 0,
+  "actual_first_publications_in_this_request": 0,
+  "owner_result": {
+    "request_id": "8dbcccb38c734963b051f0cd2741d56c",
+    "lifecycle": "completed",
+    "outcome": "failure",
+    "reason": "plan_revalidation_rejected:revalidation_camera_identity_changed",
+    "evidence_ids": [],
+    "assisted": false,
+    "reward_known": false,
+    "training_ready": false,
+    "cancel_stage": "none",
+    "synthetic": false,
+    "no_motion": true,
+    "retryable": false,
+    "rejected_candidate_variant": null,
+    "resume_request_id": null,
+    "verification_request_id": null,
+    "planning_diagnostic": {
+      "error_type": "RuntimeError",
+      "code": "revalidation_camera_identity_changed",
+      "metrics": {}
+    }
+  },
+  "before_first_publication": true,
+  "observations": [
+    {
+      "step": "planning",
+      "observation_id": "4e7b3123b6824389ba1f21f10ee5f862:109",
+      "received_ns": 12771923906811,
+      "frames": [
+        {
+          "camera": "head",
+          "stream": "rgb",
+          "frame_id": "head_color_optical_frame",
+          "sequence": 492,
+          "source_ns": 1794976028954624000,
+          "width": 1280,
+          "height": 720,
+          "encoding": "rgb8",
+          "blob_sha256": "5b8fc1c740658892a468ee8347c31c36c04da2ba1737873458e6ba030461f41a"
+        },
+        {
+          "camera": "head",
+          "stream": "depth",
+          "frame_id": "head_depth_optical_frame",
+          "sequence": 736,
+          "source_ns": 1794976028954641920,
+          "width": 848,
+          "height": 480,
+          "encoding": "16UC1",
+          "blob_sha256": "c70d970c128d8026c0a845dfc5aced439436e9b233ede6970172d4c72477f624"
+        },
+        {
+          "camera": "right",
+          "stream": "rgb",
+          "frame_id": "right_wrist_color_optical_frame",
+          "sequence": 881,
+          "source_ns": 1794976028860455322,
+          "width": 640,
+          "height": 480,
+          "encoding": "bgr8",
+          "blob_sha256": "a5c6dc9165fbe3f37a126d6d12578bd8adb3e05aabea082ba036c6f165a9279b"
+        },
+        {
+          "camera": "right",
+          "stream": "depth",
+          "frame_id": "right_wrist_depth_optical_frame",
+          "sequence": 885,
+          "source_ns": 1794976028859427490,
+          "width": 640,
+          "height": 480,
+          "encoding": "16UC1",
+          "blob_sha256": "e9e178f784ced4c4ec6351cc1b17ff1a5a3846289172f0e07ae26267e7916db6"
+        }
+      ],
+      "objects_xyz_m": {
+        "square-1": [
+          0.8302768995534571,
+          -0.2695762636945416,
+          0.546261352625304
+        ],
+        "square-hole-1": [
+          0.682088848388913,
+          -0.05823380703929483,
+          0.7688448709612947
+        ]
+      }
+    },
+    {
+      "step": "prepublication_recheck",
+      "observation_id": "4e7b3123b6824389ba1f21f10ee5f862:118",
+      "received_ns": 12776025639735,
+      "frames": [
+        {
+          "camera": "head",
+          "stream": "rgb",
+          "frame_id": "head_color_optical_frame",
+          "sequence": 549,
+          "source_ns": 1794976033059505920,
+          "width": 1280,
+          "height": 720,
+          "encoding": "rgb8",
+          "blob_sha256": "cfea0f21f6809b5e13a061578ce2da7c0394fe6555292acc0c23842caaa487d7"
+        },
+        {
+          "camera": "head",
+          "stream": "depth",
+          "frame_id": "head_depth_optical_frame",
+          "sequence": 821,
+          "source_ns": 1794976033059524096,
+          "width": 848,
+          "height": 480,
+          "encoding": "16UC1",
+          "blob_sha256": "e954da87758623fcdc2918f6ebb1ee225896b4f6889e0b50c8ce9a6c31a5f108"
+        },
+        {
+          "camera": "right",
+          "stream": "rgb",
+          "frame_id": "right_wrist_color_optical_frame",
+          "sequence": 960,
+          "source_ns": 1794976032923137695,
+          "width": 640,
+          "height": 480,
+          "encoding": "bgr8",
+          "blob_sha256": "8043875c0d1fbf4a4085f69366586cb565235b0140437e8b1d9494cb21cf448b"
+        },
+        {
+          "camera": "right",
+          "stream": "depth",
+          "frame_id": "right_wrist_depth_optical_frame",
+          "sequence": 963,
+          "source_ns": 1794976032922109863,
+          "width": 640,
+          "height": 480,
+          "encoding": "16UC1",
+          "blob_sha256": "62f14dfd82c57356785281df4e68692c9c03b9a8c727103e817490b026b4aad6"
+        },
+        {
+          "camera": "left",
+          "stream": "rgb",
+          "frame_id": "left_wrist_color_optical_frame",
+          "sequence": 1372,
+          "source_ns": 1794976033070329346,
+          "width": 640,
+          "height": 480,
+          "encoding": "bgr8; jpeg compressed bgr8",
+          "blob_sha256": "21df47f55d2a5faf955b3282cf1cb5b689285e225c3b92bd060fe484ee5aa561"
+        }
+      ],
+      "objects_xyz_m": {
+        "square-1": [
+          0.8306583578793566,
+          -0.2697735267674296,
+          0.5461854689487466
+        ],
+        "square-hole-1": [
+          0.681662782812609,
+          -0.058678694657081185,
+          0.7686967368816894
+        ]
+      }
+    }
+  ],
+  "onsite_diagnostic": {
+    "error_type": "RuntimeError",
+    "code": "revalidation_camera_identity_changed",
+    "metrics": {}
+  },
+  "published_frame": "cases/v40-head-109.jpg",
+  "published_frame_source": {
+    "source": "HARNESS/runs/workspace/web-5329da48dda549d8ab7e8921e88597cd/planner/blobs/5b8fc1c740658892a468ee8347c31c36c04da2ba1737873458e6ba030461f41a",
+    "source_sha256": "5b8fc1c740658892a468ee8347c31c36c04da2ba1737873458e6ba030461f41a",
+    "source_bytes": 2764800,
+    "sha256": "db254bc703c27b88da07ad9f3d8d583020ead29229c7283f16882c07cff106d1",
+    "bytes": 97666,
+    "frame_binding": {
+      "observation_id": "4e7b3123b6824389ba1f21f10ee5f862:109",
+      "camera": "head",
+      "sequence": 492,
+      "source_ns": 1794976028954624000,
+      "encoding": "rgb8"
+    },
+    "transformation": "Full frame, original resolution, Pillow JPEG quality 80, 4:2:0, no crop/mask/overlay/metadata. Raw bgr8 converted to RGB when needed."
+  },
+  "saved_request_replays": [
+    {
+      "source": {
+        "path": "HARNESS/artifacts/optional-camera-revalidation-v42-20261118/field-request-v40.json",
+        "sha256": "9388099808cc80e5cfd914eca6589886bd166597547f31f9bc65294578811bbe"
+      },
+      "bundle_id": "30d72cc1d69028394ec79843fae9feb82d1a1d1ce76f0f40b1b20f6caa1f16f8",
+      "before": [
+        "head/rgb",
+        "head/depth",
+        "right/rgb",
+        "right/depth"
+      ],
+      "after": [
+        "head/rgb",
+        "head/depth",
+        "right/rgb",
+        "right/depth",
+        "left/rgb"
+      ],
+      "changed_common_identities": [],
+      "original": "4e7b3123b6824389ba1f21f10ee5f862:109",
+      "latest": "4e7b3123b6824389ba1f21f10ee5f862:118",
+      "reason": "revalidation_camera_identity_changed",
+      "passed": false,
+      "optional_view_removed_for_control": false,
+      "reference_points": 3,
+      "hardware_outputs": 0
+    },
+    {
+      "source": {
+        "path": "HARNESS/artifacts/optional-camera-revalidation-v42-20261118/field-request-v40-control.json",
+        "sha256": "73518a66b053aafda80f218bc859195b23ca31bcdfc09dd277d0b64f56474b82"
+      },
+      "bundle_id": "30d72cc1d69028394ec79843fae9feb82d1a1d1ce76f0f40b1b20f6caa1f16f8",
+      "before": [
+        "head/rgb",
+        "head/depth",
+        "right/rgb",
+        "right/depth"
+      ],
+      "after": [
+        "head/rgb",
+        "head/depth",
+        "right/rgb",
+        "right/depth"
+      ],
+      "changed_common_identities": [],
+      "original": "4e7b3123b6824389ba1f21f10ee5f862:109",
+      "latest": "4e7b3123b6824389ba1f21f10ee5f862:118",
+      "passed": true,
+      "optional_view_removed_for_control": true,
+      "owner_proof_valid": true,
+      "reference_points": 3,
+      "memory_output_rows": 76,
+      "memory_publications": {
+        "joint_command": 76,
+        "right_gripper_command": 2
+      },
+      "sweep_samples": 140,
+      "sweep_failures": [],
+      "hardware_outputs": 0,
+      "postpublication_feedback": "simulated ideal following"
+    },
+    {
+      "source": {
+        "path": "HARNESS/artifacts/optional-camera-revalidation-v42-20261118/field-request-frozen.json",
+        "sha256": "f32dc379bf8a4a3fe4eb544779ae9c1ed690c721921db288aca8fd98dcfa5202"
+      },
+      "bundle_id": "d72c0ade998d03bd4dc36b3868b3c5a148f32e73261aaf12e409bd358a734a86",
+      "before": [
+        "head/rgb",
+        "head/depth",
+        "right/rgb",
+        "right/depth"
+      ],
+      "after": [
+        "head/rgb",
+        "head/depth",
+        "right/rgb",
+        "right/depth",
+        "left/rgb"
+      ],
+      "changed_common_identities": [],
+      "original": "4e7b3123b6824389ba1f21f10ee5f862:109",
+      "latest": "4e7b3123b6824389ba1f21f10ee5f862:118",
+      "passed": true,
+      "optional_view_removed_for_control": false,
+      "owner_proof_valid": true,
+      "reference_points": 3,
+      "memory_output_rows": 76,
+      "memory_publications": {
+        "joint_command": 76,
+        "right_gripper_command": 2
+      },
+      "sweep_samples": 140,
+      "sweep_failures": [],
+      "hardware_outputs": 0,
+      "postpublication_feedback": "simulated ideal following"
+    }
+  ]
+}

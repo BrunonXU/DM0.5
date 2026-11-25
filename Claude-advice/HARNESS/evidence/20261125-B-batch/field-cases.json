@@ -1,0 +1,167 @@
+{
+  "schema": "f1-harness-batch-field-cases-v1",
+  "candidate": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",
+  "historical_baseline": {
+    "directories": 129,
+    "eligible": 106,
+    "eligible_with_empty_scenario_id": 106,
+    "closed_owner_traces": 105,
+    "main_guard": "active_fault_revocations",
+    "active_fault_revocations": 22,
+    "revocations_including_normal_closure_excluding_operator_stop": 376,
+    "raw_revocation_events": 477,
+    "S8": {
+      "reached": 0,
+      "trials": 105,
+      "unknown": 1,
+      "rate": 0.0,
+      "observed_lower_bound": 0.0,
+      "interval_median_s": null,
+      "interval_n": 0
+    },
+    "approved_nonphysical_examples": [
+      "optional-camera",
+      "endpoint-clearance"
+    ]
+  },
+  "h06": {
+    "recorded_source_version": 25,
+    "run_id": "web-e941d2a9802d49ca81f6af5b0027ead7",
+    "request_id": "d9426bc9ad6d488e9df3269355e5160d",
+    "radius_m": 0.015,
+    "v51_baseline": {
+      "selected_legacy_center": true,
+      "targets": 9
+    },
+    "frozen_candidate": {
+      "pass_planning": true,
+      "route": "joint_space_transport",
+      "target_count": 9,
+      "offset": [
+        0.0,
+        0.0
+      ],
+      "hardware_outputs": 0,
+      "version_fresh_observation_available": false,
+      "planning_wall_s": 4.407513702986762,
+      "bundle_id": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705"
+    },
+    "directed_tests": [
+      "Measured-hole-plane +x endpoint when centre obstructed",
+      "No radius keeps exact centre",
+      "Original +x rebound on newer centre-clear scene through revalidate_candidate",
+      "New obstruction on fixed +x path still rejected",
+      "Tampered offset outside registered five-point set rejected",
+      "Exhausted five surfaces last sweep error",
+      "Non-sweep failure propagates immediately"
+    ],
+    "scope": "V25 原始输入的中心点可行。偏移点成功、原/最新观测绑定同一点及新障碍拒绝，由定向测试验证。"
+  },
+  "h18": {
+    "run_id": "web-8782aab8cdbe43eb91e2ad4daac2f4b3",
+    "observed_historical_version": 49,
+    "stage_budget_s": {
+      "start_to_first_publication": 2.5,
+      "approach_execution": 4.0,
+      "grasp_and_settle": 0.8,
+      "grasp_verification": 0.7,
+      "transport": 5.0,
+      "alignment": 2.5,
+      "insert_release_verify": 2.5
+    },
+    "stage_timing": {
+      "start_to_first_publication": {
+        "actual_s": 15.613814222,
+        "over_budget_s": 13.113814222,
+        "model_calls": 0,
+        "model_wait_s": 0
+      },
+      "approach_execution": {
+        "actual_s": 4.636637106,
+        "over_budget_s": 0.6366371060000002,
+        "model_calls": 0,
+        "model_wait_s": 0
+      },
+      "grasp_and_settle": {
+        "actual_s": 8.443846238,
+        "over_budget_s": 7.643846238000001,
+        "model_calls": 0,
+        "model_wait_s": 0
+      },
+      "grasp_verification": {
+        "actual_s": 1.050747003,
+        "over_budget_s": 0.35074700299999995,
+        "model_calls": 0,
+        "model_wait_s": 0
+      },
+      "transport": {
+        "actual_s": 23.375920364,
+        "over_budget_s": 18.375920364,
+        "model_calls": 0,
+        "model_wait_s": 0
+      },
+      "alignment": {
+        "actual_s": null,
+        "over_budget_s": null,
+        "model_calls": 4,
+        "model_wait_s": 48.3974356232211
+      },
+      "insert_release_verify": {
+        "actual_s": null,
+        "over_budget_s": null,
+        "model_calls": 0,
+        "model_wait_s": 0
+      }
+    },
+    "placement_target": {
+      "allocated_s": 18.0,
+      "target_s": 20.0,
+      "actual_s": null,
+      "over_budget_s": null
+    },
+    "model_timing": {
+      "model_calls": 4,
+      "model_wait_s": 48.3974356232211
+    },
+    "phase_attribution": "首动使用工作台到协调端回执，后续阶段使用 owner 时钟。模型调用和等待计入请求开始时协调端已观察到的阶段。",
+    "history_comparison": {
+      "directories": 129,
+      "with_planner_trace": 111,
+      "without_planner_trace": 18,
+      "aggregate_model_metrics_mismatches": 0
+    }
+  },
+  "latest_failure_replay": {
+    "run_id": "web-8782aab8cdbe43eb91e2ad4daac2f4b3",
+    "source_frame": "62562f599a1b4a6e81236d8bc4656779:144",
+    "recorded_successful_prefix": [
+      "approach_grasp",
+      "grasp",
+      "verify_grasp",
+      "transfer_above_hole",
+      "inspect_in_hand"
+    ],
+    "recorded_reason": "observation_viewpoint_required:aperture_measurement_required:square-hole-1:fixture_aperture_not_detected_in_search_region",
+    "replay_reason": "observation_viewpoint_required:aperture_measurement_required:square-hole-1:fixture_aperture_not_detected_in_search_region",
+    "candidate_submitted": false,
+    "publications": 0,
+    "hardware_outputs": 0,
+    "replay_model_calls": 0,
+    "outcome": "pending_review",
+    "physical_task_verified": false
+  },
+  "project_root_relative_sha256": {
+    "HARNESS/artifacts/claude-batch-20261125/historical-funnel.json": "0f708f6e1663779a5a007955c02ac659faa79f9ad4a721df66720a2902085b1e",
+    "HARNESS/artifacts/claude-batch-20261125/H06/summary.json": "47b6f18ff9e804478ae65113c3aedf28e6c9707ad7fa01a2fc833636f1ed1a74",
+    "HARNESS/artifacts/claude-batch-20261125/H06/h06-passed.xml": "04660b3b9a6d9143ef2d114b21d6cbc47e9e9aafd755065367e85f3eeddfabe0",
+    "HARNESS/artifacts/claude-batch-20261125/H06/v25/before/field/report.json": "c476a3909284a6ff67dfe20eca7f2a72063a00faa6d575c4ae5bdd4fe8bdc3c7",
+    "HARNESS/artifacts/claude-batch-20261125/H06/v25/frozen-v52/field/report.json": "0f69e9f405d83a3d217ee7fef89a107ccea24e5e78999ee2c8d8cd44efa96128",
+    "HARNESS/artifacts/claude-batch-20261125/reporting/H18-last-real-run.json": "aae8fe1fd3d88043358927992d4c82db35b23f5fc3d2699371e4562a33697c79",
+    "HARNESS/artifacts/claude-batch-20261125/reporting/H18-history-check.json": "b718fe0557a0a20d71cef742f5ef61823f6b42f77aafd1a7e3002e61790bfca7",
+    "HARNESS/artifacts/claude-batch-20261125/reporting/H18-readers.txt": "c5e464f3c4a3b894830bf30bc034b3bbc0428cf22a191157216671f72a9e6f11",
+    "HARNESS/artifacts/claude-batch-20261125/latest-field-8782/report.json": "0aa758a481a643887bffdc1f7f421b6a55d07274bd86349ae0292c8e09f5300d",
+    "HARNESS/artifacts/local-capability-study-20261117/followup-transport/inputs.json": "231eb25d36b60f3be45b2ddbf526ea607d93be1b253e663ddf5df609b531347e",
+    "HARNESS/runs/workspace/web-8782aab8cdbe43eb91e2ad4daac2f4b3/collected/owner/harness/trace.jsonl": "56b9a4ea6be6bf2a8b04dac6f4fc144988fe7afd4fbdb7b6c6718d24b4881194",
+    "HARNESS/runs/workspace/web-8782aab8cdbe43eb91e2ad4daac2f4b3/planner/trace.jsonl": "874b6e1c1b2dd0e8439c12cfa11a700c48dcfa160ca3f6c337ea730a9435ffac"
+  }
+}

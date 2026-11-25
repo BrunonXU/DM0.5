@@ -409,8 +409,8 @@ class Task(Contract):
     hole_id: str
     shape: Literal["square", "circle", "triangle"] = "square"
     allowed_skills: tuple[str, ...] = PLACEMENT_SKILLS
-    local_corrections: int = Field(default=2, ge=0, le=2)
-    regrasp_limit: int = Field(default=1, ge=0, le=1)
+    local_corrections: int = Field(default=2, ge=0, le=4)
+    regrasp_limit: int = Field(default=1, ge=0, le=3)
     calibration_id: str
     goal: Literal["placed", "approach_grasp"] = "placed"
     admission_profile: Literal["precision", "development_coarse"] = "precision"

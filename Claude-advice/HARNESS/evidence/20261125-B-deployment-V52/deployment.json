@@ -1,0 +1,69 @@
+{
+  "schema": "f1-harness-deployment-evidence-v2",
+  "name": "F1 Harness 运输目标区域与分阶段补验 V52",
+  "version": 52,
+  "previous_version": 51,
+  "bundle_id": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",
+  "previous_bundle_id": "d7981daf3e2f7373432e935bca33e4cdbe0d8b88aaa57f936fac002ca3806037",
+  "source_commit": "1dcadbdf78a340cd6fb1d8d5a5d4f254e3a43aaa",
+  "status": "deployed",
+  "coordinator_unit": "f1-harness-workspace-v52.service",
+  "coordinator_version": 52,
+  "strategy_versions": {
+    "astra": 52,
+    "vla_astra": 52
+  },
+  "robot_install": {
+    "bundle_files": 371,
+    "site_files": 13,
+    "mismatches": 0
+  },
+  "site": {
+    "read_only_boot_checks": 1,
+    "static_configuration_complete": true,
+    "command_publishers": 0
+  },
+  "subscription_preparation_http_status": [
+    200,
+    200
+  ],
+  "sam_ready": true,
+  "workbench": {
+    "executor_reason": "F1 Harness 运输目标区域与分阶段补验 V52，gpt-6.2-astra high。",
+    "connected": true,
+    "current_run": null,
+    "can_start": true,
+    "can_stop": false,
+    "backend_release": "f1infra-preset-gripper-V57",
+    "static_release": "f1infra-task-log-layout-V58"
+  },
+  "vla_endpoint_ready": false,
+  "start_sent_by_deployment": false,
+  "physical_task_verified_by_deployment": false,
+  "local_source_dir": "HARNESS/artifacts/claude-batch-20261125",
+  "source_receipts_sha256": {
+    "release-install-receipt.json": "c770298106b488401ede6e6bfc69a6158dd5325ee1ff03830f212d46c919adb7",
+    "activation.json": "bea79cec5b6fd66d8e213f7a33247eb865ed6106ef9af545df34312e22db0e0b",
+    "post-activation.json": "d0b752ffd63a823ecea3360445ca3a96ed4ff6f879779eb80b985941389e7df0",
+    "workspace-boot-probe.json": "8650f5b3998cf9308f5239458cc7f287c152098da08345f8bdc6fc1be4b31e02",
+    "fresh-native-site-readiness.json": "ad4ec3f60e7b8a838b4eac920aa11068eb5ee918cbf3dee983e0dc8dfbb9d9d4",
+    "operator-wired-readiness.json": "525ebe2d1408f36a2b134d45aa30076fc74e967f9a402138998f6f384e1ac62e",
+    "release-validation.json": "a792f583b5184418f87c9caab3a8bdb6026b9bd4eb22d159d2a3ee2db648aef8",
+    "bundle-final/manifest.json": "e07a78442cc0f417aa9741d1dea92ece96cf787fac6461911388b7402344de17"
+  },
+  "operator_verification": {
+    "checked_at_utc": "2026-11-25T09:22:49.277Z",
+    "displayed_version_text": "F1 Harness 运输目标区域与分阶段补验 V52，gpt-6.2-astra high。",
+    "connected": true,
+    "can_start": true,
+    "can_stop": false,
+    "current_run": null,
+    "detail_dialog_visible": true,
+    "confirmed_rendered_text": true,
+    "start_button": {
+      "text": "开始任务",
+      "enabled": true
+    },
+    "start_sent": false
+  }
+}

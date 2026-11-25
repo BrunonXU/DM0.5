@@ -329,6 +329,26 @@ def test_full_coarse_development_requires_no_precision_certificate_or_step_cap(f
     assert FrameChain.load(full_site['chain']).native_frame=='world'
 
 
+@pytest.mark.parametrize('corrections,regrasps', [(0,0),(4,3)])
+def test_full_task_scope_binds_explicit_recovery_budgets(full_site, corrections, regrasps):
+    budgets = dict(local_corrections=corrections, regrasp_limit=regrasps)
+    configs = full_site['configs']
+    for task in (configs['task'], configs['plan']['task'], configs['verify']['task']):
+        task.update(budgets)
+    scope = full_site['record']['scope']
+    scope.update(budgets)
+    full_site['seal']()
+    owner = full_site['root'] / 'owner.local.json'
+    receipt = validate_development(owner)
+    assert {key:receipt[key] for key in budgets} == budgets
+    for key in budgets:
+        scope[key] = 1
+        full_site['seal']()
+        with pytest.raises(ValueError,match='development_full_task_profile_or_budget_mismatch'):
+            validate_development(owner)
+        scope[key] = budgets[key]
+
+
 @pytest.mark.parametrize('path', FULL_PARAMETER_PATHS)
 def test_full_task_parameters_require_recorded_sources(full_site, path):
     del full_site['record']['parameter_sources'][path]

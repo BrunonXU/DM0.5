@@ -1,0 +1,18 @@
+{
+  "schema": "f1-harness-deployment-evidence-manifest-v2",
+  "version": 52,
+  "bundle_id": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",
+  "tracked_files_including_manifest": 3,
+  "files": [
+    {
+      "path": "deployment.json",
+      "bytes": 2685,
+      "sha256": "76a11219805f50f005a3bbdfd427a30ef4ad0f38c994673e887d9d61cde4b326"
+    },
+    {
+      "path": "report.md",
+      "bytes": 629,
+      "sha256": "f3bb965341931cc29bd3f5bb42d909dea636929f1cec76be303eb72380d7f936"
+    }
+  ]
+}

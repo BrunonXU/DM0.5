@@ -18,6 +18,14 @@ class SceneNotAdvanced(ValueError):
     """No new camera evidence; retain the old scene's original age and TTL."""
 
 
+class CameraPairUnavailable(ValueError):
+    """An identified wrist sample cannot be used to measure this image."""
+
+    def __init__(self, owner_reason, detail=None):
+        self.owner_reason = owner_reason
+        super().__init__(detail or owner_reason)
+
+
 PROCESSING_EXPIRY=frozenset(('perception_latency_exceeds_observation_budget',
     'evidence_archive_exceeds_observation_budget','verification_transport_exceeds_observation_budget'))
 
@@ -38,7 +46,8 @@ class LiveSceneObserver:
         cfg=self.config['geometry'];views=[cfg]
         if cfg.get('hole_camera'):views.append(cfg['hole_camera'])
         anchors=cfg.get('fixture_occlusion',{}).get('anchors',{})
-        result={}
+        profile=getattr(getattr(self,'raw',None),'profile',{})
+        result={view['name']:[] for view in profile.get('inspection_cameras',[])}
         for view in views:
             camera=view['camera']
             result[camera]=[dict(object_id=key,role=(
@@ -81,6 +90,24 @@ class LiveSceneObserver:
         frame = self.raw.inspection_frame() if hasattr(self.raw, 'inspection_frame') else None
         result = dict(camera='left', frame='raw_image_pixels', motion_evidence=False,
                       available=False, candidates={})
+        viewpoint = getattr(self, 'aperture_viewpoint', None)
+        if viewpoint is not None:
+            with self.lock:
+                move = deepcopy(viewpoint.move) if self.latest is not None else None
+                scope = viewpoint.scope
+            if move is not None:
+                try:
+                    current = self.owner.call('status').get('perception_context') or {}
+                except (OSError, RuntimeError):
+                    current = {}
+                identity = tuple(current.get(k) for k in (
+                    'owner_instance_id','session_id','task_id','task_hash','task_generation','epoch'))
+                if (identity == scope[:6] and current.get('authorized') is True
+                        and not current.get('action_published') and not current.get('placement_verified')
+                        and (current.get('grasp_contact') or {}).get('request_id') == scope[-1]):
+                    result['observation_move'] = move
+            if 'observation_move' not in result:
+                result['observation_move_reason'] = 'no_distinct_measured_view_in_current_holding_episode'
         if frame is None:
             return dict(result, reason='left_rgb_unavailable')
         try:
@@ -111,15 +138,22 @@ class LiveSceneObserver:
         if 'entity_hints' in hint:
             entities=hint['entity_hints']
             if not isinstance(entities,list) or not 1<=len(entities)<=8:raise ValueError('invalid_entity_hints')
-            registered=set(self.pipeline.segment.registered_entities(camera))
-            values=[];seen=set()
+            catalog=self.search_entities()
+            registered={row['object_id'] for row in catalog[camera]}
+            seen=set()
             for entity in entities:
                 identity=entity.get('object_id')
-                if identity not in registered or identity in seen:raise ValueError('unregistered_entity_hint')
+                if not isinstance(identity,str) or identity in seen:raise ValueError('invalid_entity_hints')
                 if any(entity.get(k)!=hint.get(k) for k in ('camera','observation_id','frame')):
                     raise ValueError('entity_hint_image_scope_changed')
-                seen.add(identity);values.append(dict(rectified_search_box(entity,view),object_id=identity))
-            mapped['entity_hints']=values
+                seen.add(identity)
+            unsupported=sorted(seen-registered)
+            if unsupported:
+                return dict(accepted=False,applied=False,reason='unregistered_entity_hint',
+                    camera=camera,unsupported_entities=unsupported,search_entities=catalog,
+                    next='use_registered_entity_in_its_own_shown_view',search_only=True,motion_evidence=False)
+            mapped['entity_hints']=[dict(rectified_search_box(entity,view),object_id=entity['object_id'])
+                                    for entity in entities]
         with self.lock:
             if not hasattr(self,'pending_target_hints'):self.pending_target_hints={}
             previous=self.pending_target_hints.get(camera)
@@ -210,6 +244,10 @@ class LiveSceneObserver:
         self.raw,self.config,self.store=raw,config,store
         self.frames=FrameChain.load(config.get('frame_chain'))
         if self.frames.native_frame!=config['geometry']['native_frame']:raise ValueError('scene_frame_identity_mismatch')
+        from .aperture_view import ApertureViewpoint
+        envelope = config.get('aperture_view_geometry')
+        self.aperture_viewpoint = (None if envelope is None else
+                                   ApertureViewpoint(envelope, self.frames, config['geometry']))
         if config['geometry'].get('measured_gripper_contact'):
             config['geometry']['measured_gripper_max_age_ns']=int(config['feedback_age_ms']*1e6)
         self.pipeline=CalibratedScenePipeline(config['geometry'],mask_provider,raw.store.blob)
@@ -262,7 +300,7 @@ class LiveSceneObserver:
         if age>budget:
             self.last_timing.setdefault('quality_warnings',[]).append(stage+'_exceeds_observation_budget')
 
-    def _validate_feedback(self,obs,feedback,now,*,camera,age_ms):
+    def _validate_feedback(self,obs,feedback,now,*,camera,age_ms,target_received_ns=None):
         import numpy as np
         if feedback['host_boot_id']!=obs.host_boot_id:raise ValueError('feedback_clock_mismatch')
         reference=np.asarray(self.config['full22_reference'],float)
@@ -275,29 +313,62 @@ class LiveSceneObserver:
         if any(value is None for value in stamps[7:14]):raise ValueError('feedback_expired')
         state_ns=min(stamps[7:14])
         valid=tuple(s is not None and 0<=now-s<=age_ms*1_000_000 for s in stamps)
-        if not all(valid[7:14]):raise ValueError('feedback_expired:'+camera)
+        if not all(valid[7:14]):
+            # The owner returned a historical sample selected for these camera pixels.
+            # A missing current encoder or a clock fault must retain its own reason.
+            if (camera=='right' and target_received_ns is not None
+                    and feedback.get('target_received_ns')==target_received_ns
+                    and feedback.get('matched_state_received_ns')==state_ns
+                    and all(0<=stamp<=now for stamp in stamps[7:14])):
+                raise CameraPairUnavailable('camera_sample_feedback_aged:right')
+            raise ValueError('feedback_expired:'+camera)
         return valid,state_ns
 
-    def _matched_feedback(self,obs,frames,now,*,live_arm):
+    def _current_feedback(self,obs):
+        feedback=self.owner.call('measured_feedback')
+        checked_ns=time.monotonic_ns()
+        if self.failure_input is not None:
+            self.failure_input.update(current_feedback=feedback,current_feedback_checked_ns=checked_ns)
+        valid,state_ns=self._validate_feedback(obs,feedback,checked_ns,camera='current',
+                                               age_ms=self.config['feedback_age_ms'])
+        return feedback,valid,state_ns
+
+    def _matched_feedback(self,obs,frames,*,live_arm):
         """Associate geometry with an actual HAL sample, never a new timestamp."""
         import json
         times=[f.received_ns for f in frames]
         if not times:raise ValueError('frame_feedback_skew:no_frames')
-        feedback=self.owner.call('measured_feedback',target_received_ns=(min(times)+max(times))//2)
+        target_ns=(min(times)+max(times))//2
+        feedback=self.owner.call('measured_feedback',target_received_ns=target_ns)
+        # The owner can receive the nearest joint sample during this RPC.
+        # Measure its age on receipt, independently for each camera.
+        now=time.monotonic_ns()
+        camera=frames[0].camera
         if getattr(self,'failure_input',None) is not None:
-            self.failure_input.setdefault('camera_feedback',{})[frames[0].camera]=feedback
+            self.failure_input.setdefault('camera_feedback',{})[camera]=feedback
+            self.failure_input.setdefault('camera_feedback_checked_ns',{})[camera]=now
         # Fixed-head extrinsics use history at image time. Wrist geometry needs
         # the original live-arm age bound as well as image/feedback agreement.
         age_ms=self.config['feedback_age_ms'] if live_arm else self.config['max_age_ms']
-        valid,state_ns=self._validate_feedback(obs,feedback,now,camera=frames[0].camera,age_ms=age_ms)
-        if max(abs(t-state_ns) for t in times)>self.config['frame_state_skew_ms']*1_000_000:
-            raise ValueError('frame_feedback_skew:'+json.dumps(dict(
+        try:
+            valid,state_ns=self._validate_feedback(obs,feedback,now,camera=camera,age_ms=age_ms,target_received_ns=target_ns)
+        except CameraPairUnavailable:
+            self._current_feedback(obs)
+            raise
+        max_skew_ns=max(abs(t-state_ns) for t in times)
+        if max_skew_ns>self.config['frame_state_skew_ms']*1_000_000:
+            detail='frame_feedback_skew:'+json.dumps(dict(
                 limit_ms=self.config['frame_state_skew_ms'],state_received_ns=state_ns,
                 frames=[dict(camera=f.camera,stream=f.stream,received_ns=f.received_ns,
-                             delta_ms=(f.received_ns-state_ns)/1e6) for f in frames]),sort_keys=True))
-        self.last_timing.setdefault('camera_feedback',{})[frames[0].camera]=dict(
+                             delta_ms=(f.received_ns-state_ns)/1e6) for f in frames]),sort_keys=True)
+            if (live_arm and camera=='right' and feedback.get('target_received_ns')==target_ns
+                    and feedback.get('matched_state_received_ns')==state_ns):
+                self._current_feedback(obs)
+                raise CameraPairUnavailable('camera_sample_feedback_unpaired:right',detail)
+            raise ValueError(detail)
+        self.last_timing.setdefault('camera_feedback',{})[camera]=dict(
             frame_oldest_age_ms=(now-min(times))/1e6,state_received_ns=state_ns,
-            max_skew_ms=max(abs(t-state_ns) for t in times)/1e6)
+            max_skew_ms=max_skew_ns/1e6)
         return feedback,valid,state_ns
 
     def _sample_once(self):
@@ -323,6 +394,7 @@ class LiveSceneObserver:
         self._mark('owner_status_ms')
         if not isinstance(context,dict):raise ValueError('owner_perception_context_missing')
         obs=self.raw.observe()
+        self._offer_grasp_measurement(obs, context)
         self._apply_target_hint(obs,context)
         self.failure_input=dict(context=dict(context),observation=obs.model_dump(),
             geometry_config=self.config['geometry'] if 'geometry' in self.config else {},
@@ -351,8 +423,7 @@ class LiveSceneObserver:
             raise SceneNotAdvanced('waiting_for_new_camera_evidence')
         frame_times=[f.received_ns for f in obs.frames]
         if not frame_times:raise ValueError('frame_feedback_skew:no_frames')
-        now=time.monotonic_ns()
-        feedback,valid,state_ns=self._matched_feedback(obs,primary_frames,now,live_arm=not returning)
+        feedback,valid,state_ns=self._matched_feedback(obs,primary_frames,live_arm=not returning)
         head_pose=None
         if getattr(self,'head_model',None) is not None and camera=='head':
             head_pose=self.head_model.pose(feedback['full22'])
@@ -361,9 +432,7 @@ class LiveSceneObserver:
             # head's fixture geometry and current empty-tool state are separate
             # measurements, not a claimed synchronized RGB-D/arm sample. Keep
             # original head stamps and check fresh physical feedback separately.
-            feedback=self.owner.call('measured_feedback')
-            valid,state_ns=self._validate_feedback(obs,feedback,now,camera='current',
-                                                   age_ms=self.config['feedback_age_ms'])
+            feedback,valid,state_ns=self._current_feedback(obs)
             if not valid[15]:raise ValueError('feedback_expired:current_gripper')
             self.last_timing['return_state_received_ns']=state_ns
         secondary_error=None
@@ -374,7 +443,7 @@ class LiveSceneObserver:
                 secondary_error=SecondaryCameraUnavailable('secondary_camera_pairing_unavailable')
             if secondary_frames:
                 try:
-                    head_feedback,_,_=self._matched_feedback(obs,secondary_frames,now,live_arm=False)
+                    head_feedback,_,_=self._matched_feedback(obs,secondary_frames,live_arm=False)
                     if getattr(self,'head_model',None) is not None and secondary=='head':
                         head_pose=self.head_model.pose(head_feedback['full22'])
                 except ValueError as exc:
@@ -413,7 +482,8 @@ class LiveSceneObserver:
             self._record_grasp_evidence(context,obs)
         self.last_processed_frames=frame_identity
         self._mark('pipeline_ms')
-        current_context=self.owner.call('status').get('perception_context')
+        current_status=self.owner.call('status')
+        current_context=current_status.get('perception_context')
         self._mark('context_recheck_ms')
         if current_context!=context:
             if not isinstance(current_context,dict) or _context_scope(current_context)!=_context_scope(context):
@@ -471,9 +541,61 @@ class LiveSceneObserver:
             if hint_generation!=getattr(self,'target_hint_generation',0):
                 raise SceneNotAdvanced('waiting_for_new_camera_evidence')
             self.latest,self.error=scene,None
+            if getattr(self, 'aperture_viewpoint', None) is not None:
+                self.aperture_viewpoint.update(scene, context, eef, head_pose)
             self.error_details=(self._measurement_details('partial_object_geometry'
                 if scene.geometry_scope=='coarse_local_environment' else 'partial_environment_geometry')
                 if local_scope(scene) else None)
+        recorder=getattr(self,'failure_recorder',None)
+        if (recorder is not None and secondary_error is None
+                and 'transfer_above_hole' in current_status.get('completed_skills',())
+                and not context.get('action_published') and context.get('authorized') is True):
+            # The owner already received its usual scene. The recorder takes only
+            # the raw frames and measured data used by this same perception call.
+            try:
+                recorder.offer_held_aperture(self.failure_input,scene,self.raw.store.blob,
+                    now_ns=self._freshness_now,max_age_ns=int(self.config['max_age_ms']*1e6))
+            except Exception as exc:
+                self.last_timing['held_aperture_record_error']=type(exc).__name__
+
+    def _offer_grasp_measurement(self, observation, context, *, now_ns=None):
+        """Offer read-only verification before RGB-D processing, including on failed images."""
+        cfg = self.config.get('geometry', {})
+        skill = context.get('requested_skill')
+        if (not cfg.get('measured_gripper_contact') or not context.get('authorized')
+                or not context.get('grasp_contact') or not context.get('request_id')
+                or skill not in ('grasp','regrasp','verify_grasp','recover_grasp')):
+            return
+        now = time.monotonic_ns() if now_ns is None else now_ns
+        proof = self.pipeline.grasp_closure.measure(observation, context, cfg, at_ns=now)
+        packet = observation.measured_gripper
+        scope = {k:context.get(k) for k in (
+            'owner_instance_id','session_id','task_id','task_hash','epoch','request_id')}
+        if not packet or proof.get('last_ns') is None:
+            # A known sensor outage retires the last positive sample immediately.
+            self.verifier.call('update_grasp_measurement', scope=scope,
+                close_request_id=context['grasp_contact']['request_id'], held=None,
+                reason=proof['reason'], measured_ns=now, max_age_ns=cfg['measured_gripper_max_age_ns'],
+                evidence_id=None)
+            self.last_gripper_receipt_key = None
+            return
+        key = (tuple(scope.values()), proof['request_id'], packet.source_instance,
+               proof['last_sequence'], proof['held'], proof['reason'])
+        if key == getattr(self, 'last_gripper_receipt_key', None):
+            return
+        evidence = dict(scope=scope, published_close=context['grasp_contact'], verdict=proof,
+            host_boot_id=observation.host_boot_id, source=packet.source, protocol=packet.protocol,
+            source_instance=packet.source_instance, samples=[row.model_dump() for row in packet.samples
+                if proof['first_sequence'] <= row.sequence <= proof['last_sequence']])
+        data = json.dumps(evidence, sort_keys=True, separators=(',',':'), allow_nan=False).encode()
+        if self.archive_bytes + len(data) > self.config['archive_budget_bytes']:
+            raise ValueError('scene_evidence_quota_reached_new_run_required')
+        evidence_id = self.store.put_blob(data)
+        self.archive_bytes += len(data)
+        self.verifier.call('update_grasp_measurement', scope=scope, close_request_id=proof['request_id'],
+            held=proof['held'], reason=proof['reason'], measured_ns=proof['last_ns'],
+            max_age_ns=cfg['measured_gripper_max_age_ns'], evidence_id=evidence_id)
+        self.last_gripper_receipt_key = key
 
     def _record_grasp_evidence(self,context,observation):
         """Keep measured following inputs, including frames never admitted for motion.
@@ -551,11 +673,12 @@ class LiveSceneObserver:
                 # still invalidates across its bounded evidence gap or epoch.
                 if isinstance(exc,SecondaryCameraUnavailable):
                     self.pipeline.invalidate_secondary()
-                elif not isinstance(exc,SceneContextAdvanced) and code not in PROCESSING_EXPIRY:
+                elif not isinstance(exc,(SceneContextAdvanced,CameraPairUnavailable)) and code not in PROCESSING_EXPIRY:
                     reject=getattr(self.pipeline,'reject_measurement',None)
                     if reject is not None:reject(code)
                     else:self.pipeline.invalidate()
-                try:self.owner.call('invalidate_live_scene',reason=code[:256])
+                owner_reason=exc.owner_reason if isinstance(exc,CameraPairUnavailable) else code[:256]
+                try:self.owner.call('invalidate_live_scene',reason=owner_reason)
                 except Exception:pass
                 with self.lock:self.latest,self.error,self.error_details=None,code,details
                 if code!=previous:self.store.event('scene_unavailable',reason=code,details=details)

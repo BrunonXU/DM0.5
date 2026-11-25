@@ -1,10 +1,10 @@
 """Supervisor-owned optional numerical prewarm; no run or START is created."""
+import importlib.util
 from pathlib import Path
 import shlex
 import subprocess
 import uuid
 
-from .auxiliary_services import REMOTE_GUARD
 from .collect import ssh_reader_command
 from .site import _safe_environment
 
@@ -17,6 +17,9 @@ class WarmNumericalClient:
 
     def start(self):
         cfg = self.config
+        root = Path(cfg['root'])
+        spec = importlib.util.spec_from_file_location('_numerical_pool_launcher', root / 'scripts/start_development.py')
+        helper = importlib.util.module_from_spec(spec); spec.loader.exec_module(helper)
         ssh = ssh_reader_command({}, host=cfg['host'], port=cfg['port'],
             identity=cfg['identity'], known_hosts=cfg['known_hosts'])[:-1]
         template = '/home/user/Bruno/HARNESS/site/' + Path(cfg['local_site']).name
@@ -27,7 +30,7 @@ class WarmNumericalClient:
         self.runtime.mkdir(parents=True, exist_ok=True)
         self.log = (self.runtime / 'numerical-pool.log').open('ab')
         try:
-            self.process = subprocess.Popen(ssh + [shlex.join(['python3', '-c', REMOTE_GUARD, *argv])],
+            self.process = subprocess.Popen(ssh + [shlex.join(['python3', '-c', helper.REMOTE_GUARD, *argv])],
                 stdin=subprocess.PIPE, stdout=self.log, stderr=subprocess.STDOUT,
                 env=_safe_environment(), start_new_session=True)
         except BaseException:

@@ -1,0 +1,18 @@
+{
+  "scope": "post-run read-only management reachability; distinct from the field-run failure",
+  "source": "6000D diagnostics after both V52 tasks ended",
+  "release_version": 52,
+  "field_run": "web-bcfd8730efd14981bcd2d7429858808b",
+  "ssh_gateway_probe": {
+    "production_service": "Connection timed out during banner exchange\nConnection to 127.0.0.1 port 22009 timed out",
+    "production_owner_environment": "Connection timed out during banner exchange\nConnection to 127.0.0.1 port 22009 timed out"
+  },
+  "management_tunnel_recheck": "Connection timed out during banner exchange",
+  "documented_arm_direct_routes": {
+    "wired": "SSH connect timed out",
+    "wifi": "SSH connect timed out"
+  },
+  "usable_new_samples": 0,
+  "scene_availability_now": "unverified",
+  "robot_start_sent": false
+}

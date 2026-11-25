@@ -154,6 +154,9 @@ class F1Robot(RobotBase):
 
     def _summary(self, tool, payload):
         summary = super()._summary(tool, payload)
+        if tool=='locate_entities' and payload.get('accepted') is False:
+            summary.update({key:payload[key] for key in ('camera','unsupported_entities','search_entities','next')
+                            if key in payload})
         if tool == 'aperture_observation':
             return dict(summary, **{k: payload[k] for k in ('available', 'frame', 'camera', 'candidates',
                 'source_ns', 'source_blob_sha256', 'motion_evidence', 'reason') if k in payload})
@@ -172,9 +175,13 @@ class F1Robot(RobotBase):
                     summary[key] = payload['preview'][key]
         if 'planning_diagnostic' in summary:
             summary['planning_diagnostic'] = _planning_feedback(summary['planning_diagnostic'])
-        if tool=='geometry_context' or (tool=='inspect_plan' and payload.get('planned') is not True):
+        if tool=='geometry_context' or (tool=='inspect_plan' and payload.get('planned') is not True
+                                        and payload.get('geometry_available') is not False):
             from .planner_geometry import pack_geometry
             summary['geometry']=pack_geometry(payload if tool=='geometry_context' else payload.get('geometry'))
+        elif tool=='inspect_plan' and payload.get('geometry_available') is False:
+            summary.update({key:payload[key] for key in ('available_skills','cartesian_motion','geometry_available')
+                            if key in payload})
         if tool in ('geometry_context','inspect_plan'):
             # A failed trajectory can still carry newly measured geometry.
             # Keep this semantic evidence even when the large geometry payload
@@ -281,7 +288,9 @@ class F1Robot(RobotBase):
         Each entry: object_id, box_normalized=[left,top,right,bottom], optional
         points_normalized=[[x,y],...] and point_labels=[1 foreground,0 background].
         Coordinates use that displayed full image. Batch related fixture IDs
-        in one call; hints only, then acquire RGB-D. Never invent IDs or poses.
+        in one call. Use geometry()['search_entities'][camera] for the site's IDs.
+        A wrong-view batch returns accepted=False with the catalog; boxes cannot
+        be transferred between views. Accepted hints still require fresh RGB-D.
         """
         return self._stateful('locate_entities',dict(camera=camera,entities=entities),lambda value:value)
 
@@ -289,7 +298,10 @@ class F1Robot(RobotBase):
         """Read current TCP, object/hole frames, nominal grasp and obstacle geometry.
 
         Poses are row-major SE(3), metres. Native world identity is returned.
-        This is measured planning context, not permission or proof of success.
+        geometry_status is 'complete', 'partial' or 'unavailable'. Check missing_entities
+        and individual poses. available_skills lists task skills eligible for preview
+        at this geometry scope; motion still requires a successful owner check.
+        search_entities maps each registered view to its image-prompt IDs.
         """
         return self._readonly('geometry_context',{})
 

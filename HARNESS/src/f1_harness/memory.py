@@ -399,9 +399,17 @@ class ExperienceStore:
             raise ValueError('bounded_advisory_context_required')
         scope = dict(synthetic=self.synthetic, **{key: getattr(task, key)
                      for key in ('calibration_id', 'shape', 'goal', 'operator_instruction')})
-        summary_scope = {key: value for key, value in scope.items() if key != 'operator_instruction'}
-        summary_scope['operator_instruction_sha256'] = hashlib.sha256(scope['operator_instruction'].encode()).hexdigest()
-        result = dict(schema='f1-experience-advisory-v1', scope=summary_scope, failures=[], explorations=[],
+        match_scope = {key: value for key, value in scope.items() if key != 'operator_instruction'}
+
+        def matching_summary(source):
+            if not isinstance(source, dict) or not isinstance(source.get('operator_instruction'), str):
+                return None
+            if {key: value for key, value in source.items() if key != 'operator_instruction'} != match_scope:
+                return None
+            return dict(match_scope, operator_instruction_sha256=hashlib.sha256(
+                source['operator_instruction'].encode()).hexdigest())
+
+        result = dict(schema='f1-experience-advisory-v1', scope=matching_summary(scope), failures=[], explorations=[],
             executable=False, cause_status='reported_codes_only_not_physical_root_cause')
 
         def append_bounded(key, value):
@@ -424,7 +432,8 @@ class ExperienceStore:
                 if hashlib.sha256(raw).hexdigest() != source:
                     continue
                 rows = [json.loads(line) for line in raw.splitlines() if line.strip()]
-                if observed_task_scope(rows) != scope:
+                summary_scope = matching_summary(observed_task_scope(rows))
+                if summary_scope is None:
                     continue
                 seen.add(source)
                 facts = [{key: item.get(key) for key in ('skill', 'outcome', 'reason', 'request_id', 'count')}
@@ -446,8 +455,9 @@ class ExperienceStore:
         for path in sorted(folder.glob('*.json'), key=lambda p: (p.stat().st_mtime_ns, p.name), reverse=True):
             try:
                 record = json.loads(path.read_text())
+                summary_scope = matching_summary(record.get('scope'))
                 if (path.stem != digest(record) or record.get('schema') != 'f1-exploration-cell-v1'
-                        or record.get('scope') != scope):
+                        or summary_scope is None):
                     continue
                 source = record['source_sha256']
                 if not re.fullmatch('[a-f0-9]{64}', source):

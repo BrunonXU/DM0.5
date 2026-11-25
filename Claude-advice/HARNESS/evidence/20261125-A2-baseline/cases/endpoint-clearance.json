@@ -1,0 +1,282 @@
+{
+  "web_run_id": "web-f7234e2584884f6a9310f5ef3d1ea8c1",
+  "started_at": "2026-11-09T18:47:48+08:00",
+  "owner_admission_bundle_id": "8f1d6b1ebf2b27a4c81418f3eeadf26931fd1c8d0955ac7ae74783ebaac7b099",
+  "workspace_metadata": {
+    "path": "HARNESS/runs/workspace/web-f7234e2584884f6a9310f5ef3d1ea8c1/workspace-run.json",
+    "sha256": "0d4c4d880edb4b4bc41952f6154dc0aaca8ae05af4a83370c1d84904f325e2a2"
+  },
+  "owner_trace": {
+    "path": "HARNESS/runs/workspace/web-f7234e2584884f6a9310f5ef3d1ea8c1/collected/owner/harness/trace.jsonl",
+    "sha256": "57c7c0802f91cece86b1f00b1ad5d622124d1dcf8777c9f18e9527952b4027a7"
+  },
+  "request_id": "4d54d1d81cdf4411928f0fa59e30ec4a",
+  "skill": "grasp",
+  "owner_events": [
+    {
+      "source_line": 40,
+      "kind": "harness_planning_started",
+      "event_id": "5bd69db30f6f4e0badc75a667837851c",
+      "monotonic_ns": 29986905168915
+    },
+    {
+      "source_line": 42,
+      "kind": "harness_plan_waiting_fresh_revalidation",
+      "event_id": "672356f97a754a23849f6175ac5bcac1",
+      "monotonic_ns": 29988208901186
+    },
+    {
+      "source_line": 43,
+      "kind": "harness_revalidation_started",
+      "event_id": "7b1eca130fea470fa3119c27712ffb43",
+      "monotonic_ns": 29988512817381
+    },
+    {
+      "source_line": 44,
+      "kind": "harness_skill_computation_failed",
+      "event_id": "3e9d6952ada34832b0bef79c44d7c524",
+      "monotonic_ns": 29988660083443
+    },
+    {
+      "source_line": 45,
+      "kind": "harness_plan_discarded",
+      "event_id": "4cd605724e4446488ddfe8f0c1e39f0c",
+      "monotonic_ns": 29988660400489
+    },
+    {
+      "source_line": 46,
+      "kind": "skill_result",
+      "event_id": "59c379efb9c64e50983250823ff875c0",
+      "monotonic_ns": 29988660505407
+    },
+    {
+      "source_line": 47,
+      "kind": "unpublished_skill_retry_available",
+      "event_id": "c3ed656f0cd9462d8c7c86a27e451809",
+      "monotonic_ns": 29988661032879
+    }
+  ],
+  "publication_count_at_revalidation": 0,
+  "actual_first_publications_in_this_request": 0,
+  "owner_result": {
+    "request_id": "4d54d1d81cdf4411928f0fa59e30ec4a",
+    "lifecycle": "completed",
+    "outcome": "failure",
+    "reason": "plan_revalidation_rejected:revalidation_endpoint_outside_remaining_clearance",
+    "evidence_ids": [],
+    "assisted": false,
+    "reward_known": false,
+    "training_ready": false,
+    "cancel_stage": "none",
+    "synthetic": false,
+    "no_motion": true,
+    "retryable": true,
+    "rejected_candidate_variant": null,
+    "resume_request_id": null
+  },
+  "before_first_publication": true,
+  "observations": [
+    {
+      "step": "planning",
+      "observation_id": "909f35faf2c54da8a55edbb480817430:38",
+      "received_ns": 29986528392162,
+      "frames": [
+        {
+          "camera": "head",
+          "stream": "rgb",
+          "frame_id": "head_color_optical_frame",
+          "sequence": 195,
+          "source_ns": 1794221288704328960,
+          "width": 1280,
+          "height": 720,
+          "encoding": "rgb8",
+          "blob_sha256": "2d38c333341356412d7e1d474164d55d678dcb4ab2b5f89c1a1c519b1667bad4"
+        },
+        {
+          "camera": "head",
+          "stream": "depth",
+          "frame_id": "head_depth_optical_frame",
+          "sequence": 285,
+          "source_ns": 1794221288704346880,
+          "width": 848,
+          "height": 480,
+          "encoding": "16UC1",
+          "blob_sha256": "6f751291451ecc10df120f0b4a00ce4d37a281fa5704432b6be70fdb6dc149b4"
+        },
+        {
+          "camera": "right",
+          "stream": "rgb",
+          "frame_id": "right_wrist_color_optical_frame",
+          "sequence": 303,
+          "source_ns": 1794221288711707764,
+          "width": 640,
+          "height": 480,
+          "encoding": "bgr8",
+          "blob_sha256": "2d01bfdebe6857eeabec461f66ab8d414c0bdb78b638845b2e0916e212326a65"
+        },
+        {
+          "camera": "right",
+          "stream": "depth",
+          "frame_id": "right_wrist_depth_optical_frame",
+          "sequence": 313,
+          "source_ns": 1794221288710678955,
+          "width": 640,
+          "height": 480,
+          "encoding": "16UC1",
+          "blob_sha256": "8fb637bd3ae6f56dcadc0cd5a411d0b4097e25db72f6e679eda3e9cf59bb4b51"
+        }
+      ],
+      "objects_xyz_m": {
+        "square-1": [
+          0.8212550696184685,
+          -0.25436302866723304,
+          0.5466694603990674
+        ],
+        "square-hole-1": [
+          0.6851341065368588,
+          -0.06429544432778772,
+          0.7775699026388865
+        ]
+      }
+    },
+    {
+      "step": "prepublication_recheck",
+      "observation_id": "909f35faf2c54da8a55edbb480817430:44",
+      "received_ns": 29988295152969,
+      "frames": [
+        {
+          "camera": "head",
+          "stream": "rgb",
+          "frame_id": "head_color_optical_frame",
+          "sequence": 210,
+          "source_ns": 1794221290506416896,
+          "width": 1280,
+          "height": 720,
+          "encoding": "rgb8",
+          "blob_sha256": "72656d3d1681e5ea0aa869d7bdc75bee038c50e370fae1f1bdb12175210fedd2"
+        },
+        {
+          "camera": "head",
+          "stream": "depth",
+          "frame_id": "head_depth_optical_frame",
+          "sequence": 318,
+          "source_ns": 1794221290506436096,
+          "width": 848,
+          "height": 480,
+          "encoding": "16UC1",
+          "blob_sha256": "d311f6cac363bda8b9319f3b02f64dd129935dfd9eddf7afa28337f5bb1bcd07"
+        },
+        {
+          "camera": "right",
+          "stream": "rgb",
+          "frame_id": "right_wrist_color_optical_frame",
+          "sequence": 333,
+          "source_ns": 1794221290576659180,
+          "width": 640,
+          "height": 480,
+          "encoding": "bgr8",
+          "blob_sha256": "c64c17cf64913f66f8a46ce75052b018a27462e76c683e378d296695a36ea0a6"
+        },
+        {
+          "camera": "right",
+          "stream": "depth",
+          "frame_id": "right_wrist_depth_optical_frame",
+          "sequence": 354,
+          "source_ns": 1794221290575631104,
+          "width": 640,
+          "height": 480,
+          "encoding": "16UC1",
+          "blob_sha256": "55afb290e164b7df11819e517fc1f2a3e55ba989db1bf2b4a065f35f068eb3cd"
+        }
+      ],
+      "objects_xyz_m": {
+        "square-1": [
+          0.8212224675114993,
+          -0.2542445725091548,
+          0.5467267516357389
+        ],
+        "square-hole-1": [
+          0.6849105503224271,
+          -0.06428248226685904,
+          0.7775190863749748
+        ]
+      }
+    }
+  ],
+  "onsite_diagnostic": {
+    "error_type": "RuntimeError",
+    "code": "revalidation_endpoint_outside_remaining_clearance",
+    "metrics": {}
+  },
+  "published_frame": "cases/endpoint-right-38.jpg",
+  "published_frame_source": {
+    "source": "HARNESS/runs/workspace/web-f7234e2584884f6a9310f5ef3d1ea8c1/planner/blobs/2d01bfdebe6857eeabec461f66ab8d414c0bdb78b638845b2e0916e212326a65",
+    "source_sha256": "2d01bfdebe6857eeabec461f66ab8d414c0bdb78b638845b2e0916e212326a65",
+    "source_bytes": 921600,
+    "sha256": "7f829ac82a2b81d846c136d53d467c44555aee2e30f305be7fbc8147d69ae17b",
+    "bytes": 21068,
+    "frame_binding": {
+      "observation_id": "909f35faf2c54da8a55edbb480817430:38",
+      "camera": "right",
+      "sequence": 303,
+      "source_ns": 1794221288711707764,
+      "encoding": "bgr8"
+    },
+    "transformation": "Full frame, original resolution, Pillow JPEG quality 80, 4:2:0, no crop/mask/overlay/metadata. Raw bgr8 converted to RGB when needed."
+  },
+  "offline_diagnosis": {
+    "source": {
+      "path": "HARNESS/artifacts/grasp-handoff-audit-20261109/diagnosis.json",
+      "sha256": "cb76c9da791142b1d6acd665d1fa25a0c0cc1bbf5eb49339bd9c7f1ff1e8937c"
+    },
+    "row_0based": 1,
+    "method": "Saved original request evaluated with deployed endpoint check, zero hardware output. Values are replay measurements.",
+    "request_id": "4d54d1d81cdf4411928f0fa59e30ec4a",
+    "skill": "grasp",
+    "physical_motion": false,
+    "reason": "revalidation_endpoint_outside_remaining_clearance",
+    "line": 329,
+    "ordinal": 0,
+    "threshold": {
+      "position_m": 0.0016950206417194096,
+      "rotation_rad": 0.08726646259971647,
+      "xy_tolerance_m": 0.002,
+      "effective_clearance_m": 0.0026950206417194096,
+      "object_planning_margin_m": 0.001,
+      "free_space": false,
+      "goal_position_m": 0.0016950206417194096,
+      "approach_open_range": null,
+      "precision_certified": false
+    },
+    "endpoint_translation_m": 0.0009550073521686761,
+    "endpoint_rotation_deg": 0.19417056568277155,
+    "radius_m": 0.24941335899834616,
+    "combined_bound_m": 0.0018002477912106747
+  },
+  "frozen_code": {
+    "source": {
+      "path": "HARNESS/artifacts/fixture-relocalization-20261109/release-ready/manifest.json",
+      "sha256": "f2db3e262ceb4330dfdfea68acdbf9b99de0388e90d5af580bb1addc576cd680"
+    },
+    "path": "src/f1_harness/revalidation.py",
+    "file_sha256": "25e47cebe092c6cfa28e14f1793b7359eac07961356707bab588c254db29ae3d"
+  },
+  "independent_FK_recheck": {
+    "source": {
+      "path": "HARNESS/artifacts/offline-closure-20261109/saved-path-revalidation.json",
+      "sha256": "11e6687e9e88ef17dd581b0600b62d9a5fe21b36c5bcaff3068cbf1987cdb710"
+    },
+    "method": "independent_bound_URDF_FK_validated_against_saved_native_errors",
+    "physical_motion": false,
+    "new_IK_solved": false,
+    "deployed": {
+      "reason": "revalidation_endpoint_outside_remaining_clearance",
+      "endpoint_translation_m": 0.0009550073355770212,
+      "endpoint_rotation_deg": 0.1941705674209082,
+      "ordinal": 0,
+      "passed": false,
+      "error": "revalidation_endpoint_outside_remaining_clearance"
+    },
+    "candidate_passed": true
+  }
+}

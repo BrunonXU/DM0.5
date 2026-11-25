@@ -1,0 +1,406 @@
+{
+  "schema": "f1-harness-field-excerpts-v1",
+  "version": 52,
+  "bundle_id": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",
+  "source": "Two independent saved physical runs, in web request order.",
+  "funnel_script": {
+    "path": "HARNESS/scripts/run_funnel.py",
+    "sha256": "2246a5eb2093553778423ef771ec4dbcefcf75e987bf0328b55d172106fc6d16"
+  },
+  "funnel_reasons": {
+    "path": "HARNESS/scripts/funnel_reasons.json",
+    "sha256": "eb8844ea2e646285c959a7c3af6f3d057e8ba8b641c400493299da2660ae3d35"
+  },
+  "historical_baseline": {
+    "source": {
+      "path": "Claude-advice/HARNESS/evidence/20261125-A2-baseline/funnel.json",
+      "sha256": "0f708f6e1663779a5a007955c02ac659faa79f9ad4a721df66720a2902085b1e"
+    },
+    "included": 106,
+    "active_fault_revocations": 22,
+    "revocations": 376,
+    "revocations_raw": 477
+  },
+  "current_batch": {
+    "included": 2,
+    "active_fault_revocations": 1,
+    "revocations": 8,
+    "revocations_raw": 10,
+    "complete_successes": 0,
+    "nonphysical_rejections": 0,
+    "funnel_sha256": "6d8565489efd7ee167c95c5f3a5eb9ddf184fe661dc017c8540240fb0537d2cc"
+  },
+  "counting": "active_fault_revocations counts abnormal revocation while authority is valid. revocations excludes operator stop and includes ordinary closure. first_skill_publications excludes completed low-level hold outputs.",
+  "runs": [
+    {
+      "run_id": "web-e992a2d925444c2dab893c82a336b419",
+      "source_root": "HARNESS/runs/workspace/web-e992a2d925444c2dab893c82a336b419",
+      "version": 52,
+      "bundle_id": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",
+      "started_local": "2026-11-25T04:23:10.463503-05:00",
+      "duration_s": 14.053461,
+      "status": "error",
+      "stop_confirmation": "measured_stationary",
+      "recovery_of": null,
+      "summary": "控制端中断：camera_unavailable:three new synchronized camera frames unavailable; stale=left_wrist",
+      "requested_mode": "astra",
+      "motion_corrections": 1,
+      "authorization": {
+        "task_hash": "1a10c7700a63ac24acbdfd717abc3b088edfcdb7c751de390494e690854baf0f",
+        "session_id": "63427dc89f0d4866af239b22eaea38b5",
+        "owner_instance_id": "a808c7c5108f48e0bdf5d726638de72c",
+        "web_request_id": "098643dcf7e7451982e45e895db791ee",
+        "synthetic": false
+      },
+      "funnel_metrics": {
+        "scenario_id": null,
+        "stages": {
+          "S0": true,
+          "S1": false,
+          "S2": false,
+          "S3": false,
+          "S4": false,
+          "S5": false,
+          "S6": false,
+          "S7": false,
+          "S8": false,
+          "S9": false
+        },
+        "complete_success": false,
+        "nonphysical_rejections": 0,
+        "revocations": 5,
+        "revocations_raw": 6,
+        "active_fault_revocations": 1,
+        "model_calls": 0,
+        "model_wait_s": 0,
+        "last_failure_reason": "camera_unavailable"
+      },
+      "owner_commands": {
+        "first_skill_publications": 0,
+        "raw_control_rows": 158,
+        "all_publications_completed": true,
+        "hold_sources": {
+          "harness_hold": 107,
+          "ik_recovery_hold": 1,
+          "hold": 50
+        },
+        "unknown_or_partial_publications": 0
+      },
+      "camera_recorder": {
+        "observations": 0,
+        "last_callback_ids": {
+          "head": 128,
+          "left_wrist": -1,
+          "right_wrist": 129
+        },
+        "warmup_callbacks": {
+          "head": 53,
+          "left_wrist": 0,
+          "right_wrist": 54
+        },
+        "drop_counts": {
+          "head": 70,
+          "left_wrist": 0,
+          "right_wrist": 70
+        },
+        "journal_observations": 0
+      },
+      "owner_events": [
+        {
+          "line": 7,
+          "kind": "authority_revoked",
+          "epoch": 2,
+          "reason": "camera_unavailable:three new synchronized camera frames unavailable; stale=left_wrist"
+        },
+        {
+          "line": 8,
+          "kind": "authority_revoked",
+          "epoch": 3,
+          "reason": "camera_unavailable:three new synchronized camera frames unavailable; stale=left_wrist"
+        },
+        {
+          "line": 9,
+          "kind": "hold_acknowledged",
+          "publication_id": "108",
+          "stage": "owner_hold_committed"
+        },
+        {
+          "line": 11,
+          "kind": "authority_revoked",
+          "epoch": 4,
+          "reason": "web_stop_requested"
+        },
+        {
+          "line": 13,
+          "kind": "authority_revoked",
+          "epoch": 5,
+          "reason": "task_finished"
+        },
+        {
+          "line": 14,
+          "kind": "hold_acknowledged",
+          "publication_id": "152",
+          "stage": "measured_stationary"
+        },
+        {
+          "line": 15,
+          "kind": "authority_revoked",
+          "epoch": 6,
+          "reason": "session_closed"
+        },
+        {
+          "line": 16,
+          "kind": "authority_revoked",
+          "epoch": 7,
+          "reason": "owner_bridge_closed"
+        }
+      ],
+      "planner_waits": [],
+      "workspace_events": [
+        {
+          "line": 20,
+          "kind": "workspace_failure",
+          "reason": "控制端中断：camera_unavailable:three new synchronized camera frames unavailable; stale=left_wrist"
+        },
+        {
+          "line": 22,
+          "kind": "web_stop_confirmed",
+          "stage": "measured_stationary",
+          "request_id": "cb6297e1f4184ae79a79c3a822ef8db8"
+        }
+      ],
+      "scene_failure_snapshots": [
+        {
+          "path": "collected/owner/scene/failures/e00439f55f174ae7b0b976d5738d03eb.json",
+          "sha256": "52593ffe918cf6ca371dad956d5d040bf2a3d1e287d1078f2c401e05ed9fc26f",
+          "reason": "owner_perception_context_changed",
+          "id": "b2abad2eb75e48ac920d4acc0f669ef3:3",
+          "frames": 4,
+          "rgbd_pairings": 2,
+          "geometry_feedback_at_capture": true,
+          "action_published": false
+        }
+      ],
+      "export_seal_identity": "a6ed9fd0aea7405c1c283bb7ff424b101fb629a7b2400dc4217e33703206545d",
+      "source_sha256": {
+        "workspace-run.json": "04257f44ba0308cf47f4e63beae09c26f13e4275e01c5e8b2473079f372efd0d",
+        "site/development.local.json": "acb134d4ce20c42f44bd443a2396f73d2e81987b8b9c4aff2f28a182cbf58b1c",
+        "trace.jsonl": "0a09943b2a87e35a7dca73fca47df4ac438b643f7356405b28e1abfff3a4900f",
+        "planner/trace.jsonl": "b8bb3ad125bd50e40e8071d277bdcb9acc88f1f48a46e06713863189cb5dae3b",
+        "collected/owner/harness/trace.jsonl": "7d182dae91fab5c2bdcaae59600de14999e20d8665495b4bbb2974777d9053fd",
+        "collected/owner/journal/control.jsonl": "87734dead75286d20c501b52036a3eefd4aabc7e8fedbdf1954e38aab53e658e",
+        "collected/owner/journal/observations.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "collected/owner/camera_diagnostics.json": "b8b2d1fed9689fad5c2e017c1a8707813cb6962230818f2c400694eb22864472",
+        "collection-result.json": "794d0e33e5cf416e21b0e06831d0b8924e598b10da959525b6ed511da144b3d4",
+        "export-seal.json": "3a237eee89467db7b755e9628e57689476a2b60159d81b2ae55eaa86e9f357ce"
+      }
+    },
+    {
+      "run_id": "web-bcfd8730efd14981bcd2d7429858808b",
+      "source_root": "HARNESS/runs/workspace/web-bcfd8730efd14981bcd2d7429858808b",
+      "version": 52,
+      "bundle_id": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",
+      "started_local": "2026-11-25T04:24:02.519067-05:00",
+      "duration_s": 65.30749,
+      "status": "review",
+      "stop_confirmation": "measured_stationary",
+      "recovery_of": null,
+      "summary": "规划未取得进展，已结束重复推理：reobserve；observation_readiness_timeout:observation_unavailable:RpcError:observe_with_status: frame_feedback_skew:no_frames",
+      "requested_mode": "astra",
+      "motion_corrections": 1,
+      "authorization": {
+        "task_hash": "3a44143265661d13ee02285ff6d1b2f2b5e1d396d622a1a9e22557fe239dae2f",
+        "session_id": "a3abcf8b74064d67b2f18612e3904907",
+        "owner_instance_id": "9fcbb728d2a74ccc86d0eeb3c93c1ac6",
+        "web_request_id": "b5f62967c8204591bd0f4325d597f086",
+        "synthetic": false
+      },
+      "funnel_metrics": {
+        "scenario_id": null,
+        "stages": {
+          "S0": true,
+          "S1": false,
+          "S2": false,
+          "S3": false,
+          "S4": false,
+          "S5": false,
+          "S6": false,
+          "S7": false,
+          "S8": false,
+          "S9": false
+        },
+        "complete_success": false,
+        "nonphysical_rejections": 0,
+        "revocations": 3,
+        "revocations_raw": 4,
+        "active_fault_revocations": 0,
+        "model_calls": 3,
+        "model_wait_s": 21.616350998,
+        "last_failure_reason": "planner_no_progress_budget_exhausted"
+      },
+      "owner_commands": {
+        "first_skill_publications": 0,
+        "raw_control_rows": 5487,
+        "all_publications_completed": true,
+        "hold_sources": {
+          "harness_hold": 5416,
+          "ik_recovery_hold": 2,
+          "hold": 69
+        },
+        "unknown_or_partial_publications": 0
+      },
+      "camera_recorder": {
+        "observations": 1683,
+        "last_callback_ids": {
+          "head": 1729,
+          "left_wrist": 1732,
+          "right_wrist": 1732
+        },
+        "warmup_callbacks": {
+          "head": 47,
+          "left_wrist": 46,
+          "right_wrist": 46
+        },
+        "drop_counts": {
+          "head": 0,
+          "left_wrist": 4,
+          "right_wrist": 4
+        },
+        "journal_observations": 1683
+      },
+      "owner_events": [
+        {
+          "line": 7,
+          "kind": "authority_revoked",
+          "epoch": 2,
+          "reason": "task_finished"
+        },
+        {
+          "line": 8,
+          "kind": "hold_acknowledged",
+          "publication_id": "5416",
+          "stage": "owner_hold_committed"
+        },
+        {
+          "line": 10,
+          "kind": "authority_revoked",
+          "epoch": 3,
+          "reason": "web_stop_requested"
+        },
+        {
+          "line": 12,
+          "kind": "hold_acknowledged",
+          "publication_id": "5486",
+          "stage": "measured_stationary"
+        },
+        {
+          "line": 13,
+          "kind": "authority_revoked",
+          "epoch": 4,
+          "reason": "session_closed"
+        },
+        {
+          "line": 14,
+          "kind": "authority_revoked",
+          "epoch": 5,
+          "reason": "owner_bridge_closed"
+        }
+      ],
+      "planner_waits": [
+        {
+          "line": 13,
+          "kind": "observation_readiness_timeout",
+          "submitted": false,
+          "attempts": 21,
+          "first_reason": "observation_unavailable:RpcError:observe_with_status: frame_feedback_skew:no_frames",
+          "reason": "observation_unavailable:RpcError:observe_with_status: frame_feedback_skew:no_frames",
+          "waited_ms": 4002.360598067753
+        },
+        {
+          "line": 19,
+          "kind": "observation_readiness_timeout",
+          "submitted": false,
+          "attempts": 21,
+          "first_reason": "observation_unavailable:RpcError:observe_with_status: frame_feedback_skew:no_frames",
+          "reason": "observation_unavailable:RpcError:observe_with_status: frame_feedback_skew:no_frames",
+          "waited_ms": 4000.079073011875
+        },
+        {
+          "line": 25,
+          "kind": "observation_readiness_timeout",
+          "submitted": false,
+          "attempts": 21,
+          "first_reason": "observation_unavailable:RpcError:observe_with_status: frame_feedback_skew:no_frames",
+          "reason": "observation_unavailable:RpcError:observe_with_status: frame_feedback_skew:no_frames",
+          "waited_ms": 4000.0812290236354
+        },
+        {
+          "line": 41,
+          "kind": "observation_readiness_timeout",
+          "submitted": false,
+          "attempts": 20,
+          "first_reason": "observation_unavailable:RpcError:observe_with_status: frame_feedback_skew:no_frames",
+          "reason": "observation_unavailable:RpcError:observe_with_status: frame_feedback_skew:no_frames",
+          "waited_ms": 4003.1155180186033
+        },
+        {
+          "line": 51,
+          "kind": "observation_readiness_timeout",
+          "submitted": false,
+          "attempts": 77,
+          "first_reason": "observation_unavailable:RpcError:observe_with_status: frame_feedback_skew:no_frames",
+          "reason": "observation_unavailable:RpcError:observe_with_status: frame_feedback_skew:no_frames",
+          "waited_ms": 15000.066390028223
+        }
+      ],
+      "workspace_events": [
+        {
+          "line": 23,
+          "kind": "web_stop_confirmed",
+          "stage": "measured_stationary",
+          "request_id": "c431cdebe83d4e7e9d61f4017968f6d3"
+        },
+        {
+          "line": 24,
+          "kind": "workspace_task_needs_attention",
+          "reason": "规划未取得进展，已结束重复推理：reobserve；observation_readiness_timeout:observation_unavailable:RpcError:observe_with_status: frame_feedback_skew:no_frames"
+        }
+      ],
+      "scene_failure_snapshots": [
+        {
+          "path": "collected/owner/scene/failures/1bf8ed8c10dc460ca92ebc5e71437bb5.json",
+          "sha256": "4960a827db7863bfc9248f5b231139873548d157e8dc02ce6b977c12fa7b2913",
+          "reason": "frame_feedback_skew:no_frames",
+          "id": "f664e73b9246456d881d5658a02265b0:7",
+          "frames": 0,
+          "rgbd_pairings": 0,
+          "geometry_feedback_at_capture": false,
+          "action_published": false
+        },
+        {
+          "path": "collected/owner/scene/failures/ac7c408487594c78a11c3f76fb08f488.json",
+          "sha256": "29ffd69a5ab762fd058c9a1ce3b792232c8b68dfb4e96d2627aaec8e919f0466",
+          "reason": "frame_feedback_skew:no_frames",
+          "id": "f664e73b9246456d881d5658a02265b0:8",
+          "frames": 0,
+          "rgbd_pairings": 0,
+          "geometry_feedback_at_capture": false,
+          "action_published": false
+        }
+      ],
+      "export_seal_identity": "58df35c3c878646a00f8ced3882a2d4fbdaab6dd59c5257ddb99e7172749fa1f",
+      "source_sha256": {
+        "workspace-run.json": "610a61e8ac3348d91253230a68e1992b844534e375e962fc934c8d3c31b4622a",
+        "site/development.local.json": "0886c1960fdfea0dfc1db798d1315875a31e5f8632fb72ca234033be745936b5",
+        "trace.jsonl": "597b07bd124f35013d860bff611c643ec8d6034481eabb8fcfc7aa84280613cc",
+        "planner/trace.jsonl": "388eeeb0c5ee7cda1fd3c167957df9cc8812d358b0b5b8e2725e86c01ae08e10",
+        "collected/owner/harness/trace.jsonl": "6981c2483bfb36e3a60efa74553e60d42d0c1b85f14d25f242f535c2326e543b",
+        "collected/owner/journal/control.jsonl": "5dd9fcca81fd274370b3ec2f39e7ec184608d09db16059b7fe1b18c9ae812ca4",
+        "collected/owner/journal/observations.jsonl": "839c0d0b9c410a07080b436833e1d360e0c0c541236d6af12b30e185af17b1ba",
+        "collected/owner/camera_diagnostics.json": "73dd1680880c973900373db99c43076831767c268b1b7fc4c0c47e7ab60c9238",
+        "collection-result.json": "a06a799c36a02bb77149f5fa9595400d0756c1345636b748105f477b55e41c8d",
+        "export-seal.json": "61d8b9040222b3486635c0a8a045f30815c95f915d354141fe3e044665377dde"
+      }
+    }
+  ]
+}

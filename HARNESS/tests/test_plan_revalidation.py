@@ -288,6 +288,29 @@ def test_held_uncertainty_exception_never_crosses_contact_or_loaded_stages(scena
             threshold=tolerances(serv.fixture,'approach_grasp'))
 
 
+@pytest.mark.parametrize('skill', ['transfer_above_hole', 'move_tcp', 'align', 'insert', 'release', 'retreat'])
+def test_unpublished_loaded_path_waits_only_for_missing_attachment_measurement(scenario, skill):
+    from f1_harness.revalidation import attachment_measurement_pending
+    serv, _, _, original, latest, _ = scenario
+    target = original.objects[0].model_copy(update=dict(held=True, eef_object_pose=tuple(pose().ravel())))
+    loaded = original.model_copy(update=dict(objects=(target, original.objects[1])))
+    def measurement(held, **changes):
+        update = dict(held=held, eef_object_pose=target.eef_object_pose if held is True else None)
+        obj = target.model_copy(update=update | changes)
+        return latest.model_copy(update=dict(objects=(obj, latest.objects[1])))
+    def pending(obs):
+        return attachment_measurement_pending(loaded, obs, task=serv.task, skill=skill)
+    assert pending(measurement(None))
+    assert pending(measurement(True,eef_object_pose=None))
+    assert not pending(measurement(True))
+    assert not pending(measurement(False))
+    assert not pending(measurement(None, frame_id='other'))
+    assert not pending(measurement(None).model_copy(update=dict(host_boot_id='other')))
+    assert not pending(measurement(None).model_copy(update=dict(faults=('invalid_frame',))))
+    assert not pending(measurement(None, eef_object_pose=target.eef_object_pose))
+    assert not attachment_measurement_pending(original, measurement(None), task=serv.task, skill=skill)
+
+
 @pytest.mark.parametrize('turns',[1,2,3])
 def test_square_axis_branch_changes_preserve_goals_sweep_and_raw_evidence(scenario,turns):
     from f1_harness.geometry import transform
@@ -375,6 +398,14 @@ def test_registered_long_transfer_rebuilds_identical_branch_for_revalidation():
         original_observation=original.model_dump(),observation=latest.model_dump(),full22=full,held16=held,after_ns=after)
     assert proof['geometry_checks']['stages']==1
     assert len(candidate['geometry_trace'][0]['goals'])==7
+    # A completed sweep on the last held frame cannot authorize first output
+    # against a newer image with an unresolved attachment.
+    from f1_harness.revalidation import RevalidationEvidenceUpdated
+    missing = latest.objects[0].model_copy(update=dict(held=None, eef_object_pose=None))
+    newer = observation(clock[0]+1,name='newer').model_copy(update=dict(objects=(missing,latest.objects[1])))
+    with pytest.raises(RevalidationEvidenceUpdated, match='revalidation_attachment_measurement_pending'):
+        proof_observation(proof,proposal=JointProposal(**candidate),original=original,
+            intent=intent,task=task,now_ns=clock[0]+1,max_age_ns=500_000_000,live_observation=newer)
     serv.fixture['transfer_rotation_path']='shortest'
     with pytest.raises(RuntimeError,match='stage_binding_mismatch'):
         revalidate_candidate(serv,intent=intent.model_dump(),proposal=candidate,

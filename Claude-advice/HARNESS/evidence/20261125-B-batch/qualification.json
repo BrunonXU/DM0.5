@@ -1,0 +1,92 @@
+{
+  "passed": true,
+  "version": 52,
+  "product": "F1 Harness 运输目标区域与分阶段补验 V52",
+  "bundle_id": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",
+  "code_commit": "1dcadbdf78a340cd6fb1d8d5a5d4f254e3a43aaa",
+  "active_version": 51,
+  "active_bundle_id": "d7981daf3e2f7373432e935bca33e4cdbe0d8b88aaa57f936fac002ca3806037",
+  "deployed": false,
+  "start_sent": false,
+  "hardware_outputs": 0,
+  "physical_task_verified": false,
+  "software": {
+    "distinct_cases": 3173,
+    "project_pass": 3091,
+    "isolated_uid_asset_tests": 12,
+    "numerics_pass": 70,
+    "failed": 0,
+    "unresolved_skipped": 0,
+    "native_integration": 62,
+    "project_layout": true
+  },
+  "replays": {
+    "normal": {
+      "stages": 10,
+      "outputs": 2496,
+      "complete_publications": true,
+      "matched_placement_receipt": true,
+      "withdraw_reset": true,
+      "swept_output_audits": {
+        "replay_output": "passed",
+        "grasp_output": "passed",
+        "grasp_observation_output": "not_applicable",
+        "cycle_output": "passed"
+      }
+    },
+    "grasp-miss": {
+      "stages": 12,
+      "outputs": 2738,
+      "complete_publications": true,
+      "matched_placement_receipt": true,
+      "withdraw_reset": true,
+      "swept_output_audits": {
+        "replay_output": "passed",
+        "grasp_output": "passed",
+        "grasp_observation_output": "not_applicable",
+        "cycle_output": "passed"
+      }
+    },
+    "aperture-occluded": {
+      "stages": 12,
+      "outputs": 2712,
+      "complete_publications": true,
+      "matched_placement_receipt": true,
+      "withdraw_reset": true,
+      "swept_output_audits": {
+        "replay_output": "passed",
+        "grasp_output": "passed",
+        "grasp_observation_output": "not_applicable",
+        "cycle_output": "passed"
+      }
+    }
+  },
+  "latest_failure": "web-8782aab8cdbe43eb91e2ad4daac2f4b3",
+  "latest_failure_zero_submit": true,
+  "net_new_harness_error": 0,
+  "net_new_nonphysical_rejection_reasons": 0,
+  "source_sha256": {
+    "bundle-final/manifest.json": "e07a78442cc0f417aa9741d1dea92ece96cf787fac6461911388b7402344de17",
+    "reviewed-git-sources.json": "4313006842cfe2ba446ac8a460d501576dc468b3381472caf750fc55c47e672b",
+    "snapshot-test-view.json": "1fc267f4eec110209e4e27972d636c71815cc623f4c349a5d51104879e42eeea",
+    "site-qualification.json": "58256d48a6e6919978ad0c9712164ec85e365d604a3f1ebd7c65a2db4cff8807",
+    "scope-audit.json": "13d2b2ab8cf39540af6133c604c4b1ccabbe0c0c497a05906327aba488a90554",
+    "latest-field-8782/report.json": "0aa758a481a643887bffdc1f7f421b6a55d07274bd86349ae0292c8e09f5300d",
+    "H06/summary.json": "47b6f18ff9e804478ae65113c3aedf28e6c9707ad7fa01a2fc833636f1ed1a74",
+    "H06/v25/frozen-v52/field/report.json": "0f69e9f405d83a3d217ee7fef89a107ccea24e5e78999ee2c8d8cd44efa96128",
+    "full-validation-pinned/validation-summary.json": "12373d6a3f2033acfb1ce2426589019d4fe71ceb06fd7d083d0b5c175a0c8811",
+    "software/qualification.json": "d6c80247fd9d551cb9eb011218b6c66d257493039e1625e6b4b91708e622cdc2",
+    "software/collect.log": "7dfb5cfb70ab7efa616b7077176773ef769084c80986adc9c6877ca56a5539ba",
+    "software/project.xml": "9557bca6bdf95265c60f62681218409a93b050fbb6d5d859e14ae34e35f88e51",
+    "software/watch.xml": "f5077527429d279c556928026e781888f60a2637e1129e02e5a78526ae953306",
+    "software/numeric.xml": "1b5bc23854977807b8a57a0bba78aad6394ef4fb1dac5b74da357ecb42b77eb6",
+    "software/native.xml": "0d13aed8f2272ab05eb112e26840692fa407406d776312c9e0bdbb2c36eb1f6c",
+    "layout-public.log": "808b7589ef1a2bb70251acd4806bc0388fe8a64b5e22d2fe0c72f87695eaa4ad",
+    "layout-local.log": "808b7589ef1a2bb70251acd4806bc0388fe8a64b5e22d2fe0c72f87695eaa4ad",
+    "release-validation.json": "a792f583b5184418f87c9caab3a8bdb6026b9bd4eb22d159d2a3ee2db648aef8",
+    "unchanged-deployment.json": "12f785bc132c7749c03021cefdaa19ed9391fc37daf18a7532421fbe9bb745cc",
+    "batch-replay-qualification.json": "12c8fedb3059a9bbde659e945293d8eb27fa0a19d5c3a6d4b26a9ce5ba2f2da5"
+  },
+  "operator_workbench_version": 51,
+  "operator_workbench_connected": true
+}

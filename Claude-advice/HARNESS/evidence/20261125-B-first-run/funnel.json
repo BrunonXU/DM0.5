@@ -1,0 +1,329 @@
+{
+  "schema": "f1-harness-funnel-v1",
+  "runs": [
+    {
+      "run_id": "web-bcfd8730efd14981bcd2d7429858808b",
+      "status": "included",
+      "eligible": true,
+      "issues": [],
+      "workspace_status": "review",
+      "started_at": 1795598642.5190666,
+      "mode": "astra",
+      "bundle_id": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",
+      "version": 52,
+      "scenario_id": null,
+      "ended": true,
+      "planner_mirror_incomplete": false,
+      "stages": {
+        "S0": true,
+        "S1": false,
+        "S2": false,
+        "S3": false,
+        "S4": false,
+        "S5": false,
+        "S6": false,
+        "S7": false,
+        "S8": false,
+        "S9": false
+      },
+      "stage_interval_s": {
+        "S0": 0.0,
+        "S1": null,
+        "S2": null,
+        "S3": null,
+        "S4": null,
+        "S5": null,
+        "S6": null,
+        "S7": null,
+        "S8": null,
+        "S9": null
+      },
+      "stage_skill_duration_s": {
+        "S0": null,
+        "S1": null,
+        "S2": null,
+        "S3": null,
+        "S4": null,
+        "S5": null,
+        "S6": null,
+        "S7": null,
+        "S8": null,
+        "S9": null
+      },
+      "furthest_stage": "S0",
+      "complete_success": false,
+      "first_motion_s": null,
+      "task_s": null,
+      "reset_after_placement_s": null,
+      "assisted_results": 0,
+      "manual_interventions": 0,
+      "physical_rejections": 0,
+      "nonphysical_rejections": 0,
+      "rejection_reasons": {
+        "nonphysical": {},
+        "physical": {}
+      },
+      "failed_skill_reasons": {},
+      "revocations": 3,
+      "revocations_raw": 4,
+      "revocation_reasons": {
+        "task_finished": 1,
+        "web_stop_requested": 1,
+        "session_closed": 1,
+        "owner_bridge_closed": 1
+      },
+      "active_fault_revocations": 0,
+      "last_failure_source": "planner_no_progress",
+      "last_failure_reason": "planner_no_progress_budget_exhausted",
+      "owner_last_failure_reason": null,
+      "planner_last_failure_reason": "planner_no_progress_budget_exhausted",
+      "nonphysical_termination": false,
+      "model_calls": 3,
+      "model_responses": 3,
+      "model_transport_attempts_recorded": 3,
+      "model_requests_with_origin_evidence": 3,
+      "model_transport_errors": 0,
+      "model_wait_s": 21.616350998,
+      "model_wait_observed_s": 21.616350998,
+      "model_requests_missing_wait": 0
+    },
+    {
+      "run_id": "web-e992a2d925444c2dab893c82a336b419",
+      "status": "included",
+      "eligible": true,
+      "issues": [],
+      "workspace_status": "error",
+      "started_at": 1795598590.4635031,
+      "mode": "astra",
+      "bundle_id": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",
+      "version": 52,
+      "scenario_id": null,
+      "ended": true,
+      "planner_mirror_incomplete": false,
+      "stages": {
+        "S0": true,
+        "S1": false,
+        "S2": false,
+        "S3": false,
+        "S4": false,
+        "S5": false,
+        "S6": false,
+        "S7": false,
+        "S8": false,
+        "S9": false
+      },
+      "stage_interval_s": {
+        "S0": 0.0,
+        "S1": null,
+        "S2": null,
+        "S3": null,
+        "S4": null,
+        "S5": null,
+        "S6": null,
+        "S7": null,
+        "S8": null,
+        "S9": null
+      },
+      "stage_skill_duration_s": {
+        "S0": null,
+        "S1": null,
+        "S2": null,
+        "S3": null,
+        "S4": null,
+        "S5": null,
+        "S6": null,
+        "S7": null,
+        "S8": null,
+        "S9": null
+      },
+      "furthest_stage": "S0",
+      "complete_success": false,
+      "first_motion_s": null,
+      "task_s": null,
+      "reset_after_placement_s": null,
+      "assisted_results": 0,
+      "manual_interventions": 0,
+      "physical_rejections": 0,
+      "nonphysical_rejections": 0,
+      "rejection_reasons": {
+        "nonphysical": {},
+        "physical": {}
+      },
+      "failed_skill_reasons": {},
+      "revocations": 5,
+      "revocations_raw": 6,
+      "revocation_reasons": {
+        "camera_unavailable": 2,
+        "web_stop_requested": 1,
+        "task_finished": 1,
+        "session_closed": 1,
+        "owner_bridge_closed": 1
+      },
+      "active_fault_revocations": 1,
+      "last_failure_source": "authority_revoked",
+      "last_failure_reason": "camera_unavailable",
+      "owner_last_failure_reason": "camera_unavailable",
+      "planner_last_failure_reason": null,
+      "nonphysical_termination": false,
+      "model_calls": 0,
+      "model_responses": 0,
+      "model_transport_attempts_recorded": 0,
+      "model_requests_with_origin_evidence": 0,
+      "model_transport_errors": 0,
+      "model_wait_s": 0,
+      "model_wait_observed_s": 0,
+      "model_requests_missing_wait": 0
+    }
+  ],
+  "summary": {
+    "directories": 2,
+    "included": 2,
+    "status_counts": {
+      "included": 2
+    },
+    "issue_counts": {},
+    "mode_counts": {
+      "astra": 2
+    },
+    "version_counts": {
+      "52": 2
+    },
+    "stages": {
+      "S0": {
+        "reached": 2,
+        "trials": 2,
+        "unknown": 0,
+        "rate": 1.0,
+        "observed_lower_bound": 1.0,
+        "interval_median_s": 0.0,
+        "interval_n": 2
+      },
+      "S1": {
+        "reached": 0,
+        "trials": 2,
+        "unknown": 0,
+        "rate": 0.0,
+        "observed_lower_bound": 0.0,
+        "interval_median_s": null,
+        "interval_n": 0
+      },
+      "S2": {
+        "reached": 0,
+        "trials": 2,
+        "unknown": 0,
+        "rate": 0.0,
+        "observed_lower_bound": 0.0,
+        "interval_median_s": null,
+        "interval_n": 0
+      },
+      "S3": {
+        "reached": 0,
+        "trials": 2,
+        "unknown": 0,
+        "rate": 0.0,
+        "observed_lower_bound": 0.0,
+        "interval_median_s": null,
+        "interval_n": 0
+      },
+      "S4": {
+        "reached": 0,
+        "trials": 2,
+        "unknown": 0,
+        "rate": 0.0,
+        "observed_lower_bound": 0.0,
+        "interval_median_s": null,
+        "interval_n": 0
+      },
+      "S5": {
+        "reached": 0,
+        "trials": 2,
+        "unknown": 0,
+        "rate": 0.0,
+        "observed_lower_bound": 0.0,
+        "interval_median_s": null,
+        "interval_n": 0
+      },
+      "S6": {
+        "reached": 0,
+        "trials": 2,
+        "unknown": 0,
+        "rate": 0.0,
+        "observed_lower_bound": 0.0,
+        "interval_median_s": null,
+        "interval_n": 0
+      },
+      "S7": {
+        "reached": 0,
+        "trials": 2,
+        "unknown": 0,
+        "rate": 0.0,
+        "observed_lower_bound": 0.0,
+        "interval_median_s": null,
+        "interval_n": 0
+      },
+      "S8": {
+        "reached": 0,
+        "trials": 2,
+        "unknown": 0,
+        "rate": 0.0,
+        "observed_lower_bound": 0.0,
+        "interval_median_s": null,
+        "interval_n": 0
+      },
+      "S9": {
+        "reached": 0,
+        "trials": 2,
+        "unknown": 0,
+        "rate": 0.0,
+        "observed_lower_bound": 0.0,
+        "interval_median_s": null,
+        "interval_n": 0
+      }
+    },
+    "complete_successes": 0,
+    "success_unknown": 0,
+    "success_rate": {
+      "value": 0.0,
+      "n": 2
+    },
+    "first_motion_median_s": {
+      "value": null,
+      "n": 0
+    },
+    "task_median_s": {
+      "value": null,
+      "n": 0
+    },
+    "model_calls_median": {
+      "value": 1.5,
+      "n": 2
+    },
+    "model_wait_median_s": {
+      "value": 10.808175499,
+      "n": 2
+    },
+    "nonphysical_rejections_mean": {
+      "value": 0.0,
+      "n": 2
+    },
+    "nonphysical_rejections": 0,
+    "physical_rejections": 0,
+    "nonphysical_termination_rate": {
+      "value": 0.0,
+      "n": 2
+    },
+    "closed_owner_traces": 2,
+    "closed_nonphysical_rejections_mean": {
+      "value": 0.0,
+      "n": 2
+    },
+    "revocations": 8,
+    "revocations_raw": 10,
+    "active_fault_revocations": 1,
+    "failed_skill_reasons": {},
+    "last_failure_reasons": {
+      "camera_unavailable": 1,
+      "planner_no_progress_budget_exhausted": 1
+    }
+  }
+}

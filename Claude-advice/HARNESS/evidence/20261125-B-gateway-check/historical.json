@@ -1,0 +1,269 @@
+{
+  "schema": "f1-harness-historical-gateway-check-v1",
+  "version": 52,
+  "bundle_id": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",
+  "incident_window_utc": [
+    "2026-11-25T09:23:00+00:00",
+    "2026-11-25T09:26:00+00:00"
+  ],
+  "checked_utc": "2026-11-25T09:56:34.781016+00:00",
+  "provenance": {
+    "local_source_root": "HARNESS/artifacts/v53-camera-base-investigation/historical",
+    "capture_sha256": "73c70685716d5ce6fffc7964e54f6788a5c9b34c206c2bdd499ee46d9bc3f3e4",
+    "summary_sha256": "ea78ffa302ddba11ed12f244476670b33d408a56904c4de419c3106166ab57b6",
+    "collection_script_sha256": "7948330b9c6e4bdd1b859302469e257d8daebe23fdf668c8bfa4735283270f3e",
+    "prior_public_trace": "../20261125-B-first-run/trace-excerpts.json",
+    "prior_public_trace_sha256": "d43da27fbe29fe832d33de0972b035785abae7b40bb0642f43ea8a5447930490"
+  },
+  "linux_boot_id": "719d838e-0a31-4132-b4c6-462e7ca62abb",
+  "single_boot_in_window_and_during_recheck": true,
+  "journal_entries_in_window": 1324,
+  "runs": [
+    {
+      "id": "web-e992a2d925444c2dab893c82a336b419",
+      "started_utc": "2026-11-25T09:23:10.463503+00:00",
+      "duration_s": 14.053461,
+      "observation_config_sha256": "abed74c1e8dcb07828ce3a05feba4c59342e4cb1f1f3b1f9aa7cd3420b2dfd38",
+      "required_streams": [
+        [
+          "head",
+          "/camera/head/color/image_raw",
+          "/camera/head/depth/image_raw"
+        ],
+        [
+          "right",
+          "/camera/right_wrist/color/image_raw",
+          "/camera/right_wrist/depth/image_rect_raw"
+        ]
+      ],
+      "gateway_sources": {
+        "gateway.log": {
+          "sha256": "701a8d6a5d4c21d2346a6204ed713f27669ca145755149b4083550cf2616e9a9",
+          "bytes": 208
+        },
+        "gateway/failure.json": {
+          "sha256": "45ab8891fa5a8431b2b3945f53dc7417fb88898ba5e0754333fbc4d129dfeae1",
+          "bytes": 108
+        },
+        "gateway/trace.jsonl": {
+          "sha256": "330e0ebe0c183472aff0fa2be2252c4ea00a9247803150c3ca17f58dc0603284",
+          "bytes": 46774
+        }
+      },
+      "gateway_ros_log_bytes": 0,
+      "gateway_raw_diagnostics": [
+        [
+          "head",
+          "rgb",
+          88
+        ],
+        [
+          "head",
+          "rgb",
+          111
+        ],
+        [
+          "head",
+          "rgb",
+          139
+        ],
+        [
+          "head",
+          "rgb",
+          140
+        ],
+        [
+          "head",
+          "depth",
+          159
+        ],
+        [
+          "head",
+          "depth",
+          160
+        ],
+        [
+          "head",
+          "depth",
+          169
+        ],
+        [
+          "head",
+          "depth",
+          182
+        ]
+      ],
+      "sampled_timing_errors": {
+        "FileNotFoundError": 7,
+        "owner_perception_context_changed": 2
+      },
+      "timing_records_with_matched_head_and_right_feedback": [
+        {
+          "right": {
+            "frame_oldest_age_ms": 20.671642,
+            "state_received_ns": 11992026965603,
+            "max_skew_ms": 10.379391
+          },
+          "head": {
+            "frame_oldest_age_ms": 73.550314,
+            "state_received_ns": 11991987036699,
+            "max_skew_ms": 5.708957
+          }
+        },
+        {
+          "right": {
+            "frame_oldest_age_ms": 20.318915,
+            "state_received_ns": 11993511056091,
+            "max_skew_ms": 10.245463
+          },
+          "head": {
+            "frame_oldest_age_ms": 43.758158,
+            "state_received_ns": 11993487866943,
+            "max_skew_ms": 7.210885
+          }
+        },
+        {
+          "right": {
+            "frame_oldest_age_ms": 70.723867,
+            "state_received_ns": 11994428317498,
+            "max_skew_ms": 7.165902
+          },
+          "head": {
+            "frame_oldest_age_ms": 50.142244,
+            "state_received_ns": 11994467592761,
+            "max_skew_ms": 11.325514
+          }
+        }
+      ],
+      "recording_observations": 0,
+      "left_recording_warmup_callbacks": 0,
+      "skill_first_publications": 0,
+      "abnormal_revocations_during_authority": 1
+    },
+    {
+      "id": "web-bcfd8730efd14981bcd2d7429858808b",
+      "started_utc": "2026-11-25T09:24:02.519067+00:00",
+      "duration_s": 65.30749,
+      "observation_config_sha256": "abed74c1e8dcb07828ce3a05feba4c59342e4cb1f1f3b1f9aa7cd3420b2dfd38",
+      "required_streams": [
+        [
+          "head",
+          "/camera/head/color/image_raw",
+          "/camera/head/depth/image_raw"
+        ],
+        [
+          "right",
+          "/camera/right_wrist/color/image_raw",
+          "/camera/right_wrist/depth/image_rect_raw"
+        ]
+      ],
+      "gateway_sources": {
+        "gateway.log": {
+          "sha256": "d8a4d17ce2a704c7b9e5e6ef1f5e37df86129712c5f426130ea898e187cff824",
+          "bytes": 163
+        },
+        "gateway/failure.json": {
+          "sha256": "45ab8891fa5a8431b2b3945f53dc7417fb88898ba5e0754333fbc4d129dfeae1",
+          "bytes": 108
+        },
+        "gateway/trace.jsonl": {
+          "sha256": "5e833769307ae9aacdc036e8559df191c9efeedd71e6da2a25854d8ee0fcb036",
+          "bytes": 25219
+        }
+      },
+      "gateway_ros_log_bytes": 0,
+      "gateway_raw_diagnostics": [],
+      "sampled_timing_errors": {
+        "FileNotFoundError": 5,
+        "frame_feedback_skew:no_frames": 54
+      },
+      "timing_records_with_matched_head_and_right_feedback": [],
+      "recording_observations": 1683,
+      "left_recording_warmup_callbacks": 46,
+      "skill_first_publications": 0,
+      "abnormal_revocations_during_authority": 0,
+      "empty_snapshots": [
+        {
+          "sha256": "4960a827db7863bfc9248f5b231139873548d157e8dc02ce6b977c12fa7b2913",
+          "boot": "719d838e-0a31-4132-b4c6-462e7ca62abb",
+          "frames": 0,
+          "pairs": 0,
+          "faults": [],
+          "warnings": []
+        },
+        {
+          "sha256": "29ffd69a5ab762fd058c9a1ce3b792232c8b68dfb4e96d2627aaec8e919f0466",
+          "boot": "719d838e-0a31-4132-b4c6-462e7ca62abb",
+          "frames": 0,
+          "pairs": 0,
+          "faults": [],
+          "warnings": []
+        }
+      ]
+    }
+  ],
+  "left_wrist_driver": {
+    "topic_namespace": "camera.left_wrist",
+    "model": "Intel RealSense D405",
+    "usb_port": "1-3.2",
+    "source_ros_log": "realsense2_camera_node_1866092_1795590389559.log",
+    "matching_driver_rows_in_window": 57,
+    "last_requested_serial_missing_utc": "2026-11-25T09:23:36.956108+00:00",
+    "usb_events": [
+      {
+        "utc": "2026-11-25T09:23:38.335074+00:00",
+        "message": "usb 1-3.2: new high-speed USB device number 6 using tegra-xusb"
+      },
+      {
+        "utc": "2026-11-25T09:23:38.483082+00:00",
+        "message": "usb 1-3.2: can't set config #1, error -71"
+      },
+      {
+        "utc": "2026-11-25T09:23:38.620124+00:00",
+        "message": "usb 1-3.2: USB disconnect, device number 6"
+      },
+      {
+        "utc": "2026-11-25T09:23:39.115075+00:00",
+        "message": "usb 1-3.2: new high-speed USB device number 7 using tegra-xusb"
+      },
+      {
+        "utc": "2026-11-25T09:23:39.265098+00:00",
+        "message": "uvcvideo 1-3.2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71"
+      },
+      {
+        "utc": "2026-11-25T09:23:39.266068+00:00",
+        "message": "usb 1-3.2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 405  (8086:0b5b)"
+      },
+      {
+        "utc": "2026-11-25T09:23:40.156092+00:00",
+        "message": "usb 1-3.2: USB disconnect, device number 7"
+      },
+      {
+        "utc": "2026-11-25T09:23:42.691074+00:00",
+        "message": "usb 1-3.2: new high-speed USB device number 8 using tegra-xusb"
+      },
+      {
+        "utc": "2026-11-25T09:23:42.842075+00:00",
+        "message": "uvcvideo 1-3.2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71"
+      },
+      {
+        "utc": "2026-11-25T09:23:42.842192+00:00",
+        "message": "usb 1-3.2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 405  (8086:0b5b)"
+      }
+    ],
+    "expected_serial_found_on_port_utc": "2026-11-25T09:23:43.520575+00:00",
+    "color_and_depth_profiles": {
+      "width": 640,
+      "height": 480,
+      "fps": 30,
+      "rgb_encoding": "BGR8",
+      "depth_encoding": "Z16"
+    },
+    "node_up_utc": "2026-11-25T09:23:43.808298+00:00"
+  },
+  "interpretation": [
+    "The configured left wrist was absent during the first physical recording and the driver reacquired that device before the second run.",
+    "Both runs used the same observation profile. In the first, the gateway paired head and right images with joint feedback and ran the scene pipeline; the active owner context changed during those samples.",
+    "In the second, the physical recorder saved 1,683 three-camera color groups, while the gateway returned no frames. The archived process log contains no spin traceback, but did not record ROS/DDS endpoint matches or thread liveness; the specific cause of this second failure is unresolved."
+  ]
+}

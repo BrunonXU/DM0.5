@@ -13,6 +13,7 @@ from .local_environment import local_scope
 
 
 SCHEMA = 'f1-harness-plan-revalidation-v1'
+TRANSPORT_MEASUREMENT_PENDING = 'revalidation_transport_measurement_pending'
 
 
 class RevalidationExpired(HarnessError):
@@ -179,7 +180,7 @@ def require_planning_geometry(observation,*,intent,task,now_ns,max_age_ns,candid
     objects={o.object_id:o for o in observation.objects}
     if observation.geometry_scope=='coarse_local_environment' or local_scope(observation) and intent.skill in ('move_tcp','reobserve'):
         from .local_environment import require_local_evidence
-        require_local_evidence(task,observation)
+        require_local_evidence(task,observation,motion=intent.skill=='move_tcp')
         if (intent.skill not in ('move_tcp','reobserve') or intent.skill=='move_tcp' and (
                 intent.parameters.target_frame!='world' or intent.parameters.support_contact)):
             raise HarnessError('local_environment_requires_world_noncontact_motion')
@@ -286,7 +287,81 @@ def fresh_after(observation,after_ns,*,task=None,skill=None):
     return bool(frames) and all(frame.received_ns>after_ns for frame in frames)
 
 
+def alignment_measurement_gap(original, latest, *, task, skill):
+    """An incomplete view cannot replace the measured inputs of a pending alignment."""
+    if (skill != 'align' or original is None or latest is None or latest.faults
+            or original.synthetic or latest.synthetic or original.calibration_id != latest.calibration_id
+            or original.host_boot_id != latest.host_boot_id or original.clock_domain != latest.clock_domain
+            or original.acquisition_instance != latest.acquisition_instance
+            or original.geometry_camera != latest.geometry_camera
+            or latest.geometry_scope not in ('coarse_static_task','coarse_object_verification','coarse_local_environment')):
+        return None
+    from .observation import measured_alignment_pair
+    before = next((o for o in original.objects if o.object_id == task.object_id), None)
+    target = next((o for o in latest.objects if o.object_id == task.object_id), None)
+    if (not measured_alignment_pair(original,task) or target is None or not target.visible
+            or not target.evidence_ids or target.shape != before.shape or target.frame_id != before.frame_id):
+        return None
+    if target.held is False:
+        return 'revalidation_attachment_changed'
+    if not measured_alignment_pair(latest,task):
+        return 'alignment_measurement_pending'
+    return None
+
+
+def attachment_measurement_pending(original, latest, *, task, skill):
+    """Wait for a measured attachment before sweeping a still-unpublished loaded path."""
+    if (skill not in ('transfer_above_hole', 'move_tcp', 'align', 'insert', 'release', 'retreat')
+            or original is None or latest is None or original.synthetic or latest.synthetic or latest.faults):
+        return False
+    before = next((obj for obj in original.objects if obj.object_id == task.object_id), None)
+    after = next((obj for obj in latest.objects if obj.object_id == task.object_id), None)
+    if (before is None or before.held is not True or before.eef_object_pose is None
+            or after is None or after.held is False or after.eef_object_pose is not None
+            or not after.visible or after.pose is None or not after.evidence_ids
+            or before.frame_id != after.frame_id or before.shape != after.shape):
+        return False
+    # Identity changes must reach the worker's normal rejection path. A missing
+    # contact sample in the correct scene grants no proof and no motion.
+    try:
+        _measurement_identity(original, latest, task=task, skill=skill)
+    except HarnessError:
+        return False
+    return True
+
+
+def _registered_transport(original, latest, task, skill):
+    # In this profile PlanService can register the bucket collision geometry
+    # from either the task aperture or independent fixture landmarks.
+    return (skill == 'transfer_above_hole' and task is not None
+            and task.admission_profile == 'development_coarse' and task.goal == 'placed'
+            and original.geometry_scope == 'coarse_static_task'
+            and latest.geometry_scope in ('coarse_static_task','coarse_object_verification')
+            and original.geometry_camera == latest.geometry_camera == 'right')
+
+
+def _require_measured_transport_reference(observation, task):
+    reference = observation.fixture
+    if reference is not None and reference.source == 'retained_static_fixture':
+        return  # Its current wrist measurement and historical lineage are checked separately.
+    if reference is None:
+        reference = next((obj for obj in observation.objects if obj.object_id == task.hole_id), None)
+        if reference is None or not reference.visible or reference.pose is None:
+            raise RevalidationEvidenceUpdated(TRANSPORT_MEASUREMENT_PENDING)
+    sources = {(f.camera, f.stream): f.blob_sha256 for f in observation.frames}
+    for camera in ('head','right'):
+        pair = (sources.get((camera,'rgb')), sources.get((camera,'depth')))
+        if None in pair:
+            continue
+        if reference.evidence_ids == pair:
+            return
+        if observation.fixture is None and reference.evidence_ids == (*pair,sources.get(('left','rgb'))):
+            return
+    raise RevalidationSceneChanged('revalidation_scene_evidence_changed')
+
+
 def _measurement_identity(original,latest,*,task=None,skill=None):
+    transport = _registered_transport(original,latest,task,skill)
     local_task=(task is not None and task.goal=='placed'
         and task.admission_profile=='development_coarse' and skill in ('move_tcp','reobserve')
         and (local_scope(original) or local_scope(latest)))
@@ -299,7 +374,7 @@ def _measurement_identity(original,latest,*,task=None,skill=None):
             or original.acquisition_instance!=latest.acquisition_instance
             or original.clock_domain!=latest.clock_domain
             or original.calibration_id!=latest.calibration_id
-            or not local_task and (original.geometry_scope!=latest.geometry_scope
+            or not local_task and not transport and (original.geometry_scope!=latest.geometry_scope
                 or original.geometry_camera!=latest.geometry_camera)):
         raise HarnessError('revalidation_measurement_identity_changed')
     if local_task and not local_transition:
@@ -328,6 +403,39 @@ def _measurement_identity(original,latest,*,task=None,skill=None):
     a,b=original.fixture,latest.fixture
     old_retained=a is not None and a.source=='retained_static_fixture'
     new_retained=b is not None and b.source=='retained_static_fixture'
+    if transport:
+        # A fresh independently bound reference can change which views this
+        # stage needs. Check the common physical streams and the new reference;
+        # the worker then reconstructs the bucket and sweeps the actual path.
+        wrist={('right','rgb'),('right','depth')}
+        raw_before={(f.camera,f.stream):identity(f) for f in original.frames}
+        raw_after={(f.camera,f.stream):identity(f) for f in latest.frames}
+        shared=(before.keys()|after.keys()) & raw_before.keys() & raw_after.keys()
+        if not wrist <= before.keys() & after.keys() or any(
+                raw_before[key]!=raw_after[key] for key in shared):
+            raise HarnessError('revalidation_camera_identity_changed')
+        target=next((o for o in latest.objects if o.object_id==task.object_id),None)
+        previous=next((o for o in original.objects if o.object_id==task.object_id),None)
+        if target is not None and previous is not None and (
+                target.frame_id!=previous.frame_id or target.shape!=previous.shape):
+            raise HarnessError('revalidation_object_identity_changed')
+        if previous is not None and previous.held is True and target is not None and target.held is False and target.evidence_ids:
+            raise RevalidationSceneChanged('revalidation_attachment_changed')
+        if latest.faults:
+            raise HarnessError('revalidation_current_observation_fault')
+        if latest.geometry_scope=='coarse_object_verification' or (
+                b is None and not any(o.object_id==task.hole_id and o.pose is not None for o in latest.objects)):
+            raise RevalidationEvidenceUpdated(TRANSPORT_MEASUREMENT_PENDING)
+        if new_retained and a is None:
+            # The candidate's original aperture gives no provenance for this
+            # historical fixture. Wait for a new full measurement of either.
+            raise RevalidationEvidenceUpdated(TRANSPORT_MEASUREMENT_PENDING)
+        if (a is None)!=(b is None) or not (old_retained or new_retained) and before.keys()!=after.keys():
+            _require_measured_transport_reference(original,task)
+            _require_measured_transport_reference(latest,task)
+            return True
+        if not (old_retained or new_retained):
+            return
     if not (old_retained or new_retained):
         left = ('left', 'rgb')
         if (task is not None and task.admission_profile == 'development_coarse'
@@ -345,8 +453,14 @@ def _measurement_identity(original,latest,*,task=None,skill=None):
                     and hole.evidence_ids == (head['rgb'].blob_sha256, head['depth'].blob_sha256)):
                 return True  # New source must be swept in the worker before publication.
             raise RevalidationSceneChanged('revalidation_scene_evidence_changed')
-        if before!=after:raise HarnessError('revalidation_camera_identity_changed')
-        return
+        shared = before.keys() & after.keys()
+        # Precision observations can omit the single-camera selector. Their
+        # existing geometry contract uses both calibrated RGB-D pairs.
+        cameras = {c for c in (original.geometry_camera, latest.geometry_camera) if c} or {'head', 'right'}
+        required = {(camera, stream) for camera in cameras for stream in ('rgb', 'depth')}
+        if not required <= shared or any(before[key] != after[key] for key in shared):
+            raise HarnessError('revalidation_camera_identity_changed')
+        return before.keys() != after.keys()
     from .geometry_context import FIXTURE_TRANSIT_SKILLS
     if (task is None or task.admission_profile!='development_coarse' or task.goal!='placed'
             or skill not in FIXTURE_TRANSIT_SKILLS
@@ -356,7 +470,7 @@ def _measurement_identity(original,latest,*,task=None,skill=None):
     # A rejected head sample cannot change its identity or become new evidence.
     wrist={('right','rgb'),('right','depth')}
     full=wrist|{('head','rgb'),('head','depth')}
-    if (set(before) not in (wrist,full) or set(after) not in (wrist,full)
+    if not transport and (set(before) not in (wrist,full) or set(after) not in (wrist,full)
             or any(before.get(key)!=after.get(key) for key in wrist)
             or (old_retained and set(before)!=wrist)
             or (new_retained and set(after)!=wrist)):
@@ -373,14 +487,16 @@ def _measurement_identity(original,latest,*,task=None,skill=None):
             # its later measurement time into a proof for the old candidate.
             if (a is not None and a.measured_at_ns is not None
                     and a.measured_at_ns<=original.received_ns<b.measured_at_ns<=latest.received_ns
-                    and b.evidence_ids!=a.evidence_ids
                     and all(getattr(a,key)==getattr(b,key) for key in
                             ('fixture_id','frame_id','reference_pose'))):
-                import json
-                # A newer independently measured reference is input to the
-                # current sweep, not proof that the candidate is invalid.
-                # Fixture identity and actual geometry are checked below.
-                return
+                if b.evidence_ids!=a.evidence_ids:
+                    # A newer independent measurement is input to the sweep.
+                    return
+                if skill=='transfer_above_hole' and a.pose==b.pose:
+                    # Repeated image content has a later observation stamp but
+                    # does not prove a new measurement. Keep the unpublished
+                    # candidate until a comparable current reference arrives.
+                    raise RevalidationEvidenceUpdated(TRANSPORT_MEASUREMENT_PENDING)
             raise HarnessError('revalidation_retained_fixture_lineage_changed')
         return
     # The wrist identity is continuous and the restored head measurement is
@@ -453,20 +569,23 @@ def _scene_unchanged(original,latest,*,task,threshold,skill=None,world_motion=Fa
     old={o.object_id:o for o in original.objects};new={o.object_id:o for o in aligned.objects}
     from .geometry_context import FIXTURE_TRANSIT_SKILLS, fixture_available, planning_entity_ids
     transit=skill in FIXTURE_TRANSIT_SKILLS and fixture_available(task,original) and fixture_available(task,latest)
-    if set(old)!=set(new) and (not transit or (set(old)^set(new))-{task.hole_id}):
+    switch=(_registered_transport(original,latest,task,skill)
+            and (original.fixture is None)!=(latest.fixture is None))
+    if set(old)!=set(new) and (not (transit or switch) or (set(old)^set(new))-{task.hole_id}):
         raise RevalidationSceneChanged('revalidation_scene_object_set_changed')
     if transit:
         a,b=original.fixture,latest.fixture
         if (a.fixture_id!=b.fixture_id or a.frame_id!=b.frame_id or a.reference_pose!=b.reference_pose):
             raise HarnessError('fixture_reference_identity_changed')
         if not resweep and not _near(a.pose,b.pose,threshold):raise RevalidationSceneChanged('revalidation_fixture_changed')
-    for key in planning_entity_ids(task,original,skill):
+    keys=(task.object_id,) if switch else planning_entity_ids(task,original,skill)
+    for key in keys:
         before,after=old.get(key),new.get(key)
         if before and after and (before.frame_id!=after.frame_id or before.shape!=after.shape):
             raise HarnessError('revalidation_object_identity_changed')
         changes={}
         if before and after:
-            fields=('held','visible') if transit else ('held','inserted','inserted_hole_id','visible')
+            fields=('held','visible') if transit or switch else ('held','inserted','inserted_hole_id','visible')
             for field in fields:
                 if getattr(before,field)!=getattr(after,field):
                     changes[field]=dict(before=getattr(before,field),after=getattr(after,field))
@@ -779,6 +898,16 @@ def proof_observation(proof,*,proposal,original,intent,task,now_ns,max_age_ns,li
         if live_observation.calibration_id!=task.calibration_id:
             raise HarnessError('revalidation_scope_mismatch')
         _measurement_times(live_observation,task=task,now_ns=now_ns,skill=intent.skill)
+        loaded = next((o for o in latest.objects if o.object_id==task.object_id), None)
+        current = next((o for o in live_observation.objects if o.object_id==task.object_id), None)
+        if (loaded and loaded.held is True and loaded.eef_object_pose is not None
+                and current and current.held is False and current.evidence_ids):
+            raise RevalidationSceneChanged('revalidation_attachment_changed')
+        if attachment_measurement_pending(latest,live_observation,task=task,skill=intent.skill):
+            # A later independent measurement can lack its collision attachment
+            # even after the worker checked a complete scene. No publish from
+            # that proof; recheck the same candidate within the original budget.
+            raise RevalidationEvidenceUpdated('revalidation_attachment_measurement_pending')
         try:
             _scene_unchanged(latest,live_observation,task=task,threshold=threshold,skill=intent.skill,
                              world_motion=world_motion)

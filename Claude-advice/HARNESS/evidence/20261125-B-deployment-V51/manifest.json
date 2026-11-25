@@ -1,0 +1,61 @@
+{
+  "schema": "f1-harness-deployment-evidence-v1",
+  "checked_on": "2026-11-25",
+  "operator": "Codex on 6000D",
+  "previous_version": 50,
+  "version": 51,
+  "bundle_id": "d7981daf3e2f7373432e935bca33e4cdbe0d8b88aaa57f936fac002ca3806037",
+  "software_test_commit": "22c825a40cf906ae09568702e538c996a3e81cb6",
+  "role": "release deployment and stationary read-only checks",
+  "local_evidence_root": "HARNESS/artifacts/readiness-revalidation-v51-20261125",
+  "tracked_files_including_manifest": 3,
+  "physical_task_verified_by_deployment": false,
+  "start_sent_by_deployment": false,
+  "files": [
+    {
+      "path": "report.md",
+      "bytes": 2795,
+      "sha256": "b7bd942d585614f3de4481504280ecc5d2f98674ea3affb6ef4e3cc357629642",
+      "source": [
+        "deployment.json",
+        "release-validation.json",
+        "post-activation.json"
+      ]
+    },
+    {
+      "path": "deployment.json",
+      "bytes": 4140,
+      "sha256": "21e8c358273b8bbb9865a4c8de2f991ce68d84afde4468ed972cc41a1dc5f3dc",
+      "source": [
+        "bundle-final/manifest.json",
+        "reviewed-git-sources.json",
+        "selected-diff.json",
+        "release-install-receipt.json",
+        "preflight.json",
+        "activation.json",
+        "post-activation.json",
+        "release-validation.json",
+        "frozen-suite/qualification.json",
+        "full-validation-pinned/validation-summary.json",
+        "v51-live-qualification-summary.json",
+        "workspace-boot-probe.json",
+        "archived-scenes/qualification.json"
+      ]
+    }
+  ],
+  "raw_receipt_sha256": {
+    "bundle-final/manifest.json": "fecaf79d68e635a47645ab3920d237dcf60695c47226a7215274609467583b10",
+    "reviewed-git-sources.json": "d2e7fe804f27932314c13fbecb347154cc93902901e57177d069952620a1f6f8",
+    "selected-diff.json": "375e1137243aef4ac69e1682c9df4712c413b8f8a7212fa2b7e61447db426930",
+    "release-install-receipt.json": "f89c2fdb5b265a9d73be95ba7c0e20eccd44272e0de092e99782063df612a69b",
+    "preflight.json": "3e1989af2cb1fc4ddc5aa0fdfd9e9d1172f649b25dd1a75d321befa388bf9c67",
+    "activation.json": "2823b642eff90f6d459ef74853841f815be010f3a1669ed4b67b79d0a4c2be9a",
+    "post-activation.json": "dab2be2ea4963a70130658f0eed50d460b54dcddf2920901fa6cc3341242baff",
+    "release-validation.json": "d464b6ce24449d6765cc3ee952828fd8f31a42fea76b984f8c3203afdc98c67b",
+    "frozen-suite/qualification.json": "46ed80bb7225f4716c4e43cd693987f23a9a1ca0b350323280f66c5c65101c91",
+    "full-validation-pinned/validation-summary.json": "274b2b79ad67b6fd390f2aba511ee7d6c6d9075d2257d881a2b162817a555418",
+    "v51-live-qualification-summary.json": "62a8aa993e833b8e5c8854e38cbbd9885ba7144d5040a36191ecac8e0dc883a4",
+    "workspace-boot-probe.json": "9ae1f3d58471b40855432d38bd5cf9aed89e9c5ae47d8a16e7dda63d55420e38",
+    "archived-scenes/qualification.json": "2aedc9f3194736f47318f0c8c149d1f500840dd9faec2037aab5e9c38d781b06"
+  }
+}

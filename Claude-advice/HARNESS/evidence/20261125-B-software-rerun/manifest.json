@@ -1,0 +1,59 @@
+{
+  "schema": "f1-harness-software-rerun-evidence-v1",
+  "checked_on": "2026-11-25",
+  "operator": "Codex on 6000D",
+  "baseline_release": 50,
+  "tested_commit": "22c825a40cf906ae09568702e538c996a3e81cb6",
+  "runtime_identical_to": "b8146c7d0cede7e505c6a600ef7ec0f7dd237fef",
+  "previous_report": "../20261125-B-software/report.md",
+  "local_receipts_root": "Artifacts/F1-Harness/20261125-v50-h02-rerun/",
+  "all_software_checks_passed_across_required_environments": true,
+  "single_primary_full_run_exit_code": 1,
+  "new_hardware_trials": 0,
+  "new_rejection_reasons": 0,
+  "tracked_files_including_manifest": 5,
+  "files": [
+    {
+      "path": "report.md",
+      "sources": [
+        "首轮复验、工程布局及现场边界",
+        "targeted.xml",
+        "software-checks.json",
+        "replays.json"
+      ],
+      "bytes": 4146,
+      "sha256": "7993900089b747b0dcca65e195d2771673675d0c999d0f534fd238ab38a70f11"
+    },
+    {
+      "path": "software-checks.json",
+      "sources": [
+        "qa/grouped-full-checks.json",
+        "qa/candidate-all.xml",
+        "qa/main-shard.xml",
+        "qa/isolated-audit-assets.xml",
+        "qa/candidate-numerics.xml",
+        "qa/isolated-full-comparison.json",
+        "native/native-integration.xml"
+      ],
+      "bytes": 5746,
+      "sha256": "bdd1642b90019f7420d72b7226ea527ff9c3fe8102d8f204f13c1cb93b1dce56"
+    },
+    {
+      "path": "targeted.xml",
+      "sources": [
+        "targeted.xml"
+      ],
+      "bytes": 2058,
+      "sha256": "e672dee02dfe7fc15e107627b6594b065ac527da7dd5ef83bb109894b60b6396"
+    },
+    {
+      "path": "replays.json",
+      "sources": [
+        "replays/",
+        "现场原输入和软件回执相对路径及 SHA-256 见本文件"
+      ],
+      "bytes": 8915,
+      "sha256": "99df6f9d5aae5f30ea76d110766f8ee2c0b08c2e954340253aebbddddae86dfe"
+    }
+  ]
+}

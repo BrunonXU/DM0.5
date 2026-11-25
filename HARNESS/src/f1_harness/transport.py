@@ -69,12 +69,22 @@ def _check_route(scene, goals, variant, *, family=None, start=None, stage_index=
                        stage_index=stage_index)
 
 
-def joint_transport_goal(scene):
+def joint_transport_offsets(fixture):
+    """Registered transport endpoints in hole-plane coordinates, centre first."""
+    offsets = [[0., 0.]]
+    if 'free_space_goal_tolerance_m' in (fixture.get('revalidation') or {}):
+        from .revalidation import tolerances
+        radius = tolerances(fixture, 'transfer_above_hole')['goal_position_m']
+        offsets.extend(([radius, 0.], [-radius, 0.], [0., radius], [0., -radius]))
+    return offsets
+
+
+def joint_transport_goal(scene, offsets=((0., 0.),)):
     """An endpoint for general joint search, without requiring a straight route.
 
     Reuse the measured transport orientation prior and loaded-object clearance.
-    This first implementation keeps an exact endpoint; goal regions are future
-    work. No insertion, support contact or object reorientation is inferred.
+    Test only the endpoint here; the native planner checks its connecting path.
+    Revalidation supplies only the originally selected hole-plane offset.
     """
     if scene.object_held is not True or scene.eef_object is None:
         raise HarnessError('measured_in_hand_transform_required')
@@ -84,11 +94,20 @@ def joint_transport_goal(scene):
     normal = hole[:3, 2]
     height = max(float(normal @ ((current @ attachment)[:3, 3]-hole[:3, 3])),
                  _minimum_object_height(scene, rotation, normal))
-    goal = _at_object_point(rotation, hole[:3, 3]+normal*height, attachment)
-    _check_route(scene, [goal], 2, family='joint_space_transport', start=goal)
+    center = hole[:3, 3] + normal * height
+    for index, offset in enumerate(offsets):
+        point = center + hole[:3, :2] @ offset
+        goal = _at_object_point(rotation, point, attachment)
+        try:
+            _check_route(scene, [goal], 2, family='joint_space_transport', start=goal)
+        except HarnessError as exc:
+            if str(exc).partition(':')[0] != 'scene_sweep_blocked' or index == len(offsets) - 1:
+                raise
+        else:
+            break
     stage = dict(name='transport_above_bucket', route_family='joint_space_transport',
                  goals=[goal.tolist()], gripper=None, eef_object=attachment.tolist(),
-                 allow_target_contact=False)
+                 allow_target_contact=False, goal_region_offset_m=list(offset))
     return dict(kind='motion', skill='transfer_above_hole', stages=[stage])
 
 
@@ -97,7 +116,9 @@ def uses_joint_transport(fixture, intent, proposal):
     marked = any(e.get('route_family')=='joint_space_transport' for e in proposal.geometry_trace)
     if marked and (fixture.get('joint_space_transport') is not True
             or intent.skill!='transfer_above_hole' or len(proposal.geometry_trace)!=1
-            or proposal.candidate_variant!=2):
+            or proposal.candidate_variant!=2
+            or ('goal_region_offset_m' in proposal.geometry_trace[0]
+                and proposal.geometry_trace[0]['goal_region_offset_m'] not in joint_transport_offsets(fixture))):
         raise HarnessError('revalidation_joint_transport_contract_changed')
     return marked
 

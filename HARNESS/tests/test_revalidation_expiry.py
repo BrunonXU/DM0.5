@@ -77,11 +77,12 @@ def test_expired_proof_changed_geometry_cannot_hide_behind_updated_hash(tmp_path
     finally:bridge.close()
 
 
-def test_known_live_scene_delay_waits_and_revalidates_without_new_motion(tmp_path):
+@pytest.mark.parametrize('delay',['perception_latency_exceeds_observation_budget','camera_sample_feedback_aged:right'])
+def test_known_live_scene_delay_waits_and_revalidates_without_new_motion(tmp_path,delay):
     engine,bridge,_,clock,state,poll,original,_,future,proof=ready_proof(tmp_path)
     try:
         epoch=engine.epoch;deadline=engine.deadline_ns
-        engine.invalidate_live_observation('perception_latency_exceeds_observation_budget')
+        engine.invalidate_live_observation(delay)
         future.set_result(proof)
         assert poll() is None and engine.authorized and engine.epoch==epoch
         assert bridge.proposal is None and bridge.current_target is None

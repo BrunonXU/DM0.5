@@ -96,12 +96,16 @@ def run(args):
     root,output=args.root,args.output
     output.mkdir(parents=True,exist_ok=False)
     options=fixture_options(args.fixture_command)
-    modes={'normal':'ideal','grasp-observation':'recover_after_motion','grasp-miss':'miss_once_then_observe'}
+    modes={'normal':'ideal','grasp-observation':'recover_after_motion','grasp-miss':'miss_once_then_observe','aperture-occluded':'ideal'}
     command=[str(args.python),str(root/'scripts/replay_full_owner.py'),
         '--site',str(args.site),'--output',str(output/'replay'),
         '--rpc-perception-config',str(args.perception),'--grasp-observation-evidence',modes[args.case],
         '--rpc-planner','recorded','--program','registered','--follower','approved-output',
         '--max-wall-seconds',str(args.max_wall_seconds),'--wall-clock','--defer-fixture-cyclic-gc']
+    if args.case=='aperture-occluded':
+        command.append('--occlude-aperture-after-transfer')
+    if args.simulated_gripper_can:
+        command.append('--simulated-gripper-can')
     for name in ('--scene','--scene-index','--approach-request','--rpc-capture','--rpc-hint-receipt'):
         if name not in options and name!='--scene-index':raise ValueError('missing_recorded_fixture:'+name)
         for value in options.get(name,['0']):command.extend((name,str(value)))
@@ -153,8 +157,10 @@ def main():
     parser.add_argument('--mask-url')
     parser.add_argument('--perception',type=Path)
     parser.add_argument('--python',type=Path)
-    parser.add_argument('--case',choices=('normal','grasp-observation','grasp-miss'),default='normal')
+    parser.add_argument('--case',choices=('normal','grasp-observation','grasp-miss','aperture-occluded'),default='normal')
     parser.add_argument('--max-wall-seconds',type=float,default=240.)
+    parser.add_argument('--simulated-gripper-can',action='store_true',
+                        help='Use independent simulated encoder readings for grasp verification')
     parser.add_argument('--report',type=Path)
     args=parser.parse_args()
     for name in ('root','site','output','repository','fixture_command','perception','report'):

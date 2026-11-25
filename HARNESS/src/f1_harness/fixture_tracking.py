@@ -4,25 +4,32 @@ from .geometry import transform, align_square_pose
 from .perception import measurement_region
 
 
+def _measure_anchor(name, mask, depth):
+    if mask is None or mask.sum()<20:raise ValueError('fixture_relocalization_anchor_missing:'+name)
+    y,x=np.nonzero(mask);values=depth[mask];values=values[np.isfinite(values)&(values>0)]
+    if len(values)<20:raise ValueError('fixture_relocalization_depth_missing:'+name)
+    return dict(roi_center_px=[float(x.mean()),float(y.mean())],depth_m=float(np.median(values)))
+
+
 def locate_fixture(depth,masks,config,reference_camera,reference_pose,anchor_config,*,identity_tolerance_m):
     """Register visible RGB-D anchors without needing the destination aperture.
 
     The origin is the registered fixture reference, not a newly measured hole.
     Reference camera extrinsics stay frozen while the current head pose may move.
     """
+    measured={name:_measure_anchor(name,masks.get(name),depth) for name in anchor_config}
+    return _register_fixture(measured,config,reference_camera,reference_pose,anchor_config,identity_tolerance_m)
+
+
+def _register_fixture(anchors,config,reference_camera,reference_pose,anchor_config,identity_tolerance_m):
     from .geometry import crop_intrinsics
     inverse=np.linalg.inv(crop_intrinsics(config['k_rgb'],config['roi']))
     original_camera=transform(reference_camera);camera=transform(config['base_camera'])
-    old=[];new=[];anchors={}
+    old=[];new=[]
     for name,expected in anchor_config.items():
-        mask=masks.get(name)
-        if mask is None or mask.sum()<20:raise ValueError('fixture_relocalization_anchor_missing:'+name)
-        y,x=np.nonzero(mask);values=depth[mask];values=values[np.isfinite(values)&(values>0)]
-        if len(values)<20:raise ValueError('fixture_relocalization_depth_missing:'+name)
-        center=np.array([x.mean(),y.mean()]);z=float(np.median(values))
-        anchors[name]=dict(roi_center_px=center.tolist(),depth_m=z)
+        current=anchors[name]
         a=(inverse@np.r_[expected['roi_center_px'],1])*expected['depth_m']
-        b=(inverse@np.r_[center,1])*z
+        b=(inverse@np.r_[current['roi_center_px'],1])*current['depth_m']
         old.append((original_camera@np.r_[a,1])[:3]);new.append((camera@np.r_[b,1])[:3])
     old,new=np.asarray(old),np.asarray(new)
     if len(old)<3 or np.linalg.matrix_rank(old-old.mean(0))<2 or np.linalg.matrix_rank(new-new.mean(0))<2:
@@ -37,6 +44,42 @@ def locate_fixture(depth,masks,config,reference_camera,reference_pose,anchor_con
     return delta@transform(reference_pose),anchors,dict(source='rgbd_anchor_registration',
         anchor_count=len(old),anchor_distance_error_m=float(pair_error.max()),
         registration_residual_m=float(errors.max()),aperture_measured=False)
+
+
+def locate_unprompted_bucket(rgb,depth,config,reference_camera,reference_pose,anchor_config,*,identity_tolerance_m):
+    """Identify this registered bucket by three independently visible RGB-D landmarks."""
+    from itertools import product
+    import cv2
+    from .aperture_image import aperture_features
+    from .aperture_transfer import _circle_neighbours
+    names=('bucket-triangle','bucket-left-slot','bucket-u-slot')
+    if set(names)!=set(anchor_config):raise ValueError('unregistered_bucket_landmark_layout')
+    features=aperture_features(rgb,include_notches=True)
+    measured={}
+    def sample(name,feature):
+        key=(name,tuple(feature['center_px']))
+        if key not in measured:
+            mask=np.zeros(depth.shape,np.uint8)
+            cv2.fillPoly(mask,[np.asarray(feature['corners_px'],np.int32)],1)
+            ring=measurement_region(mask.astype(bool),dict(kind='outer_ring',inner_px=3,outer_px=8))
+            try:measured[key]=_measure_anchor(name,ring,depth)
+            except ValueError:measured[key]=None
+        return measured[key]
+    match=None
+    for triangle in features['triangle']:
+        slots=_circle_neighbours(triangle,features['square'])
+        notches=_circle_neighbours(triangle,features['notch'])
+        for slot,notch in product(slots,notches):
+            anchors={name:sample(name,shape) for name,shape in zip(names,(triangle,slot,notch))}
+            if None in anchors.values():continue
+            try:
+                pose,anchors,details=_register_fixture(anchors,config,reference_camera,reference_pose,
+                                                       anchor_config,identity_tolerance_m)
+            except ValueError:continue
+            if match is not None:raise ValueError('ambiguous_bucket_landmark_registration')
+            match=pose,anchors,dict(details,landmark_source='current_head_contours')
+    if match is None:raise ValueError('bucket_landmark_registration_unavailable')
+    return match
 
 
 def locate_hole(mask,depth,masks,config,reference,anchor_config,*,identity_tolerance_m):

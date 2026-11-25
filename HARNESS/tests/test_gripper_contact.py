@@ -89,30 +89,70 @@ def test_pipeline_contact_fast_path_reaches_held_without_moving_or_waiting_for_t
     finally:pipe.close()
 
 
-@pytest.mark.parametrize('case',['sensor_lost','opened','empty','source_changed','object_departed','bad_image'])
-def test_contact_cannot_be_latched_or_resurrected_after_contradiction(case):
+@pytest.mark.parametrize('case',['opened','empty','source_changed'])
+def test_retired_close_requires_new_owner_publication(case):
     pipe,raw=configured()
     try:
         assert observe(pipe,raw) is True
-        value=packet(end=700_000_000);relative=np.eye(4);command=100
-        if case=='sensor_lost':value['running']=False
-        if case=='opened':value=packet(raw=255,end=700_000_000)  # command echo still says 100
-        if case=='empty':value=packet(raw=0,end=700_000_000)
-        if case=='source_changed':value=packet(end=700_000_000,source='new')
-        if case=='object_departed':relative[0,3]=.04
-        if case=='bad_image':pipe.reject_measurement('mask_unavailable')
-        assert observe(pipe,raw,7,value=value,relative=relative,command=command) is not True
-        assert pipe.in_hand_quarantine is None
+        value=packet(end=700_000_000,raw={'opened':255,'empty':0}.get(case,70),
+            source='new' if case=='source_changed' else 'external-1')
+        assert observe(pipe,raw,7,value=value) is not True
+        assert pipe.contact_attachment is None
         assert observe(pipe,raw,8) is not True
+        pipe.previous_context['grasp_contact'].update(request_id='new-close',published_ns=700_000_000)
+        assert observe(pipe,raw,11) is True
     finally:pipe.close()
 
 
-def test_wrong_target_region_or_unpublished_close_uses_existing_visual_path():
+def test_loss_of_can_is_unknown_even_with_following_and_recovers_from_fresh_can():
+    pipe,raw=configured()
+    try:
+        assert observe(pipe,raw) is True
+        stopped=packet(end=700_000_000);stopped['running']=False
+        assert observe(pipe,raw,7,value=stopped) is None
+        assert pipe.contact_attachment is None
+        assert observe(pipe,raw,8) is True
+    finally:pipe.close()
+
+
+def test_attachment_geometry_and_hold_have_independent_verdicts():
     pipe,raw=configured()
     try:
         far=np.eye(4);far[0,3]=.1
-        assert observe(pipe,raw,relative=far) is not True
-        assert pipe.last_timing['primary_evidence']['measured_contact']['reason']=='visible_target_outside_published_closure_region'
+        assert observe(pipe,raw,relative=far) is True
+        assert pipe.contact_attachment is None
+        assert not pipe.last_timing['primary_evidence']['attachment_geometry_available']
+        pipe.reject_measurement('mask_unavailable')
+        assert observe(pipe,raw,7) is True
+        assert pipe.contact_attachment is not None
         pipe.previous_context={}
-        assert observe(pipe,raw,7) is not True
+        assert observe(pipe,raw,8) is None
     finally:pipe.close()
+
+
+@pytest.mark.parametrize('case',['valid','missing','outage','old_close','pre_motion','expired','other_owner','other_request'])
+def test_readonly_verifier_consumes_only_fresh_scoped_independent_proof(monkeypatch,case):
+    from f1_harness.contracts import SkillIntent,Task,digest
+    from f1_harness.skill_services import VerifyService
+    task=Task(task_id='task',object_id='block',hole_id='hole',calibration_id='cal')
+    identity=dict(request_id='verify',session_id='s',owner_instance_id='owner',epoch=1,
+                  task_id=task.task_id,task_hash=digest(task))
+    intent=SkillIntent(**identity,skill='verify_grasp',calibration_id='cal',observation_id='o',scene_version='v')
+    service=VerifyService(task,clock=lambda:100,independent_grasp=True)
+    scope=dict(identity)
+    if case=='other_owner':scope['owner_instance_id']='stale-owner'
+    if case=='other_request':scope['request_id']='other'
+    if case!='missing':
+        service.dispatch('update_grasp_measurement',dict(scope=scope,close_request_id='closed',
+            measured_ns=5 if case=='expired' else 90,max_age_ns=20,held=None if case=='outage' else True,
+            evidence_id='a'*64,reason='measured_blocked_closure'))
+    # Unrelated perfect-looking visual data cannot answer the production CAN verifier.
+    pipe,raw=configured()
+    try:
+        service.latest=sample(raw,6).model_copy(update=dict(received_ns=95))
+        ticks=iter((0.,3.));monkeypatch.setattr('f1_harness.skill_services.time.monotonic',lambda:next(ticks))
+        result=service.dispatch('verify_skill',dict(intent=intent.model_dump(),
+            close_request_id='prior' if case=='old_close' else 'closed',after_ns=90 if case=='pre_motion' else 0))
+    finally:pipe.close()
+    assert result['outcome']==('success' if case=='valid' else 'pending_review')
+    assert result['evidence_ids']==(('a'*64,) if case=='valid' else ())

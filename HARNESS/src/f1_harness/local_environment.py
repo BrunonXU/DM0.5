@@ -40,13 +40,12 @@ def local_scope(observation):
              or getattr(observation,'local_collision_evidence_ref',None) is not None))
 
 
-def require_local_evidence(task,observation,fixture=None):
+def require_local_evidence(task,observation,fixture=None,*,motion=True):
     evidence=observation.local_collision_evidence
     target=next((o for o in observation.objects if o.object_id==task.object_id),None)
     if (not local_scope(observation) or task.admission_profile!='development_coarse'
             or task.goal!='placed' or evidence is None or target is None or not target.visible
             or observation.geometry_scope=='coarse_local_environment' and target.pose is not None
-            or target.held is True or target.eef_object_pose is not None
             or not target.evidence_ids or evidence.object_id!=task.object_id
             or evidence.observation_id!=observation.observation_id
             or evidence.calibration_id!=observation.calibration_id
@@ -76,6 +75,8 @@ def require_local_evidence(task,observation,fixture=None):
                 or not math.isclose(evidence.planning_margin_m,fixture['planning_margin_m'],abs_tol=1e-9)
                 or not fixture.get('independent_fixture_localization')):
             raise HarnessError('local_environment_registration_missing')
+    if motion and (target.held is True or target.eef_object_pose is not None):
+        raise HarnessError('local_environment_only_supports_unloaded_world_observation_motion')
     return evidence
 
 
@@ -169,7 +170,7 @@ def build_local_scene(service,obs,full,held,*,base_eef=None,motion=True):
     from .skills import SkillGeometry
     from .support_motion import scene_support
     fixture=service.fixture
-    evidence=require_local_evidence(service.task,obs,fixture)
+    evidence=require_local_evidence(service.task,obs,fixture,motion=motion)
     target=next(obj for obj in obs.objects if obj.object_id==service.task.object_id)
     measured_target=None if target.pose is None else service.frames.world_pose(target.pose)
     if motion:require_open_tool(obs,fixture,held)
@@ -216,11 +217,19 @@ def context(scene,observation,*,task=None,fixture=None):
     evidence=scene.local_collision_evidence
     target=next((obj for obj in observation.objects if obj.object_id==evidence.object_id),None)
     object_pose=None if target is None or target.pose is None else list(target.pose)
+    hole=next((obj for obj in observation.objects if task and obj.object_id==task.hole_id
+               and obj.visible and obj.pose is not None and obj.evidence_ids),None)
+    if hole is not None and hole.frame_id!=evidence.frame_id:
+        raise HarnessError('native_frame_chain_not_registered')
     available=['reobserve']
-    try:
-        require_open_tool(observation,fixture or dict(release_opening=scene.release_opening,gripper_tolerance=0))
-        available.append('move_tcp')
-    except HarnessError:pass
+    if target is not None and target.held is not True and target.eef_object_pose is None:
+        try:
+            require_open_tool(observation,fixture or dict(release_opening=scene.release_opening,gripper_tolerance=0))
+            available.append('move_tcp')
+        except HarnessError:pass
+    if task is not None:
+        available=[skill for skill in available if skill in task.allowed_skills and
+                   (skill!='move_tcp' or (fixture or {}).get('cartesian_motion'))]
     native=transform(scene.diagnostic_native_from_world)
     obstacles=[]
     for o in scene.obstacles:
@@ -232,7 +241,9 @@ def context(scene,observation,*,task=None,fixture=None):
     return dict(schema='f1-geometric-tools-v1',geometry_scope=observation.geometry_scope,
         geometry_status='partial',pose_format=POSE_FORMAT,world_frame=evidence.frame_id,
         current_tcp_pose=(native@scene.base_eef@transform(scene.eef_tip_reference)).ravel().tolist(),
-        object_pose=object_pose,hole_pose=None,tool_geometry=tool_geometry(scene),obstacles=obstacles,
+        object_pose=object_pose,object_held=target.held if target is not None else None,
+        hole_pose=list(hole.pose) if hole is not None else None,
+        tool_geometry=tool_geometry(scene),obstacles=obstacles,
         local_environment=dict(observed_surface_aabb=dict(min=evidence.observed_surface_min,max=evidence.observed_surface_max),
             possible_target_occupancy_aabb=dict(min=evidence.possible_occupancy_min,max=evidence.possible_occupancy_max),
             supporting_plane=(None if evidence.surface_anchor is None or evidence.surface_anchor.supporting_plane is None else dict(
@@ -252,10 +263,12 @@ def context(scene,observation,*,task=None,fixture=None):
                 total_tiles=len(v.min_depth_m),near_depth_m=v.near_depth_m) for v in evidence.free_space_views],
             unknown_space_is_free=False,pose_available=object_pose is not None,source_observation_id=evidence.observation_id),
         **({} if task is None else {k:v for k,v in entity_status(task,observation).items()
-            if k in ('entities','missing_entities','perception_boundary','quality_warnings')}),
+            if k in ('entities','missing_entities','measurement_received_ns','perception_boundary','quality_warnings',
+                     'fixture_collision_geometry_available','fixture_reference','fixture_transit_available')}),
         available_skills=available,
-        cartesian_motion=dict(target_frames=['world'],support_contact=False,
-            requires='fresh_open_gripper_and_current_observed_sweep'),motion_authorized=False,
+        cartesian_motion=(dict(target_frames=['world'],support_contact=False,
+            requires='fresh_open_gripper_and_current_observed_sweep') if 'move_tcp' in available else False),
+        motion_authorized=False,
         observation_id=observation.observation_id,calibration_id=observation.calibration_id)
 
 

@@ -18,6 +18,9 @@ def test_partial_scene_identifies_missing_aperture_without_losing_block():
     assert value['missing_entities']==[dict(role='aperture',object_id='hole',reason='not_observed',
         recovery='relocalize_fixture_and_aperture')]
     assert not value['fixture_collision_geometry_available'] and not value['motion_authorized']
+    assert value['geometry_status']=='partial' and value['geometry_scope']==partial.geometry_scope
+    assert set(value['available_skills'])==set(service.task.allowed_skills)&{'verify_grasp','reobserve','inspect_in_hand'}
+    assert value['cartesian_motion'] is False
     with pytest.raises(HarnessError) as caught:service._scene(partial,[0.]*22,partial.state16)
     detail=_planning_feedback(numerical_failure_detail(caught.value))
     assert detail['code']=='missing_geometry_entities'

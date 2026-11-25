@@ -5,8 +5,9 @@ from types import SimpleNamespace
 import pytest
 
 from f1_harness.evidence import EvidenceStore
-from f1_harness.program_reuse import _unsubmitted_grasp,resume_localized_grasp
-from f1_harness.remote import RemoteTaskBackend
+from f1_harness.contracts import HarnessError
+from f1_harness.program_reuse import _run_program_choices,_unsubmitted_grasp,resume_localized_grasp
+from f1_harness.remote import ObservationWaitEnded, RemoteTaskBackend
 
 
 def setup_case(tmp_path):
@@ -58,3 +59,48 @@ def test_queued_hint_does_not_submit_another_grasp_and_host_runs_same_source_onc
     resume()
     assert resume() is None
     assert invocations==([] if owner_advanced else [(item['candidate'],'validation-program-candidate-localized')])
+
+
+@pytest.mark.parametrize('projection_state,expected',[
+    ({}, True), ({'object_pose':[1,2,3]},False), ({'calibration_id':'previous'},False),
+    ({'object_id':'other'},False), ({'observation_id':None},False),
+])
+def test_only_missing_measured_target_in_false_frozen_predicate_defers(tmp_path,projection_state,expected):
+    store,item,_,backend=setup_case(tmp_path)
+    task=SimpleNamespace(calibration_id='calibration',object_id='target')
+    scene=dict(observation_id='obs5',object_id='target',object_pose=None,
+               calibration_id='calibration',motion_authorized=False)
+    scene.update(projection_state)
+    call=dict(name='geometry_context',projection='target_presence',result_sha256=store.put_blob(json.dumps(scene).encode()))
+    binding=dict(backend_calls=[call],request_ids=[])
+    reply=SimpleNamespace(result={'value':repr(dict(applicable=False,program_invoked=False))})
+    arm=SimpleNamespace(execute_candidate=lambda *a,**kw:(reply,binding))
+    _run_program_choices([item],arm,backend,task,store,authority_valid=lambda:True,
+                         finish_completed=lambda:None,kind='verified_program')
+    deferred=getattr(backend,'deferred_grasp',None)
+    assert bool(deferred)==expected
+    if expected:
+        assert deferred['await_first_measurement'] and deferred['observation_id']=='obs5'
+
+
+def test_missing_measurement_consumes_only_one_window_inside_task_deadline(tmp_path):
+    import time
+    store,item,_,backend=setup_case(tmp_path)
+    backend.deferred_grasp=dict(item=item,kind='verified_program',ready=False,await_first_measurement=True)
+    backend.task_deadline=time.monotonic()+1
+    waits=[]
+    def missing(**kwargs):
+        waits.append(kwargs)
+        raise ObservationWaitEnded('observation_readiness_timeout:grasp_collision_geometry_missing')
+    backend._await_observation=missing
+    for _ in range(2):
+        assert resume_localized_grasp(None,backend,None,store,authority_valid=lambda:True,finish_completed=lambda:None) is None
+    assert len(waits)==1 and 0<waits[0]['timeout_s']<=1
+    assert backend.deferred_grasp and not backend.deferred_grasp['ready']
+
+
+def test_cancelled_target_wait_performs_no_acquisition(tmp_path):
+    _,_,_,backend=setup_case(tmp_path)
+    backend.call=lambda *a,**kw:pytest.fail('owner read after cancellation')
+    with pytest.raises(HarnessError,match='observation_wait_cancelled'):
+        backend._await_observation(skill='approach_grasp',cancelled=lambda:True)
