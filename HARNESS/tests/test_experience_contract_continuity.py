@@ -68,7 +68,8 @@ def test_unrelated_records_do_not_evict_scoped_history(tmp_path):
         run=tmp_path/f'run-{index}'
         owner=EvidenceStore(run/'collected/owner/harness')
         owner.event('run_identity',synthetic=False)
-        scoped=task if index==0 else task.model_copy(update={'operator_instruction':f'other-{index}'})
+        scoped=task.model_copy(update={'operator_instruction':f'other-{index}',
+                                      'calibration_id':task.calibration_id if index==0 else f'other-{index}'})
         owner.event('task_prepared',task=scoped.model_dump())
         owner.event('skill_result',skill='approach_grasp',result=dict(request_id=str(index),
             outcome='failure',reason='retained-related-failure' if index==0 else 'unrelated'))

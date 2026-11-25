@@ -57,11 +57,15 @@ def test_latest_real_failure_is_scoped_bounded_advice_not_a_verified_recipe(tmp_
     assert len(json.dumps(context, ensure_ascii=False).encode()) <= 6000
     assert memory.snapshot()['count'] == 0
     assert not (root/'program-candidates').exists()
-    for changes in ({'calibration_id': 'other'}, {'shape': 'circle'},
-                    {'operator_instruction': 'A different task'}, {'goal': 'verify_grasp'}):
+    reworded = memory.advisory_context(task.model_copy(update={'operator_instruction': 'Place the square block'}))
+    assert reworded['scope']['operator_instruction_sha256'] != context['scope']['operator_instruction_sha256']
+    assert reworded['failures'] == context['failures']
+    assert reworded['explorations'] == context['explorations']
+    for changes in ({'calibration_id': 'other'}, {'shape': 'circle'}, {'goal': 'verify_grasp'}):
         unrelated = memory.advisory_context(task.model_copy(update=changes))
         assert not unrelated['failures'] and not unrelated['explorations']
-    assert not ExperienceStore(root, synthetic=True).advisory_context(task)['failures']
+    synthetic = ExperienceStore(root, synthetic=True).advisory_context(task)
+    assert not synthetic['failures'] and not synthetic['explorations']
     # An unbound modification cannot masquerade as an original failure or code.
     failure = next((root/'failures').glob('*.json'))
     failure.write_text(failure.read_text().replace('grasp_not_attached', 'model_claimed_success'))
