@@ -4,6 +4,10 @@
 
 目前只有 HARNESS 一个项目：先读[改造计划总览](HARNESS/review-roadmap.md)，再读[核心架构](HARNESS/review-architecture.md)和[验收指标](HARNESS/review-acceptance.md)，逐条代码规格在 [review.md](HARNESS/review.md)，交给 Codex 的开工指令在 [review-handoff.md](HARNESS/review-handoff.md)，验收数据上传到 [evidence/](HARNESS/evidence/README.md)。它的结论是：先把可选相机变化、观测准备时限和验证重查次数这几处过度拦截改掉，让推理能跑通；再处理横躺抓取、运输终点和闭环对准。
 
+**最新一轮：[HARNESS 第二轮复审（V53）](HARNESS/review-v53.md)**，基线 `harness/v53` 的 `04e0ee3`（2026-11-26）。它核对了上一轮 19 条的完成情况，结论是软件第一批已做完，但真机仍停在取帧这一步；新增条目 H-20 至 H-25。全部待定决策已于 2026-11-26 由用户授权 Claude 定下，写在该文档第五节。Codex 下一轮直接用[第二轮开工指令](HARNESS/review-v53-handoff.md)。
+
+**第三轮：[V53 上线后的现场实测审阅](HARNESS/review-v53-round3.md)**，基线 `harness/v53` 的 `c68beee`（2026-11-26）。核实了 Codex 的现场只读实测，定下三件事：头部重复时间戳在软件侧处理，方孔不挡第一批试验，本轮不接 Gemini、改用固定程序。新增条目 H-26 至 H-30，文末有可整段复制的指令，Codex 下一轮从这份开始。
+
 ```mermaid
 flowchart LR
   R[Claude 只读审阅] --> W[写入 Claude-advice/项目/review.md]
