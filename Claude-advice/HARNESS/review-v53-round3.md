@@ -353,7 +353,7 @@ H-23 的新触发条件：任一次预检里 14 个手臂关节的最小余量�
 
 **证据**：`Claude-advice/HARNESS/evidence/<日期>-H29-gemini-offline/`。请求体里的图像不上传，只上传结构化结果。
 
-## H-30 `[ ]` P1：清理登记、状态和证据字段
+## H-30 `[x]` P1：清理登记、状态和证据字段
 
 离线可做，不改运行时。
 
@@ -364,6 +364,8 @@ H-23 的新触发条件：任一次预检里 14 个手臂关节的最小余量�
 5. **review-v53.md**：H-22 的执行记录后追加一行，写明采纳“积木demoV5”和本文的更新；H-23 标题的优先级改为 P2，追加新的触发条件；H-25 的 `[x]` 改为 `[~]`，待第 3 点补齐后再改回。
 
 **验收**：`python3 HARNESS/scripts/check_project_layout.py` 通过；`grep -r` 仓库工作树里不再出现真实用户名。
+
+> 执行记录：2026-11-26，分支 `harness/v53`；已完成（1）恢复 `HARNESS/releases/registry.json` 版本 1–52 为 `04e0ee3` 脱敏原文，`git diff 04e0ee3 -- HARNESS/releases/registry.json` 差异仅限于 V52 `currently_active`、V53 条目及末尾 4 个 `active_*` 键（注：历史提交 `0d459d9` 中已写入过真实用户名，是否改写历史由用户决定）；（2）同步 `HARNESS/agent/STATUS.md`、`HARNESS/agent/TODO.md` 及根 `AGENTS.md` 近况；（3）修正 `20261126-H25-left-wrist/` 的 `passed=true`、单列 `first_frame_delay_s`、补充 `journalctl -k -b --no-pager` 自开机共 52,203 行（130 行 USB/UVC）核验并如实注明现场接口尚未做机械紧固；（4）修正 `20261126-H20-dds-ab/summary.json`（`empty_frame_reproduced=false`）、`report.md` 第 4 节第 1 点及 `review-v53.md` H-20 记录；（5）更新 `review-v53.md` 的 H-22、H-23（P2 及新触发条件）与 H-25（暂保留 `[~]` 待现场紧固接口）。验收：`check_project_layout.py` 通过，工作树检索真实用户名 0 处，净增 `raise HarnessError` 为 0；证据：`Claude-advice/HARNESS/evidence/20261126-H25-left-wrist/`、`Claude-advice/HARNESS/evidence/20261126-H20-dds-ab/`。
 
 ## 版本登记
 

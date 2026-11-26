@@ -39,9 +39,9 @@
 
 最新推理框架、RTC参数、延迟对比、执行频率及平滑细节统一查阅[任务推理主文档](tasks/F1_ComplexyToys/INFERENCE_RECIPE.md)；维护规则见[任务AGENTS](tasks/F1_ComplexyToys/AGENTS.md#f1_inference_current-当前推理文档)。讨论或修改本任务推理时先读此tag，运行状态与完整命令分别以任务STATUS和STARTUP为准，不把旧实验配置当当前默认。
 
-## 最近在做什么（2026-11-25）
+## 最近在做什么（2026-11-26）
 
-- **F1 Harness（2026-11-25）** V52 在用；候选 V53（`53af3b1d4406`）已将左臂第 2 关节下限重定基线至 `−94.7°`（右臂与其他轴及碰撞模型不变）、新增只读 `preflight_scene.py`，并通过 6000D 全量软件回归与三条零硬件回放。F1-09 当前离线，待联机后完成 V53 上线、同步 home 预设并执行原位预检，暂缓 4242 开始任务。[HARNESS 状态](HARNESS/agent/STATUS.md)
+- **F1 Harness（2026-11-26）** V53（`53af3b1d4406`）已上线并在用，现场定稿左臂预设 `积木demoV5`（`arm_l_j2 = −77.315°`）并通过左腕 5 分钟稳定性检查（有条件通过，待紧固接口），当前阻塞为头部 Orbbec 重复时间戳与外部模型通道不可用。下一步按第三轮审阅冻结新版本（软件处理 250 ms 同戳帧、工作区 `planner_override="baseline"`、预检第 4 项放宽方孔、限位收回 `−94.0°`），完成新预设回放、重跑 H-20 并开展 10 次固定程序真机试验。[HARNESS 状态](HARNESS/agent/STATUS.md)
 - **F1 RLT（2026-11-03）**：控制V45已部署，Windows整包待安装；13条可信数据重建、清洁BC/Q与异步预检完成，尚无真机能力改善结论。下一步短条及固定版本对照，见[任务状态](tasks/F1_ComplexyToys/STATUS.md)。
 - **工作区整理（2026-10-23）**：历史项目已移至同级Archive，工具至Tools，OpenPI/LeRobot至Libraries并加入同一工作区；Whereweare继续搁置；泡沫派生载荷清理51.64 GiB，F1积木两套模型包完整保留。后续H20源码包已排除重复教学产物，范围与回执见[Projects首页](README.md)。
 - **文档与Why&How（2026-10-21）**：F1入口按当前进度、操作配方、原理教学和历史证据排序；任务规则采用按需读取与交接更新，见[任务首页](tasks/F1_ComplexyToys/README.md)。

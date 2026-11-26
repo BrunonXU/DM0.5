@@ -1,9 +1,16 @@
-=== KERNEL LOG SOURCE: journalctl ===
-=== USB LINES DURING 5-MIN WINDOW (0) ===
-(none)
+=== KERNEL LOG READ VERIFICATION ===
+command: journalctl -k -b --no-pager
+total_lines_since_boot: 52203
+usb_uvc_camera_lines_since_boot: 130
+usb_disconnect_lines_since_boot: 3 (all prior to H-25 window: 12:29:49, 12:30:25, 14:59:06 CST)
 
-=== USB DISCONNECT/RE-ENUM LINES DURING WINDOW (0) ===
-(none)
+=== H-25 5-MIN WINDOW (2026-11-26 17:29:07 - 17:34:07 CST / 09:29:07 - 09:34:07 UTC) ===
+usb_lines_during_window: 0
+usb_disconnect_or_reenum_during_window: 0
 
-=== RECENT USB CONTEXT BEFORE WINDOW (last 20) ===
-(none)
+=== LAST USB EVENTS BEFORE WINDOW (proving journalctl -k is readable and zero events occurred after 15:00:10 CST) ===
+Nov 26 14:59:06 <host> kernel: uvcvideo 1-3.2:1.1: Non-zero status (-71) in video completion handler.
+Nov 26 14:59:06 <host> kernel: usb 1-3.2: USB disconnect, device number 8
+Nov 26 15:00:09 <host> kernel: usb 1-3.2: new high-speed USB device number 9 using tegra-xusb
+Nov 26 15:00:10 <host> kernel: uvcvideo 1-3.2:1.1: Unknown video format 00000050-0000-0010-8000-00aa00389b71
+Nov 26 15:00:10 <host> kernel: usb 1-3.2: Found UVC 1.50 device Intel(R) RealSense(TM) Depth Camera 405  (8086:0b5b)

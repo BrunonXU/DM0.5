@@ -2,7 +2,7 @@
 
 本报告按 `review-v53.md` H-20 步骤 A 规格，在已上线 V53（`53af3b1d4406`）的 F1-09 上完成 30 轮严格交替（`pg → udp → cyc`）独立进程只读预检。**结论：触发停下规则（没有任何环境达到 9/10）**——三组通过次数分别为 `production-gateway` **6/10**、`fastdds-udp` **3/10**、`cyclone` **1/10**。按规格不启用步骤 B、不冻结 V54，停下并报告。
 
-关键诊断发现：**30 轮中 0 轮出现空帧**（`fastdds-udp` 与 `cyclone` 均稳定达到约 30 fps / 1,400+ 回调，`production-gateway` 约 16–22 fps / 780–1,080 回调，三组关节反馈均约 2,750 回调）。打断 12 秒连续配对窗口的真正原因是：**三种 DDS 环境下，头部相机（Orbbec head）每 4–10 秒均会出现单次轮询的 `head: False`（`pair: None`, `n_frames: 0`）闪断，而右腕相机（`right`）同期几乎 100% 保持 `good: True`**。因此问题不在 DDS 传输层，而在头部相机驱动 / RGB-D 配对一侧。
+关键诊断发现：**30 轮中 0 轮出现任务中途空帧**（`fastdds-udp` 与 `cyclone` 均稳定达到约 30 fps / 1,400+ 回调，`production-gateway` 头部彩色回调中位数仅 781.5，约为另两种 1,428 / 1,407.5 的一半，且 `camera_sample_feedback_aged:right` 18 次全部出现在默认环境；三组关节反馈均约 2,750 回调）。打断 12 秒连续配对窗口的主因是：**三种 DDS 环境下，头部相机（Orbbec head）每 2–6 秒输出同 `source_ns` 但像素不同的帧（100.12 ms 阶梯跳变），触发 `duplicate_source_stamp:head` 临时故障使头部该轮询被判无效**，而右腕相机同期 `right=False` 中位数为 0。DDS 传输层仍待消除头部同戳干扰后重跑 A/B 得出结论。
 
 注：本批测试期间机器人左臂停在用户新建的 `V4` 姿态（`arm_l_j2 = -71.14°`），压在桶盖上方遮挡了头部主视角看桶盖，故 30 轮的 `scene_geometry_solved` 均为 0（方块可解、桶与方孔被遮挡），不影响 H-20 按 `dual_rgbd_feedback_paired` 判定的独立性；所有 30 轮 `readonly_safety` 均为 10/10、`hardware_command_publishers=0`、`start_sent=False`。
 
@@ -57,7 +57,7 @@
 
 ## 4. 说明与排查建议
 
-1. **为什么 `fastdds-udp` / `cyclone` 帧率翻倍（30 fps vs `pg` 16–22 fps）反而连续窗口更短？** 每次轮询中 `head` 偶发失去 RGB-D 配对（`pair: None`, `n_frames: 0`），每轮约占全部轮询的 7–14%；在 30 fps 下头部 RGB 与 Depth 到达时间抖动更频繁触发配对失配，从而更常打断 12 秒连续计时器。
+1. **为什么 `fastdds-udp` / `cyclone` 回调数翻倍（~1,428 / ~1,407.5 vs `production-gateway` 781.5）反而连续窗口更短？** 见第 5 节根因定位：并非到达抖动造成的配对失配，而是头部 Orbbec 相机每隔 2–6 秒输出同 `source_ns`、不同像素内容的帧，触发 `ObservationBuffer.add()` 的 `duplicate_source_stamp:head` 临时故障。默认环境（`production-gateway`）的头部图像回调数约为另两种环境的一半（781.5 vs 1,428 / 1,407.5），收到的帧更少因此撞上同戳帧的概率更低（但同时也包揽了全部 18 次 `camera_sample_feedback_aged:right`）；因此 H-20 尚未得出 DDS 选型结论，须在软件侧处理同戳帧后重跑 30 轮 A/B。
 2. **30 轮无一例空帧**：与 11 月 25 日 V52 连续 160 次空帧不同，本次三组环境首次配对中位数均为 0.73–1.30 秒、有效配对样本占比均 > 86%。
 3. **同步修补的预检脚本影子问题**：`preflight_scene.py` 首次在真机重启后运行时暴露两处影子目录漏项（转发 SAM 端口重写影子 `masks.local.json` 后未重签影子 `development.local.json`，以及机器人重启后未在影子目录跑只读 `boot-recheck`），已在本分支修复，未改动任何通过判据或运行时控制逻辑。
 

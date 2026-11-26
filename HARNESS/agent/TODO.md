@@ -1,14 +1,16 @@
 # HARNESS 当前待办
 
-**V52 在用，V53 候选（`53af3b1d4406`）已冻结并通过 6000D 离线验收；F1-09 当前离线，4242 抓放试验继续暂缓。** [V53 证据报告](../../Claude-advice/HARNESS/evidence/20261125-V53-left-baseline-preflight/report.md) · [V52 网关实测](../../Claude-advice/HARNESS/evidence/20261125-B-gateway-check/report.md)
+**V53（`53af3b1d4406`）在用，当前阻塞为头部 Orbbec 重复时间戳（`duplicate_source_stamp:head`）与模型通道不可用；4242 抓放试验继续暂缓。** [第三轮审阅](../../Claude-advice/HARNESS/review-v53-round3.md) · [H-20 实测报告](../../Claude-advice/HARNESS/evidence/20261126-H20-dds-ab/report.md)
 
-待 F1-09 联机并确认 PR 审核意见后，先完成 V53 ARM 部署、`presets.json` 左臂 J2 停放值同步与原位只读预检，再启动单块真机试验。首次自主放置、逐次停点和恢复效果均按实际运行编号复盘。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
+按第三轮审阅已定决策顺序推进：清理登记与证据 → 冻结下一版本（四项改动）→ 新预设 `积木demoV5` 下零输出回放与只读回归 → 上线并重跑 H-20 30 轮 A/B → H-21 连续 3 次预检与 10 次固定程序真机试验。首次自主放置、逐次停点和恢复效果均按实际运行编号复盘。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
 
 ## 现在做
 
-- [ ] **F1-09 联机后上线 V53、同步 home 预设并跑原位预检。** 在 ARM 安装不可变 V53 束与站点、`robot-v23.json`、`v53-arm-l-j2` 依赖目录，按 H-22 将 `presets.json` 中「积木demoV3-左腕观测」的 `arm_l_j2` 改为 −92.5°，切换上线并确认 4242 显示 V53；随后运行 `HARNESS/scripts/preflight_scene.py` 连续采样至少 10 秒，核对全 22 轴限位与实测 FK、头部/右腕 RGB-D 反馈配对、左腕连续出帧及方块/桶/方孔三维几何，并上传回执至 `Claude-advice/HARNESS/evidence/`。[预检脚本](../scripts/preflight_scene.py) · [V53 证据报告](../../Claude-advice/HARNESS/evidence/20261125-V53-left-baseline-preflight/report.md)
-- [ ] **三维场景预检通过后，从空爪和自然随机摆放的一块直立积木开始。** 操作者在 4242 点一次「开始任务」。记录实际生效版本、首动、抓稳、运输、对准、插入和释放，用同一请求的放置回执核对 S8，另记退回 S9。场景编号可空。[任务页操作](../docs/operations/DIRECT_ROLLOUT.md)
-- [ ] **逐次汇总当前版本的自然摆放试验。** 以运行编号追踪最远阶段、耗时、失败原因、人工介入与非物理拒绝。撤权主看有效授权期的故障，并列展示含正常收尾的撤权总数。历史基线分别为 22 次、376 次。[本轮候选与指标](../../Claude-advice/HARNESS/evidence/20261125-B-batch/report.md)
+- [ ] **H-30：清理发布登记、状态文档和 H-20/H-25 证据字段。** 恢复 `registry.json` 版本 1–52 脱敏历史内容，同步 `STATUS.md`、`TODO.md` 与根 `AGENTS.md`，修正 H-25 `passed`/内核日志说明及 H-20 `empty_frame_reproduced`/过时说法。
+- [ ] **冻结下一版本（仅四项改动，各自单独提交）。** 含 H-26（`observation.py` 250 ms 内同戳异像素仅丢弃不报故障）、H-28（工作区 `planner_override="baseline"` 与 `planner_effective`）、预检第 4 项改为只要求积木和桶、`arm_l_j2` 下限收回 `−94.0°`（与 4242 `robot-v22.json` 恢复一致）；完成全量 pytest、原生集成与三条零输出回放（含 `--planner baseline`）。
+- [ ] **H-27：在 `积木demoV5` 姿态下完成零输出回放、30 组跨视角测孔回归与头部方孔掩码诊断。** 回放失败即停下报告，不启动真机试验；另两项与站点左臂写死值检查只写进报告。
+- [ ] **上线新版本、导出右腕相机运行参数，并重跑 H-20 的 30 轮 DDS A/B。** 核对 4242 版本显示（不重启 4242）；按 `dual_rgbd_feedback_paired` 9/10 规则决定直接进 H-21 或先启用步骤 B 另成一版。
+- [ ] **H-21：连续 3 次预检通过后，以 `planner_override="baseline"` 做 10 次直立真机试验。** 操作者在 4242 点一次「开始任务」，保持左臂在 `积木demoV5` 且不碰左腕线缆，前 3 次同原因停在 S0 即止损；完成后按停点漏斗在 `review-v53.md` 表中单选下一条（H-29 Gemini 仅在第一批数据后考虑）。[任务页操作](../docs/operations/DIRECT_ROLLOUT.md)
 
 ## 单块全流程跑通后
 

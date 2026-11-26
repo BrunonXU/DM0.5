@@ -248,7 +248,7 @@ export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
 **风险与回滚**：仅 UDP 时大图像可能丢帧，所以判定规则里有回调数不低于 90% 这一条。回滚只需把常量改回一行 `source`。
 
 > 执行记录：2026-11-25，提交 b86bc1c，分支 `harness/v53`；软件完成（步骤 B 代码预置，`ROBOT_SERVICES_ROS_ENV=None` 暂不启用），待 F1-09 联机完成步骤 A（30 次 A/B）与真机验收；验收：全量 pytest 3,111 passed / 0 failed / 70 skipped（原生数值环境限定跳过），`test_preflight_scene.py` 8/8 通过，`check_native_integration.py` 62/62 通过，`check_project_layout.py` 通过，净增 `raise HarnessError` 为 0；偏差：同步将 `fastdds-udp-only.xml` 加入 `HARNESS/scripts/package_native.py` 打包白名单并实测 `build_bundle()` 清单包含该文件；步骤 A 尚待 F1-09 联机，故暂未生成 `evidence/<日期>-H20-dds-ab/`。
-> 执行记录（步骤 A 实测）：2026-11-26，已先上线 V53（`53af3b1d4406`，4242 显示 V53，未重启 4242，保持 `robot-v22.json`）并完成 30 轮严格交替（`pg → udp → cyc`）独立进程只读预检；结果：`production-gateway` 6/10、`fastdds-udp` 3/10、`cyclone` 1/10（全部 30 轮 0 空帧，有效配对占比 87–90%，但头部相机每 4–10 秒单次轮询出现 `head: False` 失配打断 12 秒连续窗口，右腕 `right_false` 中位数均为 0）；按判定规则没有任何环境达到 9/10，触发 `STOP_BELOW_9_OF_10`，不启用步骤 B、不冻结 V54，停下并上报转向相机/驱动与头部配对排查；证据：`Claude-advice/HARNESS/evidence/20261126-H20-dds-ab/`（含 30 份脱敏 `result.json`、`summary.json`、`report.md`、`manifest.json`）。
+> 执行记录（步骤 A 实测）：2026-11-26，已先上线 V53（`53af3b1d4406`，4242 显示 V53，未重启 4242，保持 `robot-v22.json`）并完成 30 轮严格交替（`pg → udp → cyc`）独立进程只读预检；结果：`production-gateway` 6/10、`fastdds-udp` 3/10、`cyclone` 1/10（全部 30 轮 0 轮中途空帧，但三组均被头部 Orbbec 100.12 ms 阶梯重复时间戳触发的 `duplicate_source_stamp:head` 打断 12 秒连续窗口，右腕 `right_false` 中位数均为 0；其中默认环境头部彩色回调中位数 781.5 约为另两种 1,428 / 1,407.5 的一半，因此撞上同戳帧概率更低，不代表 DDS 传输更优）；按判定规则没有任何环境达到 9/10，触发 `STOP_BELOW_9_OF_10`，不启用步骤 B、不冻结 V54，待 H-26 处理同戳帧后重跑 30 轮 A/B；证据：`Claude-advice/HARNESS/evidence/20261126-H20-dds-ab/`（含 30 份脱敏 `result.json`、`summary.json`、`report.md`、`manifest.json`）。
 
 ## H-21 `[ ]` P0：V53 上线后的预检和第一批真机试验
 
@@ -303,10 +303,12 @@ Codex 原计划把目标改为 −93.667°。按同样的下垂，静置值会�
 **证据**：`Claude-advice/HARNESS/evidence/<日期>-H22-left-preset/`，含 60 秒采样的最小值和最大值、预检 `result.json`、左腕静止图。
 
 > 执行记录：2026-11-26，分支 `harness/v53`；已备份原 `presets.json` 并将 `积木demoV3-左腕观测` 的 `arm_l_j2` 改为 `−92.5°` 实测（60s `[−93.5626°, −93.5624°]`，三孔可见但略裁底边）；随后用户定稿新预设 `积木demoV5`（`arm_l_j2` 60s `[−77.3150°, −77.3149°]`，距 `−94.0°` 余量 16.69°，14 臂最小余量 5.98°，左腕全孔与桶沿完整可见，头部不挡桶解出 `block=40, fixture=40`）。因预检五项尚受头部 Orbbec `duplicate_source_stamp:head`（连续仅 7.32s）及 `hole=0`（`aperture_not_directly_visible`）阻塞，暂标 `[~]` 待头部问题解决后复检；证据：`Claude-advice/HARNESS/evidence/20261126-H22-left-preset/`。
+> 审阅更新（2026-11-26，H-30）：按 [review-v53-round3.md](review-v53-round3.md#四旧结论的更新) 正式采纳用户定稿预设 `积木demoV5`（`arm_l_j2 = −77.315°`），旧预设 `积木demoV3-左腕观测` 保持 `−92.5°` 不再使用，`arm_l_j2` 下限在下一版本收回 `−94.0°`。
 
-## H-23 `[ ]` P1：把“实测反馈”和“命令目标”的限位检查分开
+## H-23 `[ ]` P2：把“实测反馈”和“命令目标”的限位检查分开
 
 > 决策记录：2026-11-26，用户授权 Claude 代为决定。已定：分开，做法与 F1-4242 相同。排在首批试验出现首动之后。
+> 审阅更新（2026-11-26，H-30）：按 [review-v53-round3.md](review-v53-round3.md#四旧结论的更新) 降为 P2（不在首次成功路径上）；新触发条件：任一次预检里 14 个手臂关节的最小余量低于 1.0°，或真机运行出现由实测反馈引起的 `ArmLimitRejected`（当前在 `积木demoV5` 下最小余量为右臂第 2 关节 5.98°）。
 
 **这是 V53 那处补丁背后的结构问题。**
 
@@ -369,7 +371,7 @@ Codex 原计划把目标改为 −93.667°。按同样的下垂，静置值会�
 
 > 执行记录：2026-11-25，提交 a5ee5ea，分支 `harness/v53`；验收：`python3 HARNESS/scripts/check_project_layout.py` 通过；偏差：无。
 
-## H-25 `[x]` P0：左腕相机掉线
+## H-25 `[~]` P0：左腕相机掉线
 
 > 决策记录：2026-11-26，用户授权 Claude 代为决定。已定：先查硬件，不放宽撤权。
 
@@ -386,7 +388,7 @@ Codex 原计划把目标改为 −93.667°。按同样的下垂，静置值会�
 
 **证据**：`Claude-advice/HARNESS/evidence/<日期>-H25-left-wrist/`，含采样统计和脱敏后的内核日志摘录。
 
-> 执行记录：2026-11-26，分支 `harness/v53`；在 `积木demoV5` 下完成 300.028 秒只读采样：收到 8,922 帧（29.74 fps），`max_inter_frame_gap_s = 0.0348s`（≤ 2.0s），同期 `journalctl -k` USB 断开/重枚举 0 次（冷发现首帧延迟 2.95s，随后 297.1s 零掉帧）；验收通过；证据：`Claude-advice/HARNESS/evidence/20261126-H25-left-wrist/`。
+> 执行记录：2026-11-26，分支 `harness/v53`；在 `积木demoV5` 下完成 300.028 秒只读采样：收到 8,922 帧（29.74 fps），`max_inter_frame_gap_s = 0.0348s`（≤ 2.0s），同期 `journalctl -k -b --no-pager`（自开机共 52,203 行，含 130 行 USB/UVC 记录，最后一次重枚举在窗口前 15:00:10 CST）USB 断开/重枚举 0 次（冷发现首帧延迟 2.95s 单列，随后 297.1s 零掉帧）；H-30 已修正 `left-wrist-5min.json` 的 `passed=true` 与内核日志行数核验，因现场松动接口尚未做机械紧固，暂保留 `[~]`（有条件通过，试验期间保持左臂不动且不触碰线缆）；证据：`Claude-advice/HARNESS/evidence/20261126-H25-left-wrist/`。
 
 ## 首动之后怎么选下一条
 
