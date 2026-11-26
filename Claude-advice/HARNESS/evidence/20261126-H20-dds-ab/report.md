@@ -60,3 +60,18 @@
 1. **为什么 `fastdds-udp` / `cyclone` 帧率翻倍（30 fps vs `pg` 16–22 fps）反而连续窗口更短？** 每次轮询中 `head` 偶发失去 RGB-D 配对（`pair: None`, `n_frames: 0`），每轮约占全部轮询的 7–14%；在 30 fps 下头部 RGB 与 Depth 到达时间抖动更频繁触发配对失配，从而更常打断 12 秒连续计时器。
 2. **30 轮无一例空帧**：与 11 月 25 日 V52 连续 160 次空帧不同，本次三组环境首次配对中位数均为 0.73–1.30 秒、有效配对样本占比均 > 86%。
 3. **同步修补的预检脚本影子问题**：`preflight_scene.py` 首次在真机重启后运行时暴露两处影子目录漏项（转发 SAM 端口重写影子 `masks.local.json` 后未重签影子 `development.local.json`，以及机器人重启后未在影子目录跑只读 `boot-recheck`），已在本分支修复，未改动任何通过判据或运行时控制逻辑。
+
+## 5. 追加根因定位：头部相机驱动时间戳重复（`duplicate_source_stamp:head`）
+
+针对 H-20 30 轮中三组环境一致出现的 `head: False` 单轮询闪断，随后在 F1-09 上进行了两段只读实测（零改动、零动作）：
+
+1. **15 秒到达间隔与配对差采样**：
+   - `/camera/head/color/image_raw` 314 帧、`/camera/head/depth/image_raw` 347 帧；
+   - 硬件源时间戳差 `|rgb.source_ns - depth.source_ns|` 中位数仅 **0.02 ms**，但系统到达间隔 p95 约 **100–101 ms**、最大 **200.5 ms**（RGB 85 次 / Depth 62 次超过 60 ms）；
+   - 在 `ObservationBuffer(capacity=8, max_skew_ns=20ms)` 离线回放模拟中 660 次检查失败 0 次，说明**仅靠到达抖动并没有打穿 20 ms 缓冲窗口**。
+2. **12 秒源时间戳唯一性采样（决定性证据）**：
+   - RGB 219 帧中出现 **4 次**、Depth 241 帧中出现 **2 次**“前后两帧像素内容不同（`blob_sha256` 不同）、但 ROS `header.stamp`（`source_ns`）完全相同”（`dup_diff`）；`dup_same=0`、`rev=0`。
+   - 核查机载启动文件 `gemini_330_series.launch.py`：默认开启 `enable_sync_host_time=true`、`time_sync_period=6.0` 秒、`time_domain=global`，且 `orbbec_camera` 节点单进程占 CPU **41.6%**（整机 load average 9.27–9.75 / 11 核）；同时 `preflight-92.5` 告警明确记录了 `fixture_unavailable:capture_faults:duplicate_source_stamp:head`。
+   - 触发链路：`Orbbec head` 每 2–6 秒发出同 `source_ns` 但不同像素的两帧 → `ObservationBuffer.add()`（`observation.py:106-110`）置 `transient_faults[("head", stream)] = "duplicate_source_stamp:head"` → 该轮询 `head` 判为 `invalid` 并从 `obs` 剥离 → `preflight_scene.py` 12 秒连续窗口清零重来。这也完全解释了为何 30 fps 的 `fastdds-udp`（3/10）与 `cyclone`（1/10）反而比 16–22 fps 的 `production-gateway`（6/10）更容易踩中重复时间戳并打断窗口。
+
+**结论与待 Claude 审阅事项**：问题 100% 定位在头部 Orbbec 相机驱动的 `time_domain=global` + `time_sync_period=6.0` 引发的 `duplicate_source_stamp:head`（非 DDS 传输层问题）。在收到 Claude 审阅结论前，不擅自修改相机驱动参数或放宽 `ObservationBuffer` 判据。
