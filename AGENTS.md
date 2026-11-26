@@ -41,7 +41,7 @@
 
 ## 最近在做什么（2026-11-26）
 
-- **F1 Harness（2026-11-26）** V54（`8818976408ce`）已部署并在用（前一版本 V53），H-25 左腕线缆已确认紧固，H-20 30/30 重跑三路全 10/10（直接用 V54 进 H-21，H-27 首步下探已由 Claude 豁免仅限第一批，后续 H-31）。下一步核对重启后桌面桶位、完成连续 3 次预检并以 `planner_override="baseline"` 开展 H-21 10 次直立真机试验。[HARNESS 状态](HARNESS/agent/STATUS.md)
+- **F1 Harness（2026-11-26）** V54（`8818976408ce`）已部署，前一版本是 V53。H-20 的配对检查三路都是 10/10，本批选定 production-gateway；尚无真机成功。下一步是核对桶位后做 H-21 第一批 10 次固定程序试验。[HARNESS 状态](HARNESS/agent/STATUS.md)
 - **F1 RLT（2026-11-03）**：控制V45已部署，Windows整包待安装；13条可信数据重建、清洁BC/Q与异步预检完成，尚无真机能力改善结论。下一步短条及固定版本对照，见[任务状态](tasks/F1_ComplexyToys/STATUS.md)。
 - **工作区整理（2026-10-23）**：历史项目已移至同级Archive，工具至Tools，OpenPI/LeRobot至Libraries并加入同一工作区；Whereweare继续搁置；泡沫派生载荷清理51.64 GiB，F1积木两套模型包完整保留。后续H20源码包已排除重复教学产物，范围与回执见[Projects首页](README.md)。
 - **文档与Why&How（2026-10-21）**：F1入口按当前进度、操作配方、原理教学和历史证据排序；任务规则采用按需读取与交接更新，见[任务首页](tasks/F1_ComplexyToys/README.md)。

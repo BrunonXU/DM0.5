@@ -4,6 +4,8 @@
 
 理解系统设计读[《F1 Harness 核心思路与设计原则》](docs/ARCHITECTURE.md)；接续现场工作先核对[当前状态](agent/STATUS.md)和[待办](agent/TODO.md)；Codex 执行改进项读 [Claude 审阅与执行规格](../Claude-advice/HARNESS/review.md)。工作区通用约定见 [Projects 根规则](../AGENTS.md)和[项目规则与协作习惯](../PROJECT_RULES_AND_PREFERENCES.md)。
 
+2026-11-26：V54 已部署，前一版本是 V53。H-20 已完成，配对检查三路都是 10/10，本批选定 production-gateway。下一步是 H-21 第一批 10 次固定程序试验，尚无真机成功。现场数字以状态页和待办为准。
+
 ```mermaid
 flowchart LR
   A[读本页] --> B[读 Claude 审阅与验收指标]

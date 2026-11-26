@@ -1,6 +1,6 @@
 # HARNESS 当前待办
 
-**V54（`8818976408ce`）已部署并在用，前一版本为 V53（`53af3b1d4406`），H-20 30/30 已完成（三路全 10/10）且 H-25 左腕线缆已确认紧固，当前进入 H-21 连续 3 次预检与 10 次直立真机试验。** H-27 `grasp_output` 首步 `1.037 µm` 下探已由 Claude 豁免（仅限 H-21 第一批，后续见 H-31）。[第三轮审阅](../../Claude-advice/HARNESS/review-v53-round3.md) · [H-20 重跑](../../Claude-advice/HARNESS/evidence/20261126-H20-dds-ab-rerun/report.md) · [H-27 报告](../../Claude-advice/HARNESS/evidence/20261126-H27-v5-preset/report.md)
+**V54（`8818976408ce`）已部署，前一版本是 V53。H-20 的配对检查三路都是 10/10，本批选定 production-gateway。尚无真机成功。** 下一步是核对桶位后，做 H-21 第一批 10 次固定程序试验。H-27 的首步下探只在这一批豁免，之后做 H-31。[第三轮审阅](../../Claude-advice/HARNESS/review-v53-round3.md) · [H-20 重跑](../../Claude-advice/HARNESS/evidence/20261126-H20-dds-ab-rerun/report.md) · [H-27 报告](../../Claude-advice/HARNESS/evidence/20261126-H27-v5-preset/report.md)
 
 按已定决策推进：核对重启后桌面桶位／光照使第 4 项恢复检出桶 → 连续 3 次预检通过 → 设 `planner_override="baseline"` 并请用户在 4242 执行 10 次直立真机试验。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
 
