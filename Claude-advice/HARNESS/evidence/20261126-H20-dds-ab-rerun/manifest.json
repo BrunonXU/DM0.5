@@ -3,15 +3,17 @@
   "date": "2026-11-26",
   "version": 54,
   "bundle_id": "8818976408ce68d0c63a5e7602b26d28ca4cf9d54f0e3214cf4ffda9d3656002",
-  "status": "PARTIAL_23_OF_30_F1_09_OFFLINE_AT_CYC_08",
-  "completed_runs": 23,
+  "status": "COMPLETE_30_OF_30",
+  "completed_runs": 30,
   "planned_runs": 30,
+  "decision_route": "PROCEED_TO_H21_WITHOUT_STEP_B",
+  "winner": "fastdds-udp",
   "hardware_outputs": 0,
   "start_sent": false,
   "files": {
     "report.md": {
-      "bytes": 4636,
-      "sha256": "19add26002c510f3838800ff1c0aca7fc1f9b0a39457a348f5bbdecc624aa526"
+      "bytes": 5852,
+      "sha256": "99ee4df312721b38d447fe17f8dec44c7ad72da306862d567b6c7d55c338d18b"
     },
     "results/cyc-01.result.json": {
       "bytes": 343895,
@@ -40,6 +42,18 @@
     "results/cyc-07.result.json": {
       "bytes": 348019,
       "sha256": "8ce9282c9512e3e5f59041ca0bb1bca6fab7136d984f1bb62ca885101f65d401"
+    },
+    "results/cyc-08.result.json": {
+      "bytes": 357474,
+      "sha256": "3dced1ba57dbe3b98334aba91973aa168b809011bf8c711e136e0f24926b1e4f"
+    },
+    "results/cyc-09.result.json": {
+      "bytes": 356538,
+      "sha256": "78eb5cefa406484f07b08c7fe2f85f30f1f124211f9b48724978f00a694124c7"
+    },
+    "results/cyc-10.result.json": {
+      "bytes": 356381,
+      "sha256": "d7b19255821faf8ea3241105b1754994e468d1ddd2c0f30d1439600a499c8f6b"
     },
     "results/pg-01.result.json": {
       "bytes": 333946,
@@ -73,6 +87,14 @@
       "bytes": 355882,
       "sha256": "1f8d473e2c94cd57709d72f5df171b02cc44ec5760c6fe6bc6ba8f1643fce393"
     },
+    "results/pg-09.result.json": {
+      "bytes": 356703,
+      "sha256": "64a213e3e8444180a076a35bbe161787c899775b1483c92b17bc722fdf37c6af"
+    },
+    "results/pg-10.result.json": {
+      "bytes": 346311,
+      "sha256": "331518f79d354bf8d6fbcab36a532bb0492b5c604a89b7041b547c8a24dd4aad"
+    },
     "results/udp-01.result.json": {
       "bytes": 337037,
       "sha256": "0ea071ea93e688f1115d2b33c9e825a4f6d72fec94c7206687bc75d10eb84749"
@@ -105,9 +127,17 @@
       "bytes": 338620,
       "sha256": "84026ac17744f148d29838ded1d5d46d1e1b8eaea6e65bc02dc63c3973bb8289"
     },
+    "results/udp-09.result.json": {
+      "bytes": 353487,
+      "sha256": "d31d4854c30825af51761b3b06047605f3aaa94f97ffa140248c2f35356c2a04"
+    },
+    "results/udp-10.result.json": {
+      "bytes": 361621,
+      "sha256": "f7f95c61462f6e5c6b19dec84a7760a420da9f9166b23e87b49662e2d5f56abd"
+    },
     "summary.json": {
-      "bytes": 35589,
-      "sha256": "593a85b29a9f5fc963c5525b006d65b784fd0ebc2249fb223af99164ccfd2843"
+      "bytes": 45297,
+      "sha256": "19a4aadd15a5988705cf78fff630017170005b5b5014c381625d701b7c515842"
     }
   }
 }

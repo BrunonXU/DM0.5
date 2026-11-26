@@ -150,7 +150,7 @@ H-23 的新触发条件：任一次预检里 14 个手臂关节的最小余量�
 3. 不改机载相机启动文件，不接新的模型提供方。
 4. 规格与代码事实对不上时停下报告，不要自行取值。
 
-## H-26 `[~]` P0：同一时间戳、像素不同的帧，短时间内只丢弃不报故障
+## H-26 `[x]` P0：同一时间戳、像素不同的帧，短时间内只丢弃不报故障
 
 **位置**：`HARNESS/src/f1_harness/observation.py:99-114`，`ObservationBuffer.add`。
 
@@ -216,7 +216,7 @@ H-23 的新触发条件：任一次预检里 14 个手臂关节的最小余量�
 
 **证据**：`Claude-advice/HARNESS/evidence/<日期>-H26-stamp-hold/`，含测试回执、右腕与头部参数对照、上线后一次预检的 `result.json`。
 
-> 执行记录：2026-11-26，分支 `harness/v53`，提交 `c430186`、`133f523`，V54（`8818976408ce`）已上线并完成只读实测（证据目录 `Claude-advice/HARNESS/evidence/20261126-H26-stamp-hold/`）：动手前核对站点 `scene.max_age_ms = 500 > 250`；全量软件回归 3,190 例、原生集成 62/62、3+1 零输出回放全过，净增 `raise HarnessError = 0`。上线核验通过（4242 显示 V54、未重启、保持 `robot-v22.json`，`start_sent=false`），上线后只读预检五项全过（`arm_l_j2 min_margin_deg = 16.68° >= 16°`，`contiguous = 37.81 s`，`dup_stamp:head = 0`），右腕 vs 头部相机运行参数已只读导出对照。H-20 重跑前 23/30 轮中 `duplicate_source_stamp:head` 每轮中位数为 0（剩余 7 轮待 F1-09 重连补齐）。
+> 执行记录：2026-11-26，分支 `harness/v53`，提交 `c430186`、`133f523`，V54（`8818976408ce`）已上线并完成真机只读验收（证据目录 `Claude-advice/HARNESS/evidence/20261126-H26-stamp-hold/`、`Claude-advice/HARNESS/evidence/20261126-H20-dds-ab-rerun/`）：动手前核对站点 `scene.max_age_ms = 500 > 250`；全量软件回归 3,190 例、原生集成 62/62、3+1 零输出回放全过，净增 `raise HarnessError = 0`。上线核验通过（4242 显示 V54、未重启、保持 `robot-v22.json`，`start_sent=false`），右腕 vs 头部相机运行参数已只读导出对照。H-20 完整 30/30 重跑中，三环境 `duplicate_source_stamp:head` 每轮中位数均为 **0**（30 轮合计仅 `pg-03` 出现 3 次，`fastdds-udp` 与 `cyclone` 均为 0 次），满足 H-26 全部验收条件。
 
 ## H-27 `[x]` P0：新预设下要重做的三件事
 
@@ -333,7 +333,7 @@ H-23 的新触发条件：任一次预检里 14 个手臂关节的最小余量�
 
 证据：`Claude-advice/HARNESS/evidence/<日期>-H20-dds-ab-rerun/`。
 
-> 执行记录：2026-11-26，分支 `harness/v53`，证据目录 `Claude-advice/HARNESS/evidence/20261126-H20-dds-ab-rerun/`。在 V54（`8818976408ce`）与“积木demoV5”姿态下已完成 **23/30 轮**（第 24 轮 `cyc-08` 时 F1-09 离线断连，`summary.json` 中 `decision.route = INCOMPLETE`，剩余 7 轮待重连补齐）：**23/23 五项全过**（`production-gateway` 8/8、中位连续 `25.30 s`、`held` 中位数 46.5、头部无效中位数 2.5、`dup_stamp:head` 中位数 0；`fastdds-udp` 8/8、中位连续 `46.15 s`、`held` 中位数 114.5、头部无效中位数 0、`dup_stamp:head` 0；`cyclone` 7/7、中位连续 `46.57 s`、`held` 中位数 119、头部无效中位数 0、`dup_stamp:head` 0），0 轮空帧复现。F1-09 重连补齐 30 轮后，若 `production-gateway` 达 9/10 即用 V54 进 H-21（不切 `fastdds-udp`）；H-21 前 3 次若均因取帧停在 S0，则停下并启用步骤 B（`fastdds-udp`）另成 V55、重做预检后再跑。
+> 执行记录：2026-11-26，分支 `harness/v53`，证据目录 `Claude-advice/HARNESS/evidence/20261126-H20-dds-ab-rerun/`。在 V54（`8818976408ce`）与“积木demoV5”姿态下已完成 **完整 30/30 轮**（前 23 轮于重启前执行，后 7 轮于重启并紧固左腕线缆后补齐）：三环境在 `dual_rgbd_feedback_paired` 上**全部达到 10/10**（`production-gateway` 10/10、中位连续 `25.30 s`、`held` 中位数 46.5、头部无效中位数 2.0、`dup_stamp:head` 中位数 0；`fastdds-udp` 10/10、中位连续 `46.15 s`、`held` 中位数 111.0、头部无效中位数 0、`dup_stamp:head` 0；`cyclone` 10/10、中位连续 `46.65 s`、`held` 中位数 115.5、头部无效中位数 0、`dup_stamp:head` 0），0 轮空帧复现，`summary.json` 结论为 `route = PROCEED_TO_H21_WITHOUT_STEP_B`、`winner = fastdds-udp`。按规则直接用 V54 进 H-21（不切 `fastdds-udp`）；H-21 前 3 次若均因取帧停在 S0，则停下并启用步骤 B（`fastdds-udp`）另成 V55、重做预检后再跑。注：重启后补跑的后 7 轮第 4 项因现场 `3d_geometry_missing:bucket_fixture`（`fixture_aperture_not_detected_in_search_region`）未通过，需在 H-21 连续 3 次预检前核对现场桶位／光照。
 
 ## H-21 更新
 

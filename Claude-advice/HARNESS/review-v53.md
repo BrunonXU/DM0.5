@@ -371,7 +371,7 @@ Codex 原计划把目标改为 −93.667°。按同样的下垂，静置值会�
 
 > 执行记录：2026-11-25，提交 a5ee5ea，分支 `harness/v53`；验收：`python3 HARNESS/scripts/check_project_layout.py` 通过；偏差：无。
 
-## H-25 `[~]` P0：左腕相机掉线
+## H-25 `[x]` P0：左腕相机掉线
 
 > 决策记录：2026-11-26，用户授权 Claude 代为决定。已定：先查硬件，不放宽撤权。
 
@@ -388,7 +388,7 @@ Codex 原计划把目标改为 −93.667°。按同样的下垂，静置值会�
 
 **证据**：`Claude-advice/HARNESS/evidence/<日期>-H25-left-wrist/`，含采样统计和脱敏后的内核日志摘录。
 
-> 执行记录：2026-11-26，分支 `harness/v53`；在 `积木demoV5` 下完成 300.028 秒只读采样：收到 8,922 帧（29.74 fps），`max_inter_frame_gap_s = 0.0348s`（≤ 2.0s），同期 `journalctl -k -b --no-pager`（自开机共 52,203 行，含 130 行 USB/UVC 记录，最后一次重枚举在窗口前 15:00:10 CST）USB 断开/重枚举 0 次（冷发现首帧延迟 2.95s 单列，随后 297.1s 零掉帧）；H-30 已修正 `left-wrist-5min.json` 的 `passed=true` 与内核日志行数核验，因现场松动接口尚未做机械紧固，暂保留 `[~]`（有条件通过，试验期间保持左臂不动且不触碰线缆）；证据：`Claude-advice/HARNESS/evidence/20261126-H25-left-wrist/`。
+> 执行记录：2026-11-26，分支 `harness/v53`；在 `积木demoV5` 下完成 300.028 秒只读采样：收到 8,922 帧（29.74 fps），`max_inter_frame_gap_s = 0.0348s`（≤ 2.0s），同期 `journalctl -k -b --no-pager`（自开机共 52,203 行，含 130 行 USB/UVC 记录，最后一次重枚举在窗口前 15:00:10 CST）USB 断开/重枚举 0 次（冷发现首帧延迟 2.95s 单列，随后 297.1s 零掉帧）；2026-11-26 21:40 CST（`2026-11-26T21:40:29+08:00`）用户确认已于重新上电时紧固左腕线缆接口，`left-wrist-5min.json` 的 `cable_fastened_on_site` 已更新为 `true` 并记明时间，H-25 改为 `[x]` 通过；证据：`Claude-advice/HARNESS/evidence/20261126-H25-left-wrist/`。
 
 ## 首动之后怎么选下一条
 

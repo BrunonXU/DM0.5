@@ -1058,124 +1058,443 @@
         "sequence_not_increasing": 0,
         "held_ns_max_ms": 222.681
       }
+    },
+    {
+      "tag": "cyc-08",
+      "ros_env": "cyclone",
+      "exit_code": 2,
+      "wall_s": 59.576,
+      "result_exists": true,
+      "passed": false,
+      "checks": {
+        "joints_within_limits": true,
+        "dual_rgbd_feedback_paired": true,
+        "left_wrist_streaming": true,
+        "scene_geometry_solved": false,
+        "readonly_safety": true
+      },
+      "dual_rgbd_feedback_paired": true,
+      "contiguous_s": 46.763,
+      "arm_l_j2_min_margin_deg": 16.317,
+      "held_source_frames": 81,
+      "head_invalid_samples": 0,
+      "duplicate_source_stamp_head_samples": 0,
+      "mid_run_no_frame_errors": 0,
+      "mid_run_invalid_reasons": {},
+      "head_rgb_cb": 1436,
+      "head_depth_cb": 1433,
+      "right_rgb_cb": 1407,
+      "right_depth_cb": 1407,
+      "joint_cb": 2755,
+      "left_cb": 1634,
+      "first_paired_s": 1.094,
+      "rmw": "rmw_cyclonedds_cpp",
+      "error": null,
+      "diagnostics": {
+        "trace_files_found": 4,
+        "capture_diagnostic_total": 81,
+        "held_source_frames": 81,
+        "held_source_frames_by_camera": {
+          "head": 81
+        },
+        "duplicate_same_pixels": 0,
+        "duplicate_exceeded_250ms_fault": 0,
+        "source_time_reversed": 0,
+        "sequence_not_increasing": 0,
+        "held_ns_max_ms": 164.962
+      }
+    },
+    {
+      "tag": "pg-09",
+      "ros_env": "production-gateway",
+      "exit_code": 2,
+      "wall_s": 60.21,
+      "result_exists": true,
+      "passed": false,
+      "checks": {
+        "joints_within_limits": true,
+        "dual_rgbd_feedback_paired": true,
+        "left_wrist_streaming": true,
+        "scene_geometry_solved": false,
+        "readonly_safety": true
+      },
+      "dual_rgbd_feedback_paired": true,
+      "contiguous_s": 33.481,
+      "arm_l_j2_min_margin_deg": 16.317,
+      "held_source_frames": 24,
+      "head_invalid_samples": 0,
+      "duplicate_source_stamp_head_samples": 0,
+      "mid_run_no_frame_errors": 0,
+      "mid_run_invalid_reasons": {
+        "observe_with_status: camera_sample_feedback_aged:right": 5
+      },
+      "head_rgb_cb": 790,
+      "head_depth_cb": 961,
+      "right_rgb_cb": 1064,
+      "right_depth_cb": 941,
+      "joint_cb": 2781,
+      "left_cb": 1669,
+      "first_paired_s": 0.731,
+      "rmw": "rmw_fastrtps_cpp",
+      "error": null,
+      "diagnostics": {
+        "trace_files_found": 5,
+        "capture_diagnostic_total": 24,
+        "held_source_frames": 24,
+        "held_source_frames_by_camera": {
+          "head": 24
+        },
+        "duplicate_same_pixels": 0,
+        "duplicate_exceeded_250ms_fault": 0,
+        "source_time_reversed": 0,
+        "sequence_not_increasing": 0,
+        "held_ns_max_ms": 88.15
+      }
+    },
+    {
+      "tag": "udp-09",
+      "ros_env": "fastdds-udp",
+      "exit_code": 2,
+      "wall_s": 58.454,
+      "result_exists": true,
+      "passed": false,
+      "checks": {
+        "joints_within_limits": true,
+        "dual_rgbd_feedback_paired": true,
+        "left_wrist_streaming": true,
+        "scene_geometry_solved": false,
+        "readonly_safety": true
+      },
+      "dual_rgbd_feedback_paired": true,
+      "contiguous_s": 45.124,
+      "arm_l_j2_min_margin_deg": 16.317,
+      "held_source_frames": 88,
+      "head_invalid_samples": 7,
+      "duplicate_source_stamp_head_samples": 0,
+      "mid_run_no_frame_errors": 0,
+      "mid_run_invalid_reasons": {},
+      "head_rgb_cb": 1363,
+      "head_depth_cb": 1363,
+      "right_rgb_cb": 1400,
+      "right_depth_cb": 1399,
+      "joint_cb": 2745,
+      "left_cb": 1649,
+      "first_paired_s": 2.773,
+      "rmw": "rmw_fastrtps_cpp",
+      "error": null,
+      "diagnostics": {
+        "trace_files_found": 4,
+        "capture_diagnostic_total": 89,
+        "held_source_frames": 88,
+        "held_source_frames_by_camera": {
+          "head": 88
+        },
+        "duplicate_same_pixels": 0,
+        "duplicate_exceeded_250ms_fault": 0,
+        "source_time_reversed": 1,
+        "sequence_not_increasing": 0,
+        "held_ns_max_ms": 133.997
+      }
+    },
+    {
+      "tag": "cyc-09",
+      "ros_env": "cyclone",
+      "exit_code": 2,
+      "wall_s": 59.956,
+      "result_exists": true,
+      "passed": false,
+      "checks": {
+        "joints_within_limits": true,
+        "dual_rgbd_feedback_paired": true,
+        "left_wrist_streaming": true,
+        "scene_geometry_solved": false,
+        "readonly_safety": true
+      },
+      "dual_rgbd_feedback_paired": true,
+      "contiguous_s": 46.663,
+      "arm_l_j2_min_margin_deg": 16.318,
+      "held_source_frames": 89,
+      "head_invalid_samples": 0,
+      "duplicate_source_stamp_head_samples": 0,
+      "mid_run_no_frame_errors": 0,
+      "mid_run_invalid_reasons": {},
+      "head_rgb_cb": 1399,
+      "head_depth_cb": 1399,
+      "right_rgb_cb": 1403,
+      "right_depth_cb": 1403,
+      "joint_cb": 2731,
+      "left_cb": 1630,
+      "first_paired_s": 1.28,
+      "rmw": "rmw_cyclonedds_cpp",
+      "error": null,
+      "diagnostics": {
+        "trace_files_found": 4,
+        "capture_diagnostic_total": 89,
+        "held_source_frames": 89,
+        "held_source_frames_by_camera": {
+          "head": 89
+        },
+        "duplicate_same_pixels": 0,
+        "duplicate_exceeded_250ms_fault": 0,
+        "source_time_reversed": 0,
+        "sequence_not_increasing": 0,
+        "held_ns_max_ms": 167.301
+      }
+    },
+    {
+      "tag": "pg-10",
+      "ros_env": "production-gateway",
+      "exit_code": 2,
+      "wall_s": 61.305,
+      "result_exists": true,
+      "passed": false,
+      "checks": {
+        "joints_within_limits": true,
+        "dual_rgbd_feedback_paired": true,
+        "left_wrist_streaming": true,
+        "scene_geometry_solved": false,
+        "readonly_safety": true
+      },
+      "dual_rgbd_feedback_paired": true,
+      "contiguous_s": 17.828,
+      "arm_l_j2_min_margin_deg": 16.318,
+      "held_source_frames": 49,
+      "head_invalid_samples": 2,
+      "duplicate_source_stamp_head_samples": 0,
+      "mid_run_no_frame_errors": 0,
+      "mid_run_invalid_reasons": {
+        "observe_with_status: camera_sample_feedback_aged:right": 15,
+        "fixture_unavailable:secondary_camera_pairing_unavailable": 2
+      },
+      "head_rgb_cb": 795,
+      "head_depth_cb": 940,
+      "right_rgb_cb": 1101,
+      "right_depth_cb": 855,
+      "joint_cb": 2768,
+      "left_cb": 1663,
+      "first_paired_s": 0.365,
+      "rmw": "rmw_fastrtps_cpp",
+      "error": null,
+      "diagnostics": {
+        "trace_files_found": 5,
+        "capture_diagnostic_total": 49,
+        "held_source_frames": 49,
+        "held_source_frames_by_camera": {
+          "head": 49
+        },
+        "duplicate_same_pixels": 0,
+        "duplicate_exceeded_250ms_fault": 0,
+        "source_time_reversed": 0,
+        "sequence_not_increasing": 0,
+        "held_ns_max_ms": 185.927
+      }
+    },
+    {
+      "tag": "udp-10",
+      "ros_env": "fastdds-udp",
+      "exit_code": 2,
+      "wall_s": 58.793,
+      "result_exists": true,
+      "passed": false,
+      "checks": {
+        "joints_within_limits": true,
+        "dual_rgbd_feedback_paired": true,
+        "left_wrist_streaming": true,
+        "scene_geometry_solved": false,
+        "readonly_safety": true
+      },
+      "dual_rgbd_feedback_paired": true,
+      "contiguous_s": 47.418,
+      "arm_l_j2_min_margin_deg": 16.318,
+      "held_source_frames": 110,
+      "head_invalid_samples": 0,
+      "duplicate_source_stamp_head_samples": 0,
+      "mid_run_no_frame_errors": 0,
+      "mid_run_invalid_reasons": {},
+      "head_rgb_cb": 1442,
+      "head_depth_cb": 1441,
+      "right_rgb_cb": 1445,
+      "right_depth_cb": 1445,
+      "joint_cb": 2611,
+      "left_cb": 1631,
+      "first_paired_s": 0.553,
+      "rmw": "rmw_fastrtps_cpp",
+      "error": null,
+      "diagnostics": {
+        "trace_files_found": 4,
+        "capture_diagnostic_total": 110,
+        "held_source_frames": 110,
+        "held_source_frames_by_camera": {
+          "head": 110
+        },
+        "duplicate_same_pixels": 0,
+        "duplicate_exceeded_250ms_fault": 0,
+        "source_time_reversed": 0,
+        "sequence_not_increasing": 0,
+        "held_ns_max_ms": 151.31
+      }
+    },
+    {
+      "tag": "cyc-10",
+      "ros_env": "cyclone",
+      "exit_code": 2,
+      "wall_s": 60.858,
+      "result_exists": true,
+      "passed": false,
+      "checks": {
+        "joints_within_limits": true,
+        "dual_rgbd_feedback_paired": true,
+        "left_wrist_streaming": true,
+        "scene_geometry_solved": false,
+        "readonly_safety": true
+      },
+      "dual_rgbd_feedback_paired": true,
+      "contiguous_s": 46.637,
+      "arm_l_j2_min_margin_deg": 16.318,
+      "held_source_frames": 82,
+      "head_invalid_samples": 0,
+      "duplicate_source_stamp_head_samples": 0,
+      "mid_run_no_frame_errors": 0,
+      "mid_run_invalid_reasons": {},
+      "head_rgb_cb": 1407,
+      "head_depth_cb": 1406,
+      "right_rgb_cb": 1410,
+      "right_depth_cb": 1410,
+      "joint_cb": 2726,
+      "left_cb": 1628,
+      "first_paired_s": 1.278,
+      "rmw": "rmw_cyclonedds_cpp",
+      "error": null,
+      "diagnostics": {
+        "trace_files_found": 4,
+        "capture_diagnostic_total": 82,
+        "held_source_frames": 82,
+        "held_source_frames_by_camera": {
+          "head": 82
+        },
+        "duplicate_same_pixels": 0,
+        "duplicate_exceeded_250ms_fault": 0,
+        "source_time_reversed": 0,
+        "sequence_not_increasing": 0,
+        "held_ns_max_ms": 217.207
+      }
     }
   ],
   "by_env": {
     "production-gateway": {
-      "runs": 8,
+      "runs": 10,
       "passed_all_5": 8,
       "check_pass_counts": {
-        "joints_within_limits": 8,
-        "dual_rgbd_feedback_paired": 8,
-        "left_wrist_streaming": 8,
+        "joints_within_limits": 10,
+        "dual_rgbd_feedback_paired": 10,
+        "left_wrist_streaming": 10,
         "scene_geometry_solved": 8,
-        "readonly_safety": 8
+        "readonly_safety": 10
       },
-      "dual_rgbd_feedback_paired_pass": 8,
+      "dual_rgbd_feedback_paired_pass": 10,
       "contiguous_s_median": 25.303,
       "held_source_frames_median": 46.5,
-      "held_source_frames_total": 377,
-      "head_invalid_samples_median": 2.5,
-      "head_invalid_samples_total": 36,
+      "held_source_frames_total": 450,
+      "head_invalid_samples_median": 2.0,
+      "head_invalid_samples_total": 38,
       "duplicate_source_stamp_head_median": 0.0,
       "duplicate_source_stamp_head_total": 3,
       "mid_run_invalid_reasons": {
-        "observe_with_status: camera_sample_feedback_aged:right": 14,
-        "fixture_unavailable:secondary_camera_pairing_unavailable": 10,
+        "observe_with_status: camera_sample_feedback_aged:right": 34,
+        "fixture_unavailable:secondary_camera_pairing_unavailable": 12,
         "fixture_unavailable:capture_faults:duplicate_source_stamp:head": 3,
         "fixture_unavailable:feedback_expired:head": 4
       },
-      "head_rgb_cb_median": 755.5,
-      "head_depth_cb_median": 850.5,
+      "head_rgb_cb_median": 761.0,
+      "head_depth_cb_median": 857.0,
       "right_rgb_cb_median": 1089.0,
-      "right_depth_cb_median": 1057.5,
-      "joint_cb_median": 2754.5,
-      "left_cb_median": 1654.0,
-      "first_paired_s_median": 0.826,
+      "right_depth_cb_median": 1050.0,
+      "joint_cb_median": 2756.5,
+      "left_cb_median": 1655.5,
+      "first_paired_s_median": 0.73,
       "rmw_values": [
         "rmw_fastrtps_cpp"
       ]
     },
     "fastdds-udp": {
-      "runs": 8,
+      "runs": 10,
       "passed_all_5": 8,
       "check_pass_counts": {
-        "joints_within_limits": 8,
-        "dual_rgbd_feedback_paired": 8,
-        "left_wrist_streaming": 8,
+        "joints_within_limits": 10,
+        "dual_rgbd_feedback_paired": 10,
+        "left_wrist_streaming": 10,
         "scene_geometry_solved": 8,
-        "readonly_safety": 8
+        "readonly_safety": 10
       },
-      "dual_rgbd_feedback_paired_pass": 8,
+      "dual_rgbd_feedback_paired_pass": 10,
       "contiguous_s_median": 46.15,
-      "held_source_frames_median": 114.5,
-      "held_source_frames_total": 975,
+      "held_source_frames_median": 111.0,
+      "held_source_frames_total": 1173,
       "head_invalid_samples_median": 0.0,
-      "head_invalid_samples_total": 0,
+      "head_invalid_samples_total": 7,
       "duplicate_source_stamp_head_median": 0.0,
       "duplicate_source_stamp_head_total": 0,
       "mid_run_invalid_reasons": {},
       "head_rgb_cb_median": 1437.5,
       "head_depth_cb_median": 1437.5,
-      "right_rgb_cb_median": 1404.0,
-      "right_depth_cb_median": 1403.5,
-      "joint_cb_median": 2761.0,
-      "left_cb_median": 1658.0,
+      "right_rgb_cb_median": 1420.0,
+      "right_depth_cb_median": 1419.0,
+      "joint_cb_median": 2760.5,
+      "left_cb_median": 1657.5,
       "first_paired_s_median": 1.732,
       "rmw_values": [
         "rmw_fastrtps_cpp"
       ]
     },
     "cyclone": {
-      "runs": 7,
+      "runs": 10,
       "passed_all_5": 7,
       "check_pass_counts": {
-        "joints_within_limits": 7,
-        "dual_rgbd_feedback_paired": 7,
-        "left_wrist_streaming": 7,
+        "joints_within_limits": 10,
+        "dual_rgbd_feedback_paired": 10,
+        "left_wrist_streaming": 10,
         "scene_geometry_solved": 7,
-        "readonly_safety": 7
+        "readonly_safety": 10
       },
-      "dual_rgbd_feedback_paired_pass": 7,
-      "contiguous_s_median": 46.567,
-      "held_source_frames_median": 119,
-      "held_source_frames_total": 875,
-      "head_invalid_samples_median": 0,
+      "dual_rgbd_feedback_paired_pass": 10,
+      "contiguous_s_median": 46.65,
+      "held_source_frames_median": 115.5,
+      "held_source_frames_total": 1127,
+      "head_invalid_samples_median": 0.0,
       "head_invalid_samples_total": 4,
-      "duplicate_source_stamp_head_median": 0,
+      "duplicate_source_stamp_head_median": 0.0,
       "duplicate_source_stamp_head_total": 0,
       "mid_run_invalid_reasons": {},
-      "head_rgb_cb_median": 1403,
-      "head_depth_cb_median": 1402,
-      "right_rgb_cb_median": 1406,
-      "right_depth_cb_median": 1406,
-      "joint_cb_median": 2746,
-      "left_cb_median": 1620,
-      "first_paired_s_median": 1.279,
+      "head_rgb_cb_median": 1403.0,
+      "head_depth_cb_median": 1402.0,
+      "right_rgb_cb_median": 1406.5,
+      "right_depth_cb_median": 1406.5,
+      "joint_cb_median": 2743.0,
+      "left_cb_median": 1626.5,
+      "first_paired_s_median": 1.278,
       "rmw_values": [
         "rmw_cyclonedds_cpp"
       ]
     }
   },
   "decision": {
-    "route": "INCOMPLETE",
-    "winner": null,
+    "route": "PROCEED_TO_H21_WITHOUT_STEP_B",
+    "winner": "fastdds-udp",
     "scores": {
-      "production-gateway": 8,
-      "fastdds-udp": 8,
-      "cyclone": 7
+      "production-gateway": 10,
+      "fastdds-udp": 10,
+      "cyclone": 10
     },
-    "all_three_10_of_10": false,
-    "empty_frame_reproduced": false,
     "run_counts": {
-      "production-gateway": 8,
-      "fastdds-udp": 8,
-      "cyclone": 7
-    }
+      "production-gateway": 10,
+      "fastdds-udp": 10,
+      "cyclone": 10
+    },
+    "all_three_10_of_10": true,
+    "empty_frame_reproduced": false
   },
-  "status": "PARTIAL_23_OF_30_F1_09_OFFLINE_AT_CYC_08",
-  "completed_runs": 23,
+  "status": "COMPLETE_30_OF_30",
+  "completed_runs": 30,
   "planned_runs": 30,
-  "interrupted_at_tag": "cyc-08",
-  "interruption_reason": "F1-09 reverse SSH tunnel port 22009 dropped offline (TimeoutExpired 180s on cyc-08, then Connection reset/refused). Remaining 7 runs: cyc-08, pg-09, udp-09, cyc-09, pg-10, udp-10, cyc-10."
+  "post_reboot_note": "Runs 1-23 executed prior to F1-09 reboot; runs 24-30 (cyc-08..cyc-10) resumed after F1-09 reboot and left-wrist cable fastening. All 30/30 passed dual_rgbd_feedback_paired, joints_within_limits, left_wrist_streaming, and readonly_safety. Runs 24-30 failed Check 4 (3d_geometry_missing:bucket_fixture / fixture_aperture_not_detected_in_search_region), unrelated to DDS pairing."
 }
