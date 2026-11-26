@@ -1,0 +1,55 @@
+{
+  "exported_read_only": true,
+  "camera_driver_modified": false,
+  "head_launch_modified": false,
+  "camera_nodes": [
+    "/camera/head/camera_container",
+    "/camera/head/head",
+    "/camera/left_wrist",
+    "/camera/right_wrist"
+  ],
+  "side_by_side": {
+    "head": {
+      "node": "/camera/head/head",
+      "driver": "orbbec_camera (Gemini 330)",
+      "time_domain": "global",
+      "enable_sync_host_time": true,
+      "time_sync_period": 6.0,
+      "enable_frame_sync": true,
+      "sync_mode": "standalone",
+      "color_fps": 0,
+      "depth_fps": 0,
+      "color_qos": "default",
+      "depth_qos": "default",
+      "align_mode": "SW",
+      "align_target_stream": "COLOR",
+      "use_sim_time": false
+    },
+    "right_wrist": {
+      "node": "/camera/right_wrist",
+      "driver": "realsense2_camera (D405)",
+      "global_time_enabled": true,
+      "enable_sync": false,
+      "color_profile": "640,480,30",
+      "depth_profile": "640,480,30",
+      "color_qos": "SYSTEM_DEFAULT",
+      "depth_qos": "SYSTEM_DEFAULT",
+      "align_depth_enable": false,
+      "frames_queue_size": 16,
+      "use_sim_time": false
+    },
+    "left_wrist": {
+      "node": "/camera/left_wrist",
+      "driver": "realsense2_camera (D405)",
+      "global_time_enabled": true,
+      "enable_sync": false,
+      "color_profile": "640,480,30",
+      "depth_profile": "640,480,30",
+      "color_qos": "SYSTEM_DEFAULT",
+      "depth_qos": "SYSTEM_DEFAULT",
+      "align_depth_enable": false,
+      "frames_queue_size": 16,
+      "use_sim_time": false
+    }
+  }
+}

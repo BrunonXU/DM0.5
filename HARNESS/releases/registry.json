@@ -965,7 +965,7 @@
       "source_base_bundle": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",
       "start_sent": false,
       "physical_task_verified": false,
-      "currently_active": true,
+      "currently_active": false,
       "bundle_id": "53af3b1d4406d13244f7758de32023bb100e4c9d330b8795717910fc6e9dec78",
       "manifest": "/home/user/projects/HARNESS/artifacts/left-baseline-preflight-v53-20261125/bundle-final/manifest.json",
       "frozen": true,
@@ -979,7 +979,7 @@
     {
       "version": 54,
       "name": "F1 Harness 同戳帧保留与固定程序入口 V54",
-      "status": "candidate",
+      "status": "deployed",
       "artifact_directory": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126",
       "previous_version": 53,
       "previous_bundle": "53af3b1d4406d13244f7758de32023bb100e4c9d330b8795717910fc6e9dec78",
@@ -987,19 +987,22 @@
       "source_base_bundle": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",
       "start_sent": false,
       "physical_task_verified": false,
-      "currently_active": false,
+      "currently_active": true,
       "bundle_id": "8818976408ce68d0c63a5e7602b26d28ca4cf9d54f0e3214cf4ffda9d3656002",
       "manifest": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/bundle-final/manifest.json",
       "frozen": true,
       "validation": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/release-validation.json",
-      "validation_sha256": "6c4ba3f6e77b570522a9cc89fcb43db48eced70c289c98b4f8da4110db815fde"
+      "validation_sha256": "6c4ba3f6e77b570522a9cc89fcb43db48eced70c289c98b4f8da4110db815fde",
+      "activation": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/activation.json",
+      "verification": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/post-activation.json",
+      "deployment_kind": "shared_harness_base_both_strategies"
     }
   ],
-  "active_bundle_id": "53af3b1d4406d13244f7758de32023bb100e4c9d330b8795717910fc6e9dec78",
-  "active_version": 53,
+  "active_bundle_id": "8818976408ce68d0c63a5e7602b26d28ca4cf9d54f0e3214cf4ffda9d3656002",
+  "active_version": 54,
   "active_strategy_versions": {
-    "astra": 53,
-    "vla_astra": 53
+    "astra": 54,
+    "vla_astra": 54
   },
-  "active_coordinator_service_version": 53
+  "active_coordinator_service_version": 54
 }

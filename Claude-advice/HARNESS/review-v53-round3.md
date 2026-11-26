@@ -216,7 +216,7 @@ H-23 的新触发条件：任一次预检里 14 个手臂关节的最小余量�
 
 **证据**：`Claude-advice/HARNESS/evidence/<日期>-H26-stamp-hold/`，含测试回执、右腕与头部参数对照、上线后一次预检的 `result.json`。
 
-> 执行记录：2026-11-26，分支 `harness/v53`，提交 `c430186`、`133f523`，冻结候选 V54（`8818976408ce`，提交 `2bbc5cd`）：**软件完成，待真机验收**。动手前核对站点 `gateway.local.json` 的 `scene.max_age_ms = 500 > 250`。实现 `SOURCE_STAMP_HOLD_NS = 250_000_000`、`held_source_frames` 计数器及诊断 `held_ns` 字段；净增 `raise HarnessError = 0`。新增 `test_source_stamp_hold.py`（4 例通过），原 8 个含 `duplicate_source_stamp` 的测试文件及全量 pytest 中另 2 个使用 `<250ms` 间隔的旧观测单测（`test_development_motion.py`、`test_observation.py`，在 `133f523` 改为 300 ms 间隔）全部通过；全量软件回归 3,190 例、原生集成 62/62、3+1 条零输出回放全部通过。因 H-27 回放审计触发停点，暂未上线 V54，待评审放行后完成部署、导出右腕参数对照并归档 `evidence/20261126-H26-stamp-hold/`。
+> 执行记录：2026-11-26，分支 `harness/v53`，提交 `c430186`、`133f523`，V54（`8818976408ce`）已上线并完成只读实测（证据目录 `Claude-advice/HARNESS/evidence/20261126-H26-stamp-hold/`）：动手前核对站点 `scene.max_age_ms = 500 > 250`；全量软件回归 3,190 例、原生集成 62/62、3+1 零输出回放全过，净增 `raise HarnessError = 0`。上线核验通过（4242 显示 V54、未重启、保持 `robot-v22.json`，`start_sent=false`），上线后只读预检五项全过（`arm_l_j2 min_margin_deg = 16.68° >= 16°`，`contiguous = 37.81 s`，`dup_stamp:head = 0`），右腕 vs 头部相机运行参数已只读导出对照。H-20 重跑前 23/30 轮中 `duplicate_source_stamp:head` 每轮中位数为 0（剩余 7 轮待 F1-09 重连补齐）。
 
 ## H-27 `[~]` P0：新预设下要重做的三件事
 
@@ -332,6 +332,8 @@ H-23 的新触发条件：任一次预检里 14 个手臂关节的最小余量�
 报告里另加一列：每轮 `held_source_frames` 的值和头部无效采样数。
 
 证据：`Claude-advice/HARNESS/evidence/<日期>-H20-dds-ab-rerun/`。
+
+> 执行记录：2026-11-26，分支 `harness/v53`，证据目录 `Claude-advice/HARNESS/evidence/20261126-H20-dds-ab-rerun/`。在 V54（`8818976408ce`）与“积木demoV5”姿态下已完成 **23/30 轮**（第 24 轮 `cyc-08` 时 F1-09 离线断连，剩余 7 轮待重连补齐）：**23/23 五项全过**（`production-gateway` 8/8、中位连续 `25.30 s`、`held` 中位数 46.5、头部无效中位数 2.5、`dup_stamp:head` 中位数 0；`fastdds-udp` 8/8、中位连续 `46.15 s`、`held` 中位数 114.5、头部无效中位数 0、`dup_stamp:head` 0；`cyclone` 7/7、中位连续 `46.57 s`、`held` 中位数 119、头部无效中位数 0、`dup_stamp:head` 0），0 轮空帧复现。
 
 ## H-21 更新
 

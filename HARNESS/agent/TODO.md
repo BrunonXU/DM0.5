@@ -1,16 +1,14 @@
 # HARNESS 当前待办
 
-**V53（`53af3b1d4406`）在用，当前阻塞为头部 Orbbec 重复时间戳（`duplicate_source_stamp:head`）与模型通道不可用；4242 抓放试验继续暂缓。** [第三轮审阅](../../Claude-advice/HARNESS/review-v53-round3.md) · [H-20 实测报告](../../Claude-advice/HARNESS/evidence/20261126-H20-dds-ab/report.md)
+**V54（`8818976408ce`）已上线并在用，H-30、V54 冻结与上线、H-27 与 H-20 前 23/30 轮已完成；当前 F1-09 离线，待用户与 Claude 拍板 H-27 审计偏差后补齐 H-20 最后 7 轮并进入 H-21 固定程序真机试验。** [第三轮审阅](../../Claude-advice/HARNESS/review-v53-round3.md) · [H-20 重跑](../../Claude-advice/HARNESS/evidence/20261126-H20-dds-ab-rerun/report.md) · [H-27 报告](../../Claude-advice/HARNESS/evidence/20261126-H27-v5-preset/report.md)
 
-按第三轮审阅已定决策顺序推进：清理登记与证据 → 冻结下一版本（四项改动）→ 新预设 `积木demoV5` 下零输出回放与只读回归 → 上线并重跑 H-20 30 轮 A/B → H-21 连续 3 次预检与 10 次固定程序真机试验。首次自主放置、逐次停点和恢复效果均按实际运行编号复盘。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
+按第三轮审阅顺序已推进至第 5 步（23/30）：H-30 已完成 → V54 已冻结、验收并上线 → H-27 已完成并归档 → H-20 重跑已跑完 23/30（23/23 全过），剩余 7 轮待 F1-09 重连补齐 → 待拍板 H-27 偏差后进入 H-21 连续 3 次预检与 10 次固定程序真机试验。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
 
 ## 现在做
 
-- [ ] **H-30：清理发布登记、状态文档和 H-20/H-25 证据字段。** 恢复 `registry.json` 版本 1–52 脱敏历史内容，同步 `STATUS.md`、`TODO.md` 与根 `AGENTS.md`，修正 H-25 `passed`/内核日志说明及 H-20 `empty_frame_reproduced`/过时说法。
-- [ ] **冻结下一版本（仅四项改动，各自单独提交）。** 含 H-26（`observation.py` 250 ms 内同戳异像素仅丢弃不报故障）、H-28（工作区 `planner_override="baseline"` 与 `planner_effective`）、预检第 4 项改为只要求积木和桶、`arm_l_j2` 下限收回 `−94.0°`（与 4242 `robot-v22.json` 恢复一致）；完成全量 pytest、原生集成与三条零输出回放（含 `--planner baseline`）。
-- [ ] **H-27：在 `积木demoV5` 姿态下完成零输出回放、30 组跨视角测孔回归与头部方孔掩码诊断。** 回放失败即停下报告，不启动真机试验；另两项与站点左臂写死值检查只写进报告。
-- [ ] **上线新版本、导出右腕相机运行参数，并重跑 H-20 的 30 轮 DDS A/B。** 核对 4242 版本显示（不重启 4242）；按 `dual_rgbd_feedback_paired` 9/10 规则决定直接进 H-21 或先启用步骤 B 另成一版。
-- [ ] **H-21：连续 3 次预检通过后，以 `planner_override="baseline"` 做 10 次直立真机试验。** 操作者在 4242 点一次「开始任务」，保持左臂在 `积木demoV5` 且不碰左腕线缆，前 3 次同原因停在 S0 即止损；完成后按停点漏斗在 `review-v53.md` 表中单选下一条（H-29 Gemini 仅在第一批数据后考虑）。[任务页操作](../docs/operations/DIRECT_ROLLOUT.md)
+- [ ] **联合决策（用户 + Claude）：评审 H-27 `grasp_output` 1/495 样本 `1.04 µm` 下探与 H-20 传输选择。** 明确是否直接放行 H-21 固定程序真机试验，以及是否在本批前保持 V54 默认传输或在下一版切换 `fastdds-udp`。
+- [ ] **F1-09 重连后补齐 H-20 重跑剩余 7 轮**（`cyc-08`、`pg-09`、`udp-09`、`cyc-09`、`pg-10`、`udp-10`、`cyc-10`），确认现场左腕线缆接口紧固。
+- [ ] **H-21：连续 3 次预检通过后，在 `workspace.local.json` 设 `planner_override="baseline"` 做 10 次直立真机试验。** 操作者在 4242 点一次「开始任务」，保持左臂在 `积木demoV5` 且不碰左腕线缆，前 3 次同原因停在 S0 即止损；完成后按停点漏斗在 `review-v53.md` 表中单选下一条（H-29 Gemini 仅在第一批数据后考虑）。[任务页操作](../docs/operations/DIRECT_ROLLOUT.md)
 
 ## 单块全流程跑通后
 

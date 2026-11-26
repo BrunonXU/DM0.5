@@ -1,0 +1,113 @@
+{
+  "item": "H-20-rerun",
+  "date": "2026-11-26",
+  "version": 54,
+  "bundle_id": "8818976408ce68d0c63a5e7602b26d28ca4cf9d54f0e3214cf4ffda9d3656002",
+  "status": "PARTIAL_23_OF_30_F1_09_OFFLINE_AT_CYC_08",
+  "completed_runs": 23,
+  "planned_runs": 30,
+  "hardware_outputs": 0,
+  "start_sent": false,
+  "files": {
+    "report.md": {
+      "bytes": 4636,
+      "sha256": "19add26002c510f3838800ff1c0aca7fc1f9b0a39457a348f5bbdecc624aa526"
+    },
+    "results/cyc-01.result.json": {
+      "bytes": 343895,
+      "sha256": "f388f07784f567a0134439ba288f3efbe09f2b693a69b596a07fb8eb9912b727"
+    },
+    "results/cyc-02.result.json": {
+      "bytes": 353441,
+      "sha256": "3e25ac243e0b9ddd3aacbe632d04f077a096cdfd5a175c1e14ce860d02269a98"
+    },
+    "results/cyc-03.result.json": {
+      "bytes": 348118,
+      "sha256": "412632a0a9356fe22442ea24f77a16d2a83558048dead34b5ff8516ad2cf59f0"
+    },
+    "results/cyc-04.result.json": {
+      "bytes": 349100,
+      "sha256": "f95e18207f368dbbdf389c59cddbd9a81534fb80f39758259be8a1e42acf1743"
+    },
+    "results/cyc-05.result.json": {
+      "bytes": 347128,
+      "sha256": "7e281de3b56e751f98c0aca4a61616e352f0ae2a1eb5bbc874eddd6164c82b3f"
+    },
+    "results/cyc-06.result.json": {
+      "bytes": 349574,
+      "sha256": "b8ae3a00e0ca66aa5351b8d755ffa243595a5f6405094e31ffa664c26dcd3bec"
+    },
+    "results/cyc-07.result.json": {
+      "bytes": 348019,
+      "sha256": "8ce9282c9512e3e5f59041ca0bb1bca6fab7136d984f1bb62ca885101f65d401"
+    },
+    "results/pg-01.result.json": {
+      "bytes": 333946,
+      "sha256": "a1629b017e3408b9386fbc906733c0f8da6c29392a4496fb1376e970b0381aa2"
+    },
+    "results/pg-02.result.json": {
+      "bytes": 353194,
+      "sha256": "42e3b34fdb87a898c3fec4348656e5d3abce26356708830e5bec32d64a9c8d0a"
+    },
+    "results/pg-03.result.json": {
+      "bytes": 346863,
+      "sha256": "6f17bcef532ffeccacea5a98430f4fa984380e409ca95cdaf03a619f4b46f939"
+    },
+    "results/pg-04.result.json": {
+      "bytes": 350830,
+      "sha256": "318a357419d9869c01bdc3bcbfcac418cd82e58c150676ee5a240174ac6f6102"
+    },
+    "results/pg-05.result.json": {
+      "bytes": 353282,
+      "sha256": "dd2400efd814a4c470113aa45e3f8f89397b4d084956fc3d26a1d1529548a293"
+    },
+    "results/pg-06.result.json": {
+      "bytes": 356928,
+      "sha256": "e5cf20e15769a8052eb7e6298cbb90fc2b0fb818a4e5218063f5f938386414ff"
+    },
+    "results/pg-07.result.json": {
+      "bytes": 354663,
+      "sha256": "39e5d94f44edbda3e2be0518bef3729889c6696f71b0d445d91268cdb89ab416"
+    },
+    "results/pg-08.result.json": {
+      "bytes": 355882,
+      "sha256": "1f8d473e2c94cd57709d72f5df171b02cc44ec5760c6fe6bc6ba8f1643fce393"
+    },
+    "results/udp-01.result.json": {
+      "bytes": 337037,
+      "sha256": "0ea071ea93e688f1115d2b33c9e825a4f6d72fec94c7206687bc75d10eb84749"
+    },
+    "results/udp-02.result.json": {
+      "bytes": 354219,
+      "sha256": "157997e4c874f6f759f44fee1b7beb8edab5cd2fa593d379dccc521fa18ab46c"
+    },
+    "results/udp-03.result.json": {
+      "bytes": 338566,
+      "sha256": "0ac65f61196938d414ea3fed8d9b64fb2d5ee7a4be4e6d0557d75e5c18fd390b"
+    },
+    "results/udp-04.result.json": {
+      "bytes": 339645,
+      "sha256": "adc644f50d1d89e5991b7d3be3aee1ee0a5946e331bf8ceb2ade330f05f5987b"
+    },
+    "results/udp-05.result.json": {
+      "bytes": 351567,
+      "sha256": "420936e6b2b6a6b10e0be5820b567fb050e10db500ebd93c62b05ffc6b77b3b7"
+    },
+    "results/udp-06.result.json": {
+      "bytes": 353948,
+      "sha256": "13bb1c30219fb96f5de3a9d1c5183056be3fd57f9136b078d9a0ea993ac6c8ee"
+    },
+    "results/udp-07.result.json": {
+      "bytes": 352866,
+      "sha256": "3afa52d9c93498789de991a04794769f3f657bc210769e449dfa5d9b4d1905bd"
+    },
+    "results/udp-08.result.json": {
+      "bytes": 338620,
+      "sha256": "84026ac17744f148d29838ded1d5d46d1e1b8eaea6e65bc02dc63c3973bb8289"
+    },
+    "summary.json": {
+      "bytes": 35496,
+      "sha256": "1577f54e15fbb8949a51adbd0ccb1038df879bf5c3014922803b6c8914ab8966"
+    }
+  }
+}
