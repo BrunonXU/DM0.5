@@ -247,6 +247,7 @@ export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
 **风险与回滚**：仅 UDP 时大图像可能丢帧，所以判定规则里有回调数不低于 90% 这一条。回滚只需把常量改回一行 `source`。
 
 > 执行记录：2026-11-25，提交 b86bc1c，分支 `harness/v53`；软件完成（步骤 B 代码预置，`ROBOT_SERVICES_ROS_ENV=None` 暂不启用），待 F1-09 联机完成步骤 A（30 次 A/B）与真机验收；验收：全量 pytest 3,111 passed / 0 failed / 70 skipped（原生数值环境限定跳过），`test_preflight_scene.py` 8/8 通过，`check_native_integration.py` 62/62 通过，`check_project_layout.py` 通过，净增 `raise HarnessError` 为 0；偏差：同步将 `fastdds-udp-only.xml` 加入 `HARNESS/scripts/package_native.py` 打包白名单并实测 `build_bundle()` 清单包含该文件；步骤 A 尚待 F1-09 联机，故暂未生成 `evidence/<日期>-H20-dds-ab/`。
+> 执行记录（步骤 A 实测）：2026-11-26，已先上线 V53（`53af3b1d4406`，4242 显示 V53，未重启 4242，保持 `robot-v22.json`）并完成 30 轮严格交替（`pg → udp → cyc`）独立进程只读预检；结果：`production-gateway` 6/10、`fastdds-udp` 3/10、`cyclone` 1/10（全部 30 轮 0 空帧，有效配对占比 87–90%，但头部相机每 4–10 秒单次轮询出现 `head: False` 失配打断 12 秒连续窗口，右腕 `right_false` 中位数均为 0）；按判定规则没有任何环境达到 9/10，触发 `STOP_BELOW_9_OF_10`，不启用步骤 B、不冻结 V54，停下并上报转向相机/驱动与头部配对排查；证据：`Claude-advice/HARNESS/evidence/20261126-H20-dds-ab/`（含 30 份脱敏 `result.json`、`summary.json`、`report.md`、`manifest.json`）。
 
 ## H-21 `[ ]` P0：V53 上线后的预检和第一批真机试验
 

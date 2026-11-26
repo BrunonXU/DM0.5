@@ -606,17 +606,41 @@ def _run_local_worker(args: argparse.Namespace) -> int:
     try:
         gateway = _read_json(site / 'gateway.local.json')
         cfg = gateway['scene']
-        for stem in ('gateway', 'numerics', 'verify', 'plan', 'masks', 'development', 'launch'):
-            p = site / (stem + '.local.json')
-            if not p.exists() and stem == 'launch':
-                continue
-            shutil.copyfile(p, cfgdir / p.name)
-            report['files'][p.name] = dict(original=_sha256(p))
+        for src_json in sorted(site.glob('*.json')):
+            shutil.copyfile(src_json, cfgdir / src_json.name)
+            report['files'][src_json.name] = dict(original=_sha256(src_json))
 
-        protected = _read_json(cfgdir / 'development.local.json')['reviewed_files']
-        for name in ('gateway.local.json', 'numerics.local.json', 'verify.local.json', 'plan.local.json', 'masks.local.json'):
-            if protected[name] != report['files'][name]['original']:
+        dev_orig = _read_json(cfgdir / 'development.local.json')
+        protected = dev_orig['reviewed_files']
+        for name, expected_sha in protected.items():
+            if name not in report['files'] or expected_sha != report['files'][name]['original']:
                 raise ValueError('site review hash differs: ' + name)
+
+        # If the robot rebooted since calibration capture and the template site has no boot_recheck,
+        # run the formal read-only boot-recheck on the shadow cfgdir (same ROS env as web_process.py:122-128).
+        calib_path = cfgdir / dev_orig['calibration']['path']
+        calib_boot = _read_json(calib_path).get('boot_id') if calib_path.is_file() else None
+        current_boot = Path('/proc/sys/kernel/random/boot_id').read_text().strip() if Path('/proc/sys/kernel/random/boot_id').is_file() else None
+        if current_boot and calib_boot and calib_boot != current_boot and not dev_orig.get('boot_recheck'):
+            boot_setups = (
+                '/opt/ros/jazzy/setup.bash',
+                '/home/user/workspace/f1/install/setup.bash',
+                '/home/user/workspace/agv/install/setup.bash',
+                '/home/user/workspace/camera/OrbbecSDK_ROS2/install/setup.bash',
+                '/home/user/workspace/camera/ros2_ws/install/setup.bash',
+            )
+            boot_env_script = (
+                'unset RMW_IMPLEMENTATION FASTRTPS_DEFAULT_PROFILES_FILE FASTDDS_DEFAULT_PROFILES_FILE '
+                'CYCLONEDDS_URI ROS_LOCALHOST_ONLY ROS_STATIC_PEERS\n'
+                + ''.join(f'source {shlex.quote(s)} || exit\n' for s in boot_setups)
+                + 'exec ' + shlex.join([sys.executable, str(root / 'native/entry.py'), '--run', str(out / 'boot-recheck'), 'boot-recheck', str(cfgdir)])
+            )
+            boot_proc = subprocess.run(['bash', '-c', boot_env_script], text=True, capture_output=True, timeout=40)
+            (out / 'boot-recheck.stdout.txt').write_text(boot_proc.stdout, encoding='utf-8')
+            (out / 'boot-recheck.stderr.txt').write_text(boot_proc.stderr, encoding='utf-8')
+            if boot_proc.returncode != 0:
+                raise RuntimeError('shadow boot-recheck failed: ' + (boot_proc.stderr or boot_proc.stdout)[-1200:])
+            report['boot_recheck_performed'] = True
 
         masks_doc = _read_json(cfgdir / 'masks.local.json')
         masks = masks_doc['views']
@@ -665,6 +689,8 @@ def _run_local_worker(args: argparse.Namespace) -> int:
             numerical_socket=str(runtime / 'numerics.sock'),
             verifier_socket=str(runtime / 'verify.sock'),
         )
+        if isinstance(cfg.get('frame_chain'), dict) and 'development_owner_config' in cfg['frame_chain']:
+            cfg['frame_chain']['development_owner_config'] = str(cfgdir / 'owner.local.json')
         _save_json(cfgdir / 'gateway.local.json', gateway)
 
         numerics_doc = _read_json(cfgdir / 'numerics.local.json')
@@ -693,6 +719,14 @@ def _run_local_worker(args: argparse.Namespace) -> int:
         limits_deg, limit_mismatches = parse_joint_limits(numerics_doc, profile_doc, tuple(FULL_NAMES))
         report['limit_mismatches'] = limit_mismatches
         tracker = JointLimitTracker(limits_deg, tuple(FULL_NAMES))
+
+        # Re-seal reviewed_files ONLY in the temporary shadow cfgdir after port/socket/SAM relocation
+        # (original reviewed_files were already verified against the immutable site above).
+        dev_shadow = _read_json(cfgdir / 'development.local.json')
+        for name in list(dev_shadow.get('reviewed_files', {})):
+            if (cfgdir / name).is_file():
+                dev_shadow['reviewed_files'][name] = _sha256(cfgdir / name)
+        _save_json(cfgdir / 'development.local.json', dev_shadow)
 
         for name, row in report['files'].items():
             row['shadow'] = _sha256(cfgdir / name)
