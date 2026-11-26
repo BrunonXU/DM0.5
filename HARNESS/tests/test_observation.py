@@ -29,7 +29,7 @@ def test_duplicate_stamp_and_stale_frame_rejected():
                                                 state16=(0.,)*16,state_valid_mask=(True,)*16))
     with pytest.raises(ValueError,match='stale frame'):
         require_geometry(obs,now_ns=1000,max_age_ns=100,required_cameras=('head',))
-    buffer.add(frame('rgb',sequence=2,blob_sha256='c'*64))
+    buffer.add(frame('rgb',sequence=2,received_ns=100+300_000_000,blob_sha256='c'*64))
     assert buffer.snapshot().pairings[0].quality=='invalid'
 
 

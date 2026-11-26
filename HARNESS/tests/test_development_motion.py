@@ -23,18 +23,18 @@ def test_development_scope_cannot_authorize_other_skills():
 
 
 def test_repeated_source_frame_is_discarded_then_new_pair_rechecked():
-    buffer=ObservationBuffer(clock=lambda:200)
+    buffer=ObservationBuffer(clock=lambda:400_000_000)
     buffer.add(frame('rgb'));buffer.add(frame('depth'))
-    buffer.add(frame('rgb',sequence=2,received_ns=110,blob_sha256='c'*64))
+    buffer.add(frame('rgb',sequence=2,received_ns=100+300_000_000,blob_sha256='c'*64))
     assert buffer.snapshot().faults
     assert buffer.snapshot().frames[0].sequence==1
-    buffer.add(frame('rgb',sequence=3,source_ns=200,received_ns=200))
-    buffer.add(frame('depth',sequence=2,source_ns=200,received_ns=200))
+    buffer.add(frame('rgb',sequence=3,source_ns=200,received_ns=400_000_000))
+    buffer.add(frame('depth',sequence=2,source_ns=200,received_ns=400_000_000))
     obs=buffer.snapshot()
     assert not obs.faults and obs.pairings[0].quality=='receipt_only'
     # A late frame is rejected; only progress beyond the accepted high-water mark recovers.
-    buffer.add(frame('rgb',sequence=4,source_ns=150,received_ns=210))
-    buffer.add(frame('rgb',sequence=5,source_ns=300,received_ns=220))
+    buffer.add(frame('rgb',sequence=4,source_ns=150,received_ns=400_000_010))
+    buffer.add(frame('rgb',sequence=5,source_ns=300,received_ns=400_000_020))
     assert not buffer.snapshot().faults
     assert next(f for f in buffer.snapshot().frames if f.stream=='rgb').source_ns!=150
     assert buffer.diagnostic_events()[-1]['reason']=='source_time_reversed'
