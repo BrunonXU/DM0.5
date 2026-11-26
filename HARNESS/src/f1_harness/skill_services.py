@@ -27,11 +27,66 @@ CANDIDATE_FAILURES = frozenset((
     'regrasp_support_geometry_missing','regrasp_object_not_on_registered_support',
     'support_release_attachment_unresolved','support_release_contact_unavailable',
     'support_release_object_not_stationary','support_motion_requires_attachment_and_support',
-    'actual_IK_uncertain_grasp_departure_not_proven'))
+    'actual_IK_uncertain_grasp_departure_not_proven','planning_joint_envelope_exceeded'))
+
+
+def _arm_joint_names():
+    try:
+        from f1dagger.contract import ARM_NAMES
+        return tuple(ARM_NAMES)
+    except ImportError:
+        import sys
+        root = Path(__file__).resolve().parents[2]
+        for candidate in (root / 'control/src', root.parent / 'DAgger/F1/src'):
+            if (candidate / 'f1dagger/contract.py').is_file():
+                if str(candidate) not in sys.path:
+                    sys.path.insert(0, str(candidate))
+                from f1dagger.contract import ARM_NAMES
+                return tuple(ARM_NAMES)
+        raise
+
+
+def validate_planning_joint_envelope(raw, *, limits=None):
+    import math
+    if raw is None:
+        return {}
+    if not isinstance(raw, dict):
+        raise ValueError('invalid_planning_joint_envelope')
+    names = _arm_joint_names()
+    index_by_name = {name: idx for idx, name in enumerate(names)}
+    site_limits = None
+    if limits is not None:
+        if not isinstance(limits, (list, tuple)) or len(limits) != len(names):
+            raise ValueError('invalid_site_joint_limits_for_planning_envelope')
+        site_limits = limits
+    envelope = {}
+    for joint_name, bounds in raw.items():
+        if joint_name not in index_by_name:
+            raise ValueError('invalid_planning_joint_envelope_joint:' + str(joint_name))
+        if not isinstance(bounds, (list, tuple)) or len(bounds) != 2:
+            raise ValueError('invalid_planning_joint_envelope_bounds:' + str(joint_name))
+        low, high = bounds
+        if (isinstance(low, bool) or isinstance(high, bool)
+                or not isinstance(low, (int, float)) or not isinstance(high, (int, float))
+                or not math.isfinite(low) or not math.isfinite(high)
+                or float(low) >= float(high)):
+            raise ValueError('invalid_planning_joint_envelope_bounds:' + str(joint_name))
+        idx = index_by_name[joint_name]
+        low_f, high_f = float(low), float(high)
+        if site_limits is not None:
+            pair = site_limits[idx]
+            if not isinstance(pair, (list, tuple)) or len(pair) != 2:
+                raise ValueError('invalid_site_joint_limits_for_planning_envelope')
+            site_low, site_high = float(pair[0]), float(pair[1])
+            if low_f < site_low or high_f > site_high:
+                raise ValueError('planning_joint_envelope_exceeds_site_limits:' + str(joint_name))
+        envelope[joint_name] = (idx, low_f, high_f)
+    return envelope
 
 
 class PlanService:
     posture_prior = None
+    planning_joint_envelope = {}
     def __init__(self,task:Task,fixture,numerical_socket:Path,*,clock=time.monotonic_ns):
         from .frames import FrameChain
         self.task,self.fixture,self.clock=task,fixture,clock
@@ -45,6 +100,7 @@ class PlanService:
             raise ValueError('joint_space_transport_boolean_required')
         if type(fixture.get('joint_space_free_motion',False)) is not bool:
             raise ValueError('joint_space_free_motion_boolean_required')
+        self.planning_joint_envelope=validate_planning_joint_envelope(fixture.get('planning_joint_envelope_deg'))
         self.frames=FrameChain.load(fixture.get('frame_chain'))
         if self.frames.native_frame!=fixture['native_frame']:raise ValueError('fixture_frame_identity_mismatch')
         from .numerical_pool import NUMERICAL_RPC_TIMEOUT_S
@@ -676,6 +732,20 @@ class PlanService:
                 detail=dict(stage_index=stage_index,diagnostic=diagnostic)
                 raise HarnessError('numerical_stage_failed:'+json.dumps(detail,separators=(',',':'))) from None
             if not values:raise HarnessError('empty_numerical_stage')
+            if self.planning_joint_envelope:
+                import json, math
+                for waypoint_index, row in enumerate(values):
+                    for joint_name, (joint_index, low, high) in self.planning_joint_envelope.items():
+                        val = float(row[joint_index])
+                        if not math.isfinite(val) or val < low or val > high:
+                            metrics = dict(joint=joint_name, joint_index=joint_index,
+                                           waypoint_index=waypoint_index, stage_index=stage_index,
+                                           target_deg=val, envelope_deg=[low, high])
+                            if stage.get('route_family'):
+                                metrics['route_family'] = stage['route_family']
+                            detail = dict(stage_index=stage_index,
+                                          diagnostic=dict(code='planning_joint_envelope_exceeded', metrics=metrics))
+                            raise HarnessError('planning_joint_envelope_exceeded:' + json.dumps(detail, separators=(',', ':')))
             if getattr(scene,'local_collision_evidence',None) is not None:
                 from .skills import check_motion_route
                 before=self.numerics.call('forward_pose',full22=full,held16=held)

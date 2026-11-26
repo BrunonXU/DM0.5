@@ -1,0 +1,33 @@
+{
+  "version": 56,
+  "bundle_id": "d5b1b1d2de1ae687f0d2501fcbc33404d359edc03d0d1267515406cdd1877483",
+  "cases": {
+    "normal": {
+      "outcome": "success",
+      "stages": 10,
+      "checks_all_passed": true,
+      "audit_passed": true,
+      "physical_motion": false,
+      "paid_model_calls": 0,
+      "wall_s": 66.08
+    },
+    "grasp-miss": {
+      "outcome": "success",
+      "stages": 12,
+      "checks_all_passed": true,
+      "audit_passed": true,
+      "physical_motion": false,
+      "paid_model_calls": 0,
+      "wall_s": 72.84
+    },
+    "aperture-occluded": {
+      "outcome": "success",
+      "stages": 12,
+      "checks_all_passed": true,
+      "audit_passed": true,
+      "physical_motion": false,
+      "paid_model_calls": 0,
+      "wall_s": 68.83
+    }
+  }
+}

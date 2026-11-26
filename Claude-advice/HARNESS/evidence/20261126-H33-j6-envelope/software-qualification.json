@@ -1,0 +1,24 @@
+{
+  "version": 56,
+  "bundle_id": "d5b1b1d2de1ae687f0d2501fcbc33404d359edc03d0d1267515406cdd1877483",
+  "previous_cancelled_candidate": {
+    "version": 55,
+    "bundle_id": "0e8235c5389677aca8f5b7803453b2bccf53e287adafd4749e94ac75d408b711"
+  },
+  "planning_joint_envelope_deg": {
+    "arm_r_j6": [
+      -60.0,
+      50.0
+    ]
+  },
+  "robot_services_ros_env": "fastdds-udp",
+  "production_gateway_ros_env": "fastdds-udp",
+  "net_new_raise_harness_error": 1,
+  "net_new_raise_harness_error_reason": "planning_joint_envelope_exceeded (native joint-limit tightening)",
+  "targeted_pytest": "12 passed (test_planning_joint_envelope.py + test_preflight_scene.py)",
+  "full_pytest_snapshot_view": "3124 passed, 70 skipped, 1 pre-existing symlink artifact failure (test_bundle_owns_control_and_imports_without_old_source)",
+  "native_numerics_pytest": "65 passed, 80 subtests passed",
+  "check_native_integration": "62 passed",
+  "zero_output_replays": "3/3 passed with 3/3 output audits passed (normal, grasp-miss, aperture-occluded)",
+  "hardware_qualification": "pending_robot_power_on"
+}

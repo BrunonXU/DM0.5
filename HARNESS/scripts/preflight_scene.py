@@ -1059,7 +1059,7 @@ def _run_local_worker(args: argparse.Namespace) -> int:
 
 
 # Must stay aligned with start_development.ROBOT_SERVICES_ROS_ENV (verified by unit test).
-PRODUCTION_GATEWAY_ROS_ENV: str | None = None
+PRODUCTION_GATEWAY_ROS_ENV: str | None = 'fastdds-udp'
 
 
 def _build_remote_ros_prelude(

@@ -34,9 +34,9 @@ raise SystemExit(child.returncode)
 '''
 
 
-# Pending H-20 Step A live A/B on F1-09: keep None (unpinned) until Step A selects
-# 'fastdds-udp', 'production-gateway', or 'cyclone'.
-ROBOT_SERVICES_ROS_ENV = None
+# H-20 Step A + rerun complete (30/30, 10/10 paired; winner: fastdds-udp).
+# Step B pinned with H-33 (V55) to eliminate production-gateway feedback aging.
+ROBOT_SERVICES_ROS_ENV = 'fastdds-udp'
 
 
 def robot_services_ros_prelude(remote_bundle, *, ros_env=None):

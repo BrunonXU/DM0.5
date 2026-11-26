@@ -1,0 +1,816 @@
+{
+  "trial_01_unconstrained": {
+    "run_id": "web-dbe926ed282e4bca8d5931d0f8e87567",
+    "request_id": "14fbb29895a6450d9559a6ba807fb4e5",
+    "envelope": null,
+    "planned": true,
+    "elapsed_s": 3.2041,
+    "candidate_variant": 1,
+    "route_families": [
+      "orientation_preserving_transport"
+    ],
+    "waypoints": 11,
+    "arm_r_j6_min_deg": 23.3453,
+    "arm_r_j6_max_deg": 60.0,
+    "arm_r_j6_last_deg": 59.8686,
+    "arm_r_j6_series_deg": [
+      23.3453,
+      32.088,
+      42.1706,
+      52.4583,
+      52.7804,
+      58.1856,
+      60.0,
+      60.0,
+      60.0,
+      59.8686,
+      59.8686
+    ],
+    "attempts": [
+      {
+        "variant": 0,
+        "outcome": "rejected",
+        "elapsed_ns": 483428403,
+        "diagnostic": {
+          "error_type": "HarnessError",
+          "code": "bounded_IK_did_not_reach_goal",
+          "metrics": {
+            "goal_index": 2,
+            "iterations": 48,
+            "position_error_m": 0.0008688289038670497,
+            "rotation_error_rad": 0.0020113423647104096,
+            "goal": [
+              [
+                -0.10934987944435592,
+                -0.9604062302056774,
+                0.25624690602546735,
+                0.5316535554174072
+              ],
+              [
+                0.993599679154885,
+                -0.09826505173460243,
+                0.05571047649146377,
+                -0.25078769168797854
+              ],
+              [
+                -0.028324573232704375,
+                0.26069877749946546,
+                0.9650045937514855,
+                0.9781321061284843
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "final_arm_deg": [
+              -55.59870974717094,
+              -81.99513328016536,
+              93.53554183102753,
+              -121.33553493028009,
+              4.373935134535797,
+              59.999999999999396,
+              9.023332683580374
+            ],
+            "limits": {
+              "min_constraint_margin_rad": 1.0436096431476471e-14,
+              "active_planes": [
+                12
+              ],
+              "discarded_translation_m": 0.0008688289038670497,
+              "discarded_rotation_rad": 0.0020113423647101676,
+              "numerical_correction_rad": 4.713205258209023e-12,
+              "publication_lead_rad": [
+                1.8047413119504085e-08,
+                -4.198165883817495e-07,
+                1.982705279957031e-07,
+                1.0032546349236782e-08,
+                9.321379619842141e-07,
+                0.0,
+                7.817851698233014e-07
+              ],
+              "publication_lead_limit_rad": 0.03
+            },
+            "stalled_ticks": 0,
+            "cartesian_waypoint_index": 7,
+            "cartesian_waypoint_count": 9,
+            "solves": 41,
+            "termination": "cartesian_no_progress",
+            "cartesian_stalled_ticks": 25,
+            "route_family": "demonstrated_transport",
+            "stage_index": 0
+          }
+        }
+      },
+      {
+        "variant": 1,
+        "outcome": "planned",
+        "elapsed_ns": 2695055101,
+        "grasp_candidate_descriptor": null
+      }
+    ],
+    "preceding_candidate_failures": null
+  },
+  "trial_01_envelope_50deg": {
+    "run_id": "web-dbe926ed282e4bca8d5931d0f8e87567",
+    "request_id": "14fbb29895a6450d9559a6ba807fb4e5",
+    "envelope": {
+      "arm_r_j6": [
+        -60.0,
+        50.0
+      ]
+    },
+    "planned": true,
+    "elapsed_s": 7.5667,
+    "candidate_variant": 2,
+    "route_families": [
+      "joint_space_transport"
+    ],
+    "waypoints": 10,
+    "arm_r_j6_min_deg": 19.4233,
+    "arm_r_j6_max_deg": 22.3917,
+    "arm_r_j6_last_deg": 19.4233,
+    "arm_r_j6_series_deg": [
+      22.3917,
+      20.8709,
+      20.8009,
+      20.648,
+      20.4951,
+      20.3421,
+      20.1892,
+      20.0363,
+      19.8834,
+      19.4233
+    ],
+    "attempts": [
+      {
+        "variant": 0,
+        "outcome": "rejected",
+        "elapsed_ns": 467653620,
+        "diagnostic": {
+          "error_type": "HarnessError",
+          "code": "bounded_IK_did_not_reach_goal",
+          "metrics": {
+            "goal_index": 2,
+            "iterations": 48,
+            "position_error_m": 0.0008688289038670497,
+            "rotation_error_rad": 0.0020113423647104096,
+            "goal": [
+              [
+                -0.10934987944435592,
+                -0.9604062302056774,
+                0.25624690602546735,
+                0.5316535554174072
+              ],
+              [
+                0.993599679154885,
+                -0.09826505173460243,
+                0.05571047649146377,
+                -0.25078769168797854
+              ],
+              [
+                -0.028324573232704375,
+                0.26069877749946546,
+                0.9650045937514855,
+                0.9781321061284843
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "final_arm_deg": [
+              -55.59870974717094,
+              -81.99513328016536,
+              93.53554183102753,
+              -121.33553493028009,
+              4.373935134535797,
+              59.999999999999396,
+              9.023332683580374
+            ],
+            "limits": {
+              "min_constraint_margin_rad": 1.0436096431476471e-14,
+              "active_planes": [
+                12
+              ],
+              "discarded_translation_m": 0.0008688289038670497,
+              "discarded_rotation_rad": 0.0020113423647101676,
+              "numerical_correction_rad": 4.713205258209023e-12,
+              "publication_lead_rad": [
+                1.8047413119504085e-08,
+                -4.198165883817495e-07,
+                1.982705279957031e-07,
+                1.0032546349236782e-08,
+                9.321379619842141e-07,
+                0.0,
+                7.817851698233014e-07
+              ],
+              "publication_lead_limit_rad": 0.03
+            },
+            "stalled_ticks": 0,
+            "cartesian_waypoint_index": 7,
+            "cartesian_waypoint_count": 9,
+            "solves": 41,
+            "termination": "cartesian_no_progress",
+            "cartesian_stalled_ticks": 25,
+            "route_family": "demonstrated_transport",
+            "stage_index": 0
+          }
+        }
+      },
+      {
+        "variant": 1,
+        "outcome": "rejected",
+        "elapsed_ns": 2679124612,
+        "diagnostic": {
+          "error_type": "HarnessError",
+          "code": "planning_joint_envelope_exceeded",
+          "metrics": {
+            "joint": "arm_r_j6",
+            "joint_index": 12,
+            "waypoint_index": 3,
+            "stage_index": 0,
+            "target_deg": 52.458303503003435,
+            "envelope_deg": [
+              -60.0,
+              50.0
+            ],
+            "route_family": "orientation_preserving_transport"
+          }
+        }
+      },
+      {
+        "variant": 2,
+        "outcome": "planned",
+        "route_family": "joint_space_transport",
+        "elapsed_ns": 4415577156
+      }
+    ],
+    "preceding_candidate_failures": [
+      {
+        "variant": 0,
+        "diagnostic": {
+          "error_type": "HarnessError",
+          "code": "bounded_IK_did_not_reach_goal",
+          "metrics": {
+            "goal_index": 2,
+            "iterations": 48,
+            "position_error_m": 0.0008688289038670497,
+            "rotation_error_rad": 0.0020113423647104096,
+            "goal": [
+              [
+                -0.10934987944435592,
+                -0.9604062302056774,
+                0.25624690602546735,
+                0.5316535554174072
+              ],
+              [
+                0.993599679154885,
+                -0.09826505173460243,
+                0.05571047649146377,
+                -0.25078769168797854
+              ],
+              [
+                -0.028324573232704375,
+                0.26069877749946546,
+                0.9650045937514855,
+                0.9781321061284843
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "final_arm_deg": [
+              -55.59870974717094,
+              -81.99513328016536,
+              93.53554183102753,
+              -121.33553493028009,
+              4.373935134535797,
+              59.999999999999396,
+              9.023332683580374
+            ],
+            "limits": {
+              "min_constraint_margin_rad": 1.0436096431476471e-14,
+              "active_planes": [
+                12
+              ],
+              "discarded_translation_m": 0.0008688289038670497,
+              "discarded_rotation_rad": 0.0020113423647101676,
+              "numerical_correction_rad": 4.713205258209023e-12,
+              "publication_lead_rad": [
+                1.8047413119504085e-08,
+                -4.198165883817495e-07,
+                1.982705279957031e-07,
+                1.0032546349236782e-08,
+                9.321379619842141e-07,
+                0.0,
+                7.817851698233014e-07
+              ],
+              "publication_lead_limit_rad": 0.03
+            },
+            "stalled_ticks": 0,
+            "cartesian_waypoint_index": 7,
+            "cartesian_waypoint_count": 9,
+            "solves": 41,
+            "termination": "cartesian_no_progress",
+            "cartesian_stalled_ticks": 25,
+            "route_family": "demonstrated_transport",
+            "stage_index": 0
+          }
+        }
+      },
+      {
+        "variant": 1,
+        "diagnostic": {
+          "error_type": "HarnessError",
+          "code": "planning_joint_envelope_exceeded",
+          "metrics": {
+            "joint": "arm_r_j6",
+            "joint_index": 12,
+            "waypoint_index": 3,
+            "stage_index": 0,
+            "target_deg": 52.458303503003435,
+            "envelope_deg": [
+              -60.0,
+              50.0
+            ],
+            "route_family": "orientation_preserving_transport"
+          }
+        }
+      }
+    ]
+  },
+  "trial_03_unconstrained": {
+    "run_id": "web-5653aac6c68e490eb1d881e399d7a165",
+    "request_id": "5c06c030120d46378b5e9596d33812f5",
+    "envelope": null,
+    "planned": true,
+    "elapsed_s": 4.9074,
+    "candidate_variant": 2,
+    "route_families": [
+      "joint_space_transport"
+    ],
+    "waypoints": 9,
+    "arm_r_j6_min_deg": 16.9705,
+    "arm_r_j6_max_deg": 17.8917,
+    "arm_r_j6_last_deg": 16.9705,
+    "arm_r_j6_series_deg": [
+      17.8917,
+      17.8537,
+      17.7275,
+      17.6013,
+      17.4752,
+      17.349,
+      17.2228,
+      17.0967,
+      16.9705
+    ],
+    "attempts": [
+      {
+        "variant": 0,
+        "outcome": "rejected",
+        "elapsed_ns": 425312634,
+        "diagnostic": {
+          "error_type": "HarnessError",
+          "code": "bounded_IK_did_not_reach_goal",
+          "metrics": {
+            "goal_index": 1,
+            "iterations": 47,
+            "position_error_m": 0.0009551130444368151,
+            "rotation_error_rad": 0.002382091319335501,
+            "goal": [
+              [
+                0.00430857574816107,
+                -0.9538280438333135,
+                0.3003223251310788,
+                0.5669640374156488
+              ],
+              [
+                0.9999224170600904,
+                0.007619459340340418,
+                0.009854120968812524,
+                -0.27389064777920474
+              ],
+              [
+                -0.011687430672712051,
+                0.3002565680155489,
+                0.9537868720672323,
+                0.9826258719314656
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "final_arm_deg": [
+              -46.85982892675403,
+              -81.20516979371617,
+              96.4766072937476,
+              -108.1742226489117,
+              4.5676963341359835,
+              59.999999999999396,
+              6.216960677864868
+            ],
+            "limits": {
+              "min_constraint_margin_rad": 1.0436096431476471e-14,
+              "active_planes": [
+                12
+              ],
+              "discarded_translation_m": 0.0009551130444368151,
+              "discarded_rotation_rad": 0.002382091319334043,
+              "numerical_correction_rad": 6.948519685496942e-12,
+              "publication_lead_rad": [
+                -5.14276154994775e-09,
+                4.829830468899843e-08,
+                -3.063856679474952e-08,
+                -1.6542009984021888e-09,
+                -1.14559326414021e-07,
+                0.0,
+                -9.021980827694787e-08
+              ],
+              "publication_lead_limit_rad": 0.03
+            },
+            "stalled_ticks": 0,
+            "cartesian_waypoint_index": 2,
+            "cartesian_waypoint_count": 9,
+            "solves": 45,
+            "termination": "cartesian_no_progress",
+            "cartesian_stalled_ticks": 25,
+            "route_family": "demonstrated_transport",
+            "stage_index": 0
+          }
+        }
+      },
+      {
+        "variant": 1,
+        "outcome": "rejected",
+        "elapsed_ns": 520620601,
+        "diagnostic": {
+          "error_type": "HarnessError",
+          "code": "actual_IK_candidate_collision_rejected",
+          "metrics": {
+            "arm_collision_indices": [
+              11
+            ],
+            "collision_pair": [
+              "arm_R_Link5/arm_R_Link5_collision",
+              "body_Link5/body_Link5_collision"
+            ],
+            "clearance_m": -0.0015312832911338874,
+            "reason": "preventive_collision_boundary",
+            "route_family": "orientation_preserving_transport",
+            "stage_index": 0
+          }
+        }
+      },
+      {
+        "variant": 2,
+        "outcome": "planned",
+        "route_family": "joint_space_transport",
+        "elapsed_ns": 3956678195
+      }
+    ],
+    "preceding_candidate_failures": [
+      {
+        "variant": 0,
+        "diagnostic": {
+          "error_type": "HarnessError",
+          "code": "bounded_IK_did_not_reach_goal",
+          "metrics": {
+            "goal_index": 1,
+            "iterations": 47,
+            "position_error_m": 0.0009551130444368151,
+            "rotation_error_rad": 0.002382091319335501,
+            "goal": [
+              [
+                0.00430857574816107,
+                -0.9538280438333135,
+                0.3003223251310788,
+                0.5669640374156488
+              ],
+              [
+                0.9999224170600904,
+                0.007619459340340418,
+                0.009854120968812524,
+                -0.27389064777920474
+              ],
+              [
+                -0.011687430672712051,
+                0.3002565680155489,
+                0.9537868720672323,
+                0.9826258719314656
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "final_arm_deg": [
+              -46.85982892675403,
+              -81.20516979371617,
+              96.4766072937476,
+              -108.1742226489117,
+              4.5676963341359835,
+              59.999999999999396,
+              6.216960677864868
+            ],
+            "limits": {
+              "min_constraint_margin_rad": 1.0436096431476471e-14,
+              "active_planes": [
+                12
+              ],
+              "discarded_translation_m": 0.0009551130444368151,
+              "discarded_rotation_rad": 0.002382091319334043,
+              "numerical_correction_rad": 6.948519685496942e-12,
+              "publication_lead_rad": [
+                -5.14276154994775e-09,
+                4.829830468899843e-08,
+                -3.063856679474952e-08,
+                -1.6542009984021888e-09,
+                -1.14559326414021e-07,
+                0.0,
+                -9.021980827694787e-08
+              ],
+              "publication_lead_limit_rad": 0.03
+            },
+            "stalled_ticks": 0,
+            "cartesian_waypoint_index": 2,
+            "cartesian_waypoint_count": 9,
+            "solves": 45,
+            "termination": "cartesian_no_progress",
+            "cartesian_stalled_ticks": 25,
+            "route_family": "demonstrated_transport",
+            "stage_index": 0
+          }
+        }
+      },
+      {
+        "variant": 1,
+        "diagnostic": {
+          "error_type": "HarnessError",
+          "code": "actual_IK_candidate_collision_rejected",
+          "metrics": {
+            "arm_collision_indices": [
+              11
+            ],
+            "collision_pair": [
+              "arm_R_Link5/arm_R_Link5_collision",
+              "body_Link5/body_Link5_collision"
+            ],
+            "clearance_m": -0.0015312832911338874,
+            "reason": "preventive_collision_boundary",
+            "route_family": "orientation_preserving_transport",
+            "stage_index": 0
+          }
+        }
+      }
+    ]
+  },
+  "trial_03_envelope_50deg": {
+    "run_id": "web-5653aac6c68e490eb1d881e399d7a165",
+    "request_id": "5c06c030120d46378b5e9596d33812f5",
+    "envelope": {
+      "arm_r_j6": [
+        -60.0,
+        50.0
+      ]
+    },
+    "planned": true,
+    "elapsed_s": 5.0748,
+    "candidate_variant": 2,
+    "route_families": [
+      "joint_space_transport"
+    ],
+    "waypoints": 10,
+    "arm_r_j6_min_deg": 15.7254,
+    "arm_r_j6_max_deg": 25.3012,
+    "arm_r_j6_last_deg": 16.9705,
+    "arm_r_j6_series_deg": [
+      25.3012,
+      22.9254,
+      20.5495,
+      18.1736,
+      15.7978,
+      15.7254,
+      20.3641,
+      19.2329,
+      18.1017,
+      16.9705
+    ],
+    "attempts": [
+      {
+        "variant": 0,
+        "outcome": "rejected",
+        "elapsed_ns": 424550230,
+        "diagnostic": {
+          "error_type": "HarnessError",
+          "code": "bounded_IK_did_not_reach_goal",
+          "metrics": {
+            "goal_index": 1,
+            "iterations": 47,
+            "position_error_m": 0.0009551130444368151,
+            "rotation_error_rad": 0.002382091319335501,
+            "goal": [
+              [
+                0.00430857574816107,
+                -0.9538280438333135,
+                0.3003223251310788,
+                0.5669640374156488
+              ],
+              [
+                0.9999224170600904,
+                0.007619459340340418,
+                0.009854120968812524,
+                -0.27389064777920474
+              ],
+              [
+                -0.011687430672712051,
+                0.3002565680155489,
+                0.9537868720672323,
+                0.9826258719314656
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "final_arm_deg": [
+              -46.85982892675403,
+              -81.20516979371617,
+              96.4766072937476,
+              -108.1742226489117,
+              4.5676963341359835,
+              59.999999999999396,
+              6.216960677864868
+            ],
+            "limits": {
+              "min_constraint_margin_rad": 1.0436096431476471e-14,
+              "active_planes": [
+                12
+              ],
+              "discarded_translation_m": 0.0009551130444368151,
+              "discarded_rotation_rad": 0.002382091319334043,
+              "numerical_correction_rad": 6.948519685496942e-12,
+              "publication_lead_rad": [
+                -5.14276154994775e-09,
+                4.829830468899843e-08,
+                -3.063856679474952e-08,
+                -1.6542009984021888e-09,
+                -1.14559326414021e-07,
+                0.0,
+                -9.021980827694787e-08
+              ],
+              "publication_lead_limit_rad": 0.03
+            },
+            "stalled_ticks": 0,
+            "cartesian_waypoint_index": 2,
+            "cartesian_waypoint_count": 9,
+            "solves": 45,
+            "termination": "cartesian_no_progress",
+            "cartesian_stalled_ticks": 25,
+            "route_family": "demonstrated_transport",
+            "stage_index": 0
+          }
+        }
+      },
+      {
+        "variant": 1,
+        "outcome": "rejected",
+        "elapsed_ns": 518664914,
+        "diagnostic": {
+          "error_type": "HarnessError",
+          "code": "actual_IK_candidate_collision_rejected",
+          "metrics": {
+            "arm_collision_indices": [
+              11
+            ],
+            "collision_pair": [
+              "arm_R_Link5/arm_R_Link5_collision",
+              "body_Link5/body_Link5_collision"
+            ],
+            "clearance_m": -0.0015312832911338874,
+            "reason": "preventive_collision_boundary",
+            "route_family": "orientation_preserving_transport",
+            "stage_index": 0
+          }
+        }
+      },
+      {
+        "variant": 2,
+        "outcome": "planned",
+        "route_family": "joint_space_transport",
+        "elapsed_ns": 4126888011
+      }
+    ],
+    "preceding_candidate_failures": [
+      {
+        "variant": 0,
+        "diagnostic": {
+          "error_type": "HarnessError",
+          "code": "bounded_IK_did_not_reach_goal",
+          "metrics": {
+            "goal_index": 1,
+            "iterations": 47,
+            "position_error_m": 0.0009551130444368151,
+            "rotation_error_rad": 0.002382091319335501,
+            "goal": [
+              [
+                0.00430857574816107,
+                -0.9538280438333135,
+                0.3003223251310788,
+                0.5669640374156488
+              ],
+              [
+                0.9999224170600904,
+                0.007619459340340418,
+                0.009854120968812524,
+                -0.27389064777920474
+              ],
+              [
+                -0.011687430672712051,
+                0.3002565680155489,
+                0.9537868720672323,
+                0.9826258719314656
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "final_arm_deg": [
+              -46.85982892675403,
+              -81.20516979371617,
+              96.4766072937476,
+              -108.1742226489117,
+              4.5676963341359835,
+              59.999999999999396,
+              6.216960677864868
+            ],
+            "limits": {
+              "min_constraint_margin_rad": 1.0436096431476471e-14,
+              "active_planes": [
+                12
+              ],
+              "discarded_translation_m": 0.0009551130444368151,
+              "discarded_rotation_rad": 0.002382091319334043,
+              "numerical_correction_rad": 6.948519685496942e-12,
+              "publication_lead_rad": [
+                -5.14276154994775e-09,
+                4.829830468899843e-08,
+                -3.063856679474952e-08,
+                -1.6542009984021888e-09,
+                -1.14559326414021e-07,
+                0.0,
+                -9.021980827694787e-08
+              ],
+              "publication_lead_limit_rad": 0.03
+            },
+            "stalled_ticks": 0,
+            "cartesian_waypoint_index": 2,
+            "cartesian_waypoint_count": 9,
+            "solves": 45,
+            "termination": "cartesian_no_progress",
+            "cartesian_stalled_ticks": 25,
+            "route_family": "demonstrated_transport",
+            "stage_index": 0
+          }
+        }
+      },
+      {
+        "variant": 1,
+        "diagnostic": {
+          "error_type": "HarnessError",
+          "code": "actual_IK_candidate_collision_rejected",
+          "metrics": {
+            "arm_collision_indices": [
+              11
+            ],
+            "collision_pair": [
+              "arm_R_Link5/arm_R_Link5_collision",
+              "body_Link5/body_Link5_collision"
+            ],
+            "clearance_m": -0.0015312832911338874,
+            "reason": "preventive_collision_boundary",
+            "route_family": "orientation_preserving_transport",
+            "stage_index": 0
+          }
+        }
+      }
+    ]
+  }
+}

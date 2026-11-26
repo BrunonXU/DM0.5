@@ -1,0 +1,55 @@
+{
+  "item": "H-33",
+  "date": "2026-11-26",
+  "verdict": "来源未确认",
+  "envelope_deg_kept_at_50_0": true,
+  "active_probing_performed": false,
+  "checks": {
+    "1_controller_config_mvkdcfg": {
+      "status": "checked_local_6000d_copies; arm_live_file_deferred_robot_powered_off",
+      "local_ccs_m6_40_sha256": "ce20b1a80974c3ed58cdac4973152625096c8ad93a779e5fd4108c26ce19bd52",
+      "local_tcp_native_sha256": "ce20b1a80974c3ed58cdac4973152625096c8ad93a779e5fd4108c26ce19bd52",
+      "left_j6_line_7": "90.000000,0.000000,0.000000,90.000000,-60.000000,60.000000,180.000000,900.000000,0.086246,0.040207,-0.009178,-0.027294,0.000000,0.000000,-0.000000,0.000000,-0.000000,0.000000,",
+      "right_j6_line_20": "90.000000,0.000000,0.000000,90.000000,-60.000000,60.000000,180.000000,900.000000,0.086246,0.040207,-0.009178,-0.027294,0.000000,0.000000,-0.000000,0.000000,-0.000000,0.000000,",
+      "tcp_native_right_j6_line_20": "90.000000,0.000000,0.000000,90.000000,-60.000000,60.000000,180.000000,900.000000,0.086246,0.040207,-0.009178,-0.027294,0.000000,0.000000,-0.000000,0.000000,-0.000000,0.000000,",
+      "configured_range_deg": [
+        -60.0,
+        60.0
+      ]
+    },
+    "2_trial_01_effort_motor_current_error_code": {
+      "status": "unavailable_in_persisted_owner_journal",
+      "checked_files": [
+        "observations.jsonl",
+        "control.jsonl",
+        "events.jsonl"
+      ],
+      "note": "Owner journal persists state16 and full22 joint angles only; /hal/joint_states effort, motor_current, and error_code fields are not written to disk."
+    },
+    "3_historical_arm_r_j6_distribution": {
+      "status": "completed",
+      "sources_scanned": 174,
+      "non_empty_recordings": 157,
+      "global_min_deg": -16.2075,
+      "global_max_deg": 55.5841,
+      "samples_gt_52_deg_total": 14663,
+      "samples_gt_52_deg_bins_0p5deg": {
+        "[52.0, 52.5)": 90,
+        "[52.5, 53.0)": 232,
+        "[53.0, 53.5)": 129,
+        "[53.5, 54.0)": 52,
+        "[54.0, 54.5)": 64,
+        "[54.5, 55.0)": 11838,
+        "[55.0, 55.5)": 2200,
+        "[55.5, 56.0)": 58
+      },
+      "samples_ge_56_deg": 0,
+      "samples_lt_neg52_deg": 0,
+      "negative_plateau_observed": false
+    },
+    "4_stationary_visual_wrist_inspection": {
+      "status": "deferred_robot_powered_off_by_user",
+      "note": "User powered off F1-09 before visual inspection; will ask operator to inspect right wrist interference on next power-on."
+    }
+  }
+}

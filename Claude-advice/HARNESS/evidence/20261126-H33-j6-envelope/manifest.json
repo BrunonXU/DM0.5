@@ -1,0 +1,29 @@
+{
+  "item": "H-33",
+  "status": "software_complete_pending_hardware",
+  "date": "2026-11-26",
+  "version": 56,
+  "bundle_id": "d5b1b1d2de1ae687f0d2501fcbc33404d359edc03d0d1267515406cdd1877483",
+  "files": {
+    "offline-replan-trial01-trial03.json": {
+      "bytes": 24151,
+      "sha256": "8d41e691fe92727a32a825679cb9f11c3b42e498a518b020d22d210f4513dd63"
+    },
+    "readonly-j6-diagnosis.json": {
+      "bytes": 2468,
+      "sha256": "bada8e978788e5423caac7495c16919b342b5fb2937f5d6f1d69ec930efdd6b2"
+    },
+    "replay-qualification-v56.json": {
+      "bytes": 780,
+      "sha256": "2fe5f367cdea58512ed1a46143e08d29640e8ff9bf2b5d50a8f6c13be4c47faa"
+    },
+    "report.md": {
+      "bytes": 6625,
+      "sha256": "2a2aa69eefa5dc127f3e316f7f6830edff7e43a9c0bfad99fe0323f24168d45c"
+    },
+    "software-qualification.json": {
+      "bytes": 1087,
+      "sha256": "800edab07c180e889e29142c9b193ec23c5ac84137b3964f356d145ab5e0e823"
+    }
+  }
+}

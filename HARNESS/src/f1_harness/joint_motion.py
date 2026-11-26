@@ -8,7 +8,7 @@ SEARCHABLE_FAILURES = frozenset((
     'scene_sweep_blocked', 'actual_IK_path_tool_sweep_blocked',
     'actual_IK_path_scene_sweep_blocked', 'actual_IK_path_attached_object_sweep_blocked',
     'actual_IK_candidate_collision_rejected', 'bounded_IK_did_not_reach_goal',
-    'bounded_IK_wall_time_exceeded',
+    'bounded_IK_wall_time_exceeded', 'planning_joint_envelope_exceeded',
 ))
 
 
