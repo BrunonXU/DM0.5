@@ -1,6 +1,6 @@
 # HARNESS 当前待办
 
-**V54（`8818976408ce`）已部署，前一版本是 V53。H-20 的配对检查三路都是 10/10，本批选定 production-gateway。尚无真机成功。** 下一步是核对桶位后，做 H-21 第一批 10 次固定程序试验。H-27 的首步下探只在这一批豁免，之后做 H-31。[第三轮审阅](../../Claude-advice/HARNESS/review-v53-round3.md) · [H-20 重跑](../../Claude-advice/HARNESS/evidence/20261126-H20-dds-ab-rerun/report.md) · [H-27 报告](../../Claude-advice/HARNESS/evidence/20261126-H27-v5-preset/report.md)
+**V54（`8818976408ce`）已部署，前一版本是 V53。H-20 配对检查三路 10/10、五项全过 8/10、8/10、7/10，本批选定 production-gateway，尚无真机成功。** 重连后 7 轮都因第 4 项 `3d_geometry_missing:bucket_fixture` 未过，H-21 开跑前须先让预检第 4 项恢复通过。H-27 的首步下探只在这一批豁免，之后做 H-31。[第三轮审阅](../../Claude-advice/HARNESS/review-v53-round3.md) · [H-20 重跑](../../Claude-advice/HARNESS/evidence/20261126-H20-dds-ab-rerun/report.md) · [H-27 报告](../../Claude-advice/HARNESS/evidence/20261126-H27-v5-preset/report.md)
 
 按已定决策推进：核对重启后桌面桶位／光照使第 4 项恢复检出桶 → 连续 3 次预检通过 → 设 `planner_override="baseline"` 并请用户在 4242 执行 10 次直立真机试验。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
 
