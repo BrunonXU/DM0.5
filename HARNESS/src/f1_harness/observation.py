@@ -12,6 +12,7 @@ from .contracts import Frame, Observation, Pairing
 
 
 OBSERVATION_WINDOW_S = 4.
+SOURCE_STAMP_HOLD_NS = 250_000_000
 
 
 def measured_alignment_pair(observation, task):
@@ -45,6 +46,7 @@ class ObservationBuffer:
         self.transient_faults: dict[tuple[str, str], str] = {}
         self.rejected_source_frames = 0
         self.duplicate_source_frames = 0
+        self.held_source_frames = 0
         self._seen: dict[tuple[str, str, int], str] = {}
         self._seq = 0
         self._state = None
@@ -101,11 +103,15 @@ class ObservationBuffer:
                 repeated = queue and queue[-1].source_ns == frame.source_ns
                 if repeated:
                     self.rejected_source_frames += 1
-                    self._diagnostic('duplicate_source_stamp',frame,queue[-1],disposition='discard')
+                    held_ns = frame.received_ns - queue[-1].received_ns
+                    self._diagnostic('duplicate_source_stamp',frame,queue[-1],disposition='discard',held_ns=held_ns)
                     if previous and previous != frame.blob_sha256:
-                        # Conflicting pixels with one source identity are a real
-                        # acquisition fault. Do not silently reuse that identity.
-                        self.transient_faults[key] = 'duplicate_source_stamp:' + frame.camera
+                        if 0 <= held_ns <= SOURCE_STAMP_HOLD_NS:
+                            # The driver held one stamp across new pixels. Keep the
+                            # first accepted frame with its original time and TTL.
+                            self.held_source_frames += 1
+                        else:
+                            self.transient_faults[key] = 'duplicate_source_stamp:' + frame.camera
                     else:
                         # Drivers can redeliver the same source message. Drop
                         # only this delivery: accepted pixels keep their original
