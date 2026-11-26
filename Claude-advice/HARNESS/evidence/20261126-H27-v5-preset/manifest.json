@@ -47,5 +47,18 @@
       "bytes": 3278,
       "sha256": "2a35f0a3522e5327f3dec640190124c686d94ac92cc1126a790d20c03c2d4ecf"
     }
+  },
+  "known_deviation_waiver": {
+    "status": "已知偏差，本批豁免",
+    "waived_by": "Claude",
+    "date": "2026-11-26",
+    "scope": "仅限 H-21 第一批",
+    "deviation": "Replay A grasp_output audit failed 1/495 sample: support_lift first step (row 148/228) downward_excursion_m = 1.037e-06 m (1.037 um) at initial_min_m = 0.0005189 m <= 0.001 m",
+    "constraints": [
+      "不改审计代码",
+      "不改 1e-9 和 1.0 mm 两个阈值",
+      "不改动作"
+    ],
+    "followup_item": "H-31"
   }
 }

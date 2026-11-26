@@ -1,14 +1,14 @@
 # HARNESS 当前待办
 
-**V54（`8818976408ce`）已上线并在用，H-30、V54 冻结与上线、H-27 与 H-20 前 23/30 轮已完成；当前 F1-09 离线，待用户与 Claude 拍板 H-27 审计偏差后补齐 H-20 最后 7 轮并进入 H-21 固定程序真机试验。** [第三轮审阅](../../Claude-advice/HARNESS/review-v53-round3.md) · [H-20 重跑](../../Claude-advice/HARNESS/evidence/20261126-H20-dds-ab-rerun/report.md) · [H-27 报告](../../Claude-advice/HARNESS/evidence/20261126-H27-v5-preset/report.md)
+**V54（`8818976408ce`）已部署并在用，前一版本为 V53（`53af3b1d4406`），当前停在 H-20 补齐最后 7 轮与 H-21 之前（F1-09 离线）。** H-27 `grasp_output` 首步 `1.037 µm` 下探已由 Claude 豁免（仅限 H-21 第一批，后续见 H-31）。[第三轮审阅](../../Claude-advice/HARNESS/review-v53-round3.md) · [H-20 重跑](../../Claude-advice/HARNESS/evidence/20261126-H20-dds-ab-rerun/report.md) · [H-27 报告](../../Claude-advice/HARNESS/evidence/20261126-H27-v5-preset/report.md)
 
-按第三轮审阅顺序已推进至第 5 步（23/30）：H-30 已完成 → V54 已冻结、验收并上线 → H-27 已完成并归档 → H-20 重跑已跑完 23/30（23/23 全过），剩余 7 轮待 F1-09 重连补齐 → 待拍板 H-27 偏差后进入 H-21 连续 3 次预检与 10 次固定程序真机试验。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
+按已定决策推进：F1-09 重连并紧固左腕线缆后，先补齐 H-20 剩余 7 轮（`production-gateway` 达 9/10 即用 V54 进 H-21），再连续 3 次预检通过并设 `planner_override="baseline"` 做 10 次直立真机试验。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
 
 ## 现在做
 
-- [ ] **联合决策（用户 + Claude）：评审 H-27 `grasp_output` 1/495 样本 `1.04 µm` 下探与 H-20 传输选择。** 明确是否直接放行 H-21 固定程序真机试验，以及是否在本批前保持 V54 默认传输或在下一版切换 `fastdds-udp`。
-- [ ] **F1-09 重连后补齐 H-20 重跑剩余 7 轮**（`cyc-08`、`pg-09`、`udp-09`、`cyc-09`、`pg-10`、`udp-10`、`cyc-10`），确认现场左腕线缆接口紧固。
-- [ ] **H-21：连续 3 次预检通过后，在 `workspace.local.json` 设 `planner_override="baseline"` 做 10 次直立真机试验。** 操作者在 4242 点一次「开始任务」，保持左臂在 `积木demoV5` 且不碰左腕线缆，前 3 次同原因停在 S0 即止损；完成后按停点漏斗在 `review-v53.md` 表中单选下一条（H-29 Gemini 仅在第一批数据后考虑）。[任务页操作](../docs/operations/DIRECT_ROLLOUT.md)
+- [ ] **F1-09 重连后补齐 H-20 重跑剩余 7 轮**（`cyc-08`、`pg-09`、`udp-09`、`cyc-09`、`pg-10`、`udp-10`、`cyc-10`），按 30 轮实际结果重写 `summary.json` 结论字段；用户告知已紧固左腕线缆后更新 H-25 `cable_fastened_on_site` 与时间。
+- [ ] **H-21：连续 3 次预检通过后，在 `workspace.local.json` 设 `planner_override="baseline"` 做 10 次直立真机试验。** 操作者在 4242 点一次「开始任务」，保持左臂在 `积木demoV5` 且不碰左腕线缆；止损规则：前 3 次若均因取帧停在 S0 即停下并启用步骤 B（`fastdds-udp`）另成 V55 重做预检再跑；完成后按停点漏斗在 `review-v53.md` 表中单选下一条（H-29 Gemini 仅在第一批数据后考虑）。[任务页操作](../docs/operations/DIRECT_ROLLOUT.md)
+- [ ] **H-31（P1，第一批之后做）：修复 `support_lift` 首步下探。** 不改审计代码、不改 `1e-9` 与 `1.0 mm` 阈值，修完后 Replay A 必须审计全过。
 
 ## 单块全流程跑通后
 

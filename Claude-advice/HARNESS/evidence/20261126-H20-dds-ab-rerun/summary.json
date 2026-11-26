@@ -1158,7 +1158,7 @@
     }
   },
   "decision": {
-    "route": "STOP_BELOW_9_OF_10",
+    "route": "INCOMPLETE",
     "winner": null,
     "scores": {
       "production-gateway": 8,
@@ -1166,7 +1166,12 @@
       "cyclone": 7
     },
     "all_three_10_of_10": false,
-    "empty_frame_reproduced": false
+    "empty_frame_reproduced": false,
+    "run_counts": {
+      "production-gateway": 8,
+      "fastdds-udp": 8,
+      "cyclone": 7
+    }
   },
   "status": "PARTIAL_23_OF_30_F1_09_OFFLINE_AT_CYC_08",
   "completed_runs": 23,
