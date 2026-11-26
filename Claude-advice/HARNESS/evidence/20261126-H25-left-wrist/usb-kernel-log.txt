@@ -1,0 +1,9 @@
+=== KERNEL LOG SOURCE: journalctl ===
+=== USB LINES DURING 5-MIN WINDOW (0) ===
+(none)
+
+=== USB DISCONNECT/RE-ENUM LINES DURING WINDOW (0) ===
+(none)
+
+=== RECENT USB CONTEXT BEFORE WINDOW (last 20) ===
+(none)

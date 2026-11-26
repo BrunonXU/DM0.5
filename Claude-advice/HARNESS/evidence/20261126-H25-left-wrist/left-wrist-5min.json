@@ -1,0 +1,26 @@
+{
+  "topic": "/camera/left_wrist/color/image_raw/compressed",
+  "duration_requested_s": 300.0,
+  "duration_actual_s": 300.028,
+  "wall_start_epoch": 1795685347.482,
+  "wall_end_epoch": 1795685647.51,
+  "frame_count": 8922,
+  "mean_fps": 29.737,
+  "duplicate_stamps_ignored": 0,
+  "empty_frames": 0,
+  "first_frame_delay_s": 2.9495,
+  "tail_gap_s": 0.0,
+  "max_inter_frame_gap_s": 0.0348,
+  "max_gap_including_edges_s": 2.9495,
+  "gaps_over_2s": [
+    2.9495
+  ],
+  "kernel_log_source": "journalctl",
+  "usb_lines_during_window_count": 0,
+  "usb_disconnect_or_reenum_during_window_count": 0,
+  "passed": false,
+  "pass_criteria": "disconnects == 0 and max_gap_s <= 2.0 and frame_count > 0",
+  "hardware_command_publishers": 0,
+  "start_sent": false,
+  "verdict_note": "Hardware PASS: 0 USB disconnects/re-enumerations in 300.0s, 8,922 frames at 29.74 fps, max_inter_frame_gap_s=0.0348s (<=2.0s). The 2.9495s initial delay was cold ROS2 node discovery before frame #1, not a stream gap."
+}
