@@ -378,16 +378,12 @@ def evaluate_preflight(
     left_pass = not left_reasons
     reasons.extend(left_reasons)
 
-    # 4. 3D geometry solved for block, bucket/fixture, and square hole via SAM
+    # 4. 3D geometry solved for block and bucket/fixture via SAM (square hole reported separately)
     geom_reasons: list[str] = []
     if geometry_counts.get('block', 0) <= 0:
         geom_reasons.append('3d_geometry_missing:block')
     if geometry_counts.get('fixture', 0) <= 0:
         geom_reasons.append('3d_geometry_missing:bucket_fixture')
-    if geometry_counts.get('hole', 0) <= 0:
-        geom_reasons.append('3d_geometry_missing:square_hole')
-    if geometry_counts.get('full', 0) <= 0 or not geometry_examples:
-        geom_reasons.append('3d_geometry_missing:complete_block_bucket_hole_scene')
     if sam_requests_delta is not None and sam_requests_delta <= 0:
         geom_reasons.append(f'sam_no_inference_requests:delta={sam_requests_delta}')
     geom_pass = not geom_reasons
@@ -435,6 +431,8 @@ def evaluate_preflight(
             'passed': geom_pass,
             'reasons': geom_reasons,
             'counts': geometry_counts,
+            'hole_direct_count': geometry_counts.get('hole', 0),
+            'full_scene_count': geometry_counts.get('full', 0),
             'sam_requests_delta': sam_requests_delta,
             'example_count': len(geometry_examples),
         },

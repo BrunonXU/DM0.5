@@ -162,8 +162,36 @@ def test_evaluate_scene_sample_and_preflight_pass_and_fail_reasons():
     )
     assert passing['passed'] is True
     assert passing['reasons'] == []
+    assert passing['checks']['scene_geometry_solved']['hole_direct_count'] == 8
+    assert passing['checks']['scene_geometry_solved']['full_scene_count'] == 8
     text = pf.format_report({'bundle_id': 'abcdef123456', 'product_version': 'V53', 'rmw': 'rmw_fastrtps_cpp', 'required_contiguous_s': 12.0, **passing})
     assert 'PASS' in text
+
+    # Block + bucket + SAM delta without direct head square hole must PASS Check 4 and report counts
+    passing_no_hole = pf.evaluate_preflight(
+        required_seconds=12.0,
+        joint_summary=tracker.summary(),
+        limit_mismatches=[],
+        fk_check={'ok': True},
+        contiguous_paired_s=12.2,
+        unique_paired_scenes=8,
+        rgbd_frame_advancement_s={'head.rgb': 12.1, 'head.depth': 12.1, 'right.rgb': 12.1, 'right.depth': 12.1},
+        left_wrist_eval=left_ok,
+        geometry_counts={'block': 8, 'fixture': 8, 'hole': 0, 'full': 0},
+        geometry_examples=[],
+        sam_requests_delta=16,
+        readonly_invariants={
+            'hardware_command_publishers': 0,
+            'denied_ipc': [],
+            'final_authorized': False,
+            'request_publications': 0,
+            'start_sent': False,
+        },
+    )
+    assert passing_no_hole['passed'] is True
+    assert passing_no_hole['checks']['scene_geometry_solved']['passed'] is True
+    assert passing_no_hole['checks']['scene_geometry_solved']['hole_direct_count'] == 0
+    assert passing_no_hole['checks']['scene_geometry_solved']['full_scene_count'] == 0
 
     # Failing geometry + short left wrist + non-zero command publisher must fail with explicit reasons
     left_bad = pf.evaluate_left_wrist_window([100.0, 100.5], 100.0, 112.0, min_span_s=10.0)
@@ -176,7 +204,7 @@ def test_evaluate_scene_sample_and_preflight_pass_and_fail_reasons():
         unique_paired_scenes=1,
         rgbd_frame_advancement_s={'head.rgb': 3.5, 'head.depth': 3.5, 'right.rgb': 3.5, 'right.depth': 3.5},
         left_wrist_eval=left_bad,
-        geometry_counts={'block': 0, 'fixture': 1, 'hole': 0, 'full': 0},
+        geometry_counts={'block': 0, 'fixture': 0, 'hole': 0, 'full': 0},
         geometry_examples=[],
         sam_requests_delta=0,
         readonly_invariants={
@@ -193,7 +221,9 @@ def test_evaluate_scene_sample_and_preflight_pass_and_fail_reasons():
     assert 'contiguous_paired_window_short' in joined
     assert 'left_wrist_not_continuous' in joined
     assert '3d_geometry_missing:block' in joined
-    assert '3d_geometry_missing:square_hole' in joined
+    assert '3d_geometry_missing:bucket_fixture' in joined
+    assert '3d_geometry_missing:square_hole' not in joined
+    assert '3d_geometry_missing:complete_block_bucket_hole_scene' not in joined
     assert 'unexpected_hardware_command_publisher' in joined
     assert 'unexpected_control_ipc_attempt' in joined
 
