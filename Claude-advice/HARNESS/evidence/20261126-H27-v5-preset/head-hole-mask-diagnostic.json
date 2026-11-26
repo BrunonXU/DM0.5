@@ -1,0 +1,145 @@
+{
+  "head_roi": [
+    307,
+    28,
+    1229,
+    720
+  ],
+  "crop_file": "head-roi-crop.jpg",
+  "crop_bytes": 98076,
+  "hole_id": "square-hole-1",
+  "object_id": "square-1",
+  "provider_error": null,
+  "returned_masks": {},
+  "hole_mask_pixels": 0,
+  "block_mask_pixels": 0,
+  "overlap_fraction": 0.0,
+  "maximum_overlap_fraction": 0.05,
+  "directly_visible_per_line_1117": false,
+  "require_explicit_target_prompt": true,
+  "sam_streaming_objects": [
+    "square-1"
+  ],
+  "head_prompts_configured": {
+    "square-hole-1": [
+      395,
+      300,
+      455,
+      365
+    ],
+    "bucket-triangle": [
+      350,
+      250,
+      440,
+      305
+    ],
+    "bucket-left-slot": [
+      300,
+      305,
+      345,
+      355
+    ],
+    "bucket-u-slot": [
+      350,
+      360,
+      440,
+      420
+    ],
+    "square-1": [
+      500,
+      235,
+      625,
+      350
+    ],
+    "bucket-lid": [
+      280,
+      230,
+      515,
+      447
+    ]
+  },
+  "sam_discover_seed_results": {
+    "square-hole-1": {
+      "mask_pixels": 0,
+      "score": 0.0,
+      "metadata": {
+        "stream_id": "h27-diag-head",
+        "object_id": "square-hole-1",
+        "source_ns": 1,
+        "score_kind": "object_presence_not_mask_iou",
+        "motion_evidence": false,
+        "reseeded": false,
+        "seed_attempted": true,
+        "seed_scope": "full_image_semantics",
+        "tracking_memory_preserved": false,
+        "seed_backend": null,
+        "seed_reason": "semantic_entity_unconfigured",
+        "identity_status": "unresolved",
+        "identity_source": "semantic",
+        "identity_reason": "semantic_entity_unconfigured",
+        "seed_inference_ms": 0.0024400651454925537,
+        "seed_inference_count": 1,
+        "tracking_inference_ms": 0.0,
+        "tracking_inference_count": 0
+      }
+    },
+    "square-1": {
+      "mask_pixels": 0,
+      "score": 0.0,
+      "metadata": {
+        "stream_id": "h27-diag-head",
+        "object_id": "square-1",
+        "source_ns": 1,
+        "score_kind": "object_presence_not_mask_iou",
+        "motion_evidence": false,
+        "reseeded": false,
+        "seed_attempted": true,
+        "seed_scope": "full_image_semantics",
+        "tracking_memory_preserved": false,
+        "seed_backend": "sam3",
+        "seed_reason": "semantic_scope_ambiguous_or_empty",
+        "identity_status": "unresolved",
+        "identity_source": "semantic",
+        "semantic_model_sha256": "9999e2341ceef5e136daa386eecb55cb414446a00ac2b55eb2dfd2f7c3cf8c9e",
+        "semantic_candidates": 2,
+        "semantic_scoped_candidates": 2,
+        "semantic_selected_index": null,
+        "semantic_candidate_summary": [
+          {
+            "index": 0,
+            "box": [
+              328.1148376464844,
+              -1.9099783897399902,
+              398.7525939941406,
+              34.09916305541992
+            ],
+            "area_px": 1558,
+            "score": 0.259765625,
+            "in_scope": true
+          },
+          {
+            "index": 1,
+            "box": [
+              531.2627563476562,
+              292.6205749511719,
+              570.0458984375,
+              327.5799255371094
+            ],
+            "area_px": 972,
+            "score": 0.298828125,
+            "in_scope": true
+          }
+        ],
+        "identity_reason": "semantic_scope_ambiguous_or_empty",
+        "seed_inference_ms": 77.72761199157685,
+        "seed_inference_count": 1,
+        "tracking_inference_ms": 0.0,
+        "tracking_inference_count": 0
+      }
+    }
+  },
+  "sam_configured_box_probe": {
+    "error": "ValueError: too many values to unpack (expected 2)"
+  },
+  "classification": "mask_zero_no_seed: 没有模型给提示时，方孔在头部视角不会被分割出来。固定程序下属于预期"
+}

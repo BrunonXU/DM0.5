@@ -1,0 +1,51 @@
+{
+  "item": "H-27",
+  "date": "2026-11-26",
+  "preset": "积木demoV5",
+  "candidate_version": 54,
+  "candidate_bundle_id": "8818976408ce68d0c63a5e7602b26d28ca4cf9d54f0e3214cf4ffda9d3656002",
+  "hardware_outputs": 0,
+  "physical_motion": false,
+  "stop_gate_triggered": true,
+  "stop_reason": "replay_a_grasp_output_audit_failed_1_of_495_support_lift_downward_excursion_1.04um",
+  "cross_view_rate": "25/30 (83.3%, below 90% D-3 reference)",
+  "head_hole_mask_classification": "row_1_mask_zero_no_seed_expected",
+  "files": {
+    "cross-view-regression-30.json": {
+      "bytes": 14794,
+      "sha256": "8e45c966d6ca5b0e273709393601805df9fb5712b661aaa4ea0e48919959a1e4"
+    },
+    "head-hole-mask-diagnostic.json": {
+      "bytes": 3756,
+      "sha256": "e87fd0f1abf59ae10c77a6b439e62ad126a392eb7edb73b32e06103bee5f423c"
+    },
+    "head-roi-crop.jpg": {
+      "bytes": 98076,
+      "sha256": "aa7993b18097b5091546161dd537fdc0670c9227114b484e7cd6b696092d3247"
+    },
+    "report.md": {
+      "bytes": 10863,
+      "sha256": "bf8962560221a477f3e8f767e252ae14b481ada75f3affe685ba3bbf96966df3"
+    },
+    "site-left-arm-audit.json": {
+      "bytes": 2844,
+      "sha256": "59f1c36cb8d43024e3f2dd47152705f95f619fe2f93beb876df5b456dfd38998"
+    },
+    "v5-live-grasp-output-audit.json": {
+      "bytes": 43074,
+      "sha256": "5eef902e15f95dcfae3b87f0881c6a74c48174a391011fb32c37aad10a03e03b"
+    },
+    "v5-live-replay-output-audit.json": {
+      "bytes": 2584,
+      "sha256": "058d2c90643b51f2d1aabd05053a46708d13e526dc32213b0d077a19bb7c92b5"
+    },
+    "v5-live-replay-summary.json": {
+      "bytes": 3826,
+      "sha256": "7bcd1d63e9ca1e43beca80b263fab88ffee18ad0ec37496389a360022f1aa883"
+    },
+    "v5-nov10-replay-summary.json": {
+      "bytes": 3278,
+      "sha256": "2a35f0a3522e5327f3dec640190124c686d94ac92cc1126a790d20c03c2d4ecf"
+    }
+  }
+}

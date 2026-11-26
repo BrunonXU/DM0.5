@@ -150,7 +150,7 @@ H-23 的新触发条件：任一次预检里 14 个手臂关节的最小余量�
 3. 不改机载相机启动文件，不接新的模型提供方。
 4. 规格与代码事实对不上时停下报告，不要自行取值。
 
-## H-26 `[ ]` P0：同一时间戳、像素不同的帧，短时间内只丢弃不报故障
+## H-26 `[~]` P0：同一时间戳、像素不同的帧，短时间内只丢弃不报故障
 
 **位置**：`HARNESS/src/f1_harness/observation.py:99-114`，`ObservationBuffer.add`。
 
@@ -216,7 +216,9 @@ H-23 的新触发条件：任一次预检里 14 个手臂关节的最小余量�
 
 **证据**：`Claude-advice/HARNESS/evidence/<日期>-H26-stamp-hold/`，含测试回执、右腕与头部参数对照、上线后一次预检的 `result.json`。
 
-## H-27 `[ ]` P0：新预设下要重做的三件事
+> 执行记录：2026-11-26，分支 `harness/v53`，提交 `c430186`、`133f523`，冻结候选 V54（`8818976408ce`，提交 `2bbc5cd`）：**软件完成，待真机验收**。动手前核对站点 `gateway.local.json` 的 `scene.max_age_ms = 500 > 250`。实现 `SOURCE_STAMP_HOLD_NS = 250_000_000`、`held_source_frames` 计数器及诊断 `held_ns` 字段；净增 `raise HarnessError = 0`。新增 `test_source_stamp_hold.py`（4 例通过），原 8 个含 `duplicate_source_stamp` 的测试文件及全量 pytest 中另 2 个使用 `<250ms` 间隔的旧观测单测（`test_development_motion.py`、`test_observation.py`，在 `133f523` 改为 300 ms 间隔）全部通过；全量软件回归 3,190 例、原生集成 62/62、3+1 条零输出回放全部通过。因 H-27 回放审计触发停点，暂未上线 V54，待评审放行后完成部署、导出右腕参数对照并归档 `evidence/20261126-H26-stamp-hold/`。
+
+## H-27 `[~]` P0：新预设下要重做的三件事
 
 三件都是只读或零硬件输出。结果写进报告，**不挡 H-21**，除非第 1 件失败。
 
@@ -249,7 +251,9 @@ H-23 的新触发条件：任一次预检里 14 个手臂关节的最小余量�
 
 **证据**：`Claude-advice/HARNESS/evidence/<日期>-H27-v5-preset/`，含回放回执、30 组回归表、一张裁剪图（不超过 300KB）和诊断结论。
 
-## H-28 `[ ]` P0：网页入口可以跑固定程序
+> 执行记录：2026-11-26，分支 `harness/v53`，证据目录 `Claude-advice/HARNESS/evidence/20261126-H27-v5-preset/`。在 F1-09“积木demoV5”姿态下只读采集 30 组同步数据（`hardware_publishers=0`）并完成四项检查：（1）**零输出回放（触发停下条件）**：Replay A（今日 V5 实采 `s00` RGB-D + V5 22 轴）10/10 阶段全部走完（`outcome=success`、`hardware_outputs=0`、`paid_model_calls=0`），全 1,810 行发射命令 `gate.check_preventive` 0 失败、右臂与左臂 0 自碰撞（最小净空 `3.086 mm`，位于 `arm_R_Link7`↔`body_Link5`），`replay_output` 审计通过，但 `grasp_output` 审计未通过（495 样本中 1 处 `contact_and_support_sweeps_clear=false`：`support_lift` 首步行 148 初始离桌 `0.519 mm <= 1.0 mm` 容差，单步下探 `1.04 µm`，`native_failures=0`）；对照 Replay B（11-10 旧场景 + V5 22 轴）停在 `grasp`（`registered_candidates_exhausted`、`cartesian_no_progress` 路点 14/16，非自碰撞）。按规格停下报告，未部署 V54、未请用户做真机试验。（2）**30 组跨视角测孔回归**：25/30（83.3%，**低于 90% D-3 参考线**），5 组失败均为 `fixture_relocalization_aperture_not_square`。（3）**头部方孔掩码诊断**：0 像素、`semantic_entity_unconfigured`，属对照表第 1 行预期情况，未修复；裁剪图 `head-roi-crop.jpg`（98 KB）。（4）**站点左臂配置只读盘点**：见 `site-left-arm-audit.json`，未作任何修改。
+
+## H-28 `[~]` P0：网页入口可以跑固定程序
 
 这是 H-16 的最小子集，只为在没有模型通道时解锁第一批试验。
 
@@ -291,6 +295,8 @@ H-23 的新触发条件：任一次预检里 14 个手臂关节的最小余量�
 3. 真机：H-21 的 10 次运行，漏斗里模型调用全部为 0。
 
 **回滚**：删掉工作区配置里的键即可，不需要回退版本。
+
+> 执行记录：2026-11-26，分支 `harness/v53`，提交 `d7d10f9`，冻结候选 V54（`8818976408ce`，提交 `2bbc5cd`）：**软件完成，待真机验收**。动手前核对确认 `run-task --planner baseline` 全程不创建模型客户端、不读取模型凭据（零输出基线回放中投毒 `ResponsesPlanner` 并指向不可读凭据路径验证通过），且 `vla_astra` 与 `planner_override` 组合在服务启动前即报 `ValueError` 配置错误。已在 `web_process.py`、`web_execution.py`、`run_funnel.py` 实现 `planner_override="baseline"`、`planner_effective` 快照与漏斗优先读取，净增 `raise HarnessError = 0`。新增 `test_planner_override.py` 并通过全量 3,190 pytest、62/62 原生集成测试及 `normal-baseline` 零输出回放（10 阶段完成、`model_requests=0`、`paid_model_calls=0`、全部输出审计通过）。待 H-27 评审结论后上线并进 H-21 真机验收。
 
 ## 随同一版本的另外两处改动
 

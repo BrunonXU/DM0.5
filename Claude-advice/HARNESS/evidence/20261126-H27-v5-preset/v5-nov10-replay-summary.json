@@ -1,0 +1,123 @@
+{
+  "preset": "积木demoV5",
+  "full22_source": "live_F1_09_hal_joint_states_sample_0",
+  "arm_l_deg": [
+    56.416,
+    -77.317,
+    -76.892,
+    -119.474,
+    8.665,
+    53.199,
+    -53.832
+  ],
+  "arm_r_deg": [
+    -71.824,
+    -88.022,
+    91.903,
+    -85.465,
+    -2.319,
+    0.789,
+    -2.486
+  ],
+  "returncode": 1,
+  "hardware_outputs": 0,
+  "physical_motion": false,
+  "outcome": "pending_review",
+  "stages": [
+    {
+      "skill": "approach_grasp",
+      "outcome": "success",
+      "reason": "owner_arrival_and_fresh_scene",
+      "diagnostic": null
+    },
+    {
+      "skill": "grasp",
+      "outcome": "pending_review",
+      "reason": "numerical_plan_rejected:registered_candidates_exhausted",
+      "diagnostic": {
+        "error_type": "HarnessError",
+        "code": "registered_candidates_exhausted",
+        "metrics": {
+          "goal_index": 0,
+          "iterations": 81,
+          "position_error_m": 0.0012891590250844968,
+          "rotation_error_rad": 1.9218677086893704e-06,
+          "goal": [
+            [
+              -0.8056654749018681,
+              -0.3817046505942096,
+              0.45299525633911436,
+              0.7482841641119976
+            ],
+            [
+              0.5923707813110968,
+              -0.5191448806990221,
+              0.6161050643298359,
+              -0.34961577727714044
+            ],
+            [
+              -7.08246038265298e-17,
+              0.7647157331705364,
+              0.6443677889539372,
+              0.7919712610356111
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "final_arm_deg": [
+            -8.244965398227228,
+            -75.45349974925215,
+            69.8659249007049,
+            -6.974443105865794,
+            -18.076702967544282,
+            2.395271405841615,
+            58.57119152171472
+          ],
+          "limits": {
+            "min_constraint_margin_rad": 0.32369749409750415,
+            "active_planes": [],
+            "discarded_translation_m": 0.0012891590250844968,
+            "discarded_rotation_rad": 1.9218677081112937e-06,
+            "numerical_correction_rad": 0.0,
+            "publication_lead_rad": [
+              -1.673666718854383e-06,
+              -4.449132112505083e-06,
+              7.512080893135042e-05,
+              2.0721716481597596e-08,
+              7.48963712366435e-05,
+              1.3654767830675874e-06,
+              4.155073157985356e-06
+            ],
+            "publication_lead_limit_rad": 0.03
+          },
+          "stalled_ticks": 0,
+          "cartesian_waypoint_index": 14,
+          "cartesian_waypoint_count": 16,
+          "solves": 67,
+          "termination": "cartesian_no_progress",
+          "cartesian_stalled_ticks": 25,
+          "stage_index": 0,
+          "grasp_strategy": "tcp_pitch",
+          "grasp_pitch_offset_deg": 30.0
+        }
+      }
+    }
+  ],
+  "stage_count": 2,
+  "checks": {
+    "no_uncaught_error": true,
+    "expected_outcome": false,
+    "simulation_scope_confirmed": true,
+    "source_unchanged": true,
+    "rechecks_never_publish": true,
+    "rechecks_never_replan": true,
+    "verification_calls_bounded": true
+  },
+  "paid_model_calls": 0,
+  "wall_s": 15.49,
+  "passed": false
+}

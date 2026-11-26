@@ -1,0 +1,130 @@
+{
+  "site_bundle_id": "8818976408ce68d0c63a5e7602b26d28ca4cf9d54f0e3214cf4ffda9d3656002",
+  "read_only": true,
+  "modified_any_site_file": false,
+  "live_v5_arm_l_deg": [
+    56.416,
+    -77.317,
+    -76.892,
+    -119.474,
+    8.665,
+    53.199,
+    -53.832
+  ],
+  "entries": [
+    {
+      "file": "controller-reuse.json",
+      "key_path": "deployment_preparation.arm_l_j2_limit_reclaimed_deg",
+      "value": [
+        -94.0,
+        120.0
+      ]
+    },
+    {
+      "file": "controller.local.json",
+      "key_path": "f710_home.joints.arm_l_j1..j7",
+      "source_preset_name": "积木demo-V1",
+      "source_preset_id": "4b88bb213b0f45cc9300238b68605ac5",
+      "values_deg": [
+        69.97728729248047,
+        -91.56895446777344,
+        -89.15641784667969,
+        -85.88263702392578,
+        0.3136047422885895,
+        -0.1630302369594574,
+        -0.2892906069755554
+      ]
+    },
+    {
+      "file": "gateway.local.json",
+      "key_path": "scene.full22_reference[0:7]",
+      "values_deg": [
+        69.02069854736328,
+        -92.12287902832031,
+        -88.9131088256836,
+        -88.20732116699219,
+        0.45911866426467896,
+        -0.8279159665107727,
+        -0.7185333371162415
+      ]
+    },
+    {
+      "file": "gateway.local.json",
+      "key_path": "scene.max_age_ms",
+      "value": 500
+    },
+    {
+      "file": "masks.local.json",
+      "key_path": "cameras (left-wrist references)",
+      "cameras_keys": []
+    },
+    {
+      "file": "numerics.local.json",
+      "key_path": "spec.gate.config.f710_home.joints.arm_l_j1..j7",
+      "source_preset_name": "积木demo-V1",
+      "source_preset_id": "4b88bb213b0f45cc9300238b68605ac5",
+      "values_deg": [
+        69.97728729248047,
+        -91.56895446777344,
+        -89.15641784667969,
+        -85.88263702392578,
+        0.3136047422885895,
+        -0.1630302369594574,
+        -0.2892906069755554
+      ]
+    },
+    {
+      "file": "numerics.local.json",
+      "key_path": "spec.gate.full22[0:7]",
+      "values_deg": [
+        110.0,
+        -90.0,
+        -90.0,
+        -110.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "file": "numerics.local.json",
+      "key_path": "spec.gate.limits[0:7]",
+      "values_deg": [
+        [
+          -178.0,
+          178.0
+        ],
+        [
+          -94.0,
+          120.0
+        ],
+        [
+          -178.0,
+          178.0
+        ],
+        [
+          -145.0,
+          60.0
+        ],
+        [
+          -178.0,
+          178.0
+        ],
+        [
+          -60.0,
+          60.0
+        ],
+        [
+          -90.0,
+          90.0
+        ]
+      ]
+    },
+    {
+      "file": "plan.local.json",
+      "key_path": "left_arm_references",
+      "note": "no hardcoded arm_l joint values; success_posture_prior stores 7-DOF right arm only",
+      "contains_arm_l": false
+    }
+  ]
+}
