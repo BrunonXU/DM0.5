@@ -1,6 +1,6 @@
 # 版本与现场状态
 
-**2026-11-25 左臂 J2 配置与现场档案差异说明（开发副本 −94.7°，现场 4242 保持 `robot-v22.json` −94.0°）：** 仓库内 `F1-4242/configs/f1-09.json` 与 `F1-4242/configs/f1-09-joints.json` 为配合 Harness V53 拆左夹爪后的停放基线，已将 `arm_l_j2` 下限设为 `−94.7°`；现场 4242 仍运行已部署的 `robot-v22.json`（下限 `−94.0°`，与驱动 `motor_ctl` 钳位一致），不切到 `robot-v23.json` 也不重启工作台。两者不同是有意的：待 Harness H-23 将“实测反馈”与“命令目标”的限位检查分开并验收完成后，仓库内的 `arm_l_j2` 下限恢复为 `−94.0°`，与现场档案重新统一。
+**2026-11-26 左臂 J2 配置与现场档案重新统一（已于 F1 Harness V54 恢复一致）：** 仓库内 `F1-4242/configs/f1-09.json`、`F1-4242/configs/f1-09-joints.json` 与 `DAgger/F1/configs/f1_infra_binding.json` 的 `arm_l_j2` 下限已于 F1 Harness V54 从 `−94.7°` 收回 `−94.0°`，与现场运行的 `robot-v22.json` 及驱动 `motor_ctl` 钳位重新一致。
 
 **11月3日F1infra 有线主备 V38已部署。** 工作台与手柄复制命令优先有线`.142`，Wi-Fi`.58`保留备用；两地址HTTP许可与同源限制均已核验，原控制profile、录制和推理服务保持。此编号属于F1infra工作台，与F1 RTC控制V号独立；具体变更和回退见[网络主备](#wired-backup-v38)。
 
