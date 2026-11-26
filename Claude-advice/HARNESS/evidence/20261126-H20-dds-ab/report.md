@@ -75,3 +75,8 @@
    - 触发链路：`Orbbec head` 每 2–6 秒发出同 `source_ns` 但不同像素的两帧 → `ObservationBuffer.add()`（`observation.py:106-110`）置 `transient_faults[("head", stream)] = "duplicate_source_stamp:head"` → 该轮询 `head` 判为 `invalid` 并从 `obs` 剥离 → `preflight_scene.py` 12 秒连续窗口清零重来。这也完全解释了为何 30 fps 的 `fastdds-udp`（3/10）与 `cyclone`（1/10）反而比 16–22 fps 的 `production-gateway`（6/10）更容易踩中重复时间戳并打断窗口。
 
 **结论与待 Claude 审阅事项**：问题 100% 定位在头部 Orbbec 相机驱动的 `time_domain=global` + `time_sync_period=6.0` 引发的 `duplicate_source_stamp:head`（非 DDS 传输层问题）。在收到 Claude 审阅结论前，不擅自修改相机驱动参数或放宽 `ObservationBuffer` 判据。
+
+3. **15 秒深查（同戳事件逐条采样 + 实时运行参数 dump）**：
+   - 运行中 `/camera/head/head` 实测参数：`enable_frame_sync: true`、`enable_sync_host_time: true`、`color_fps/depth_fps: 0`（默认）、`time_domain: global`（见 `gemini_330_series.launch.py`）。
+   - 15 秒内共抓到 **17 次** `dup_diff`（RGB 13 次 + Depth 4 次），呈现清晰的 **100.12 ms 阶梯跳变**：相机实际每 33.3 ms 输出一帧新像素（`same_hash=false`），但 `header.stamp` 连续 **3–4 帧完全冻结不变**（`prev_dt_stamp_ms=0.0`），随后一次性跳变 **`+100.12 ms`**（正好 3 帧周期）。
+   - 根因高度指向 OrbbecSDK_ROS2 在 Jetson 上开启 `time_domain=global` + `enable_sync_host_time=true` 时的全局时间戳阶梯冻结（候选处理方向：`time_domain=device` 或 `system`，或关闭 `enable_sync_host_time`，需 Claude 审阅拍板后按正式流程验证）。
