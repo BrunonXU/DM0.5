@@ -1,0 +1,77 @@
+{
+  "item": "H-21-interim-3-trials",
+  "date": "2026-11-26",
+  "version": 54,
+  "bundle_id": "8818976408ce68d0c63a5e7602b26d28ca4cf9d54f0e3214cf4ffda9d3656002",
+  "planner_effective": "baseline",
+  "trials_completed": 3,
+  "planned_trials": 10,
+  "stop_loss_s0_3x_triggered": false,
+  "model_calls_total": 0,
+  "files": {
+    "funnel.json": {
+      "bytes": 10988,
+      "sha256": "4d806a366a1bf2a51b29c6f634d1c4914cac8eba99ee64b48865a297b61998bb"
+    },
+    "preflight-3x-summary.json": {
+      "bytes": 1003,
+      "sha256": "315c489b6e83ff73986db0e88ab6e3e34c2882d21f5b5e4603eba3d0d7433200"
+    },
+    "report.md": {
+      "bytes": 4685,
+      "sha256": "84325f75cf677fc2926f798c463bbeb0133f51f2d6993f91ddf5bd988c24859b"
+    },
+    "trial-01-web-dbe926ed/owner-trace-summary.json": {
+      "bytes": 245719,
+      "sha256": "dbf0b0fc71d9f6bb361fd68e0e7be3e00e247af392e5d72a4e0b8fafa8ca88ed"
+    },
+    "trial-01-web-dbe926ed/planner-final.json": {
+      "bytes": 5635,
+      "sha256": "ef1b87d6cd9c1bf71eb5f3556cd295860516303175b63fc6489ed2d26a2a254a"
+    },
+    "trial-01-web-dbe926ed/timing-report.json": {
+      "bytes": 7146,
+      "sha256": "3e742a25fe732a01949cc4b6498936421af2879241f82fcf3862353979cf9589"
+    },
+    "trial-01-web-dbe926ed/workspace-run.json": {
+      "bytes": 1027,
+      "sha256": "9a905724ccaa12a10c93b5c744fa66990da5ec6c65e3c05adcc263f32629d049"
+    },
+    "trial-02-web-9da20b83/owner-trace-summary.json": {
+      "bytes": 12159,
+      "sha256": "85be59b3890ee56b39d2331ce3058ccd321cb3abf98ecde65605f42ed71d313b"
+    },
+    "trial-02-web-9da20b83/planner-final.json": {
+      "bytes": 2712,
+      "sha256": "7ebabce132d54dbb072efb4a1d60566e2ea38b15d135370670d920d40c72c361"
+    },
+    "trial-02-web-9da20b83/timing-report.json": {
+      "bytes": 4860,
+      "sha256": "d9e55f67ee872c56a30290f827e3ae7859704c69efe8f9eadebcf31097d0c76f"
+    },
+    "trial-02-web-9da20b83/workspace-run.json": {
+      "bytes": 1096,
+      "sha256": "336d40f5d4431ff15e688e6cd003ff15d29b10454c63bbe837903304901bd49f"
+    },
+    "trial-03-web-5653aac6/owner-trace-summary.json": {
+      "bytes": 260036,
+      "sha256": "e743b7e8ecc332188c0c35dceec1aedbfaf02133ce432747db02cb31362ab2e2"
+    },
+    "trial-03-web-5653aac6/planner-final.json": {
+      "bytes": 35107,
+      "sha256": "9b2b8cab3b680e0cb755faebec34f1b7bb39793ccf707739bf98b3580def2efd"
+    },
+    "trial-03-web-5653aac6/timing-report.json": {
+      "bytes": 7748,
+      "sha256": "98941f3262b9e9b91349df16a9742ab09dd79e9c11c78fb26aa5fd313c43ea48"
+    },
+    "trial-03-web-5653aac6/workspace-run.json": {
+      "bytes": 1059,
+      "sha256": "9fbe1d92c39dbb147e71db68b94956cef65b958367f0b5acdf446e8a2bc9568c"
+    },
+    "trials-summary.json": {
+      "bytes": 3093,
+      "sha256": "b868f91146f276e4e28b7965e2f53e072e43ce21409f33fb716b44121fdf1a43"
+    }
+  }
+}

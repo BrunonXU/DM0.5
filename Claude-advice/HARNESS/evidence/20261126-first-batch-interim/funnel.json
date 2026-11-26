@@ -1,0 +1,418 @@
+{
+  "schema": "f1-harness-funnel-v1",
+  "runs": [
+    {
+      "run_id": "web-5653aac6c68e490eb1d881e399d7a165",
+      "status": "included",
+      "eligible": true,
+      "issues": [],
+      "workspace_status": "review",
+      "started_at": 1795703146.2316575,
+      "mode": "baseline",
+      "bundle_id": "8818976408ce68d0c63a5e7602b26d28ca4cf9d54f0e3214cf4ffda9d3656002",
+      "version": 54,
+      "scenario_id": null,
+      "ended": true,
+      "planner_mirror_incomplete": false,
+      "stages": {
+        "S0": true,
+        "S1": true,
+        "S2": true,
+        "S3": true,
+        "S4": true,
+        "S5": true,
+        "S6": false,
+        "S7": false,
+        "S8": false,
+        "S9": false
+      },
+      "stage_interval_s": {
+        "S0": 0.0,
+        "S1": 8.506450934,
+        "S2": 2.988618934,
+        "S3": 7.197124505,
+        "S4": 1.059577835,
+        "S5": 37.974233122,
+        "S6": null,
+        "S7": null,
+        "S8": null,
+        "S9": null
+      },
+      "stage_skill_duration_s": {
+        "S0": null,
+        "S1": null,
+        "S2": 5.965424764,
+        "S3": 6.913228066,
+        "S4": 0.162068548,
+        "S5": 37.811990191,
+        "S6": null,
+        "S7": null,
+        "S8": null,
+        "S9": null
+      },
+      "furthest_stage": "S5",
+      "complete_success": false,
+      "first_motion_s": 8.506450934,
+      "task_s": null,
+      "reset_after_placement_s": null,
+      "assisted_results": 0,
+      "manual_interventions": 0,
+      "physical_rejections": 0,
+      "nonphysical_rejections": 0,
+      "rejection_reasons": {
+        "nonphysical": {},
+        "physical": {}
+      },
+      "failed_skill_reasons": {},
+      "revocations": 3,
+      "revocations_raw": 4,
+      "revocation_reasons": {
+        "task_finished": 1,
+        "web_stop_requested": 1,
+        "session_closed": 1,
+        "owner_bridge_closed": 1
+      },
+      "active_fault_revocations": 0,
+      "last_failure_source": null,
+      "last_failure_reason": null,
+      "owner_last_failure_reason": null,
+      "planner_last_failure_reason": null,
+      "nonphysical_termination": null,
+      "model_calls": 0,
+      "model_responses": 0,
+      "model_transport_attempts_recorded": 0,
+      "model_requests_with_origin_evidence": 0,
+      "model_transport_errors": 0,
+      "model_wait_s": 0,
+      "model_wait_observed_s": 0,
+      "model_requests_missing_wait": 0
+    },
+    {
+      "run_id": "web-9da20b8369f945f6be322c5a79d61543",
+      "status": "included",
+      "eligible": true,
+      "issues": [],
+      "workspace_status": "review",
+      "started_at": 1795703100.5118315,
+      "mode": "baseline",
+      "bundle_id": "8818976408ce68d0c63a5e7602b26d28ca4cf9d54f0e3214cf4ffda9d3656002",
+      "version": 54,
+      "scenario_id": null,
+      "ended": true,
+      "planner_mirror_incomplete": false,
+      "stages": {
+        "S0": true,
+        "S1": false,
+        "S2": false,
+        "S3": false,
+        "S4": false,
+        "S5": false,
+        "S6": false,
+        "S7": false,
+        "S8": false,
+        "S9": false
+      },
+      "stage_interval_s": {
+        "S0": 0.0,
+        "S1": null,
+        "S2": null,
+        "S3": null,
+        "S4": null,
+        "S5": null,
+        "S6": null,
+        "S7": null,
+        "S8": null,
+        "S9": null
+      },
+      "stage_skill_duration_s": {
+        "S0": null,
+        "S1": null,
+        "S2": null,
+        "S3": null,
+        "S4": null,
+        "S5": null,
+        "S6": null,
+        "S7": null,
+        "S8": null,
+        "S9": null
+      },
+      "furthest_stage": "S0",
+      "complete_success": false,
+      "first_motion_s": null,
+      "task_s": null,
+      "reset_after_placement_s": null,
+      "assisted_results": 0,
+      "manual_interventions": 0,
+      "physical_rejections": 0,
+      "nonphysical_rejections": 0,
+      "rejection_reasons": {
+        "nonphysical": {},
+        "physical": {}
+      },
+      "failed_skill_reasons": {},
+      "revocations": 3,
+      "revocations_raw": 4,
+      "revocation_reasons": {
+        "task_finished": 1,
+        "web_stop_requested": 1,
+        "session_closed": 1,
+        "owner_bridge_closed": 1
+      },
+      "active_fault_revocations": 0,
+      "last_failure_source": "task_needs_attention",
+      "last_failure_reason": "observation_readiness_timeout:observation_unavailable:RpcError:observe_with_status",
+      "owner_last_failure_reason": null,
+      "planner_last_failure_reason": "observation_readiness_timeout:observation_unavailable:RpcError:observe_with_status",
+      "nonphysical_termination": false,
+      "model_calls": 0,
+      "model_responses": 0,
+      "model_transport_attempts_recorded": 0,
+      "model_requests_with_origin_evidence": 0,
+      "model_transport_errors": 0,
+      "model_wait_s": 0,
+      "model_wait_observed_s": 0,
+      "model_requests_missing_wait": 0
+    },
+    {
+      "run_id": "web-dbe926ed282e4bca8d5931d0f8e87567",
+      "status": "included",
+      "eligible": true,
+      "issues": [],
+      "workspace_status": "review",
+      "started_at": 1795702966.36283,
+      "mode": "baseline",
+      "bundle_id": "8818976408ce68d0c63a5e7602b26d28ca4cf9d54f0e3214cf4ffda9d3656002",
+      "version": 54,
+      "scenario_id": null,
+      "ended": true,
+      "planner_mirror_incomplete": false,
+      "stages": {
+        "S0": true,
+        "S1": true,
+        "S2": true,
+        "S3": true,
+        "S4": true,
+        "S5": false,
+        "S6": false,
+        "S7": false,
+        "S8": false,
+        "S9": false
+      },
+      "stage_interval_s": {
+        "S0": 0.0,
+        "S1": 4.40174635,
+        "S2": 3.326947387,
+        "S3": 7.108635668,
+        "S4": 1.064753864,
+        "S5": null,
+        "S6": null,
+        "S7": null,
+        "S8": null,
+        "S9": null
+      },
+      "stage_skill_duration_s": {
+        "S0": null,
+        "S1": null,
+        "S2": 7.100228638,
+        "S3": 6.964605243,
+        "S4": 0.258381257,
+        "S5": null,
+        "S6": null,
+        "S7": null,
+        "S8": null,
+        "S9": null
+      },
+      "furthest_stage": "S4",
+      "complete_success": false,
+      "first_motion_s": 4.40174635,
+      "task_s": null,
+      "reset_after_placement_s": null,
+      "assisted_results": 0,
+      "manual_interventions": 0,
+      "physical_rejections": 0,
+      "nonphysical_rejections": 0,
+      "rejection_reasons": {
+        "nonphysical": {},
+        "physical": {}
+      },
+      "failed_skill_reasons": {
+        "motion_stalled": 1
+      },
+      "revocations": 3,
+      "revocations_raw": 4,
+      "revocation_reasons": {
+        "task_finished": 1,
+        "web_stop_requested": 1,
+        "session_closed": 1,
+        "owner_bridge_closed": 1
+      },
+      "active_fault_revocations": 0,
+      "last_failure_source": "task_needs_attention",
+      "last_failure_reason": "observation_readiness_timeout:coarse_geometry_cannot_authorize_precision_task",
+      "owner_last_failure_reason": "motion_stalled",
+      "planner_last_failure_reason": "observation_readiness_timeout:coarse_geometry_cannot_authorize_precision_task",
+      "nonphysical_termination": false,
+      "model_calls": 0,
+      "model_responses": 0,
+      "model_transport_attempts_recorded": 0,
+      "model_requests_with_origin_evidence": 0,
+      "model_transport_errors": 0,
+      "model_wait_s": 0,
+      "model_wait_observed_s": 0,
+      "model_requests_missing_wait": 0
+    }
+  ],
+  "summary": {
+    "directories": 3,
+    "included": 3,
+    "status_counts": {
+      "included": 3
+    },
+    "issue_counts": {},
+    "mode_counts": {
+      "baseline": 3
+    },
+    "version_counts": {
+      "54": 3
+    },
+    "stages": {
+      "S0": {
+        "reached": 3,
+        "trials": 3,
+        "unknown": 0,
+        "rate": 1.0,
+        "observed_lower_bound": 1.0,
+        "interval_median_s": 0.0,
+        "interval_n": 3
+      },
+      "S1": {
+        "reached": 2,
+        "trials": 3,
+        "unknown": 0,
+        "rate": 0.6666666666666666,
+        "observed_lower_bound": 0.6666666666666666,
+        "interval_median_s": 6.454098642,
+        "interval_n": 2
+      },
+      "S2": {
+        "reached": 2,
+        "trials": 3,
+        "unknown": 0,
+        "rate": 0.6666666666666666,
+        "observed_lower_bound": 0.6666666666666666,
+        "interval_median_s": 3.1577831605,
+        "interval_n": 2
+      },
+      "S3": {
+        "reached": 2,
+        "trials": 3,
+        "unknown": 0,
+        "rate": 0.6666666666666666,
+        "observed_lower_bound": 0.6666666666666666,
+        "interval_median_s": 7.1528800865,
+        "interval_n": 2
+      },
+      "S4": {
+        "reached": 2,
+        "trials": 3,
+        "unknown": 0,
+        "rate": 0.6666666666666666,
+        "observed_lower_bound": 0.6666666666666666,
+        "interval_median_s": 1.0621658495,
+        "interval_n": 2
+      },
+      "S5": {
+        "reached": 1,
+        "trials": 3,
+        "unknown": 0,
+        "rate": 0.3333333333333333,
+        "observed_lower_bound": 0.3333333333333333,
+        "interval_median_s": 37.974233122,
+        "interval_n": 1
+      },
+      "S6": {
+        "reached": 0,
+        "trials": 3,
+        "unknown": 0,
+        "rate": 0.0,
+        "observed_lower_bound": 0.0,
+        "interval_median_s": null,
+        "interval_n": 0
+      },
+      "S7": {
+        "reached": 0,
+        "trials": 3,
+        "unknown": 0,
+        "rate": 0.0,
+        "observed_lower_bound": 0.0,
+        "interval_median_s": null,
+        "interval_n": 0
+      },
+      "S8": {
+        "reached": 0,
+        "trials": 3,
+        "unknown": 0,
+        "rate": 0.0,
+        "observed_lower_bound": 0.0,
+        "interval_median_s": null,
+        "interval_n": 0
+      },
+      "S9": {
+        "reached": 0,
+        "trials": 3,
+        "unknown": 0,
+        "rate": 0.0,
+        "observed_lower_bound": 0.0,
+        "interval_median_s": null,
+        "interval_n": 0
+      }
+    },
+    "complete_successes": 0,
+    "success_unknown": 0,
+    "success_rate": {
+      "value": 0.0,
+      "n": 3
+    },
+    "first_motion_median_s": {
+      "value": 6.454098642,
+      "n": 2
+    },
+    "task_median_s": {
+      "value": null,
+      "n": 0
+    },
+    "model_calls_median": {
+      "value": 0,
+      "n": 3
+    },
+    "model_wait_median_s": {
+      "value": 0,
+      "n": 3
+    },
+    "nonphysical_rejections_mean": {
+      "value": 0.0,
+      "n": 3
+    },
+    "nonphysical_rejections": 0,
+    "physical_rejections": 0,
+    "nonphysical_termination_rate": {
+      "value": 0.0,
+      "n": 2
+    },
+    "closed_owner_traces": 3,
+    "closed_nonphysical_rejections_mean": {
+      "value": 0.0,
+      "n": 3
+    },
+    "revocations": 9,
+    "revocations_raw": 12,
+    "active_fault_revocations": 0,
+    "failed_skill_reasons": {
+      "motion_stalled": 1
+    },
+    "last_failure_reasons": {
+      "observation_readiness_timeout:coarse_geometry_cannot_authorize_precision_task": 1,
+      "observation_readiness_timeout:observation_unavailable:RpcError:observe_with_status": 1
+    }
+  }
+}

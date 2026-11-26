@@ -1,0 +1,92 @@
+[
+  {
+    "trial": 1,
+    "run_id": "web-dbe926ed282e4bca8d5931d0f8e87567",
+    "planner_effective": "baseline",
+    "summary": "任务待处理：transfer_above_hole；observation_readiness_timeout:coarse_geometry_cannot_authorize_precision_task",
+    "stop_confirmation": "measured_stationary",
+    "skills": [
+      {
+        "skill": "approach_grasp",
+        "outcome": "success",
+        "reason": "owner_arrival_and_fresh_scene"
+      },
+      {
+        "skill": "grasp",
+        "outcome": "success",
+        "reason": "measured_blocked_closure"
+      },
+      {
+        "skill": "verify_grasp",
+        "outcome": "success",
+        "reason": "measured_blocked_closure"
+      },
+      {
+        "skill": "transfer_above_hole",
+        "outcome": "failure",
+        "reason": "motion_stalled"
+      }
+    ],
+    "attention": {
+      "skill": "transfer_above_hole",
+      "reason": "observation_readiness_timeout:coarse_geometry_cannot_authorize_precision_task",
+      "submitted": false,
+      "request_id": "14fbb29895a6450d9559a6ba807fb4e5",
+      "no_motion": false,
+      "continuation_submitted": false,
+      "observation_retry_reason": "observation_readiness_timeout:coarse_geometry_cannot_authorize_precision_task"
+    }
+  },
+  {
+    "trial": 2,
+    "run_id": "web-9da20b8369f945f6be322c5a79d61543",
+    "planner_effective": "baseline",
+    "summary": "任务待处理：approach_grasp；observation_readiness_timeout:observation_unavailable:RpcError:observe_with_status: mask_view=right:mask_uncertain_requires_new_prompt:object=square-1",
+    "stop_confirmation": "measured_stationary",
+    "skills": [],
+    "attention": {
+      "skill": "approach_grasp",
+      "reason": "observation_readiness_timeout:observation_unavailable:RpcError:observe_with_status: mask_view=right:mask_uncertain_requires_new_prompt:object=square-1",
+      "submitted": false
+    }
+  },
+  {
+    "trial": 3,
+    "run_id": "web-5653aac6c68e490eb1d881e399d7a165",
+    "planner_effective": "baseline",
+    "summary": "任务待处理：align；observation_viewpoint_required:aperture_measurement_required:square-hole-1:fixture_aperture_not_detected_in_search_region",
+    "stop_confirmation": "measured_stationary",
+    "skills": [
+      {
+        "skill": "approach_grasp",
+        "outcome": "success",
+        "reason": "owner_arrival_and_fresh_scene"
+      },
+      {
+        "skill": "grasp",
+        "outcome": "success",
+        "reason": "measured_blocked_closure"
+      },
+      {
+        "skill": "verify_grasp",
+        "outcome": "success",
+        "reason": "measured_blocked_closure"
+      },
+      {
+        "skill": "transfer_above_hole",
+        "outcome": "success",
+        "reason": "owner_transport_endpoint_and_held_target"
+      },
+      {
+        "skill": "inspect_in_hand",
+        "outcome": "success",
+        "reason": "grasp_observation"
+      }
+    ],
+    "attention": {
+      "skill": "align",
+      "reason": "observation_viewpoint_required:aperture_measurement_required:square-hole-1:fixture_aperture_not_detected_in_search_region",
+      "submitted": false
+    }
+  }
+]

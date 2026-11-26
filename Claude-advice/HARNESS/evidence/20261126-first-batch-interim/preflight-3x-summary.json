@@ -1,0 +1,47 @@
+{
+  "all_3_passed": true,
+  "runs": [
+    {
+      "run": 1,
+      "returncode": 0,
+      "passed": true,
+      "reasons": [],
+      "contiguous_s": 34.61272019499984,
+      "arm_l_j2_min_margin_deg": 16.318199157714844,
+      "check4_counts": {
+        "block": 185,
+        "fixture": 185
+      },
+      "sam_delta": 360,
+      "hole_direct_count": 0
+    },
+    {
+      "run": 2,
+      "returncode": 0,
+      "passed": true,
+      "reasons": [],
+      "contiguous_s": 16.94149091999998,
+      "arm_l_j2_min_margin_deg": 16.318206787109375,
+      "check4_counts": {
+        "block": 91,
+        "fixture": 91
+      },
+      "sam_delta": 359,
+      "hole_direct_count": 0
+    },
+    {
+      "run": 3,
+      "returncode": 0,
+      "passed": true,
+      "reasons": [],
+      "contiguous_s": 23.354700069000046,
+      "arm_l_j2_min_margin_deg": 16.3182373046875,
+      "check4_counts": {
+        "block": 125,
+        "fixture": 125
+      },
+      "sam_delta": 360,
+      "hole_direct_count": 0
+    }
+  ]
+}

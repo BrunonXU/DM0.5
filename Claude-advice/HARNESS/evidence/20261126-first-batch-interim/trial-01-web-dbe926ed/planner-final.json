@@ -1,0 +1,171 @@
+{
+  "run": "/home/user/projects/HARNESS/runs/workspace/web-dbe926ed282e4bca8d5931d0f8e87567/planner",
+  "result": {
+    "planner_declaration": {
+      "cell": 1,
+      "stdout": "",
+      "stderr": "",
+      "elapsed_s": 44.37,
+      "primitive_calls": [
+        {
+          "tool": "execute_skill",
+          "kwargs": {
+            "name": "approach_grasp"
+          },
+          "ok": true,
+          "error": null,
+          "request_id": "3f20b573721e49baa2e5bcc268130921",
+          "lifecycle": "completed",
+          "outcome": "success",
+          "reason": "owner_arrival_and_fresh_scene",
+          "no_motion": false,
+          "retryable": false,
+          "cancel_stage": "none",
+          "rejected_candidate_variant": null,
+          "resume_request_id": null,
+          "verification_request_id": null,
+          "planning_diagnostic": null,
+          "evidence_recorded": true
+        },
+        {
+          "tool": "execute_skill",
+          "kwargs": {
+            "name": "grasp"
+          },
+          "ok": true,
+          "error": null,
+          "request_id": "a8f97d27c4aa4f41ba6aecec65ecefaa",
+          "lifecycle": "completed",
+          "outcome": "success",
+          "reason": "measured_blocked_closure",
+          "no_motion": false,
+          "retryable": false,
+          "cancel_stage": "none",
+          "rejected_candidate_variant": null,
+          "resume_request_id": null,
+          "verification_request_id": null,
+          "planning_diagnostic": null,
+          "evidence_recorded": true
+        },
+        {
+          "tool": "execute_skill",
+          "kwargs": {
+            "name": "verify_grasp"
+          },
+          "ok": true,
+          "error": null,
+          "request_id": "e89af58b0e7f45a4951f23d77898f843",
+          "lifecycle": "completed",
+          "outcome": "success",
+          "reason": "measured_blocked_closure",
+          "no_motion": true,
+          "retryable": false,
+          "cancel_stage": "none",
+          "rejected_candidate_variant": null,
+          "resume_request_id": null,
+          "verification_request_id": null,
+          "planning_diagnostic": null,
+          "evidence_recorded": true
+        },
+        {
+          "tool": "execute_skill",
+          "kwargs": {
+            "name": "transfer_above_hole"
+          },
+          "ok": true,
+          "error": null,
+          "request_id": "14fbb29895a6450d9559a6ba807fb4e5",
+          "lifecycle": "completed",
+          "outcome": "failure",
+          "reason": "motion_stalled",
+          "no_motion": false,
+          "retryable": false,
+          "cancel_stage": "measured_stationary",
+          "rejected_candidate_variant": null,
+          "resume_request_id": "14fbb29895a6450d9559a6ba807fb4e5",
+          "verification_request_id": null,
+          "planning_diagnostic": null,
+          "evidence_recorded": false
+        },
+        {
+          "tool": "execute_skill",
+          "kwargs": {
+            "name": "transfer_above_hole",
+            "resume_request_id": "14fbb29895a6450d9559a6ba807fb4e5"
+          },
+          "ok": true,
+          "error": null,
+          "request_id": "14fbb29895a6450d9559a6ba807fb4e5",
+          "lifecycle": "completed",
+          "outcome": "failure",
+          "reason": "motion_stalled",
+          "no_motion": false,
+          "retryable": false,
+          "cancel_stage": "measured_stationary",
+          "rejected_candidate_variant": null,
+          "resume_request_id": "14fbb29895a6450d9559a6ba807fb4e5",
+          "verification_request_id": null,
+          "planning_diagnostic": null,
+          "observation_retry_reason": "observation_readiness_timeout:coarse_geometry_cannot_authorize_precision_task",
+          "continuation_submitted": false,
+          "evidence_recorded": false
+        }
+      ],
+      "moved": true,
+      "state": {
+        "phase": "unobserved",
+        "observation_id": "unavailable",
+        "authorized": null,
+        "state_cached": true
+      },
+      "episode_done": false,
+      "motion_status_unknown": false,
+      "published_skill_requests": 4,
+      "tool_steps": 4
+    },
+    "measured": {
+      "outcome": "pending_review",
+      "training_ready": false,
+      "placement_success": false,
+      "reset_required": true,
+      "reset_success": false,
+      "assisted": false,
+      "autonomous_success": false,
+      "goal": "placed",
+      "goal_reached": false,
+      "admission_profile": "development_coarse",
+      "partial_task": false,
+      "synthetic": false
+    },
+    "turns": [
+      {
+        "index": 0,
+        "tool": "python",
+        "elapsed_s": 44.39,
+        "ok": true,
+        "moved": true,
+        "env_steps": 4,
+        "terminated": false,
+        "sandbox_flags": []
+      }
+    ],
+    "recording_identity": {
+      "owner_run_id": "f1_hil_20261126T142251Z_02479882",
+      "owner_run_path": "/home/user/Bruno/HARNESS/runtime/harness-runs/f1_hil_20261126T142251Z_02479882",
+      "owner_instance_id": "cf285de19eda41b2aab53a516ec08157",
+      "host_boot_id": "5707be81-0cb3-4092-a119-be68060c87d1"
+    },
+    "session_id": "9daa894bea9243ff8a05720f57e373ef",
+    "evidence_status": "awaiting_native_recording_seal",
+    "training_ready": false,
+    "attention": {
+      "skill": "transfer_above_hole",
+      "reason": "observation_readiness_timeout:coarse_geometry_cannot_authorize_precision_task",
+      "submitted": false,
+      "request_id": "14fbb29895a6450d9559a6ba807fb4e5",
+      "no_motion": false,
+      "continuation_submitted": false,
+      "observation_retry_reason": "observation_readiness_timeout:coarse_geometry_cannot_authorize_precision_task"
+    }
+  }
+}
