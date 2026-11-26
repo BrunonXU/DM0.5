@@ -181,7 +181,7 @@ Codex 报告里写“真机物理／固件在 +54.86° 顶死”，方向对，�
 4. 不对着止位做任何主动试探动作。第 6 关节的确认只读。
 5. 规格与代码事实对不上时停下报告。
 
-## H-35 `[ ]` P0：换分支、补证据、改说法
+## H-35 `[x]` P0：换分支、补证据、改说法
 
 不改运行时，离线可做。
 
@@ -196,6 +196,17 @@ Codex 报告里写“真机物理／固件在 +54.86° 顶死”，方向对，�
 5. Codex 报告 `report.md` 里“真机物理／固件在 +54.86° 顶死”改为“实测在 54.86° 停住，来源未确认”，并加上对 10 月两份事故记录的链接。
 
 **验收**：`check_project_layout.py --with-evidence` 通过；`git ls-files` 列出新增文件；重新生成的漏斗里三次试验都有停止原因。
+
+**执行记录（2026-11-26）**：
+- 分支：已从最新 `origin/main`（`4b3c0bc`）新建 `harness/round4`，`git cherry-pick 5b2dfe5` 带入中期批初版证据（`bd36753`）；不再推送 `harness/v53`。请用户／协调者关闭 PR #6（内容已在 `main` 的 `5f46046`）。
+- 证据目录：`Claude-advice/HARNESS/evidence/20261126-first-batch-interim/`（共 35 个文件，`manifest.json` 已更新，0 真实用户名/内网 IP 泄漏）：
+  - `runs/<run_id>/{owner-trace.jsonl,planner-trace.jsonl,planner-final.json,workspace-run.json}`（3 次试验完整脱敏原件）；
+  - `preflight/preflight-{1,2,3}-result.json`（连续 3 次五项全过预检原件）；
+  - `layouts.md`（3 次实测桶位与积木位姿、清空桶内散块恢复第 4 项过程、Trial #1 与 Trial #3 持块停机后人工取块 2 次介入说明）；
+  - `trial-01-j6-stall-evidence.json`（路点 10 完整 16 维目标向量 + 堵转前 3.5 秒 `arm_r_j6` 111 采样实测序列，106 帧持平 `≥54.5°`、最大 `54.8631°`）；
+  - `trial-02-right-roi-crop.jpg`（10,460 B ≤ 300 KB，右腕失败帧搜索框裁剪）与 `trial-02-seg-diagnostic.json`（H-34 项 1）。
+- 漏斗修正：`HARNESS/scripts/run_funnel.py` 在无失败原因且规划端 `pending_review` 时读取 `attention.reason` 并标注来源 `planner_pending_review`（净增 `raise HarnessError` = `0`）；`HARNESS/tests/test_run_funnel.py` 10/10 通过。重跑生成 `funnel.json` 后三次试验均具非空 `last_failure_reason`（Trial #3 为 `planner_pending_review` / `observation_viewpoint_required:aperture_measurement_required:square-hole-1:fixture_aperture_not_detected_in_search_region`）。
+- 文档回写：五处文档已统一改为“本批沿用默认环境（production-gateway）；按判定规则胜出的是 fastdds-udp，随下一个版本钉死”，`STATUS.md` 页首与 `TODO.md` 已更新为 V54 中期批与第四轮顺序，`report.md` 已改为“实测在 54.86° 停住，来源未确认”并链接 10 月两份 DAgger 事故记录。
 
 ## H-33 `[ ]` P0：右腕第 6 关节的规划上限收到 50.0°
 

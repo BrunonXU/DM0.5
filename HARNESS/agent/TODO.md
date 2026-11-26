@@ -1,12 +1,13 @@
 # HARNESS 当前待办
 
-**V54（`8818976408ce`）已部署，前一版本是 V53。H-20 配对检查三路 10/10、五项全过 8/10、8/10、7/10，本批选定 production-gateway，尚无真机成功。** 重连后 7 轮都因第 4 项 `3d_geometry_missing:bucket_fixture` 未过，H-21 开跑前须先让预检第 4 项恢复通过。H-27 的首步下探只在这一批豁免，之后做 H-31。[第三轮审阅](../../Claude-advice/HARNESS/review-v53-round3.md) · [H-20 重跑](../../Claude-advice/HARNESS/evidence/20261126-H20-dds-ab-rerun/report.md) · [H-27 报告](../../Claude-advice/HARNESS/evidence/20261126-H27-v5-preset/report.md)
+**V54（`8818976408ce`）已部署，前一版本是 V53。H-20 配对检查三路 10/10，本批沿用默认环境（production-gateway）；按判定规则胜出的是 fastdds-udp，随下一个版本钉死。** V54 中期批 3 次试验到达 S4、S0、S5 后暂停，尚无真机放置成功；按第四轮审阅顺序依次完成 H-35 → H-33 → H-32 后重新计 10 次。H-27 的首步下探只在第一批豁免，之后做 H-31。[第四轮审阅](../../Claude-advice/HARNESS/review-round4.md) · [中期批报告](../../Claude-advice/HARNESS/evidence/20261126-first-batch-interim/report.md) · [H-20 重跑](../../Claude-advice/HARNESS/evidence/20261126-H20-dds-ab-rerun/report.md)
 
-按已定决策推进：核对重启后桌面桶位／光照使第 4 项恢复检出桶 → 连续 3 次预检通过 → 设 `planner_override="baseline"` 并请用户在 4242 执行 10 次直立真机试验。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
+按第四轮已定顺序推进（一次只做一条，前一条验收通过再开下一条）：H-35 补齐中期批证据与漏斗 → H-33 收紧 `arm_r_j6` 规划上限至 `50.0°` 并钉死 `fastdds-udp`（V55）→ H-32 遮挡时保留 20 秒内实测桶位姿完成让开动作（V56）→ 在 V56 上重新计 10 次固定程序直立真机试验。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
 
 ## 现在做
 
-- [ ] **H-21：连续 3 次预检通过后，在 `workspace.local.json` 设 `planner_override="baseline"` 做 10 次直立真机试验。** 操作者在 4242 点一次「开始任务」，保持左臂在 `积木demoV5` 且不碰左腕线缆；止损规则：前 3 次若均因取帧停在 S0 即停下并启用步骤 B（`fastdds-udp`）另成 V55 重做预检再跑；完成后按停点漏斗在 `review-v53.md` 表中单选下一条（H-29 Gemini 仅在第一批数据后考虑）。[任务页操作](../docs/operations/DIRECT_ROLLOUT.md)
+- [ ] **H-33（V55）：右腕第 6 关节规划上限收紧至 `50.0°` 并随同版本钉死 `fastdds-udp`。** 在 `plan.local.json` 增加 `planning_joint_envelope_deg = {"arm_r_j6": [-60.0, 50.0]}`，校验 `solve_path` 与关节空间搜索目标（原因码 `planning_joint_envelope_exceeded`），并行完成 4 项只读确认、试验 1/3 离线重算及软件全套回归；上线预检连续 3 次通过后做最多 3 次真机试验（到 S5 且 `arm_r_j6 ≤ 50.0°` 无堵转即通过）。
+- [ ] **H-32（V56）：持块遮挡头部时保留 20 秒内实测桶位姿以完成让开动作。** 先确认试验 3 到达桶上方后的 `independent_fixture.reason` 为 `bucket_landmark_registration_unavailable`，仅改 `scene_pipeline.py` 五条件保留分支，补 6 例测试与试验 3 零输出回放（让开预览 `planned=True`）；上线预检 3 次通过后重新计 H-21 正式 10 次直立试验（并按 H-34 计数 S0 分割不确定次数）。[任务页操作](../docs/operations/DIRECT_ROLLOUT.md)
 - [ ] **H-31（P1，第一批之后做）：修复 `support_lift` 首步下探。** 不改审计代码、不改 `1e-9` 与 `1.0 mm` 阈值，修完后 Replay A 必须审计全过。
 
 ## 单块全流程跑通后

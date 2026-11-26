@@ -1,0 +1,297 @@
+{
+  "run_id": "web-9da20b8369f945f6be322c5a79d61543",
+  "crop_file": "trial-02-right-roi-crop.jpg",
+  "crop_meta": {
+    "obs_id": 21,
+    "frame_id": 43,
+    "source_ns": 1795703109176473633,
+    "diff_ns": 0,
+    "orig_size": [
+      640,
+      480
+    ],
+    "crop_box": [
+      243,
+      94,
+      537,
+      410
+    ],
+    "prompt_box": [
+      283,
+      134,
+      497,
+      370
+    ],
+    "jpeg_bytes": 10460
+  },
+  "failure_snapshots": [
+    {
+      "snapshot_file": "2510b10a4189448c80ae526f9fbffe48.json",
+      "snapshot_id": "2510b10a4189448c80ae526f9fbffe48",
+      "reason": "mask_view=right:mask_uncertain_requires_new_prompt:object=square-1",
+      "missing_at_capture": [],
+      "search_before": {
+        "hint": null,
+        "object_camera": null,
+        "prompts": {
+          "head": {
+            "backend": "sam2_remote",
+            "prompts": {
+              "bucket-left-slot": [
+                300,
+                305,
+                345,
+                355
+              ],
+              "bucket-lid": [
+                280,
+                230,
+                515,
+                447
+              ],
+              "bucket-triangle": [
+                350,
+                250,
+                440,
+                305
+              ],
+              "bucket-u-slot": [
+                350,
+                360,
+                440,
+                420
+              ],
+              "square-1": [
+                500,
+                235,
+                625,
+                350
+              ],
+              "square-hole-1": [
+                395,
+                300,
+                455,
+                365
+              ]
+            },
+            "visual_prompts": {},
+            "visual_state_is_motion_evidence": false
+          },
+          "right": {
+            "backend": "sam2_remote",
+            "prompts": {
+              "square-1": [
+                283,
+                134,
+                497,
+                370
+              ]
+            },
+            "visual_prompts": {},
+            "visual_state_is_motion_evidence": false
+          }
+        }
+      },
+      "measurement_diagnostics": {
+        "attempts": [
+          {
+            "camera": "right",
+            "diagnostic_only": true,
+            "frames": [
+              {
+                "blob_sha256": "bb68c1a2dbae8bc21317b56ce005819d4e31603a2bdcc43c8ab61a6d20fa8579",
+                "received_ns": 2888408527174,
+                "source_ns": 1795703109176473633,
+                "stream": "rgb"
+              },
+              {
+                "blob_sha256": "85b83c662624494f9d0e287dc50d70bccb589780f7b5c1195ef19b6e8e6cda25",
+                "received_ns": 2888406646101,
+                "source_ns": 1795703109175445801,
+                "stream": "depth"
+              }
+            ],
+            "mask_available": null,
+            "metrics": {},
+            "object_id": "square-1",
+            "observation_id": "bde81b5dc96d48dd9d15b1fb874a94bd:4",
+            "reason": "mask_view=right:mask_uncertain_requires_new_prompt:object=square-1",
+            "stage": "segmentation_or_view"
+          },
+          {
+            "camera": "head",
+            "diagnostic_only": true,
+            "frames": [
+              {
+                "blob_sha256": "2ee21ea5b5b5416fe15f681dd314664a176592a48b4f8b25280915675b6be9a3",
+                "received_ns": 2888463486460,
+                "source_ns": 1795703109204603904,
+                "stream": "rgb"
+              },
+              {
+                "blob_sha256": "e7d6943b4fa25655dc74943c9453bdd93b9d92e275640ddc638b3fc60e00c595",
+                "received_ns": 2888466850372,
+                "source_ns": 1795703109237996032,
+                "stream": "depth"
+              }
+            ],
+            "mask_available": null,
+            "metrics": {},
+            "object_id": "square-1",
+            "observation_id": "bde81b5dc96d48dd9d15b1fb874a94bd:4",
+            "reason": "object_mask_missing:camera=head:object=square-1",
+            "stage": "segmentation_or_view"
+          }
+        ],
+        "calibration_id": null,
+        "diagnostic_only": true,
+        "observation_id": "bde81b5dc96d48dd9d15b1fb874a94bd:4",
+        "reason": "mask_view=right:mask_uncertain_requires_new_prompt:object=square-1",
+        "scope": {
+          "epoch": 1,
+          "owner_instance_id": "ef50f523550e465aa2c4b9cccde333f8",
+          "session_id": "968cf4ea70de4af4bf654c45e187a6c0",
+          "task_generation": 1,
+          "task_hash": "16080ca3727fb5b3fda3bd94a4f085d54f17de43fe336f9d40d4d4b4dee46aa6",
+          "task_id": "web-9da20b8369f945f6be322c5a79d61543"
+        }
+      },
+      "observation_faults": [],
+      "observation_quality_warnings": []
+    },
+    {
+      "snapshot_file": "6a03637a7acf4489a6db406fba0b455f.json",
+      "snapshot_id": "6a03637a7acf4489a6db406fba0b455f",
+      "reason": "mask_view=right:mask_uncertain_requires_new_prompt:object=square-1",
+      "missing_at_capture": [],
+      "search_before": {
+        "hint": null,
+        "object_camera": null,
+        "prompts": {
+          "head": {
+            "backend": "sam2_remote",
+            "prompts": {
+              "bucket-left-slot": [
+                300,
+                305,
+                345,
+                355
+              ],
+              "bucket-lid": [
+                280,
+                230,
+                515,
+                447
+              ],
+              "bucket-triangle": [
+                350,
+                250,
+                440,
+                305
+              ],
+              "bucket-u-slot": [
+                350,
+                360,
+                440,
+                420
+              ],
+              "square-1": [
+                500,
+                235,
+                625,
+                350
+              ],
+              "square-hole-1": [
+                395,
+                300,
+                455,
+                365
+              ]
+            },
+            "visual_prompts": {},
+            "visual_state_is_motion_evidence": false
+          },
+          "right": {
+            "backend": "sam2_remote",
+            "prompts": {
+              "square-1": [
+                283,
+                134,
+                497,
+                370
+              ]
+            },
+            "visual_prompts": {},
+            "visual_state_is_motion_evidence": false
+          }
+        }
+      },
+      "measurement_diagnostics": {
+        "attempts": [
+          {
+            "camera": "right",
+            "diagnostic_only": true,
+            "frames": [
+              {
+                "blob_sha256": "19adbd4384d12371ed20f4a51ef5994cfc3944ce21901b0ab43cd92623768a62",
+                "received_ns": 2888741568417,
+                "source_ns": 1795703109509486816,
+                "stream": "rgb"
+              },
+              {
+                "blob_sha256": "080b781198009e3d4a980190eb90784b1fa04ebd6ea9ce51c4900c300cb735d6",
+                "received_ns": 2888740058301,
+                "source_ns": 1795703109508458984,
+                "stream": "depth"
+              }
+            ],
+            "mask_available": null,
+            "metrics": {},
+            "object_id": "square-1",
+            "observation_id": "bde81b5dc96d48dd9d15b1fb874a94bd:5",
+            "reason": "mask_view=right:mask_uncertain_requires_new_prompt:object=square-1",
+            "stage": "segmentation_or_view"
+          },
+          {
+            "camera": "head",
+            "diagnostic_only": true,
+            "frames": [
+              {
+                "blob_sha256": "b273a242d24fdb3418c0056de5ac0a983f448bfe526a177814b42c4436b851df",
+                "received_ns": 2888711259933,
+                "source_ns": 1795703109471588096,
+                "stream": "rgb"
+              },
+              {
+                "blob_sha256": "599af9479432bddcfe6b6d46bfd82202fd3be3928a2efe07da7b4e708e29746c",
+                "received_ns": 2888700411459,
+                "source_ns": 1795703109471607040,
+                "stream": "depth"
+              }
+            ],
+            "mask_available": null,
+            "metrics": {},
+            "object_id": "square-1",
+            "observation_id": "bde81b5dc96d48dd9d15b1fb874a94bd:5",
+            "reason": "object_mask_missing:camera=head:object=square-1",
+            "stage": "segmentation_or_view"
+          }
+        ],
+        "calibration_id": null,
+        "diagnostic_only": true,
+        "observation_id": "bde81b5dc96d48dd9d15b1fb874a94bd:5",
+        "reason": "mask_view=right:mask_uncertain_requires_new_prompt:object=square-1",
+        "scope": {
+          "epoch": 1,
+          "owner_instance_id": "ef50f523550e465aa2c4b9cccde333f8",
+          "session_id": "968cf4ea70de4af4bf654c45e187a6c0",
+          "task_generation": 1,
+          "task_hash": "16080ca3727fb5b3fda3bd94a4f085d54f17de43fe336f9d40d4d4b4dee46aa6",
+          "task_id": "web-9da20b8369f945f6be322c5a79d61543"
+        }
+      },
+      "observation_faults": [],
+      "observation_quality_warnings": []
+    }
+  ]
+}

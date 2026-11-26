@@ -73,11 +73,11 @@
         "owner_bridge_closed": 1
       },
       "active_fault_revocations": 0,
-      "last_failure_source": null,
-      "last_failure_reason": null,
+      "last_failure_source": "planner_pending_review",
+      "last_failure_reason": "observation_viewpoint_required:aperture_measurement_required:square-hole-1:fixture_aperture_not_detected_in_search_region",
       "owner_last_failure_reason": null,
-      "planner_last_failure_reason": null,
-      "nonphysical_termination": null,
+      "planner_last_failure_reason": "observation_viewpoint_required:aperture_measurement_required:square-hole-1:fixture_aperture_not_detected_in_search_region",
+      "nonphysical_termination": false,
       "model_calls": 0,
       "model_responses": 0,
       "model_transport_attempts_recorded": 0,
@@ -397,7 +397,7 @@
     "physical_rejections": 0,
     "nonphysical_termination_rate": {
       "value": 0.0,
-      "n": 2
+      "n": 3
     },
     "closed_owner_traces": 3,
     "closed_nonphysical_rejections_mean": {
@@ -412,7 +412,8 @@
     },
     "last_failure_reasons": {
       "observation_readiness_timeout:coarse_geometry_cannot_authorize_precision_task": 1,
-      "observation_readiness_timeout:observation_unavailable:RpcError:observe_with_status": 1
+      "observation_readiness_timeout:observation_unavailable:RpcError:observe_with_status": 1,
+      "observation_viewpoint_required:aperture_measurement_required:square-hole-1:fixture_aperture_not_detected_in_search_region": 1
     }
   }
 }
