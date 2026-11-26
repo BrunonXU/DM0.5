@@ -1,0 +1,31 @@
+{
+  "item": "H-26",
+  "date": "2026-11-26",
+  "version": 54,
+  "bundle_id": "8818976408ce68d0c63a5e7602b26d28ca4cf9d54f0e3214cf4ffda9d3656002",
+  "deployed": true,
+  "f1_4242_restarted": false,
+  "start_sent": false,
+  "files": {
+    "camera-params-head-vs-right.json": {
+      "bytes": 1553,
+      "sha256": "2b65cdedf1dbf3fabbb68cdce7fbac4f428e6da31ee60a5d977d5c71383aeb8e"
+    },
+    "post-activation.json": {
+      "bytes": 8115,
+      "sha256": "07c738c0225b6dc756dee257b6b38d2cd39fb17d14597c8ace3cf677650072ba"
+    },
+    "post-deploy-preflight-result.json": {
+      "bytes": 333946,
+      "sha256": "a1629b017e3408b9386fbc906733c0f8da6c29392a4496fb1376e970b0381aa2"
+    },
+    "release-validation.json": {
+      "bytes": 1699,
+      "sha256": "491330b559bc0a7518aadd20162fa0e55fcd08b8c1f858768e798061be5fb08a"
+    },
+    "report.md": {
+      "bytes": 4252,
+      "sha256": "a6f4ee4f1b2ae64cc90fb1adef374f6def562b5400e2117ac2c0694012772e49"
+    }
+  }
+}

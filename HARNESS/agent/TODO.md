@@ -1,14 +1,13 @@
 # HARNESS 当前待办
 
-**V52 在用。正式网关已取得双相机 RGB-D 与同刻关节反馈，当前关节读数使正运动学计算被拒，4242 抓放试验暂缓。** [网关实测](../../Claude-advice/HARNESS/evidence/20261125-B-gateway-check/report.md)
+**V54（`8818976408ce`）已部署并在用，前一版本为 V53（`53af3b1d4406`），H-20 30/30 已完成（三路全 10/10）且 H-25 左腕线缆已确认紧固，当前进入 H-21 连续 3 次预检与 10 次直立真机试验。** H-27 `grasp_output` 首步 `1.037 µm` 下探已由 Claude 豁免（仅限 H-21 第一批，后续见 H-31）。[第三轮审阅](../../Claude-advice/HARNESS/review-v53-round3.md) · [H-20 重跑](../../Claude-advice/HARNESS/evidence/20261126-H20-dds-ab-rerun/report.md) · [H-27 报告](../../Claude-advice/HARNESS/evidence/20261126-H27-v5-preset/report.md)
 
-先由现场按已批准的流程核对左臂第 2 关节姿态，再复验三维场景。首次自主放置、逐次停点和恢复效果均按实际运行编号复盘。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
+按已定决策推进：核对重启后桌面桶位／光照使第 4 项恢复检出桶 → 连续 3 次预检通过 → 设 `planner_override="baseline"` 并请用户在 4242 执行 10 次直立真机试验。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
 
 ## 现在做
 
-- [ ] **在原位复验三维场景。** 左臂第 2 关节实测约 −94.15°，现场配置下限为 −94°。现场核对姿态，并实测控制端的 `/hal/joint_states` 持续收包，再用正式网关和 SAM 连续做至少 10 秒零动作预检，检查头部和右腕 RGB-D 与同刻关节反馈、直立方块与桶孔几何，以及左腕连续供帧。[网关实测](../../Claude-advice/HARNESS/evidence/20261125-B-gateway-check/report.md)
-- [ ] **三维场景预检通过后，从空爪和自然随机摆放的一块直立积木开始。** 操作者在 4242 点一次「开始任务」。记录实际生效版本、首动、抓稳、运输、对准、插入和释放，用同一请求的放置回执核对 S8，另记退回 S9。场景编号可空。[任务页操作](../docs/operations/DIRECT_ROLLOUT.md)
-- [ ] **逐次汇总当前版本的自然摆放试验。** 以运行编号追踪最远阶段、耗时、失败原因、人工介入与非物理拒绝。撤权主看有效授权期的故障，并列展示含正常收尾的撤权总数。历史基线分别为 22 次、376 次。[本轮候选与指标](../../Claude-advice/HARNESS/evidence/20261125-B-batch/report.md)
+- [ ] **H-21：连续 3 次预检通过后，在 `workspace.local.json` 设 `planner_override="baseline"` 做 10 次直立真机试验。** 操作者在 4242 点一次「开始任务」，保持左臂在 `积木demoV5` 且不碰左腕线缆；止损规则：前 3 次若均因取帧停在 S0 即停下并启用步骤 B（`fastdds-udp`）另成 V55 重做预检再跑；完成后按停点漏斗在 `review-v53.md` 表中单选下一条（H-29 Gemini 仅在第一批数据后考虑）。[任务页操作](../docs/operations/DIRECT_ROLLOUT.md)
+- [ ] **H-31（P1，第一批之后做）：修复 `support_lift` 首步下探。** 不改审计代码、不改 `1e-9` 与 `1.0 mm` 阈值，修完后 Replay A 必须审计全过。
 
 ## 单块全流程跑通后
 

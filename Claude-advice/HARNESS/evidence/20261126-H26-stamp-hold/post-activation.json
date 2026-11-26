@@ -1,0 +1,185 @@
+{
+  "passed": true,
+  "version": 54,
+  "bundle_id": "8818976408ce68d0c63a5e7602b26d28ca4cf9d54f0e3214cf4ffda9d3656002",
+  "routes": [
+    {
+      "mode": "astra",
+      "local_corrections": 0,
+      "root": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/coordinator-8818976408ce",
+      "bundle": "/home/user/Bruno/HARNESS/development/8818976408ce",
+      "site": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/route-probes/web-92e765c091f04874801d46be4cf19eeb/site",
+      "owner_started": false
+    },
+    {
+      "mode": "astra",
+      "local_corrections": 1,
+      "root": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/coordinator-8818976408ce",
+      "bundle": "/home/user/Bruno/HARNESS/development/8818976408ce",
+      "site": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/route-probes/web-1382eb933b42437eacd28081bd1ff187/site",
+      "owner_started": false
+    },
+    {
+      "mode": "astra",
+      "local_corrections": 2,
+      "root": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/coordinator-8818976408ce",
+      "bundle": "/home/user/Bruno/HARNESS/development/8818976408ce",
+      "site": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/route-probes/web-5b80a39e4fb549eaa411740e222988a9/site",
+      "owner_started": false
+    },
+    {
+      "mode": "astra",
+      "local_corrections": 3,
+      "root": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/coordinator-8818976408ce",
+      "bundle": "/home/user/Bruno/HARNESS/development/8818976408ce",
+      "site": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/route-probes/web-255af0369aa442a5b7d83a91f61fddbd/site",
+      "owner_started": false
+    },
+    {
+      "mode": "astra",
+      "local_corrections": 4,
+      "root": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/coordinator-8818976408ce",
+      "bundle": "/home/user/Bruno/HARNESS/development/8818976408ce",
+      "site": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/route-probes/web-2a1c0f753371424bbff65765c098dcf3/site",
+      "owner_started": false
+    },
+    {
+      "mode": "vla_astra",
+      "local_corrections": 0,
+      "root": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/coordinator-8818976408ce",
+      "bundle": "/home/user/Bruno/HARNESS/development/8818976408ce",
+      "site": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/route-probes/web-7a6b1d42572a40d3a2374606e8e3e8df/site",
+      "owner_started": false
+    },
+    {
+      "mode": "vla_astra",
+      "local_corrections": 1,
+      "root": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/coordinator-8818976408ce",
+      "bundle": "/home/user/Bruno/HARNESS/development/8818976408ce",
+      "site": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/route-probes/web-e50f608e94ab4ce98ca69c9be2682ae4/site",
+      "owner_started": false
+    },
+    {
+      "mode": "vla_astra",
+      "local_corrections": 2,
+      "root": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/coordinator-8818976408ce",
+      "bundle": "/home/user/Bruno/HARNESS/development/8818976408ce",
+      "site": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/route-probes/web-54cd52d15e3c429e9fc92701bf9c7fec/site",
+      "owner_started": false
+    },
+    {
+      "mode": "vla_astra",
+      "local_corrections": 3,
+      "root": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/coordinator-8818976408ce",
+      "bundle": "/home/user/Bruno/HARNESS/development/8818976408ce",
+      "site": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/route-probes/web-0ec99369c7c34b70802a03175c027e84/site",
+      "owner_started": false
+    },
+    {
+      "mode": "vla_astra",
+      "local_corrections": 4,
+      "root": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/coordinator-8818976408ce",
+      "bundle": "/home/user/Bruno/HARNESS/development/8818976408ce",
+      "site": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/route-probes/web-2212f7468e684e8db3709b4dcb4fa527/site",
+      "owner_started": false
+    }
+  ],
+  "local": {
+    "current_run": null,
+    "capabilities": {
+      "can_start": true,
+      "can_stop": false,
+      "reason": "F1 Harness 同戳帧保留与固定程序入口 V54，支持固定程序基线。"
+    }
+  },
+  "remote": {
+    "bundle_id": "8818976408ce68d0c63a5e7602b26d28ca4cf9d54f0e3214cf4ffda9d3656002",
+    "states": {
+      "19843": {
+        "current_run": null,
+        "capabilities": {
+          "can_start": true,
+          "can_stop": false,
+          "reason": "F1 Harness 同戳帧保留与固定程序入口 V54，支持固定程序基线。"
+        }
+      },
+      "4242": {
+        "ok": true,
+        "tasks": [
+          {
+            "id": "square_block",
+            "name": "抓积木",
+            "description": "单方块 → 匹配方孔"
+          }
+        ],
+        "selected_task": "square_block",
+        "config": {
+          "mode": "astra",
+          "instruction": "将桌上的方块放入对应方孔，松爪后确认落入。",
+          "corrections": 1,
+          "note": ""
+        },
+        "config_revision": "7a5148d03bf17c24d16e412f3447bf15c8c337cb8543c4efe6e3701edb098f37",
+        "config_updated_at": 1795598589.034455,
+        "current_run": null,
+        "capabilities": {
+          "can_start": true,
+          "can_stop": false,
+          "reason": "F1 Harness 同戳帧保留与固定程序入口 V54，支持固定程序基线。"
+        },
+        "execution": {
+          "connected": true,
+          "offline_preview": false
+        },
+        "history": {
+          "available": true,
+          "reason": ""
+        }
+      }
+    },
+    "script_sha256": "f7dc72249cd6b7dbf1a7bb63a29773cbe9af65c0017dfc17c41c88a9c79c6622",
+    "f1_4242_pid": 2581,
+    "f1_4242_profile": "/home/user/Bruno/F1/F1-4242/runtime/robot-v22.json"
+  },
+  "export_processor": {
+    "source_root": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/coordinator-8818976408ce/src",
+    "source_sha256": {
+      "export_worker.py": "2976c5676a9d095b8c907bde21af099ba3c121b8eb929462fb8a6dcfd0c6afc9",
+      "run_review.py": "b473787003ba389ecb2decd04a55a3a6317e57ca1d296ed5b1f9da04bd361957",
+      "memory.py": "f0f174bdadc1b2638663220c8388350058323f8ce01475c9ea56465c528589d1",
+      "program_experience.py": "ef25dfda64ca49ac845ff1a2b937119cace721b61ab4b0edde56d5f0612def0e"
+    },
+    "id": "257abfa84ab8bfe470f33b73902b3323d1b482b4e559404d5c927e607c99ae30"
+  },
+  "sam_health": {
+    "ready": true,
+    "backend": "sam2",
+    "model_sha256": "7402e0d864fa82708a20fbd15bc84245c2f26dff0eb43a4b5b93452deb34be69",
+    "device": "cuda:0",
+    "pid": 2923311,
+    "warmup_s": 0.6965194600634277,
+    "streaming": true,
+    "recipe": {
+      "status": "temporary",
+      "recognition": "sam3_image",
+      "tracking": "sam2.1_tiny",
+      "scope": "measured manipulation state, scoped attachment history and aperture occlusion continuity",
+      "upgrade_policy": "replaceable seed_provider config; compare actual task results before promotion",
+      "fallback": "SAM2 explicit point prompts or unconfigured entities only; semantic empty/ambiguous remains unresolved",
+      "version": 32,
+      "name": "F1 Harness 状态与恢复贯通 V32",
+      "previous_harness_version": 31,
+      "previous_perception_recipe_version": 31,
+      "models_unchanged": true
+    },
+    "seed_model_sha256": "9999e2341ceef5e136daa386eecb55cb414446a00ac2b55eb2dfd2f7c3cf8c9e",
+    "requests": 0,
+    "last_inference_ms": null
+  },
+  "sam_config_sha256": "91a9e42d49d3a707ab659a946df7f795a5fdbd17cf303460c6a2d0d14554ab32",
+  "f1_4242_pid": 2581,
+  "f1_4242_profile": "/home/user/Bruno/F1/F1-4242/runtime/robot-v22.json",
+  "f1_4242_restarted": false,
+  "start_sent": false,
+  "physical_task_verified": false
+}

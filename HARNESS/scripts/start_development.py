@@ -34,6 +34,40 @@ raise SystemExit(child.returncode)
 '''
 
 
+# Pending H-20 Step A live A/B on F1-09: keep None (unpinned) until Step A selects
+# 'fastdds-udp', 'production-gateway', or 'cyclone'.
+ROBOT_SERVICES_ROS_ENV = None
+
+
+def robot_services_ros_prelude(remote_bundle, *, ros_env=None):
+    selected = ROBOT_SERVICES_ROS_ENV if ros_env is None else ros_env
+    if selected is None:
+        return 'source /opt/ros/jazzy/setup.bash || exit\n'
+    if selected == 'fastdds-udp':
+        return (
+            'source /opt/ros/jazzy/setup.bash || exit\n'
+            'export RMW_IMPLEMENTATION=rmw_fastrtps_cpp\n'
+            'export ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET\n'
+            f'export FASTRTPS_DEFAULT_PROFILES_FILE={remote_bundle}/configs/fastdds-udp-only.xml\n'
+        )
+    if selected == 'production-gateway':
+        return (
+            'source /opt/ros/jazzy/setup.bash || exit\n'
+            'export RMW_IMPLEMENTATION=rmw_fastrtps_cpp\n'
+        )
+    if selected == 'cyclone':
+        return (
+            'source /opt/ros/jazzy/setup.bash || exit\n'
+            'source /home/user/workspace/f1/install/setup.bash || exit\n'
+            'source /home/user/workspace/agv/install/setup.bash || exit\n'
+            'export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp\n'
+            'export CYCLONEDDS_URI=/etc/ros/cyclonedds/cyclonedds.xml\n'
+            'export ROS_AUTOMATIC_DISCOVERY_RANGE=SUBNET\n'
+            'unset ROS_LOCALHOST_ONLY ROS_STATIC_PEERS\n'
+        )
+    raise ValueError('unsupported_robot_services_ros_env:' + str(selected))
+
+
 def commands(args, root, run):
     site=Path(args.local_site).resolve();run=Path(run).resolve();root=Path(root).resolve()
     for path,parent in ((args.remote_site,'/home/user/Bruno/HARNESS/site'),
@@ -54,7 +88,7 @@ def commands(args, root, run):
     service_argv=entry+['--run',remote_run,'services',args.remote_site,'--mode','hardware']
     pool=getattr(args,'numerical_pool',None)
     if pool:service_argv+=['--numerical-pool',str(pool)]
-    remote='source /opt/ros/jazzy/setup.bash\nexec '+shlex.join(service_argv)
+    remote=robot_services_ros_prelude(args.remote_bundle)+'exec '+shlex.join(service_argv)
     rows=[dict(name='masks',argv=[str(root/'perception/.venv/bin/python'),str(root/'native/entry.py'),
           '--run',str(run/'masks'),'serve','masks',str(site/'masks.local.json')]),
         dict(name='control_tunnel',port=19840,argv=ssh[:-1]+['-o','ExitOnForwardFailure=yes','-N','-L',

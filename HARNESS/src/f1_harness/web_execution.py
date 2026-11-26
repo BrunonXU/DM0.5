@@ -18,6 +18,9 @@ from .web_snapshot import checked_request, freeze_site
 class WorkspaceSupervisor:
     def __init__(self, config, *, processes=None):
         from .web_process import WorkspaceProcesses
+        override = config.get('planner_override')
+        if override is not None and override != 'baseline':
+            raise ValueError('invalid_planner_override')
         self.config = config
         self.root = Path(config['root'])
         self.runs_root = Path(config['runs_root'])
@@ -120,6 +123,13 @@ class WorkspaceSupervisor:
 
     def start(self, body):
         request = checked_request(body)
+        override = self.config.get('planner_override')
+        if override is not None:
+            if override != 'baseline':
+                raise ValueError('invalid_planner_override')
+            if request['config']['mode'] == 'vla_astra':
+                raise ValueError('planner_override_incompatible_with_vla_astra')
+        planner_effective = override or request['config']['mode']
         with self.lock:
             if self.closing or self.thread and self.thread.is_alive():
                 raise ValueError('已有任务正在执行或收尾，不重复启动。')
@@ -127,6 +137,7 @@ class WorkspaceSupervisor:
             store = EvidenceStore(run)
             metadata = dict(schema=1, id=self.run_id(run.name), started_at=time.time(), started_ns=time.monotonic_ns(),
                 status='starting', config=request['config'], config_revision=request['config_revision'],
+                planner_effective=planner_effective,
                 summary='正在准备完整任务。', request=request,
                 restart_requires_stationary=self.faulted,recovery_of=self.recovery_of if self.faulted else None)
             store.write_json('workspace-run.json', metadata)

@@ -329,9 +329,12 @@ def analyze_run(directory, table, versions):
     if issues:
         metrics = {key: None for key in metrics}
         metrics["stages"] = {s: None for s in STAGE_KEYS.values()}
+    effective_mode = config.get("planner_effective")
+    if not isinstance(effective_mode, str) or not effective_mode:
+        effective_mode = settings.get("mode") if isinstance(settings, dict) else None
     return dict(run_id=directory.name, status=issues[0] if issues else "included", eligible=not issues,
                 issues=issues, workspace_status=status, started_at=config.get("started_at"),
-                mode=settings.get("mode") if isinstance(settings, dict) else None,
+                mode=effective_mode,
                 bundle_id=bundle, version=versions.get(bundle), scenario_id=scenario, ended=ended,
                 planner_mirror_incomplete=any(e["kind"] == "owner_evidence_export_incomplete"
                                               for e in planner or []) if planner is not None else None,

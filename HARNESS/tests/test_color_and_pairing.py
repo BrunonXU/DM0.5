@@ -86,9 +86,9 @@ def test_identical_redelivery_is_dropped_without_poisoning_accepted_pair():
 
 
 def test_same_stamp_different_pixels_is_still_a_fault():
-    buffer=ObservationBuffer(clock=lambda:140)
+    buffer=ObservationBuffer(clock=lambda:100+300_000_040)
     for stream in ('rgb','depth'):buffer.add(frame(stream,received_ns=100,source_ns=100))
-    buffer.add(frame('rgb',sequence=2,received_ns=120,source_ns=100,blob_sha256='c'*64))
+    buffer.add(frame('rgb',sequence=2,received_ns=100+300_000_000,source_ns=100,blob_sha256='c'*64))
     obs=buffer.snapshot()
     assert obs.pairings[0].quality=='invalid' and obs.faults==('duplicate_source_stamp:head',)
     assert buffer.duplicate_source_frames==0

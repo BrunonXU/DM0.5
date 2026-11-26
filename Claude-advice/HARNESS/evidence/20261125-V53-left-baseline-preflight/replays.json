@@ -1,0 +1,169 @@
+{
+  "schema": "f1-harness-v53-zero-hardware-replays-v1",
+  "checked_on": "2026-11-25",
+  "version": 53,
+  "bundle_id": "53af3b1d4406d13244f7758de32023bb100e4c9d330b8795717910fc6e9dec78",
+  "passed": true,
+  "physical_motion": false,
+  "physical_acceptance": false,
+  "simulation_boundaries": [
+    "Actual RemoteTaskBackend/owner/engine/native/F1Owner/Ruckig; memory-only approved-output receiver.",
+    "Original recorded RGB-D and saved Astra hints with real SAM service; later plant and feedback simulated.",
+    "Pinned V53 infra dependency (arm_l_j2=[-94.7, 120.0], arm_r_j2=[-94.0, 120.0]) verified by SHA-256."
+  ],
+  "cases": {
+    "normal": {
+      "outcome": "success",
+      "stage_count": 10,
+      "skills": [
+        "approach_grasp",
+        "grasp",
+        "verify_grasp",
+        "transfer_above_hole",
+        "inspect_in_hand",
+        "align",
+        "insert",
+        "release",
+        "verify_placed",
+        "withdraw_reset"
+      ],
+      "output_rows": 2405,
+      "published_requests": 7,
+      "missing_published_output": [],
+      "all_outputs_simulation": true,
+      "complete_output_publications": true,
+      "wall_s": 52.09,
+      "checks": {
+        "no_uncaught_error": true,
+        "expected_outcome": true,
+        "simulation_scope_confirmed": true,
+        "source_unchanged": true,
+        "rechecks_never_publish": true,
+        "rechecks_never_replan": true,
+        "verification_calls_bounded": true,
+        "full_cycle_completed": true
+      },
+      "audits": {
+        "replay_output": {
+          "status": "passed",
+          "sha256": "1105fbb76d3e7ca7e7e8fb54f921c3a98b85610f6ff608651c7f733ca5f91a26"
+        },
+        "grasp_output": {
+          "status": "passed",
+          "sha256": "29c2aec0a60b237cf87af12913b8c8c948f01f3bcbb536ea997450be554db89c"
+        },
+        "grasp_observation_output": {
+          "status": "not_applicable"
+        },
+        "cycle_output": {
+          "status": "passed",
+          "sha256": "c4bff61b581de3e44e2ab6e590aa7e7cc1a4e1d4d5c3a5ec838e99b83bd84045"
+        }
+      }
+    },
+    "grasp-miss": {
+      "outcome": "success",
+      "stage_count": 12,
+      "skills": [
+        "approach_grasp",
+        "grasp",
+        "reobserve",
+        "regrasp",
+        "verify_grasp",
+        "transfer_above_hole",
+        "inspect_in_hand",
+        "align",
+        "insert",
+        "release",
+        "verify_placed",
+        "withdraw_reset"
+      ],
+      "output_rows": 2766,
+      "published_requests": 8,
+      "missing_published_output": [],
+      "all_outputs_simulation": true,
+      "complete_output_publications": true,
+      "wall_s": 59.74,
+      "checks": {
+        "no_uncaught_error": true,
+        "expected_outcome": true,
+        "simulation_scope_confirmed": true,
+        "source_unchanged": true,
+        "rechecks_never_publish": true,
+        "rechecks_never_replan": true,
+        "verification_calls_bounded": true,
+        "full_cycle_completed": true,
+        "miss_then_remeasured_regrasp": true
+      },
+      "audits": {
+        "replay_output": {
+          "status": "passed",
+          "sha256": "22c4060faf5b867ab74e8e42ef31366b99d9091f3556e84c6d6bd3274cb7a982"
+        },
+        "grasp_output": {
+          "status": "passed",
+          "sha256": "3ba6aaa8df56f549a266f5da4c877d9a6bd41a9cff6c3c4e9f8a8d978bd97236"
+        },
+        "grasp_observation_output": {
+          "status": "not_applicable"
+        },
+        "cycle_output": {
+          "status": "passed",
+          "sha256": "3de1d4698a24624fecd1b328a110163b41a4086a30378b61e7c3dfebb4dd6ea0"
+        }
+      }
+    },
+    "aperture-occluded": {
+      "outcome": "success",
+      "stage_count": 12,
+      "skills": [
+        "approach_grasp",
+        "grasp",
+        "verify_grasp",
+        "transfer_above_hole",
+        "inspect_in_hand",
+        "move_tcp",
+        "reobserve",
+        "align",
+        "insert",
+        "release",
+        "verify_placed",
+        "withdraw_reset"
+      ],
+      "output_rows": 2702,
+      "published_requests": 8,
+      "missing_published_output": [],
+      "all_outputs_simulation": true,
+      "complete_output_publications": true,
+      "wall_s": 57.85,
+      "checks": {
+        "no_uncaught_error": true,
+        "expected_outcome": true,
+        "simulation_scope_confirmed": true,
+        "source_unchanged": true,
+        "rechecks_never_publish": true,
+        "rechecks_never_replan": true,
+        "verification_calls_bounded": true,
+        "full_cycle_completed": true,
+        "occlusion_cleared_by_displacement": true
+      },
+      "audits": {
+        "replay_output": {
+          "status": "passed",
+          "sha256": "7d828bce6cdbbd29c1fb06197443406cb67bf38cecd5c0f1a62e78038be1be71"
+        },
+        "grasp_output": {
+          "status": "passed",
+          "sha256": "09a926e184855da36c42de2747a079722735d02e56011e41c4395ea262492bd4"
+        },
+        "grasp_observation_output": {
+          "status": "not_applicable"
+        },
+        "cycle_output": {
+          "status": "passed",
+          "sha256": "ede16e5e228557e86cae6a9cfe29e9bd2fda34be5b55d7c0db2658311589275b"
+        }
+      }
+    }
+  }
+}

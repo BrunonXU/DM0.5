@@ -57,7 +57,7 @@ def test_output_brakes_without_fault_and_reverses_with_rb_held(setup, wrist):
         outward = q.copy();outward[5:7] = [55.,110.5-1.025*55.-1e-8]
     else:
         q[1] = -90.
-        outward = q.copy();outward[1] = -94.+1e-8
+        outward = q.copy();outward[1] = float(mapping.limits[1,0])+1e-8
     inward = q.copy()
     output.push(q, 0., enabled=(True,False))
     now = 0.; origin = None; modes = set(); reverse = False
@@ -84,9 +84,10 @@ def test_output_brakes_without_fault_and_reverses_with_rb_held(setup, wrist):
 def test_output_certification_rejects_unsafe_future_but_keeps_momentum(setup):
     config, _, mapping, _, full = setup
     output = make_output(config);p=output.planner;p.set_limits(mapping.limits)
+    low = float(mapping.limits[1,0])
     q=full[:14].copy();q[1]=-92.
     output.push(q,0.,enabled=(True,False))
-    target=q.copy();target[1]=-94.+1e-8
+    target=q.copy();target[1]=low+1e-8
     found=False
     for tick in range(1,700):
         now=tick*.004
@@ -94,16 +95,16 @@ def test_output_certification_rejects_unsafe_future_but_keeps_momentum(setup):
         output.sample(now)
         assert output.fault is None
         # Force a new goal close to the moving output while it still has
-        # outward velocity; its stopping overshoot must not cross -94.
+        # outward velocity; its stopping overshoot must not cross the lower limit.
         if tick>30:
-            target[1]=max(-94.+1e-8, p.position[1]-.0001)
+            target[1]=max(low+1e-8, p.position[1]-.0001)
         if p.limit_diagnostics['mode']=='limit_braking': found=True
         mapping.check_action(np.r_[p.position,43.,66.])
     # A monotone legal path may be fully certifiable. Explicit extrema test
     # independently confirms rejection of a bad stopping trajectory below.
     import ruckig
     inp=ruckig.InputParameter(14);inp.current_position=np.deg2rad(q).tolist()
-    inp.current_position=list(inp.current_position);pos=list(inp.current_position);pos[1]=np.deg2rad(-93.999);inp.current_position=pos
+    inp.current_position=list(inp.current_position);pos=list(inp.current_position);pos[1]=np.deg2rad(low+.001);inp.current_position=pos
     inp.current_velocity=[0.]*14;vel=[0.]*14;vel[1]=-.1;inp.current_velocity=vel
     inp.target_position=pos;inp.max_velocity=[.35]*14;inp.max_acceleration=[1.]*14;inp.max_jerk=[5.]*14
     trajectory=ruckig.Trajectory(14);ruckig.Ruckig(14).calculate(inp,trajectory)

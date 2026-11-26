@@ -80,19 +80,19 @@ flowchart LR
 | P0 | H-04 `[~]` | 确认现场已开启 `joint_space_transport` 和 `joint_space_free_motion` |
 | P0 | H-05 `[~]` | 恢复预算上限放宽（只改 schema 上限，实际取值由用户定） |
 | P1 | H-06 | 运输终点改为孔口上方的小区域（复用现有 15mm 自由空间容差） |
-| P1 | H-07 `[!]` | 闭环对准程序：左腕孔位加小步 `move_tcp` 修正 |
-| P1 | H-08 `[!]` | 横躺积木抓姿对称改为绕支撑轴；预抓终点允许沿用接近前已确认的物体位姿 |
-| P1 | H-09 `[!]` | 身份未解析时先用上次 3D 位姿投影重新播种，失败再交回 Astra |
+| P1 | H-07 `[ ]` | 闭环对准程序：左腕孔位加小步 `move_tcp` 修正 |
+| P1 | H-08 `[ ]` | 横躺积木抓姿对称改为绕支撑轴；预抓终点允许沿用接近前已确认的物体位姿 |
+| P1 | H-09 `[ ]` | 身份未解析时先用上次 3D 位姿投影重新播种，失败再交回 Astra |
 | P2 | H-10 | 经验检索不再精确匹配 `operator_instruction` |
 | P2 | H-11 | 规划顺序教训经人工确认后发布到 `candidate_order` |
-| P2 | H-12 `[!]` | 开发档的参数和程序经验晋升门槛（属于政策决定） |
+| P2 | H-12 `[ ]` | 开发档的参数和程序经验晋升门槛（属于政策决定） |
 | — | H-13 | 明确不改的项（防止误改） |
-| P1 | H-14 `[!]` | 形状抽象：把方块的 4 重对称、盒体和方孔识别从代码里抽到形状配置 |
-| P0 | H-15 `[!]` | 判抓以夹爪 CAN 为主；闭爪后看不到积木时，用闭爪前的位姿确认积木在夹持区内 |
-| P0 | H-16 `[!]` | 网页开放“确定性程序”模式：见过的场景不调用 Astra，失败再交回 Astra |
-| P1 | H-17 `[!]` | 抓取时预算出的运输路径，交给提交时复用，省掉抓后的串行规划 |
+| P1 | H-14 `[ ]` | 形状抽象：把方块的 4 重对称、盒体和方孔识别从代码里抽到形状配置 |
+| P0 | H-15 `[ ]` | 判抓以夹爪 CAN 为主；闭爪后看不到积木时，用闭爪前的位姿确认积木在夹持区内 |
+| P0 | H-16 `[ ]` | 网页开放“确定性程序”模式：见过的场景不调用 Astra，失败再交回 Astra |
+| P1 | H-17 `[ ]` | 抓取时预算出的运输路径，交给提交时复用，省掉抓后的串行规划 |
 | P1 | H-18 | 每次运行输出分阶段耗时对照 20 秒预算，只告警、不拦截 |
-| P2 | H-19 `[!]` | 运输中间路点连续过点（提速项，须在首次完整成功后、经输出审计） |
+| P2 | H-19 `[ ]` | 运输中间路点连续过点（提速项，须在首次完整成功后、经输出审计） |
 
 ## 扩展到其他形状能否沿用同一套逻辑？
 
@@ -452,7 +452,7 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 
 ---
 
-## H-07 `[!]` P1：闭环对准程序
+## H-07 `[ ]` P1：闭环对准程序
 
 **位置**：
 
@@ -486,9 +486,13 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 
 **风险**：观测噪声可能导致来回振荡，因此需要 `N` 上限和单步上限。回滚只需不调用该辅助函数。
 
+V50 的 `recover_alignment` 覆盖“缺孔位时换视点”，误差闭环未做。
+
+> 决策记录：2026-11-26，用户授权 Claude 代为决定，结论见 review-v53.md 第五节。
+
 ---
 
-## H-08 `[!]` P1：横躺积木的抓姿与预抓终点续接
+## H-08 `[ ]` P1：横躺积木的抓姿与预抓终点续接
 
 **已核实的代码事实：**
 
@@ -514,9 +518,11 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 
 未确认前不得修改代码。
 
+> 决策记录：2026-11-26，用户授权 Claude 代为决定，结论见 review-v53.md 第五节。
+
 ---
 
-## H-09 `[!]` P1：身份未解析时自动重新播种
+## H-09 `[ ]` P1：身份未解析时自动重新播种
 
 **位置**：`HARNESS/src/f1_harness/scene_pipeline.py:291-295` 抛出 `object_identity_unresolved`；`sam_service.py:128-145,166-170` 在跟踪 mask 为空且播种失败时标记为 `unresolved`。
 
@@ -528,6 +534,8 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 
 1. 积木已被移动（例如被夹爪推动）时，用旧位姿播种可能锁到错误目标，是否接受这一风险；
 2. 投影框的扩边像素值。
+
+> 决策记录：2026-11-26，用户授权 Claude 代为决定，结论见 review-v53.md 第五节。
 
 ---
 
@@ -547,6 +555,8 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 
 > 执行记录（2026-11-25，分支 `harness/v50-first-run`，提交 46e7ac2）。历史经验检索允许任务措辞变化，保留模拟身份、标定、形状和目标匹配；历史和当前指令各自的哈希可追溯。软件完成，待真机验收。[合修验收与证据](evidence/20261125-B-batch/report.md)
 
+`program_experience.py:598-599`、`:640`、`:679` 仍精确匹配 `operator_instruction`，程序复用未放宽，随 H-16 一并处理。
+
 ---
 
 ## H-11 `[ ]` P2：规划顺序教训经人工确认后发布
@@ -563,7 +573,7 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 
 ---
 
-## H-12 `[!]` P2：开发档的经验晋升门槛（政策决定）
+## H-12 `[ ]` P2：开发档的经验晋升门槛（政策决定）
 
 **当前行为**：
 
@@ -574,6 +584,8 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 结果是系统没有完整成功，经验就永远无法晋升。
 
 **待人工确认**：是否设立“开发档经验”，例如同布局 2 次成功即可在开发档复用、遇到反例自动降级。这是 2026-11 用户确认过的政策边界，Codex 不得自行修改。
+
+> 决策记录：2026-11-26，用户授权 Claude 代为决定，结论见 review-v53.md 第五节。
 
 ---
 
@@ -591,7 +603,7 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 
 ---
 
-## H-14 `[!]` P1：形状抽象（为三角、圆形积木做准备）
+## H-14 `[ ]` P1：形状抽象（为三角、圆形积木做准备）
 
 **目标**：新增 `HARNESS/src/f1_harness/shapes.py`，集中定义 `ShapeProfile`：
 
@@ -629,9 +641,11 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 
 **验收**：方块的全量 pytest 和全流程零输出回放结果，与改动前逐位一致（同输入、同候选、同输出）。新形状另行验收。
 
+> 决策记录：2026-11-26，用户授权 Claude 代为决定，结论见 review-v53.md 第五节。
+
 ---
 
-## H-15 `[!]` P0：判抓以夹爪 CAN 为主，遮挡时不卡在“缺图像证据”
+## H-15 `[ ]` P0：判抓以夹爪 CAN 为主，遮挡时不卡在“缺图像证据”
 
 **当前行为**：
 
@@ -666,9 +680,13 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 
 待人工确认：是否允许在缺视觉在手变换时，用本次抓取发布的 `expected_eef_object`（`engine.py:717-719` 已记录）作为标称附件启动运输，等到桶上方再精测。附件误差会影响运输途中的碰撞余量，因此必须由用户决定。
 
+V50 已有 `GraspClosureEpisode`，CAN 结论不再被夹持区检查否决；剩余缺口是 `verification.py:20` 的可见性要求和 `transport.py:90`、`:141` 的在手位姿要求。
+
+> 决策记录：2026-11-26，用户授权 Claude 代为决定，结论见 review-v53.md 第五节。
+
 ---
 
-## H-16 `[!]` P0：网页开放“确定性程序”模式（见过的场景不调用 Astra）
+## H-16 `[ ]` P0：网页开放“确定性程序”模式（见过的场景不调用 Astra）
 
 **当前行为**：
 
@@ -696,9 +714,11 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 
 **验收**：用保存的成功场景做零输出回放，`model_requests=0` 并走完 `verify_placed`；人为注入定位失败后，交回 Astra，且不重复已发布的动作。
 
+> 决策记录：2026-11-26，用户授权 Claude 代为决定，结论见 review-v53.md 第五节。
+
 ---
 
-## H-17 `[!]` P1：抓取时的运输试算结果交给提交时复用
+## H-17 `[ ]` P1：抓取时的运输试算结果交给提交时复用
 
 **当前行为**：
 
@@ -714,6 +734,8 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 2. `native_grasp_lookahead` 在现场是否开启。
 
 **验收**：用 V32/V35 两对真实预览与提交输入回放，对比提交时“新增搜索次数”（期望为 0）和重绑耗时；加一个新障碍的负例，必须仍被拒绝。
+
+> 决策记录：2026-11-26，用户授权 Claude 代为决定，结论见 review-v53.md 第五节。
 
 ---
 
@@ -733,7 +755,7 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 
 ---
 
-## H-19 `[!]` P2：运输中间路点连续过点（提速项，排在首次完整成功之后）
+## H-19 `[ ]` P2：运输中间路点连续过点（提速项，排在首次完整成功之后）
 
 **当前行为**：`trajectory.py:30-42` 的 `stage_requires_stop` 只对 `semantic_stage in ('right_of_bucket','return_bend')`、并标注了 `continuous_return_transit` 的空手返程段放行连续过点，其余段在每个语义路点都停稳。
 
@@ -746,6 +768,8 @@ HARNESS/.venv/bin/python HARNESS/scripts/check_native_integration.py
 3. 输出限速 30°/s 不变。参考推进提到 40 的配方，只能作为另一条候选单独验收。
 
 **验收**：固定路径，对比同一次技能调用在逐点停稳和连续过点两种方式下的最小净距、耗时，以及输出审计结果（与 `agent/TODO.md` 中“单独比较运输速度”一条合并执行）。
+
+> 决策记录：2026-11-26，用户授权 Claude 代为决定，结论见 review-v53.md 第五节。
 
 ---
 

@@ -1,0 +1,168 @@
+{
+  "preset": "积木demoV5",
+  "scene_source": "live_F1_09_V5_s00_head_right_rgbd_and_cross_view_hole",
+  "arm_l_deg": [
+    56.416,
+    -77.317,
+    -76.892,
+    -119.474,
+    8.665,
+    53.199,
+    -53.832
+  ],
+  "arm_r_deg": [
+    -71.824,
+    -88.022,
+    91.903,
+    -85.465,
+    -2.319,
+    0.789,
+    -2.486
+  ],
+  "block_xyz_m": [
+    0.8124,
+    -0.2583,
+    0.547
+  ],
+  "fixture_xyz_m": [
+    0.6351,
+    -0.0568,
+    0.7726
+  ],
+  "hole_xyz_m": [
+    0.6416,
+    -0.0556,
+    0.7671
+  ],
+  "returncode": 0,
+  "hardware_outputs": 0,
+  "physical_motion": false,
+  "outcome": "success",
+  "stages": [
+    {
+      "skill": "approach_grasp",
+      "outcome": "success",
+      "reason": "owner_arrival_and_fresh_scene",
+      "diagnostic": null
+    },
+    {
+      "skill": "grasp",
+      "outcome": "success",
+      "reason": "measured_blocked_closure",
+      "diagnostic": null
+    },
+    {
+      "skill": "verify_grasp",
+      "outcome": "success",
+      "reason": "measured_blocked_closure",
+      "diagnostic": null
+    },
+    {
+      "skill": "transfer_above_hole",
+      "outcome": "success",
+      "reason": "owner_transport_endpoint_and_held_target",
+      "diagnostic": null
+    },
+    {
+      "skill": "inspect_in_hand",
+      "outcome": "success",
+      "reason": "grasp_observation",
+      "diagnostic": null
+    },
+    {
+      "skill": "align",
+      "outcome": "success",
+      "reason": "owner_arrival_and_fresh_scene",
+      "diagnostic": null
+    },
+    {
+      "skill": "insert",
+      "outcome": "success",
+      "reason": "visual_insertion_postcondition",
+      "diagnostic": null
+    },
+    {
+      "skill": "release",
+      "outcome": "success",
+      "reason": "visual_release_postcondition",
+      "diagnostic": null
+    },
+    {
+      "skill": "verify_placed",
+      "outcome": "success",
+      "reason": "placement_observed",
+      "diagnostic": null
+    },
+    {
+      "skill": "withdraw_reset",
+      "outcome": "success",
+      "reason": "owner_return_arrival_and_fresh_fixture",
+      "diagnostic": null
+    }
+  ],
+  "stage_count": 10,
+  "checks": {
+    "no_uncaught_error": true,
+    "expected_outcome": true,
+    "simulation_scope_confirmed": true,
+    "source_unchanged": true,
+    "rechecks_never_publish": true,
+    "rechecks_never_replan": true,
+    "verification_calls_bounded": true,
+    "full_cycle_completed": true
+  },
+  "paid_model_calls": 0,
+  "wall_s": 39.36,
+  "audit_returncode": 1,
+  "audit_passed": false,
+  "audit_results": {
+    "replay_output": 0,
+    "grasp_output": 1
+  },
+  "passed": false,
+  "collision_gate_emitted_audit": {
+    "emitted_rows": 1810,
+    "preventive_failures": 0,
+    "min_clearance_m": 0.003086,
+    "min_clearance_pair": [
+      "arm_R_Link7/arm_R_Link7_collision",
+      "body_Link5/body_Link5_collision"
+    ],
+    "min_clearance_row": 761,
+    "arm_R_vs_arm_L_closest_pair_hits": 0,
+    "distinct_closest_pairs": [
+      [
+        "arm_L_Link3/arm_L_Link3_collision",
+        "body_Link5/body_Link5_collision"
+      ],
+      [
+        "arm_R_Link3/arm_R_Link3_collision",
+        "body_Link5/body_Link5_collision"
+      ],
+      [
+        "arm_R_Link5/arm_R_Link5_collision",
+        "body_Link5/body_Link5_collision"
+      ],
+      [
+        "arm_R_Link7/arm_R_Link7_collision",
+        "body_Link5/body_Link5_collision"
+      ]
+    ]
+  },
+  "grasp_output_failure_summary": {
+    "failed_samples": 1,
+    "total_samples": 495,
+    "native_failures": 0,
+    "native_path_clear": true,
+    "phase": "support_lift",
+    "output_row_index": 148,
+    "output_rows_total": 228,
+    "virtual_ns": 16963952312,
+    "corner": 0,
+    "initial_min_m": 0.0005189049255761086,
+    "final_min_m": 0.0005178674735896717,
+    "downward_excursion_m": 1.037451986379053e-06,
+    "registered_object_margin_m": 0.001,
+    "unheld_tool_sweep_clear": true
+  }
+}

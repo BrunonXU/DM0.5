@@ -144,9 +144,10 @@ def test_recorded_joint_boundary_holds_and_reverse_releases_without_reclutch(
 def test_command_seed_preserves_outside_feedback_and_zero_input_continuity(setup):
     c,p,m,u,full=setup
     full=full.copy()
+    low=float(m.limits[1,0])
     command=np.r_[full[:14],43.,66.]
-    command[1]=-93.98014958869959
-    full[1]=-94.09674072265625
+    command[1]=low+0.01985041130041
+    full[1]=low-0.09674072265625
     original=full.copy()
     a=F1ArmTarget(u,m,c['ik'])
     for _ in range(12):
@@ -154,8 +155,8 @@ def test_command_seed_preserves_outside_feedback_and_zero_input_continuity(setup
         np.testing.assert_allclose(result,command,atol=1e-10)
         m.check_action(result)
     assert a.seed_diagnostics['source']=='last_submitted'
-    assert a.seed_diagnostics['measured_arm_deg'][1]<-94
-    assert a.seed_diagnostics['seed_arm_deg'][1]>-94
+    assert a.seed_diagnostics['measured_arm_deg'][1]<low
+    assert a.seed_diagnostics['seed_arm_deg'][1]>low
     assert a.seed_diagnostics['max_feedback_error_deg']==pytest.approx(.11659113395666)
     np.testing.assert_array_equal(full,original)
     a.release()
@@ -164,10 +165,15 @@ def test_command_seed_preserves_outside_feedback_and_zero_input_continuity(setup
 
 def test_invalid_last_publication_is_not_repaired_or_converted_to_boundary(setup):
     c,p,m,u,full=setup
-    command=np.r_[full[:14],43.,66.];command[1]=-94.001
+    low_left=float(m.limits[1,0])
+    command=np.r_[full[:14],43.,66.];command[1]=low_left-0.001
     a=F1ArmTarget(u,m,c['ik'])
     with pytest.raises(ValueError,match='outside F1 HAL limits'):
         a.target(_intent('left'),full,command,.02)
+    assert a.ik is None
+    command_r=np.r_[full[:14],43.,66.];command_r[8]=-94.001
+    with pytest.raises(ValueError,match='outside F1 HAL limits'):
+        a.target(_intent('right'),full,command_r,.02)
     assert a.ik is None
 
 

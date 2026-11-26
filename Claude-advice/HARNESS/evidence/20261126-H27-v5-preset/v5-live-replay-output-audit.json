@@ -1,0 +1,51 @@
+{
+  "schema": "f1-replay-output-audit-v1",
+  "physical_motion": false,
+  "report": "/home/user/projects/HARNESS/artifacts/h27-v5-preset-20261126/v5-live-normal-replay/replay/sim-19726a84b7/report.json",
+  "source_sha256": {
+    "/home/user/projects/HARNESS/artifacts/h27-v5-preset-20261126/v5-live-normal-replay/replay/sim-19726a84b7/report.json": "e962483dc854c2320380acd3e4f3f0903583b2cc0c2e2fc5dcb5d4bfbf96ae01",
+    "/home/user/projects/HARNESS/artifacts/h27-v5-preset-20261126/v5-live-normal-replay/replay/sim-19726a84b7/mock-owner-outputs.json": "827153fe6b3b146b9d3c3c04d1f27494b490880247059c813f97330da42b6cb1",
+    "/home/user/projects/HARNESS/artifacts/h27-v5-preset-20261126/v5-live-normal-replay/replay/sim-19726a84b7/collected/owner/harness/trace.jsonl": "6086df8e23aa63593abb298599daabb1bad4a652f9bae90ca7d7bc8268b3cf2f",
+    "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/full-validation-pinned/normal-baseline/HARNESS/scripts/audit_replay_output.py": "1c9473651bacd2a76d4188d22bad06448d2ae7f89995b4c188c6310afe9ff34c",
+    "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/full-validation-pinned/normal-baseline/HARNESS/scripts/output_sweeps.py": "02e626bf734b384716d69f9987736fbd0574ffe3c5ff4aba8afc3a882008c08b"
+  },
+  "checks": {
+    "complete_publications": true,
+    "immutable_left_arm": true,
+    "sampled_speed_within_profile": true,
+    "input_identity_unchanged": true,
+    "rechecks_hold_unchanged": true,
+    "covered_output_sweeps_clear": true,
+    "completed_stages_have_sweeps": true
+  },
+  "passed": true,
+  "output_samples": 1810,
+  "sampled_max_speed_deg_s": 30.000000000000544,
+  "rechecks": [],
+  "sweeps": [
+    {
+      "skill": "transfer_above_hole",
+      "request_id": "8e8f6dabe55d4b169d4935e570677d63",
+      "samples": 1061,
+      "evidence_scope": "recorded_output_path",
+      "max_joint_step_deg": 0.1,
+      "failures": [],
+      "passed": true
+    },
+    {
+      "skill": "withdraw_reset",
+      "request_id": "d1c7ca88091f420993ccbdf2e05c6865",
+      "samples": 1211,
+      "evidence_scope": "recorded_output_path",
+      "max_joint_step_deg": 0.1,
+      "failures": [],
+      "passed": true
+    }
+  ],
+  "limitations": [
+    "Outputs and feedback are simulated; local profile not verified against robot.",
+    "Only transfer and empty-return environment sweeps; other contact stages are not audited here.",
+    "Finite-difference speed is sampled evidence, not a continuous acceleration/jerk certificate.",
+    "No camera, ROS, plant, full ControlLoop, STOP or seal verification."
+  ]
+}

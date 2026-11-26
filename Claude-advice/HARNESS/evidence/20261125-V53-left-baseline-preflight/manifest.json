@@ -1,0 +1,38 @@
+{
+  "schema": "f1-harness-evidence-manifest-v1",
+  "checked_on": "2026-11-25",
+  "operator": "Antigravity on 6000D",
+  "candidate_version": 53,
+  "active_deployed_version": 52,
+  "bundle_id": "53af3b1d4406d13244f7758de32023bb100e4c9d330b8795717910fc6e9dec78",
+  "code_commit": "ce4e732164ba872ac15aa9d4c7f07551f265366d",
+  "sanitized": true,
+  "sanitization_note": "Removed local home paths, LAN IPs, machine_id, and private site configs; API.MD untouched and excluded.",
+  "software_and_zero_hardware_replays_passed": true,
+  "deployment_verified": false,
+  "live_preflight_executed": false,
+  "physical_robot_run_executed": false,
+  "pending_reason": "F1-09 offline (management tunnel 22009 refused); ARM deployment, presets.json sync, live preflight_scene.py, and physical trial deferred until robot reconnects.",
+  "files": [
+    {
+      "path": "report.md",
+      "bytes": 11791,
+      "sha256": "4f8ed008a999925dda9a82f1ea5ef2e2b90cd1ba8736f9cbd191b6491862228b"
+    },
+    {
+      "path": "software-checks.json",
+      "bytes": 2417,
+      "sha256": "ff6e936952f9f15964ed6da3ac6b5fe6cd9d9c99cdb76059fed32f5c4486d229"
+    },
+    {
+      "path": "replays.json",
+      "bytes": 5157,
+      "sha256": "859bb8ffea99cd18c014675486226fff56c3fb3ba89b74109913f2a7263236d3"
+    },
+    {
+      "path": "joint-limit-rebaseline.json",
+      "bytes": 4741,
+      "sha256": "cbbdb2d5adb8b45a731c56b78af066d8d0dbfb857c81aa9a2b08654a34f7260a"
+    }
+  ]
+}

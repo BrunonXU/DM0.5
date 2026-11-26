@@ -1,0 +1,84 @@
+{
+  "schema": "f1-harness-v53-software-checks-v1",
+  "checked_on": "2026-11-25",
+  "version": 53,
+  "product_version": "F1 Harness 左臂新基线与场景预检 V53",
+  "bundle_id": "53af3b1d4406d13244f7758de32023bb100e4c9d330b8795717910fc6e9dec78",
+  "tested_commit": "ce4e732164ba872ac15aa9d4c7f07551f265366d",
+  "active_deployed_version": 52,
+  "deployed": false,
+  "start_sent": false,
+  "hardware_outputs": 0,
+  "physical_task_verified": false,
+  "harness_frozen_suite": {
+    "distinct_cases": 3176,
+    "project_pass": 3106,
+    "project_skipped_for_numerics": 70,
+    "pinned_numerics_pass": 70,
+    "failed": 0,
+    "unresolved_skipped": 0,
+    "exact_nodeid_union": true,
+    "native_integration_pass": 62,
+    "project_layout_public_pass": true,
+    "project_layout_with_evidence_pass": true
+  },
+  "cross_repo_checks": {
+    "f1_4242_joint_contract_and_startup": {
+      "passed": 41,
+      "failed": 0
+    },
+    "dagger_f1_numerical_and_continuous_limits": {
+      "passed": 31,
+      "failed": 0,
+      "profile": "robot-v23.json",
+      "infra": "pinned-native-infra-v53"
+    },
+    "harness_preflight_scene_unit_tests": {
+      "passed": 3,
+      "failed": 0
+    }
+  },
+  "site_qualification": {
+    "passed": true,
+    "route_probes": 10,
+    "modes": [
+      "astra",
+      "vla_astra"
+    ],
+    "correction_budgets": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "arm_l_j2_limit_deg": [
+      -94.7,
+      120.0
+    ],
+    "arm_r_j2_limit_deg": [
+      -94.0,
+      120.0
+    ]
+  },
+  "bundle_diff_vs_v52": {
+    "baseline_bundle_id": "04bc818d7424e8fb4e42b13f581081ab4ddac8d1867903124689fd6afcc22705",
+    "changed_bundle_files": [
+      "control/configs/f1_infra_binding.json",
+      "control/F1_RELEASE_MANIFEST.json",
+      "scripts/preflight_scene.py",
+      "release.json"
+    ],
+    "src_f1_harness_changed_files": 0,
+    "control_python_changed_files": 0,
+    "changed_infra_binding_keys": [
+      "configs/f1-09-joints.json"
+    ]
+  },
+  "local_receipt_hashes": {
+    "release-validation.json": "3af19260d8ac6b8222cb580058c72d74306a1e8984344148b5592da319f4bd4d",
+    "software/qualification.json": "9099061862bc08317c62145a61b8999acab6867a40c9076391a2d7ff4802afad",
+    "bundle-final/manifest.json": "784e3558e0d8ae7ec614f9f0a8077ad1fc880a1a4259abaaa38177dfe00e2a17",
+    "bundle-final/bundle.tar.gz": "cc239564b8d7bc0311b22a14bbe3f155681eb44209ba448dee0394ce9e7558ed"
+  }
+}

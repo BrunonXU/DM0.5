@@ -1,0 +1,117 @@
+{
+  "schema": "f1-harness-v53-arm-l-j2-rebaseline-v1",
+  "checked_on": "2026-11-25",
+  "joint": "arm_l_j2",
+  "previous_limit_deg": [
+    -94.0,
+    120.0
+  ],
+  "new_limit_deg": [
+    -94.7,
+    120.0
+  ],
+  "arm_r_j2_limit_deg_unchanged": [
+    -94.0,
+    120.0
+  ],
+  "other_21_joints_unchanged": true,
+  "mechanical_and_driver_audit": {
+    "urdf_joint_name": "arm_L_joint2",
+    "urdf_limit_rad": [
+      -2.094395102,
+      2.094395102
+    ],
+    "urdf_limit_deg": [
+      -120.0,
+      120.0
+    ],
+    "tianji_m6_mvkdcfg_limit_deg": [
+      -120.0,
+      120.0
+    ],
+    "motor_ctl_binary_sha256": "898ef58fb7118ecbf416af134e01700ed38ffdd3480293cf06fe95da14bce0c8",
+    "motor_ctl_software_command_clamp_deg": [
+      -94.0,
+      120.0
+    ],
+    "motor_ctl_behavior": "applyJointLimits() only clamps incoming /motion_ctl/joint_ctl commands; not a mechanical stop and does not block feedback below -94.0 deg.",
+    "margin_inside_mechanical_limit_deg": 25.3,
+    "physical_cause": "Left gripper removed (left_gripper_present=false); motor_ctl torque+impedance gravity compensation (end_tool_dyn_a calibrated for 0.622 kg gripper) lets the lighter left arm settle slightly outward past commanded -93.345 deg."
+  },
+  "supporting_stationary_readings_deg": {
+    "v52_formal_service_c_294_unique_samples": {
+      "min": -94.1558837890625,
+      "max": -94.15580749511719,
+      "span_s": 24.74
+    },
+    "web_bcfd8730_5487_rows": {
+      "min": -94.15396881103516,
+      "max": -93.92121124267578
+    },
+    "web_e992a2d9_158_rows": {
+      "min": -93.9015121459961,
+      "max": -93.68107604980469
+    },
+    "post_homing_live_201_samples_5s": {
+      "min": -93.66712951660156,
+      "max": -93.66704559326172
+    },
+    "rebaseline_formula": "min(-94.155884) - 0.50 deg margin = -94.655884 -> rounded outward to -94.7 deg"
+  },
+  "gripper_and_collision_model": {
+    "removed_gripper_side": "left",
+    "left_gripper_present": false,
+    "right_gripper_present": true,
+    "left_wrist_camera_present": true,
+    "left_wrist_camera_bracket_touched": false,
+    "left_wrist_camera_bracket_confirmed_by_user": true,
+    "collision_model_unchanged": true,
+    "collision_config_sha256": "83ad2c6bad9686c32c126efdfdfea4b943773c67ed48a4bc9f44e2121c025422",
+    "arm_tip_extension_m_retained_conservatively": 0.1
+  },
+  "infra_home_preset_sync": {
+    "preset_name": "积木demoV3-左腕观测",
+    "preset_id": "5f080cd1a61f4b098a6f33041a4574b3",
+    "current_arm_l_j2_deg": -93.34454345703125,
+    "planned_arm_l_j2_deg": -93.667,
+    "status": "pending_f1_09_reconnection",
+    "note": "Planned target stays >= -94.0 deg (no motor_ctl clamp) and within 0.49 deg < 1.0 deg tolerance even if arm settles to -94.156 deg; factory default presets untouched."
+  },
+  "cyclone_vs_fastdds_joint_feedback_audit": {
+    "motor_ctl_rmw": "rmw_fastrtps_cpp (SUBNET, /dev/shm/fastrtps_* mapped)",
+    "owner_and_4242_rmw": "rmw_cyclonedds_cpp (enP3p1s0f1, SUBNET)",
+    "controller_feedback_source": "owner (RosTransport in F1-4242/robot/adapter.py) subscribes /hal/joint_states (qos_profile_sensor_data) via Cyclone DDS <-> Fast DDS RTPS/UDPv4 interop. In web-bcfd8730, owner received first_valid_feedback in 1.006s and 5,487 real /hal/joint_states samples, confirming measured_stationary from real HAL feedback.",
+    "why_earlier_0501_cyclone_probe_saw_0_publishers": "joint-topic-raw.json recorded /hal/joint_states in graph_matching_topic_at_end while publisher_info_at_end was [] and callbacks=0: intermittent cross-RMW SPDP/SEDP discovery miss when 3 concurrent probes launched simultaneously on enP3p1s0f1.",
+    "live_probes_20261125_1401_to_1405_utc": {
+      "cyclone_sys_3s": {
+        "msgs": 103,
+        "rate_hz_approx": 34.3
+      },
+      "cyclone_venv_3s": {
+        "msgs": 149,
+        "rate_hz_approx": 49.7
+      },
+      "cyclone_owner_sensor_2_5s": {
+        "msgs": 75,
+        "rate_hz_approx": 30.0
+      },
+      "fastdds_default_shm_3s": {
+        "pubs_seen": 1,
+        "msgs": 0,
+        "diagnosis": "same-host /dev/shm/fastrtps_* SHM transport stall"
+      },
+      "fastdds_udpv4_only_3s": {
+        "pubs_seen": 1,
+        "msgs": 149,
+        "rate_hz_approx": 49.7
+      }
+    }
+  },
+  "frozen_identities": {
+    "robot_v22_sha256": "9d921978148c375e79a40aa3f4c0cee6f303616bac68d394c5c45b9ac0f9f5f5",
+    "robot_v23_sha256": "f5c9dae8e1dd9dfbf567541987b5959eb50aaa4da3bc80e732dc72f035382032",
+    "f1_09_joints_before_sha256": "bf6da224b338eff9d5a268eae65bd9da0a95ba0d624985a870388e951e84bef6",
+    "f1_09_joints_after_sha256": "cf3c0cd6817023b31edee23421ffec1476b81dc8024a4ed18480aebcbdb7d11e",
+    "f1_infra_binding_after_sha256": "5fd424e81ce39d3cb8a20059f8c0f02b2b8cdcb02b473174774836d5aefb257c"
+  }
+}

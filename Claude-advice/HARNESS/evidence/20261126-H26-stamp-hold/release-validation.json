@@ -1,0 +1,64 @@
+{
+  "passed": true,
+  "version": 54,
+  "product": "F1 Harness 同戳帧保留与固定程序入口 V54",
+  "bundle_id": "8818976408ce68d0c63a5e7602b26d28ca4cf9d54f0e3214cf4ffda9d3656002",
+  "code_commit": "133f52330b336974c20b5d114c07d7f109fd559f",
+  "active_version": 53,
+  "active_bundle_id": "53af3b1d4406d13244f7758de32023bb100e4c9d330b8795717910fc6e9dec78",
+  "deployed": true,
+  "start_sent": false,
+  "hardware_outputs": 0,
+  "physical_task_verified": false,
+  "net_new_raise_harness_error": 0,
+  "software": {
+    "distinct_cases": 3190,
+    "project_pass": 3120,
+    "numerics_pass": 70,
+    "failed": 0,
+    "unresolved_skipped": 0,
+    "native_integration": 62,
+    "f1_4242_joint_contract": 37,
+    "dagger_f1_boundary": 12,
+    "project_layout": true
+  },
+  "replays": {
+    "normal": {
+      "outcome": "success",
+      "stages": 10,
+      "checks_all_passed": true,
+      "audit_passed": true,
+      "physical_motion": false,
+      "paid_model_calls": 0,
+      "wall_s": 50.88
+    },
+    "grasp-miss": {
+      "outcome": "success",
+      "stages": 12,
+      "checks_all_passed": true,
+      "audit_passed": true,
+      "physical_motion": false,
+      "paid_model_calls": 0,
+      "wall_s": 58.4
+    },
+    "aperture-occluded": {
+      "outcome": "success",
+      "stages": 12,
+      "checks_all_passed": true,
+      "audit_passed": true,
+      "physical_motion": false,
+      "paid_model_calls": 0,
+      "wall_s": 58.15
+    },
+    "normal-baseline": {
+      "outcome": "success",
+      "stages": 10,
+      "checks_all_passed": true,
+      "audit_passed": true,
+      "physical_motion": false,
+      "paid_model_calls": 0,
+      "model_requests": 0,
+      "wall_s": 49.68
+    }
+  }
+}

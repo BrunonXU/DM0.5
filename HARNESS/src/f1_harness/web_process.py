@@ -31,6 +31,9 @@ def _planner_environment():
 
 class WorkspaceProcesses:
     def __init__(self, config, run):
+        override = config.get('planner_override')
+        if override is not None and override != 'baseline':
+            raise ValueError('invalid_planner_override')
         self.config, self.run = config, Path(run)
         self.root = Path(config['root'])
         spec = importlib.util.spec_from_file_location('_workspace_auxiliary', self.root / 'scripts/start_development.py')
@@ -73,10 +76,11 @@ class WorkspaceProcesses:
                 # Pin child imports to the same reviewed coordinator sources,
                 # rather than the editable development installation's .pth.
                 environment['PYTHONPATH']=str(self.root/'src')
-                if self.config.get('_subscription_credentials'):
-                    environment['F1_CHATGPT_SUBSCRIPTION_CREDENTIALS']=self.config['_subscription_credentials']
-                if self.config.get('_model_pool_socket'):
-                    environment['F1_MODEL_POOL_SOCKET']=self.config['_model_pool_socket']
+                if self.config.get('planner_override') != 'baseline':
+                    if self.config.get('_subscription_credentials'):
+                        environment['F1_CHATGPT_SUBSCRIPTION_CREDENTIALS']=self.config['_subscription_credentials']
+                    if self.config.get('_model_pool_socket'):
+                        environment['F1_MODEL_POOL_SOCKET']=self.config['_model_pool_socket']
             process = subprocess.Popen(row['argv'], stdin=subprocess.PIPE, stdout=log,
                 stderr=subprocess.STDOUT,
                 env=environment,
@@ -237,6 +241,11 @@ class WorkspaceProcesses:
     def start_planner(self, request):
         mode = request['config']['mode']
         if mode not in ('astra','vla_astra'):raise ValueError('unknown_task_strategy')
+        override = self.config.get('planner_override')
+        if override is not None:
+            if override != 'baseline':raise ValueError('invalid_planner_override')
+            if mode == 'vla_astra':raise ValueError('planner_override_incompatible_with_vla_astra')
+        effective_planner = override or mode
         config = self.root / 'configs/planner.example.toml'
         hardware = self.run / 'planner.toml'
         hardware.write_text(config.read_text().replace('mode = "offline"', 'mode = "hardware"'))
@@ -244,7 +253,7 @@ class WorkspaceProcesses:
                 '--run', str(self.run / 'planner'), 'run-task', str(self.run / 'site/task.local.json'),
                 '--workspace-config', str(self.run / 'site/workspace-config.json'),
                 '--authorization-source', 'web', '--gateway', 'http://127.0.0.1:19840',
-                '--image-gateway', 'http://127.0.0.1:19841', '--planner', mode]
+                '--image-gateway', 'http://127.0.0.1:19841', '--planner', effective_planner]
         from .memory import ExperienceStore
         from .evidence import EvidenceStore
         try:

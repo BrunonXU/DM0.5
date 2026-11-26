@@ -1,5 +1,7 @@
 # 版本与现场状态
 
+**2026-11-26 左臂 J2 配置与现场档案重新统一（已于 F1 Harness V54 恢复一致）：** 仓库内 `F1-4242/configs/f1-09.json`、`F1-4242/configs/f1-09-joints.json` 与 `DAgger/F1/configs/f1_infra_binding.json` 的 `arm_l_j2` 下限已于 F1 Harness V54 从 `−94.7°` 收回 `−94.0°`，与现场运行的 `robot-v22.json` 及驱动 `motor_ctl` 钳位重新一致。
+
 **11月3日F1infra 有线主备 V38已部署。** 工作台与手柄复制命令优先有线`.142`，Wi-Fi`.58`保留备用；两地址HTTP许可与同源限制均已核验，原控制profile、录制和推理服务保持。此编号属于F1infra工作台，与F1 RTC控制V号独立；具体变更和回退见[网络主备](#wired-backup-v38)。
 
 **10月30日RLT审核快照更新（仅随行审核字段）：** 10条正式缓存已重新验证原始四流前缀，数据页显示355训练／234验证转移；旧审核已备份，人工备注、分类、原件与服务进程保持。11:21成功来源明确为视觉复核，不冒充用户补确认。当前页面仍非实时训练监控，详见[数据说明](DATA.md)及[任务实施记录](../../tasks/F1_ComplexyToys/inference/experiments/20261030-four-rollouts.md#loop-repair-20261030)。
