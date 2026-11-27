@@ -12,7 +12,7 @@
 
 - 涉及 **F1积木分拣**，先读[任务AGENTS](tasks/F1_ComplexyToys/AGENTS.md)和[任务STATUS](tasks/F1_ComplexyToys/STATUS.md)，再按本轮问题选读对应recipe。即使代码改在DAgger、RLinf或F1-4242，也先加载这份任务上下文，再遵守被修改目录的局部规则。不要依赖从Projects根启动时自动读取所有子目录。
 - 人类日常入口为[任务首页](tasks/F1_ComplexyToys/README.md)或[Why&How任务阅读](http://192.0.2.1:4243/?doc=f1-home)。AGENTS保存稳定协作规则，STATUS保存当前事实，日期实验保存证据；不在三处重复追加进度流水账。
-- **审阅建议与执行分工（2026-11-24用户确认）**：Claude 只写审阅、不改业务代码；Codex 负责执行。审阅建议放在 [Claude-advice/](Claude-advice/README.md)，分工、状态标记与回写约定以该目录 README 为准，各项目专属规则写在项目自己的 AGENTS 里。
+- **审阅建议与执行分工（2026-11-24用户确认，2026-11-26更新）**：Claude 只写审阅与交接、不改业务代码，负责审阅合并 PR；Codex 负责执行，连续推进，只在阶段结束时写交接一次性提问。双方每次结束都写交接，第一节写需要人类做什么。规则以 [Claude-advice/](Claude-advice/README.md) 的 README 为准，各项目专属规则写在项目自己的 AGENTS 里。
 
 ## UI 设计与开发
 
@@ -73,5 +73,6 @@
 - 此根仓库的历史包含Whereweare等项目；本机分为Projects、Archive、Libraries三个稀疏工作树，后两者与Projects同级。文件在实际目录对应的Git工作树维护，勿关闭稀疏检出把旧目录重新展开；仓库名DM0.5不表示只包含模型代码。
 - PI0.5、RLinf 等嵌套独立 Git 仓库保留各自远端。操作前用 `git rev-parse --show-toplevel` 与 `git remote -v` 确认实际归属，不向所有目录套用根仓库地址。
 - 地址登记不代表自动提交或推送授权；保留未提交改动，提交和推送按当前用户任务的明确范围执行。
+- **例外（2026-11-26 用户授权）**：凡由 Claude-advice 管理的项目（目前是 HARNESS），提交、推送、PR 与合并按 [Claude-advice 的 Git 与 PR 规则](Claude-advice/README.md#四git-与-pr)执行：Codex 在非 `main` 分支自由提交并开 PR，只有 Claude 审阅后用 merge commit 合并到 `main`；人类不参与 PR。
 
 项目进度直接通过所属任务的权威状态核对；Whereweare搁置期间，其历史摘要不覆盖新事实。新任务统一放`tasks/<任务>/`，共享组件保留原工程，独立工具在`../Tools/`，历史项目在`../Archive/`，OpenPI/LeRobot在`../Libraries/`，报告在`../Artifacts/WorkspaceReports/`；旧实验命令须按新目录核对后使用。

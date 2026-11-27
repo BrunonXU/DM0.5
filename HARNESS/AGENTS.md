@@ -18,12 +18,13 @@ flowchart LR
 
 ## 每轮接续
 
-0. Codex 先按上节读取 [Claude 审阅与执行规格](../Claude-advice/HARNESS/review.md)，确认本轮要执行的条目和待人工确认项。
+0. Codex 先读 `Claude-advice/HARNESS/handoff/` 里最新的 Claude 交接（入口见 [Claude-advice](../Claude-advice/README.md)），按其中的指令执行；条目细节查对应的 review 文档。
 1. 核对 STATUS 页首的当前目标、已确认决定、实际完成范围、未验收项和下一步，现场操作前复查实时状态。以最新用户指令与对应证据接续工作。
 2. 设计改动按上方章节核对依据，依赖选型与源码来源查[上游复用清单](docs/UPSTREAM_REUSE.md)。按本轮问题选读实验与代码。
 3. 涉及 F1 积木时，先读其 [AGENTS](../tasks/F1_ComplexyToys/AGENTS.md)与 [STATUS](../tasks/F1_ComplexyToys/STATUS.md)。修改 DAgger、RLinf、F1-4242 或其他工程前，再读对应局部规则；HARNESS 不另维护 F1 当前状态。
 4. 结束前核对对应正文、STATUS、TODO 与证据链接，只更新发生变化的内容。未完成时留下已做、未验收、阻塞与可继续执行的下一步。
-5. 并行工作只修改约定文件，合并前重读最新内容；保留他人的未提交改动，不擅自提交、推送或覆盖历史证据。
+5. 并行工作只修改约定文件，合并前重读最新内容；保留他人的未提交改动，不覆盖历史证据。提交、推送、PR 与合并按 [Claude-advice 的 Git 与 PR 规则](../Claude-advice/README.md#四git-与-pr)执行：Codex 只在非 `main` 分支提交并开 PR，只有 Claude 审阅后合并到 `main`。
+6. 阶段结束时按 [Claude-advice 的交接模板](../Claude-advice/README.md#三交接模板)写 `Claude-advice/HARNESS/handoff/YYYYMMDD-NN-codex.md`，第一节写需要人类做什么，第二节一次列全需要 Claude 裁定的问题。何时停下见[该页第一节](../Claude-advice/README.md#一codex什么时候停什么时候不停)；其余时间按 Claude 最新交接连续执行。
 
 ## [HARNESS_MAINLINE] 用户确认的方案主线（2026-11-11）
 
@@ -39,11 +40,11 @@ flowchart LR
 
 ### [CLAUDE_ADVICE] 审阅建议的执行（2026-11-24用户确认）
 
-[Claude-advice/HARNESS/review.md](../Claude-advice/HARNESS/review.md) 是 Claude 对 HARNESS 的只读审阅和改进执行规格：前半部分给人看，后半部分给 Codex 逐条执行。分工原则、状态标记、执行顺序、遇 `[!]` 停下询问以及回写格式，统一以 [Claude-advice 说明](../Claude-advice/README.md#codex-执行与回写约定) 为准，本节不重复。下面只写 HARNESS 专属规则。
+[Claude-advice/HARNESS/review.md](../Claude-advice/HARNESS/review.md) 是 Claude 对 HARNESS 的只读审阅和改进执行规格：前半部分给人看，后半部分给 Codex 逐条执行。分工原则、何时停下交接、交接模板、Git 与 PR、状态标记和回写格式，统一以 [Claude-advice 说明](../Claude-advice/README.md) 为准，本节不重复。下面只写 HARNESS 专属规则。
 
 1. **开工前必读。** Codex 每次在 HARNESS 开工，先读该 review 的状态，再读本页和 STATUS。
 2. **本轮做什么。** 用户没有另行指定本轮任务时，按 review 的优先级处理条目。用户当轮明确指定了别的任务时，先做用户的任务，review 条目顺延，不得夹带执行。
-3. **冲突时以谁为准。** 依次为：用户当轮明确指令 > 本页及 [故障分级](docs/FAULT_POLICY.md) 中的硬保护和发布验收规则 > review 条目 > 其他文档的旧描述。review 与本页冲突时，按本页执行，并把该条目改为 `[!]`，写明冲突点。
+3. **冲突时以谁为准。** 依次为：用户当轮明确指令 > 本页及 [故障分级](docs/FAULT_POLICY.md) 中的硬保护和发布验收规则 > review 条目 > 其他文档的旧描述。review 与本页冲突时，按本页执行，并把该条目改为 `[!]`、写明冲突点，在阶段交接里一并提交 Claude 裁定。
 4. **执行范围。** 只改条目列出的文件和行为，不顺手重构、不扩大范围。不改 DAgger、F1-4242、RLinf 和 `third_party/` 上游源码；需要改这些工程的条目另开任务，并先读对应的局部规则。
 5. **硬保护不得移除。** 本清单是 review 执行时的权威，review 只引用它的代码位置。以下保护无论 review 怎么写都保持不变：
    - 授权与会话身份；

@@ -221,7 +221,7 @@ flowchart LR
 
 ## 0. 通用约束（每条都适用）
 
-**执行规则不在这里重复。** 通用的执行、状态和回写约定见 [Claude-advice 说明](../README.md#codex-执行与回写约定)；HARNESS 的执行顺序、冲突优先级、执行范围和硬保护清单以 [HARNESS/AGENTS.md 的 `[CLAUDE_ADVICE]` 一节](../../HARNESS/AGENTS.md#claude_advice-审阅建议的执行2026-11-24用户确认) 为准，细则见 [故障分级](../../HARNESS/docs/FAULT_POLICY.md)。
+**执行规则不在这里重复。** 通用的执行、状态和回写约定见 [Claude-advice 说明](../README.md#六执行与回写)；HARNESS 的执行顺序、冲突优先级、执行范围和硬保护清单以 [HARNESS/AGENTS.md 的 `[CLAUDE_ADVICE]` 一节](../../HARNESS/AGENTS.md#claude_advice-审阅建议的执行2026-11-24用户确认) 为准，细则见 [故障分级](../../HARNESS/docs/FAULT_POLICY.md)。
 
 **硬保护在代码中的位置**（只供定位，清单本身以 HARNESS/AGENTS.md 为准）：
 
