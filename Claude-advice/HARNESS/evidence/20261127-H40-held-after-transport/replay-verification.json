@@ -1,0 +1,55 @@
+{
+  "trial": "V58-Trial3",
+  "run_id": "web-a4d290783627423bbd8b8020d2468138",
+  "pre_transport_obs_id": "19ed3d59082e465f99f857af7fb6534c:49",
+  "last_measured_fixture_gw_index": 245,
+  "last_measured_fixture_ns": 20129917156046,
+  "post_arrival_obs_id": "19ed3d59082e465f99f857af7fb6534c:114",
+  "fixture_age_at_obs114_s": 7.5624,
+  "condition_a": {
+    "geometry_scope": "coarse_static_task",
+    "held": true,
+    "pose_recovered": true,
+    "eef_object_pose_recovered": true,
+    "block_xyz_m": [
+      0.6626,
+      -0.0349,
+      0.8183
+    ],
+    "fixture_source": "retained_static_fixture",
+    "fixture_age_s": 7.5624,
+    "hole_detected": false,
+    "surface_association": {
+      "source": "measured_attachment_propagated_by_current_eef",
+      "normal_world": [
+        -0.33039466255673894,
+        0.08412181728644202,
+        0.9400866379277727
+      ],
+      "prediction_only": true,
+      "pose_fitted_from_current_depth": true
+    },
+    "warnings": [
+      "measurement_gap",
+      "stationary_history_incomplete",
+      "fixture_unavailable:fixture_aperture_not_detected_in_search_region",
+      "static_fixture_prediction_from_prior_measurement",
+      "static_fixture_retained_while_held_arm_occludes_head"
+    ],
+    "can_enter_align_or_inspect": true
+  },
+  "condition_b_partial_fallback": {
+    "geometry_scope": "coarse_local_environment",
+    "held": true,
+    "pose_available": false,
+    "fixture_source": "retained_static_fixture",
+    "fixture_age_s": 7.5624,
+    "warnings": [
+      "object_pose_unavailable:supported_upright_face_not_observed",
+      "aperture_unavailable:aperture_not_directly_visible",
+      "static_fixture_prediction_from_prior_measurement",
+      "static_fixture_retained_while_held_arm_occludes_head"
+    ]
+  },
+  "physical_motion": false
+}

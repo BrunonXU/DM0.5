@@ -105,7 +105,9 @@ flowchart LR
 - 测试：没有 anchor 时生成候选，方向的 `y` 分量为负、垂直于视线、步长等于公式值；有 anchor 时与原来一致；执行过一次后不再生成；没有头部图像或 `head_pose` 时不生成；积木没有持块或没有位姿时不生成。
 - 用 V58 Trial 2 的原始输入从运输到位接续做零输出回放：预览 `planned=True`，报告位移和方向，以及保留桶位姿在预览和复核时的年龄。预览被拒就报告原因码，标 `[!]`。
 
-## H-40 `[ ]` P0：运输到位后测不出夹着的积木（先诊断，条件满足才改）
+## H-40 `[x]` P0：运输到位后测不出夹着的积木（先诊断，条件满足才改）
+
+> **执行记录（Codex 2026-11-27）**：V58 Trial 3 5 项离线诊断同时证实条件 A（`[250]` 瞬时 `mask_truncated` 触发 `reject_measurement()` 时因 `contact_attachment is not None` 跳过隔离保存，导致 `invalidate()` 清空 `in_hand_reference`，到位后 `OBS:114` 法向偏离 `+Z` 19.93° 却正对相机 20.78°、无 `surface_association` 致拟合失败；全程 CAN 恒定 `87.06%`）与条件 B（`reject_measurement()` 清空 `measured_fixture` 且 `_partial_observation` 未走 `_locate_bucket_for_object` 与 H-32 五条件保留）。已在 `scene_pipeline.py` 同时修复 A+B（保持参考仅用于深度点面关联，并在张开/未持/未知/换范围时即刻清空；`_partial` 复用完全一致的 H-32 五条件与 20 s）。新增 13 例正反单测及全部场景/夹爪/保留回归通过；Trial 3 真实 `OBS:49 → [250]/[251] → OBS:114` 零输出回放恢复 `held=True`、`square-1` `[0.6626, -0.0349, 0.8183] m`、`retained_static_fixture`（`7.562 s`），可进入 `align`/`inspect_in_hand`。证据见 [20261127-H40-held-after-transport/report.md](evidence/20261127-H40-held-after-transport/report.md)。
 
 **诊断**：用 V58 Trial 3 运输前（OBS:48–49）和到位后（OBS:114 起）的原始 RGB-D 与状态，离线走正式场景处理，报告：
 

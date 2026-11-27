@@ -164,8 +164,10 @@ class CalibratedScenePipeline:
         proof=self.in_hand_quarantine
         empty_reference=self.not_in_hand_reference
         face_object=self.observed_face_object
+        prior_fixture=(self.measured_fixture if self.measured_fixture is not None
+                       and self.measured_fixture.source=='rgbd_anchor_registration' else None)
         history=list(self.tracking_history)
-        if self.in_hand_reference is not None and self.tracking_history and self.contact_attachment is None:
+        if self.in_hand_reference is not None and self.tracking_history:
             sample=self.tracking_history[-1]
             deadline=(None if self.coarse else self.in_hand_recovery_deadline_ns or
                       sample['time']+self.config.get('tracking_window_ns',2_000_000_000))
@@ -174,6 +176,8 @@ class CalibratedScenePipeline:
         self.invalidate()
         self.observed_face_object=face_object
         self.not_in_hand_reference=empty_reference
+        if prior_fixture is not None:
+            self.measured_fixture=prior_fixture
         # These are historical samples, not a current observation or permission
         # to move. The next real frame still checks scope, grip, time and pose;
         # the rolling window expires old pre-proof samples normally.
@@ -514,10 +518,11 @@ class CalibratedScenePipeline:
             accepted_views=(self.config['camera'],)
             raise
         except Exception as exc:
+            prior_fixture=self.measured_fixture
             self.reject_measurement(str(exc))
             if (object_measurement_recoverable(str(exc),object_id=self.config['object_id'])
                     or str(exc)=='secondary_camera_pairing_unavailable'):
-                partial=self._partial_observation(observation,str(exc))
+                partial=self._partial_observation(observation,str(exc),prior_fixture=prior_fixture)
                 if partial is not None:
                     accepted_views=(partial.geometry_camera,)
                     if any(o.object_id==self.config['hole_id'] and o.visible and o.pose is not None
@@ -544,8 +549,25 @@ class CalibratedScenePipeline:
             if diagnostics is not None:self.last_timing['segmentation']=diagnostics()
             self.config=original_config
 
+    def _check_occluded_fixture_retention(self, err_code, *, held, prior, observation, context):
+        grasp_contact=(context or {}).get('grasp_contact') or {}
+        grasp_pub_ns=grasp_contact.get('published_ns')
+        base_eligible=(
+            err_code in OCCLUDED_FIXTURE_RETAIN_REASONS
+            and held is True
+            and prior is not None
+            and prior.source=='rgbd_anchor_registration'
+            and isinstance(grasp_pub_ns,int)
+            and prior.measured_at_ns>grasp_pub_ns
+        )
+        if base_eligible and 0<=observation.received_ns-prior.measured_at_ns<=OCCLUDED_FIXTURE_RETAIN_NS:
+            return 'retained'
+        if base_eligible and observation.received_ns-prior.measured_at_ns>OCCLUDED_FIXTURE_RETAIN_NS:
+            return 'expired'
+        return 'none'
+
     def _partial_observation(self,observation,reason,*,measured_object=None,geometry_camera=None,
-                             stationary=False,quality_warnings=None,fixture=None):
+                             stationary=False,quality_warnings=None,fixture=None,prior_fixture=None):
         """Preserve current identity/depth without inventing a manipulation pose."""
         if (not self.coarse or self.development or not self._partial_targets
                 or observation.state_received_ns is None or measured_object is not None and measured_object.held is True):return None
@@ -562,17 +584,6 @@ class CalibratedScenePipeline:
                 full[y0:y1,x0:x1]=depth
                 self._partial_views[view_cfg['camera']]=(full,view_cfg,transform(view_cfg['base_camera']))
                 head_sample=(view_cfg,depth,head_masks,head_evidence)
-                if measured_object is None and self.fixture_reference_camera is not None:
-                    from .fixture_tracking import locate_fixture
-                    try:
-                        pose,_,details=locate_fixture(depth,head_masks,view_cfg,self.fixture_reference_camera,
-                            cfg['base_hole'],self.occlusion['anchors'],identity_tolerance_m=cfg['planning_margin_m'])
-                        fixture=FixturePose(fixture_id=self.occlusion['fixture_id'],pose=tuple(pose.ravel()),
-                            reference_pose=tuple(transform(cfg['base_hole']).ravel()),frame_id=cfg['native_frame'],
-                            evidence_ids=head_evidence,measured_at_ns=observation.received_ns)
-                        self.measured_fixture=fixture;self.last_timing['independent_fixture']=details
-                    except ValueError as exc:
-                        self.last_timing['independent_fixture']=dict(available=False,reason=str(exc))
             except ValueError as exc:
                 if (str(exc)!='secondary_camera_pairing_unavailable'
                         and not object_measurement_recoverable(str(exc),camera=cfg['hole_camera']['camera'],
@@ -595,6 +606,28 @@ class CalibratedScenePipeline:
         if measured_object is None and cfg.get('measured_gripper_contact'):
             stamp = min(f.received_ns for f in observation.frames if f.camera==target['camera'])
             partial_hold = self.grasp_closure.measure(observation, self.previous_context or {}, cfg, at_ns=stamp)['held']
+        occluded_retained=False
+        occluded_expired=False
+        if measured_object is None and head_sample is not None and self.fixture_reference_camera is not None:
+            _,head_depth,head_masks,head_evidence=head_sample
+            try:
+                fixture=self._locate_bucket_for_object(observation,target['camera'],(head_depth,head_evidence,head_masks))
+                self.measured_fixture=fixture
+            except ValueError as exc:
+                err_code=str(exc)
+                retention=self._check_occluded_fixture_retention(
+                    err_code,held=partial_hold,prior=prior_fixture,
+                    observation=observation,context=self.previous_context)
+                if retention=='retained':
+                    fixture=prior_fixture.model_copy(update={'source':'retained_static_fixture'})
+                    self.measured_fixture=prior_fixture
+                    occluded_retained=True
+                elif retention=='expired':
+                    occluded_expired=True
+                    self.measured_fixture=None
+                else:
+                    self.measured_fixture=None
+                self.last_timing['independent_fixture']=dict(available=False,reason=err_code)
         obj=measured_object or SceneObject(object_id=cfg['object_id'],shape='square',pose=None,held=partial_hold,
             visible=True,stationary=None,frame_id=cfg['native_frame'],evidence_ids=source,
             planning_margin_m=cfg['planning_margin_m'])
@@ -632,7 +665,10 @@ class CalibratedScenePipeline:
             unobserved_space='depth_holes_outside_view_and_beyond_first_surface_remain_unknown',motion_evidence=False)
         warnings=tuple(dict.fromkeys((*(observation.quality_warnings if quality_warnings is None else quality_warnings),
             *(('object_pose_unavailable:'+target['reason'],) if measured_object is None else ()),
-            *(('aperture_unavailable:'+aperture_error,) if aperture_error else ()))))
+            *(('aperture_unavailable:'+aperture_error,) if aperture_error else ()),
+            *(('static_fixture_prediction_from_prior_measurement',
+               'static_fixture_retained_while_held_arm_occludes_head') if occluded_retained else ()),
+            *(('static_fixture_retention_expired',) if occluded_expired else ()))))
         valid_cameras={view.camera for view in views}
         secondary=cfg.get('hole_camera',{}).get('camera')
         faults=observation.faults
@@ -684,6 +720,11 @@ class CalibratedScenePipeline:
         # Consume authoritative gripper changes even if RGB-D pairing fails.
         self._consume_independent_opening(observation,
             min(primary_times) if primary_times else observation.received_ns)
+        if (cfg.get('measured_gripper_contact')
+                and (self.in_hand_reference is not None or self.in_hand_quarantine is not None)):
+            stamp=min(primary_times) if primary_times else observation.received_ns
+            if self.grasp_closure.measure(observation,context,cfg,at_ns=stamp)['held'] is not True:
+                self._clear_following()
         if observation.state16 is not None and observation.state_valid_mask is not None:
             opening=cfg.get('gripper_open_range')
             reference_grip=(self.in_hand_gripper if self.in_hand_reference is not None else
@@ -1026,7 +1067,7 @@ class CalibratedScenePipeline:
             # measurements in the associated new view revalidate it.
             from .grasp_tracking import quarantine_following, handoff_reference
             proof=self.in_hand_quarantine
-            if self.in_hand_reference is not None and self.tracking_history and self.contact_attachment is None:
+            if self.in_hand_reference is not None and self.tracking_history:
                 last=self.tracking_history[-1]
                 deadline=(None if self.coarse else self.in_hand_recovery_deadline_ns or
                           last['time']+cfg.get('tracking_window_ns',2_000_000_000))
@@ -1122,21 +1163,13 @@ class CalibratedScenePipeline:
                 self.measured_fixture=fixture
             except ValueError as exc:
                 err_code=str(exc)
-                grasp_contact=(context or {}).get('grasp_contact') or {}
-                grasp_pub_ns=grasp_contact.get('published_ns')
-                prior=self.measured_fixture
-                base_eligible=(
-                    err_code in OCCLUDED_FIXTURE_RETAIN_REASONS
-                    and held is True
-                    and prior is not None
-                    and prior.source=='rgbd_anchor_registration'
-                    and isinstance(grasp_pub_ns,int)
-                    and prior.measured_at_ns>grasp_pub_ns
-                )
-                if base_eligible and 0<=observation.received_ns-prior.measured_at_ns<=OCCLUDED_FIXTURE_RETAIN_NS:
+                retention=self._check_occluded_fixture_retention(
+                    err_code,held=held,prior=self.measured_fixture,
+                    observation=observation,context=context)
+                if retention=='retained':
                     self._occluded_fixture_retained=True
                 else:
-                    if base_eligible and observation.received_ns-prior.measured_at_ns>OCCLUDED_FIXTURE_RETAIN_NS:
+                    if retention=='expired':
                         self._occluded_fixture_expired=True
                     self.measured_fixture=None
                 self.last_timing['independent_fixture']=dict(available=False,reason=err_code)
