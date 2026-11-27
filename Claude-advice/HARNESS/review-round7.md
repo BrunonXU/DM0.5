@@ -117,12 +117,14 @@ flowchart LR
 - 用 V60 Trial 1–2 的原始输入：排序后 v=1 是否排第一，6000D 上的总耗时。
 - **在 ARM 上计时**：V61 上线后，上电时先在 F1-09 上用 Trial 1–2 的输入，离线（零输出）跑一次对准规划，记录 v=1 的实际耗时，再开始真机试验。如果超过 15 秒，停下交接，不要继续调大。
 
-## H-44 `[ ]` P1：S5 读取场景的竞态
+## H-44 `[x]` P1：S5 读取场景的竞态
 
 - 只改 `live_scene.py` 的 `aperture_observation()`：当 `viewpoint.move` 存在、作用域一致，只是 `self.latest is None`（因为 `owner_perception_stage_advanced` 刚刚清空）时，最多等 1.5 秒，等到下一帧场景再判断；超时后照原逻辑返回。
 - 不改场景失效的触发条件，不改 `recovery_programs.py`。
 - 测试：清空后 0.3 秒有新帧时，返回 `observation_move`；1.5 秒内没有新帧时，返回原来的原因；作用域变了时不返回候选。
 - 用 V60 Trial 3 的原始输入回放，确认会给出横移候选。注意：有 H-42 之后，Trial 3 应该直接用缓存的孔对准；这条回放要在关闭缓存的条件下做，专门检验备用路径。
+
+> **执行记录（2026-11-27）**：仅修改 `live_scene.py` 的 `aperture_observation()`，在 `self.latest is None`、`viewpoint.move` 存在且作用域匹配时最多等待 1.5 s 后重检。单测 `test_held_aperture_view.py` 13 passed；关闭缓存回放 V60 Trial 3 `OBS:108` 竞态（0.35 s 后下一帧到达）等待 0.3616 s 即返回 `noncontact_lateral_aperture_reobservation_without_prior_view`（右移 0.1194 m）。`[!]` 备忘：`remote.py:532` 仍带 `timeout_s=1`，若帧间隔在 1.0–1.5 s 之间会先触发远端 1 s 超时（本轮按规格未改 `remote.py`）。证据见 [evidence/20261127-H44-scene-race/report.md](evidence/20261127-H44-scene-race/report.md)。
 
 ## H-45 `[x]` P1：排除桌面以外的远处候选
 

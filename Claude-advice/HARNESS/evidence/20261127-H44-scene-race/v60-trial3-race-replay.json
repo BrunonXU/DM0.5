@@ -1,0 +1,27 @@
+{
+  "source_trial": "V60 Trial 3 (web-be099b9916b341acb3cab74d1f053b5d)",
+  "observation_id": "32e8197eb9c14f2b9d2a9c45e06820ae:108",
+  "cached_aperture_enabled": false,
+  "race_simulated": "owner_perception_stage_advanced cleared latest=None; next frame arrived after 0.35s",
+  "wait_elapsed_s": 0.3616,
+  "observation_move_returned": true,
+  "purpose": "noncontact_lateral_aperture_reobservation_without_prior_view",
+  "source_observation_id": "32e8197eb9c14f2b9d2a9c45e06820ae:108",
+  "current_tcp_xyz_m": [
+    0.7213136165520719,
+    -0.06553610560345272,
+    0.8630495981968385
+  ],
+  "goal_tcp_xyz_m": [
+    0.6778110664028832,
+    -0.17664390280313252,
+    0.8579166432612294
+  ],
+  "delta_xyz_m": [
+    -0.04350255014918869,
+    -0.11110779719967981,
+    -0.005132954935609058
+  ],
+  "step_distance_m": 0.119431,
+  "robot_actions": 0
+}

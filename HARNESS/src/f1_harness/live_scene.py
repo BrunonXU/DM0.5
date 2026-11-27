@@ -92,20 +92,41 @@ class LiveSceneObserver:
                       available=False, candidates={})
         viewpoint = getattr(self, 'aperture_viewpoint', None)
         if viewpoint is not None:
-            with self.lock:
-                move = deepcopy(viewpoint.move) if self.latest is not None else None
-                scope = viewpoint.scope
-            if move is not None:
+            def _scope_matches(target_scope):
+                if target_scope is None:
+                    return False
                 try:
                     current = self.owner.call('status').get('perception_context') or {}
                 except (OSError, RuntimeError):
-                    current = {}
+                    return False
                 identity = tuple(current.get(k) for k in (
                     'owner_instance_id','session_id','task_id','task_hash','task_generation','epoch'))
-                if (identity == scope[:6] and current.get('authorized') is True
+                return (identity == target_scope[:6] and current.get('authorized') is True
                         and not current.get('action_published') and not current.get('placement_verified')
-                        and (current.get('grasp_contact') or {}).get('request_id') == scope[-1]):
-                    result['observation_move'] = move
+                        and (current.get('grasp_contact') or {}).get('request_id') == target_scope[-1])
+
+            with self.lock:
+                latest_missing = self.latest is None
+                pending_move = deepcopy(viewpoint.move)
+                scope = viewpoint.scope
+            if latest_missing and pending_move is not None and _scope_matches(scope):
+                deadline = time.monotonic() + 1.5
+                stop = getattr(self, 'stop', None)
+                while time.monotonic() < deadline:
+                    if stop is not None and stop.is_set():
+                        break
+                    with self.lock:
+                        if self.latest is not None or viewpoint.move is None:
+                            break
+                    remaining = deadline - time.monotonic()
+                    if remaining <= 0:
+                        break
+                    time.sleep(min(0.02, remaining))
+            with self.lock:
+                move = deepcopy(viewpoint.move) if self.latest is not None else None
+                scope = viewpoint.scope
+            if move is not None and _scope_matches(scope):
+                result['observation_move'] = move
             if 'observation_move' not in result:
                 result['observation_move_reason'] = 'no_distinct_measured_view_in_current_holding_episode'
         if frame is None:
