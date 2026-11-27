@@ -707,10 +707,13 @@ class PlanService:
                 if deadline_ns is not None:
                     remaining_s=(deadline_ns-self.clock())/1e9
                     if remaining_s<=0:raise HarnessError('registered_candidate_planning_budget_exhausted')
-                    # One request budget covers every route and stage. The
-                    # native backend may shorten its original 7/15 s bound,
-                    # never restart that full allowance near the deadline.
-                    bounds['planning_budget_s']=remaining_s
+                    # One request budget covers every route and stage. Only align
+                    # may use the extended site IK budget; all other skills stay
+                    # capped at the original 7.0 s per-call budget (H-49).
+                    bounds['planning_budget_s']=(remaining_s if intent.skill=='align'
+                                                 else min(remaining_s, 7.0))
+                elif intent.skill!='align':
+                    bounds['planning_budget_s']=7.0
                 values=self.numerics.call('solve_path',goals=stage['goals'],gripper=stage['gripper'],full22=full,held16=held,
                     scene=bounds)
             except Exception as exc:
