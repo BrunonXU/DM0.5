@@ -763,19 +763,27 @@ def revalidate_candidate(service,*,intent,proposal,original_observation,observat
             raise HarnessError('revalidation_stage_binding_mismatch')
         if stage['gripper']!=before['gripper']:
             raise RevalidationSceneChanged('revalidation_goal_changed')
-        if stage_threshold['free_space']:
-            # A new scene may choose a different detour to the same task goal.
-            # Validate the frozen candidate's entire actual FK path below; the
-            # optional freshly proposed transit points are not its identity.
+        attached=stage.get('eef_object')
+        # For loaded alignment/insertion stages, the precision task target is
+        # the held object relative to the hole, not the wrist Link7 origin 29 cm
+        # away (where <1 deg stationary attachment noise creates >3 mm lever-arm
+        # displacement at the wrist even when the block itself moves <0.5 mm).
+        # Every actual tool and held-object FK segment is still swept below.
+        at_attached_object=(intent.skill in ('align','insert') and attached is not None)
+        stage_goal_reference=transform(attached) if at_attached_object else goal_reference
+        if stage_threshold['free_space'] or stage.get('name')=='overhead_square_alignment':
+            # A new scene may choose a different detour or overhead clearance
+            # height to the same task goal. Validate the frozen candidate's
+            # entire actual FK path below; optional transit points are not its
+            # endpoint identity.
             pairs=zip(before['goals'][-1:],stage['goals'][-1:])
         else:
             if len(stage['goals'])!=len(before['goals']):
                 raise RevalidationSceneChanged('revalidation_goal_changed')
             pairs=zip(before['goals'],stage['goals'])
         for a,b in pairs:
-            if not _near(transform(a)@goal_reference,transform(b)@goal_reference,goal_threshold):
+            if not _near(transform(a)@stage_goal_reference,transform(b)@stage_goal_reference,goal_threshold):
                 raise RevalidationSceneChanged('revalidation_goal_changed')
-        attached=stage.get('eef_object')
         if stage.get('name')=='pregrasp_open' and any(
                 not np.array_equal(q[:15],held[:15]) or q[15]!=scene.release_opening for q in targets[start:end]):
             raise HarnessError('numerical_pregrasp_open_must_hold_arm')
@@ -813,19 +821,32 @@ def revalidate_candidate(service,*,intent,proposal,original_observation,observat
                 margin_departure=True
             previous=poses[index];checked+=1
         expected=stage['goals'][-1] if stage['goals'] else (base if start==0 else poses[start-1])
-        radius=float(np.linalg.norm(transform(scene.eef_tip_reference)[:3,3]))
-        if attached is not None:
-            radius=max(radius,float(np.linalg.norm(transform(attached)[:3,3]))+
-                       float(np.linalg.norm(np.maximum(np.abs(scene.object_local_box['min']),
-                                                       np.abs(scene.object_local_box['max'])))))
         # Free-space waypoints are coarse positioning, followed by a new skill
         # observation. Their entire actual tool/held-object sweep was checked
-        # above. Hole engagement retains the tip/attached-radius error bound.
+        # above. Hole engagement retains the exact held-object / tip error bound.
         at_grasp_tip=(intent.skill in ('grasp','regrasp') and attached is None
                       and fixture.get('eef_tip_reference') is not None)
-        if not _near(poses[end-1]@goal_reference,transform(expected)@goal_reference,
-                     goal_threshold,radius=0. if stage_threshold['free_space'] or at_grasp_tip else radius):
-            raise RevalidationSceneChanged('revalidation_endpoint_outside_remaining_clearance')
+        if at_attached_object:
+            # Exact rigid-box corner bound in the held object's own frame: by
+            # convexity the maximum displacement of any point on the held block
+            # is attained at one of the 8 vertices of object_local_box.
+            actual_obj=poses[end-1]@stage_goal_reference
+            expected_obj=transform(expected)@stage_goal_reference
+            _,angle=pose_error(actual_obj,expected_obj)
+            bmin,bmax=scene.object_local_box['min'],scene.object_local_box['max']
+            corners=np.array([[x,y,z,1.0] for x in (bmin[0],bmax[0]) for y in (bmin[1],bmax[1]) for z in (bmin[2],bmax[2])]).T
+            max_corner=float(np.max(np.linalg.norm((actual_obj@corners)[:3]-(expected_obj@corners)[:3],axis=0)))
+            if angle>goal_threshold['rotation_rad'] or max_corner>goal_threshold['position_m']:
+                raise RevalidationSceneChanged('revalidation_endpoint_outside_remaining_clearance')
+        else:
+            radius=float(np.linalg.norm(transform(scene.eef_tip_reference)[:3,3]))
+            if attached is not None:
+                radius=max(radius,float(np.linalg.norm(transform(attached)[:3,3]))+
+                           float(np.linalg.norm(np.maximum(np.abs(scene.object_local_box['min']),
+                                                           np.abs(scene.object_local_box['max'])))))
+            if not _near(poses[end-1]@stage_goal_reference,transform(expected)@stage_goal_reference,
+                         goal_threshold,radius=0. if stage_threshold['free_space'] or at_grasp_tip else radius):
+                raise RevalidationSceneChanged('revalidation_endpoint_outside_remaining_clearance')
         if stage['gripper'] is not None and targets[end-1,15]!=stage['gripper']:
             raise HarnessError('revalidation_gripper_goal_changed')
         cursor=end
@@ -880,8 +901,10 @@ def revalidate_candidate(service,*,intent,proposal,original_observation,observat
                              first_segment_target_margin_departure=margin_departure,
                              target_contact_departure_stages=[i for i,s in enumerate(stages) if s.get('target_contact_departure')],
                              stage_endpoint_tolerances=stage_tolerance_records,
-                             goal_reference='registered_fingertip' if intent.skill in ('approach_grasp','grasp','regrasp')
-                                 and fixture.get('eef_tip_reference') is not None else 'eef',
+                             goal_reference=('registered_fingertip' if intent.skill in ('approach_grasp','grasp','regrasp')
+                                 and fixture.get('eef_tip_reference') is not None
+                                 else 'attached_object' if intent.skill in ('align','insert')
+                                 and any(s.get('eef_object') is not None for s in stages) else 'eef'),
                              elapsed_ms=(now-started_at_ns)/1e6,
                              stages=len(stages),endpoint_tolerances=threshold),precision_certified=False)
 
