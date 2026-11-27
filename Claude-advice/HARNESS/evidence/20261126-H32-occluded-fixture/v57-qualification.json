@@ -1,0 +1,54 @@
+{
+  "version": 57,
+  "product_version": "F1 Harness 遮挡保留桶位姿与让开视野 V57",
+  "bundle_id": "de4f6b0beaea03eab6c2b6c9c34901c4cf04e1b44d3846f4c834133c126e7d6d",
+  "previous_version": 56,
+  "previous_bundle_id": "d5b1b1d2de1ae687f0d2501fcbc33404d359edc03d0d1267515406cdd1877483",
+  "software_test_commit": "e19bf8b63b3751dbbcc6053055f7ced470d8557c",
+  "runtime_overlays": {
+    "src/f1_harness/scene_pipeline.py": "d45d5a1527c2cda12ced2b8185d9d726e021d7f8059a15db8b26c9287bdde9c5"
+  },
+  "net_new_raise_harness_error": 0,
+  "unit_tests_h32": "13 passed in 0.19s (tests/test_occluded_fixture_retention.py)",
+  "full_pytest": "3137 passed, 70 skipped, 1 pre-existing snapshot-view test_bundle_owns_control_and_imports_without_old_source (same as V56: 3124+13)",
+  "native_integration": "62 passed in 0.33s",
+  "frozen_zero_output_replays": {
+    "normal": {
+      "outcome": "success",
+      "stages": 10,
+      "checks_all_passed": true,
+      "audit_passed": true,
+      "physical_motion": false,
+      "paid_model_calls": 0,
+      "wall_s": 64.79
+    },
+    "grasp-miss": {
+      "outcome": "success",
+      "stages": 12,
+      "checks_all_passed": true,
+      "audit_passed": true,
+      "physical_motion": false,
+      "paid_model_calls": 0,
+      "wall_s": 72.7
+    },
+    "aperture-occluded": {
+      "outcome": "success",
+      "stages": 12,
+      "checks_all_passed": true,
+      "audit_passed": true,
+      "physical_motion": false,
+      "paid_model_calls": 0,
+      "wall_s": 69.48
+    }
+  },
+  "deployment": {
+    "passed": true,
+    "local_reason": "F1 Harness 遮挡保留桶位姿与让开视野 V57（arm_r_j6 <= 50°，fastdds-udp，固定程序基线）。",
+    "remote_4242_reason": "F1 Harness 遮挡保留桶位姿与让开视野 V57（arm_r_j6 <= 50°，fastdds-udp，固定程序基线）。",
+    "f1_4242_pid": 2544,
+    "f1_4242_profile": "/home/user/Bruno/F1/F1-4242/runtime/robot-v22.json",
+    "f1_4242_restarted": false,
+    "route_probes": 10,
+    "start_sent": false
+  }
+}

@@ -987,7 +987,7 @@
       "source_base_bundle": "53af3b1d4406d13244f7758de32023bb100e4c9d330b8795717910fc6e9dec78",
       "start_sent": false,
       "physical_task_verified": false,
-      "currently_active": true,
+      "currently_active": false,
       "bundle_id": "8818976408ce68d0c63a5e7602b26d28ca4cf9d54f0e3214cf4ffda9d3656002",
       "manifest": "/home/user/projects/HARNESS/artifacts/stamp-hold-baseline-v54-20261126/bundle-final/manifest.json",
       "frozen": true,
@@ -1019,7 +1019,7 @@
     {
       "version": 56,
       "name": "F1 Harness 右腕规划收紧与固定传输 V56",
-      "status": "candidate",
+      "status": "deployed",
       "artifact_directory": "/home/user/projects/HARNESS/artifacts/j6-envelope-fastdds-v56-20261126",
       "previous_version": 54,
       "previous_bundle": "8818976408ce68d0c63a5e7602b26d28ca4cf9d54f0e3214cf4ffda9d3656002",
@@ -1030,14 +1030,38 @@
       "currently_active": false,
       "bundle_id": "d5b1b1d2de1ae687f0d2501fcbc33404d359edc03d0d1267515406cdd1877483",
       "manifest": "/home/user/projects/HARNESS/artifacts/j6-envelope-fastdds-v56-20261126/bundle-final/manifest.json",
-      "frozen": true
+      "frozen": true,
+      "validation": "/home/user/projects/HARNESS/artifacts/j6-envelope-fastdds-v56-20261126/replay-qualification-v56.json",
+      "activation": "/home/user/projects/HARNESS/artifacts/j6-envelope-fastdds-v56-20261126/activation.json",
+      "verification": "/home/user/projects/HARNESS/artifacts/j6-envelope-fastdds-v56-20261126/post-activation.json",
+      "deployment_kind": "shared_harness_base_both_strategies"
+    },
+    {
+      "version": 57,
+      "name": "F1 Harness 遮挡保留桶位姿与让开视野 V57",
+      "status": "deployed",
+      "artifact_directory": "/home/user/projects/HARNESS/artifacts/occluded-fixture-v57-20261126",
+      "previous_version": 56,
+      "previous_bundle": "d5b1b1d2de1ae687f0d2501fcbc33404d359edc03d0d1267515406cdd1877483",
+      "source_base_version": 56,
+      "source_base_bundle": "d5b1b1d2de1ae687f0d2501fcbc33404d359edc03d0d1267515406cdd1877483",
+      "start_sent": false,
+      "physical_task_verified": false,
+      "currently_active": true,
+      "bundle_id": "de4f6b0beaea03eab6c2b6c9c34901c4cf04e1b44d3846f4c834133c126e7d6d",
+      "manifest": "/home/user/projects/HARNESS/artifacts/occluded-fixture-v57-20261126/bundle-final/manifest.json",
+      "frozen": true,
+      "validation": "/home/user/projects/HARNESS/artifacts/occluded-fixture-v57-20261126/replay-qualification-v57.json",
+      "activation": "/home/user/projects/HARNESS/artifacts/occluded-fixture-v57-20261126/activation.json",
+      "verification": "/home/user/projects/HARNESS/artifacts/occluded-fixture-v57-20261126/post-activation.json",
+      "deployment_kind": "shared_harness_base_both_strategies"
     }
   ],
-  "active_bundle_id": "8818976408ce68d0c63a5e7602b26d28ca4cf9d54f0e3214cf4ffda9d3656002",
-  "active_version": 54,
+  "active_bundle_id": "de4f6b0beaea03eab6c2b6c9c34901c4cf04e1b44d3846f4c834133c126e7d6d",
+  "active_version": 57,
   "active_strategy_versions": {
-    "astra": 54,
-    "vla_astra": 54
+    "astra": 57,
+    "vla_astra": 57
   },
-  "active_coordinator_service_version": 54
+  "active_coordinator_service_version": 57
 }

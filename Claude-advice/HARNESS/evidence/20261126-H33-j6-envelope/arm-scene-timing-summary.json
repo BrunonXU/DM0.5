@@ -1,0 +1,22 @@
+{
+  "trials": {
+    "web-5653aac6c68e490eb1d881e399d7a165-gateway-trace.jsonl": {
+      "sha256_on_6000d": "1fe6256a2eed84a3d9ae559a9bdf6576b2545b21c4d2da83a1672128bad26473",
+      "total_rows": 289,
+      "scene_timing_rows": 57,
+      "independent_fixture_unavailable_reasons": {}
+    },
+    "web-9da20b8369f945f6be322c5a79d61543-gateway-trace.jsonl": {
+      "sha256_on_6000d": "12734efbe45b34c9a5f451a149f74f945de8852ccd1e0d409b4aa5b1a95828d6",
+      "total_rows": 46,
+      "scene_timing_rows": 21,
+      "independent_fixture_unavailable_reasons": {}
+    },
+    "web-dbe926ed282e4bca8d5931d0f8e87567-gateway-trace.jsonl": {
+      "sha256_on_6000d": "68920ca632e27cfd4912c5dd99cc485131c2b6cd24b8197beb1b9b7eec0ed779",
+      "total_rows": 217,
+      "scene_timing_rows": 44,
+      "independent_fixture_unavailable_reasons": {}
+    }
+  }
+}

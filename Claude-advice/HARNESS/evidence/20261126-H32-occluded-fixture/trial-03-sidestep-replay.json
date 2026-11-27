@@ -1,0 +1,37 @@
+{
+  "source_run": "web-5653aac6c68e490eb1d881e399d7a165",
+  "preview_input_line": 132,
+  "request_id": "5b205e9429a8444bb9444544f482643e",
+  "skill": "move_tcp",
+  "planned": true,
+  "candidate_variant": 0,
+  "target_count": 6,
+  "arm_r_j6_deg_min": 4.1288,
+  "arm_r_j6_deg_max": 16.8803,
+  "current_tcp_xyz_m": [
+    0.6401,
+    -0.0518,
+    0.8683
+  ],
+  "target_tcp_xyz_m": [
+    0.715,
+    -0.1615,
+    0.8667
+  ],
+  "displacement_vec_m": [
+    0.0749,
+    -0.1097,
+    -0.0016
+  ],
+  "displacement_m": 0.1329,
+  "retained_fixture_source": "retained_static_fixture",
+  "retained_fixture_measured_at_ns": 2977497790792,
+  "preview_observation_received_ns": 2991066432720,
+  "retained_fixture_age_at_preview_s": 13.569,
+  "revalidation_observation_received_ns": 2991666432720,
+  "retained_fixture_age_at_revalidation_s": 14.169,
+  "revalidation_ok": true,
+  "revalidation_proof_schema": "f1-harness-plan-revalidation-v1",
+  "physical_motion": false,
+  "hardware_command_publishers": 0
+}
