@@ -150,3 +150,73 @@ def test_h43_slow_ranking_logs_warning_without_blocking(caplog):
     assert ordered == [3, 2, 1, 0]
     assert rows[0].get('endpoint_ik_ranking_slow') is True
     assert rows[0]['endpoint_ik_ranking_ms'] >= 1000.0
+
+
+def test_h49_non_align_skills_capped_at_7s_while_align_keeps_full_remaining_budget(monkeypatch):
+    """H-49: skill_services.py passes planning_budget_s <= 7.0 for non-align skills and > 7.0 for align."""
+    import f1_harness.skill_services as ss
+    from f1_harness.contracts import SkillIntent, Task, digest
+    from f1_harness.skill_services import PlanService
+
+    seen_budgets = {}
+    current_skill = ['']
+
+    class _RecorderNumerics:
+        def call(self, method, **kwargs):
+            if method == 'solve_path':
+                seen_budgets[current_skill[0]] = kwargs['scene'].get('planning_budget_s')
+                return [[0.0] * 16]
+            if method == 'forward_pose':
+                return np.eye(4).tolist()
+            raise AssertionError(f'unexpected method {method}')
+
+    monkeypatch.setattr(
+        ss, 'propose',
+        lambda skill, scene, variant=0: dict(
+            kind='motion',
+            stages=[dict(name='s0', goals=[np.eye(4).tolist()], gripper=0.0)],
+        ),
+    )
+    monkeypatch.setattr(ss, 'stage_obstacles', lambda scene, **kw: [])
+    monkeypatch.setattr(ss, 'tool_margin', lambda scene: 0.015)
+
+    task = Task(task_id='t-h49', object_id='square-1', hole_id='square-hole-1', goal='placed',
+                calibration_id='cal-1', admission_profile='development_coarse')
+    svc = object.__new__(PlanService)
+    svc.task = task
+    svc.fixture = {'planning_margin_m': 0.015, 'tolerance_deg': 0.5, 'gripper_tolerance': 2.0}
+    svc.numerics = _RecorderNumerics()
+    svc.clock = lambda: 1_000_000_000
+    svc.posture_prior = None
+    svc.frames = SimpleNamespace(world_native=np.eye(4), native_frame='world')
+
+    scene = SimpleNamespace(
+        goal='placed', admission_profile='development_coarse',
+        uncertainty_m=None, planning_margin_m=0.015, obstacles=(),
+        attached_radius_m=0.02, tool_local_boxes=None, eef_tip_reference=None,
+        object_local_box=None, object_planning_margin_m=0.001,
+        diagnostic_native_from_world=None, maximum_approach_translation_m=None,
+        planning_joint_envelope_deg=None,
+    )
+
+    for sk, budget_ms in (('transfer_above_hole', 25000), ('transfer_above_hole_short', 4000), ('align', 25000)):
+        real_skill = 'transfer_above_hole' if sk.startswith('transfer') else sk
+        current_skill[0] = sk
+        intent = SkillIntent(
+            request_id=f'req-{sk}', session_id='s', owner_instance_id='o',
+            task_id=task.task_id, task_hash=digest(task), observation_id='obs:1',
+            epoch=1, scene_version='sv1', calibration_id=task.calibration_id,
+            skill=real_skill, parameters={}, budget_ms=budget_ms,
+        )
+        try:
+            svc._solve_route(
+                intent, scene, [0.0] * 16, [0.0] * 22, 0,
+                deadline_ns=svc.clock() + budget_ms * 1_000_000,
+            )
+        except Exception:
+            pass  # Only verifying planning_budget_s passed to numerics.call('solve_path')
+
+    assert seen_budgets['transfer_above_hole'] == pytest.approx(7.0)
+    assert seen_budgets['transfer_above_hole_short'] == pytest.approx(4.0)
+    assert seen_budgets['align'] == pytest.approx(25.0)
+

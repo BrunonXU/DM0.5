@@ -1,0 +1,2041 @@
+{
+  "schema": "h47-placement-dry-run-v1",
+  "physical_motion": false,
+  "simulated_execution_feedback": true,
+  "note": "Execution feedback (block moves rigidly with hand; post-withdrawal head view sees inserted block) is simulated; verify_placed proves pipeline connectivity only, NOT physical placement success.",
+  "ik_max_wall_s": 15.0,
+  "trials": {
+    "V62-Trial1": {
+      "source_trace": "/home/xza_100850113/Artifacts/WorkspaceReports/github-harness-v53/Claude-advice/HARNESS/evidence/20261127-v62-batch/runs/trial1/owner-trace.jsonl",
+      "pre_transport_obs_id": "a5f8ab41d43149138d90920c53a9fe78:114",
+      "arrival_obs_id": "a5f8ab41d43149138d90920c53a9fe78:154",
+      "cache_measured_at_ns": 36760052036513,
+      "eef_object_grasp_tcp_in_obj_mm": [
+        -5.17,
+        -4.73,
+        54.52
+      ],
+      "eef_object_z_axis_tilt_deg": 21.28,
+      "stages": {
+        "align": {
+          "planned": true,
+          "variant": 1,
+          "waypoints": 17,
+          "arm_r_j6_deg": [
+            18.83,
+            37.51
+          ],
+          "plan_6000d_s": 3.064,
+          "cache_age_s": 14.5868,
+          "revalidate_ok": true,
+          "revalidate_segments": 17,
+          "output_audit": {
+            "samples": 429,
+            "virtual_duration_s": 8.58,
+            "complete_publications": true,
+            "immutable_left_arm": true,
+            "sampled_max_speed_deg_s": 26.519,
+            "profile_max_velocity_deg_s": 30.0,
+            "sampled_speed_within_profile": true,
+            "final_arm_err_deg": 0.0643,
+            "final_gripper_err": 0.0,
+            "passed": true
+          },
+          "verify_outcome": "success",
+          "verify_reason": "owner_arrival_and_fresh_scene",
+          "post_align_hole_xy_mm": 0.1,
+          "post_align_hole_z_mm": 40.3,
+          "candidate_ranking": [
+            {
+              "variant": 1,
+              "score": 7.499602457562862,
+              "path_length_m": 0.36209751703758003,
+              "rotation_rad": 1.4540812736079511,
+              "historical_orientation_error_rad": 1.5193022209851605,
+              "predicted_target_in_wrist_frame": true,
+              "visibility_is_occlusion_unverified": true,
+              "insertion_preview": {
+                "status": "predicted_blocked",
+                "motion_authorized": false,
+                "requires_fresh_observation": true,
+                "diagnostic": {
+                  "error_type": "HarnessError",
+                  "code": "scene_sweep_blocked",
+                  "metrics": {
+                    "stage_index": 1,
+                    "segment_index": 0,
+                    "goal_index": 0,
+                    "variant": 1,
+                    "route_family": "aligned_insertion_preview",
+                    "obstacle_index": 1,
+                    "obstacle_role": "bucket",
+                    "obstacle_name": "wall_x_low",
+                    "collision_body": "tool",
+                    "start_pose_clear": true,
+                    "end_pose_clear": false,
+                    "collision_location": "end_pose",
+                    "endpoint_clearance_hint": {
+                      "frame": "object",
+                      "translation_m": [
+                        -0.0012859708818910866,
+                        0.0020193958822911735,
+                        0.005928122809970447
+                      ],
+                      "distance_m": 0.006393302815335649,
+                      "scope": "single_obstacle_tool_endpoint_fixed_orientation",
+                      "path_checked": false,
+                      "grasp_checked": false,
+                      "motion_authorized": false
+                    },
+                    "segment_start_tcp_pose": [
+                      -0.9932061941604382,
+                      -0.11452698668277439,
+                      0.020616139374504436,
+                      0.7135556752728865,
+                      0.11455631417038716,
+                      -0.9311409107412569,
+                      0.34619857773793017,
+                      -0.05099687262758515,
+                      -0.02045254910912385,
+                      0.34620828075810545,
+                      0.9379347096517735,
+                      0.864531144840288,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ],
+                    "segment_end_tcp_pose": [
+                      -0.9932061941604382,
+                      -0.11452698668277439,
+                      0.020616139374504436,
+                      0.7138930338312134,
+                      0.11455631417038716,
+                      -0.9311409107412569,
+                      0.34619857773793017,
+                      -0.05012564053514193,
+                      -0.02045254910912385,
+                      0.34620828075810545,
+                      0.9379347096517735,
+                      0.8125395383653558,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ]
+                  }
+                }
+              },
+              "endpoint_ik": {
+                "converged": true,
+                "min_margin_deg": 36.7852,
+                "final_arm_deg": [
+                  1.8009,
+                  -40.0735,
+                  11.6901,
+                  -80.6756,
+                  61.2635,
+                  5.759,
+                  53.2148
+                ],
+                "position_error_m": 0.000426,
+                "rotation_error_rad": 0.000113,
+                "elapsed_ms": 0.76
+              },
+              "endpoint_ik_ranking_ms": 16.439
+            },
+            {
+              "variant": 0,
+              "score": 1.846519051356125,
+              "path_length_m": 0.10139159462528849,
+              "rotation_rad": 0.3628320665079226,
+              "historical_orientation_error_rad": 0.2162920520320963,
+              "predicted_target_in_wrist_frame": true,
+              "visibility_is_occlusion_unverified": true,
+              "insertion_preview": {
+                "status": "predicted_blocked",
+                "motion_authorized": false,
+                "requires_fresh_observation": true,
+                "diagnostic": {
+                  "error_type": "HarnessError",
+                  "code": "scene_sweep_blocked",
+                  "metrics": {
+                    "stage_index": 1,
+                    "segment_index": 0,
+                    "goal_index": 0,
+                    "variant": 0,
+                    "route_family": "aligned_insertion_preview",
+                    "obstacle_index": 4,
+                    "obstacle_role": "bucket",
+                    "obstacle_name": "wall_y_high",
+                    "collision_body": "tool",
+                    "start_pose_clear": true,
+                    "end_pose_clear": false,
+                    "collision_location": "end_pose",
+                    "endpoint_clearance_hint": {
+                      "frame": "object",
+                      "translation_m": [
+                        2.004338918260747e-06,
+                        5.829685257869129e-06,
+                        7.353629434342669e-06
+                      ],
+                      "distance_m": 9.595752735596208e-06,
+                      "scope": "single_obstacle_tool_endpoint_fixed_orientation",
+                      "path_checked": false,
+                      "grasp_checked": false,
+                      "motion_authorized": false
+                    },
+                    "segment_start_tcp_pose": [
+                      0.11429846768533215,
+                      -0.9275418312829743,
+                      0.35581176414662885,
+                      0.7126002503799753,
+                      0.9934453807492353,
+                      0.1061889883319044,
+                      -0.042310450541975346,
+                      -0.041138560898091356,
+                      0.0014614215067067502,
+                      0.35831557317181956,
+                      0.9335993863910956,
+                      0.8646901427507597,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ],
+                    "segment_end_tcp_pose": [
+                      0.11429846768533215,
+                      -0.9275418312829743,
+                      0.35581176414662885,
+                      0.7129376089383022,
+                      0.9934453807492353,
+                      0.1061889883319044,
+                      -0.042310450541975346,
+                      -0.04026732880564815,
+                      0.0014614215067067502,
+                      0.35831557317181956,
+                      0.9335993863910956,
+                      0.8126985362758274,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ]
+                  }
+                }
+              },
+              "endpoint_ik": {
+                "converged": false,
+                "min_margin_deg": null,
+                "final_arm_deg": null,
+                "position_error_m": 0.001567,
+                "rotation_error_rad": 0.117793,
+                "elapsed_ms": 5.761
+              },
+              "endpoint_ik_ranking_ms": 16.439
+            },
+            {
+              "variant": 2,
+              "score": 8.399198289847298,
+              "path_length_m": 0.40103946892286146,
+              "rotation_rad": 1.7425263991677866,
+              "historical_orientation_error_rad": 1.6436785291437443,
+              "predicted_target_in_wrist_frame": true,
+              "visibility_is_occlusion_unverified": true,
+              "insertion_preview": {
+                "status": "predicted_blocked",
+                "motion_authorized": false,
+                "requires_fresh_observation": true,
+                "diagnostic": {
+                  "error_type": "HarnessError",
+                  "code": "scene_sweep_blocked",
+                  "metrics": {
+                    "stage_index": 1,
+                    "segment_index": 0,
+                    "goal_index": 0,
+                    "variant": 2,
+                    "route_family": "aligned_insertion_preview",
+                    "obstacle_index": 7,
+                    "obstacle_role": "bucket",
+                    "obstacle_name": "rim_x_high",
+                    "collision_body": "tool",
+                    "start_pose_clear": true,
+                    "end_pose_clear": false,
+                    "collision_location": "end_pose",
+                    "endpoint_clearance_hint": {
+                      "frame": "object",
+                      "translation_m": [
+                        2.8504459762598534e-05,
+                        3.149121971525692e-05,
+                        0.00011222624679471557
+                      ],
+                      "distance_m": 0.0001199955483138494,
+                      "scope": "single_obstacle_tool_endpoint_fixed_orientation",
+                      "path_checked": false,
+                      "grasp_checked": false,
+                      "motion_authorized": false
+                    },
+                    "segment_start_tcp_pose": [
+                      0.9934128261307437,
+                      0.10982347946695721,
+                      -0.03270718937342881,
+                      0.722459634765154,
+                      -0.11402268489254223,
+                      0.9189940529476334,
+                      -0.37742384394324957,
+                      -0.04018432174919262,
+                      -0.01139228725291292,
+                      0.3786670490085325,
+                      0.9254628473290668,
+                      0.8647701078019371,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ],
+                    "segment_end_tcp_pose": [
+                      0.9934128261307437,
+                      0.10982347946695721,
+                      -0.03270718937342881,
+                      0.7227969933234808,
+                      -0.11402268489254223,
+                      0.9189940529476334,
+                      -0.37742384394324957,
+                      -0.03931308965674943,
+                      -0.01139228725291292,
+                      0.3786670490085325,
+                      0.9254628473290668,
+                      0.8127785013270048,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ]
+                  }
+                }
+              },
+              "endpoint_ik": {
+                "converged": false,
+                "min_margin_deg": null,
+                "final_arm_deg": null,
+                "position_error_m": 0.304842,
+                "rotation_error_rad": 0.440496,
+                "elapsed_ms": 4.518
+              },
+              "endpoint_ik_ranking_ms": 16.439
+            },
+            {
+              "variant": 3,
+              "score": 12.679425728307743,
+              "path_length_m": 0.5283965013981664,
+              "rotation_rad": 2.9953967000747244,
+              "historical_orientation_error_rad": 3.079072760755938,
+              "predicted_target_in_wrist_frame": true,
+              "visibility_is_occlusion_unverified": true,
+              "insertion_preview": {
+                "status": "predicted_blocked",
+                "motion_authorized": false,
+                "requires_fresh_observation": true,
+                "diagnostic": {
+                  "error_type": "HarnessError",
+                  "code": "scene_sweep_blocked",
+                  "metrics": {
+                    "stage_index": 1,
+                    "segment_index": 0,
+                    "goal_index": 0,
+                    "variant": 3,
+                    "route_family": "aligned_insertion_preview",
+                    "obstacle_index": 1,
+                    "obstacle_role": "bucket",
+                    "obstacle_name": "wall_x_low",
+                    "collision_body": "tool",
+                    "start_pose_clear": true,
+                    "end_pose_clear": false,
+                    "collision_location": "end_pose",
+                    "endpoint_clearance_hint": {
+                      "frame": "object",
+                      "translation_m": [
+                        -0.0020303777995019897,
+                        0.0008238892571974378,
+                        0.0018052299658949918
+                      ],
+                      "distance_m": 0.0028390284864018003,
+                      "scope": "single_obstacle_tool_endpoint_fixed_orientation",
+                      "path_checked": false,
+                      "grasp_checked": false,
+                      "motion_authorized": false
+                    },
+                    "segment_start_tcp_pose": [
+                      -0.1140918357150268,
+                      0.9228383240671574,
+                      -0.36790281414555326,
+                      0.7234150596580651,
+                      -0.9929117514713904,
+                      -0.11833584612552796,
+                      0.011085184336655897,
+                      -0.05004263347868641,
+                      -0.03330625786874352,
+                      0.3665597565948184,
+                      0.9297981705897448,
+                      0.8646111098914654,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ],
+                    "segment_end_tcp_pose": [
+                      -0.1140918357150268,
+                      0.9228383240671574,
+                      -0.36790281414555326,
+                      0.7237524182163919,
+                      -0.9929117514713904,
+                      -0.11833584612552796,
+                      0.011085184336655897,
+                      -0.04917140138624321,
+                      -0.03330625786874352,
+                      0.3665597565948184,
+                      0.9297981705897448,
+                      0.8126195034165331,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ]
+                  }
+                }
+              },
+              "endpoint_ik": {
+                "converged": false,
+                "min_margin_deg": null,
+                "final_arm_deg": null,
+                "position_error_m": 0.15739,
+                "rotation_error_rad": 1.131396,
+                "elapsed_ms": 4.51
+              },
+              "endpoint_ik_ranking_ms": 16.439
+            }
+          ]
+        },
+        "insert": {
+          "planned": false,
+          "plan_6000d_s": 0.024,
+          "cache_age_s": 23.4668,
+          "error": "registered_candidates_exhausted:{\"diagnostic\":{\"code\":\"registered_candidates_exhausted\",\"metrics\":{}},\"candidates\":[{\"variant\":0,\"diagnostic\":{\"error_type\":\"HarnessError\",\"code\":\"no_clear_square_symmetry_route\",\"metrics\":{}}}]}",
+          "symmetry_diagnostics": [
+            {
+              "sym": 0,
+              "clear": false,
+              "error": "scene_sweep_blocked:{\"diagnostic\":{\"code\":\"scene_sweep_blocked\",\"metrics\":{\"stage_index\":0,\"segment_index\":0,\"goal_index\":0,\"variant\":0,\"skill\":\"insert\",\"obstacle_index\":1,\"obstacle_role\":\"bucket\",\"obstacle_name\":\"wall_x_low\",\"collision_body\":\"tool\",\"start_pose_clear\":true,\"end_pose_clear\":false,\"collision_location\":\"end_pose\",\"endpoint_clearance_hint\":{\"frame\":\"object\",\"translation_m\":[-2.1619172585494293e-06,0.0023850286239458234,0.005931775002278045],\"distance_m\":0.006393302815335649,\"scope\":\"single_obstacle_tool_endpoint_fixed_orientation\",\"path_checked\":false,\"grasp_checked\":false,\"motion_authorized\":false},\"segment_start_tcp_pose\":[-0.9931749648495246,-0.11474964396795545,0.020880814289017027,0.7135125590807249,0.11484538178412002,-0.9309117074323122,0.3467188071742242,-0.05105427857890876,-0.02034766519787025,0.3467505042169156,0.9377366689781901,0.8648354881279027,0.0,0.0,0.0,1.0],\"segment_end_tcp_pose\":[-0.9932061941604382,-0.11452698668277439,0.020616139374504436,0.7138930338312134,0.11455631417038716,-0.9311409107412569,0.34619857773793017,-0.05012564053514193,-0.02045254910912385,0.34620828075810545,0.9379347096517735,0.8125395383653558,0.0,0.0,0.0,1.0]}}}"
+            },
+            {
+              "sym": 1,
+              "clear": false,
+              "error": "scene_sweep_blocked:{\"diagnostic\":{\"code\":\"scene_sweep_blocked\",\"metrics\":{\"stage_index\":0,\"segment_index\":0,\"goal_index\":0,\"variant\":1,\"skill\":\"insert\",\"obstacle_index\":4,\"obstacle_role\":\"bucket\",\"obstacle_name\":\"wall_y_high\",\"collision_body\":\"tool\",\"start_pose_clear\":true,\"end_pose_clear\":false,\"collision_location\":\"end_pose\",\"endpoint_clearance_hint\":{\"frame\":\"object\",\"translation_m\":[3.5823010508735177e-06,-3.676213731248317e-09,8.90199844006519e-06],\"distance_m\":9.595752735485185e-06,\"scope\":\"single_obstacle_tool_endpoint_fixed_orientation\",\"path_checked\":false,\"grasp_checked\":false,\"motion_authorized\":false},\"segment_start_tcp_pose\":[-0.9931749648495246,-0.11474964396795545,0.020880814289017027,0.7135125590807249,0.11484538178412002,-0.9309117074323122,0.3467188071742242,-0.05105427857890876,-0.02034766519787025,0.3467505042169156,0.9377366689781901,0.8648354881279027,0.0,0.0,0.0,1.0],\"segment_end_tcp_pose\":[0.11429846768533215,-0.9275418312829743,0.35581176414662885,0.7129376089383022,0.9934453807492353,0.1061889883319044,-0.042310450541975346,-0.04026732880564815,0.0014614215067067502,0.35831557317181956,0.9335993863910956,0.8126985362758276,0.0,0.0,0.0,1.0]}}}"
+            },
+            {
+              "sym": 2,
+              "clear": false,
+              "error": "scene_sweep_blocked:{\"diagnostic\":{\"code\":\"scene_sweep_blocked\",\"metrics\":{\"stage_index\":0,\"segment_index\":0,\"goal_index\":0,\"variant\":2,\"skill\":\"insert\",\"obstacle_index\":1,\"obstacle_role\":\"bucket\",\"obstacle_name\":\"wall_x_low\",\"collision_body\":\"tool\",\"start_pose_clear\":true,\"end_pose_clear\":false,\"collision_location\":\"end_pose\",\"endpoint_clearance_hint\":{\"frame\":\"object\",\"translation_m\":[-1.0955823503687133e-06,0.002362057170555248,0.0015750452277090165],\"distance_m\":0.002839028486401856,\"scope\":\"single_obstacle_tool_endpoint_fixed_orientation\",\"path_checked\":false,\"grasp_checked\":false,\"motion_authorized\":false},\"segment_start_tcp_pose\":[-0.9931749648495246,-0.11474964396795545,0.020880814289017027,0.7135125590807249,0.11484538178412002,-0.9309117074323122,0.3467188071742242,-0.05105427857890876,-0.02034766519787025,0.3467505042169156,0.9377366689781901,0.8648354881279027,0.0,0.0,0.0,1.0],\"segment_end_tcp_pose\":[-0.1140918357150268,0.9228383240671574,-0.36790281414555326,0.7237524182163919,-0.9929117514713904,-0.11833584612552796,0.011085184336655897,-0.049171401386243194,-0.03330625786874352,0.3665597565948184,0.9297981705897448,0.812619503416533,0.0,0.0,0.0,1.0]}}}"
+            },
+            {
+              "sym": 3,
+              "clear": false,
+              "error": "scene_sweep_blocked:{\"diagnostic\":{\"code\":\"scene_sweep_blocked\",\"metrics\":{\"stage_index\":0,\"segment_index\":0,\"goal_index\":0,\"variant\":3,\"skill\":\"insert\",\"obstacle_index\":1,\"obstacle_role\":\"bucket\",\"obstacle_name\":\"wall_x_low\",\"collision_body\":\"tool\",\"start_pose_clear\":true,\"end_pose_clear\":true,\"collision_location\":\"sweep_envelope\",\"segment_start_tcp_pose\":[-0.9931749648495246,-0.11474964396795545,0.020880814289017027,0.7135125590807249,0.11484538178412002,-0.9309117074323122,0.3467188071742242,-0.05105427857890876,-0.02034766519787025,0.3467505042169156,0.9377366689781901,0.8648354881279027,0.0,0.0,0.0,1.0],\"segment_end_tcp_pose\":[0.9934128261307437,0.10982347946695721,-0.03270718937342881,0.7227969933234808,-0.11402268489254223,0.9189940529476334,-0.37742384394324957,-0.0393130896567494,-0.01139228725291292,0.3786670490085325,0.9254628473290668,0.8127785013270048,0.0,0.0,0.0,1.0]}}}"
+            }
+          ]
+        },
+        "release": {
+          "planned": true,
+          "variant": 0,
+          "waypoints": 1,
+          "plan_6000d_s": 0.015,
+          "cache_age_s": 23.4668,
+          "revalidate_ok": true,
+          "revalidate_segments": 1,
+          "output_audit": {
+            "samples": 1,
+            "virtual_duration_s": 0.02,
+            "complete_publications": true,
+            "immutable_left_arm": true,
+            "sampled_max_speed_deg_s": 0.0,
+            "profile_max_velocity_deg_s": 30.0,
+            "sampled_speed_within_profile": true,
+            "final_arm_err_deg": 0.0,
+            "final_gripper_err": 0.0,
+            "passed": true
+          },
+          "post_open_cache_result": false,
+          "post_open_cache_diag": {
+            "status": "invalidated",
+            "reason": "cache_invalidated:not_held",
+            "age_s": 23.7868,
+            "measured_at_ns": 36760052036513
+          },
+          "post_release_occluded_verify_gate_error": "aperture_measurement_required:square-hole-1:partial_lid_landmarks_unavailable"
+        },
+        "withdraw_reset": {
+          "current_engine_precondition_error": "skill_precondition:verify_placed",
+          "current_return_observation_error": "verified_placement_required_for_return_scene",
+          "geometry_probe_planned": false,
+          "geometry_probe_error": "numerical_stage_failed:{\"diagnostic\":{\"error_type\":\"HarnessError\",\"code\":\"numerical_stage_failed\",\"metrics\":{\"stage_index\":0}},\"candidates\":[{\"variant\":0,\"diagnostic\":{\"error_type\":\"HarnessError\",\"code\":\"numerical_stage_failed\",\"metrics\":{\"stage_index\":0}}}]}",
+          "variant": null,
+          "waypoints": null,
+          "plan_6000d_s": 0.017,
+          "revalidate_ok": null,
+          "revalidate_segments": null,
+          "output_audit": null,
+          "sweep_outputs_ok": null,
+          "sweep_outputs_detail": null
+        },
+        "verify_placed": {
+          "cached_aperture_rejected": true,
+          "cached_aperture_result": {
+            "outcome": "pending_review",
+            "reason": "matching_hole_evidence_missing"
+          },
+          "simulated_fresh_visible_block_result": {
+            "outcome": "success",
+            "reason": "placement_observed"
+          },
+          "simulated_dropped_invisible_block_result": {
+            "outcome": "pending_review",
+            "reason": "object_not_observed"
+          },
+          "total_cache_span_s": 23.787
+        }
+      },
+      "blockers_found": [
+        "insert_plan_failed:registered_candidates_exhausted:{\"diagnostic\":{\"code\":\"registered_candidates_exhausted\",\"metrics\":{}},\"candidates\":[{\"variant\":0,\"diagnostic\":{\"error_type\":\"HarnessError\",\"code\":\"no_clear_square_symmetry_route\",\"metrics\":{}}}]}",
+        "release_post_verify_blocked_when_occluded:aperture_measurement_required:square-hole-1:partial_lid_landmarks_unavailable",
+        "withdraw_reset_engine_precondition:skill_precondition:verify_placed",
+        "withdraw_reset_return_observation:verified_placement_required_for_return_scene"
+      ]
+    },
+    "V62-Trial2": {
+      "source_trace": "/home/xza_100850113/Artifacts/WorkspaceReports/github-harness-v53/Claude-advice/HARNESS/evidence/20261127-v62-batch/runs/trial2/owner-trace.jsonl",
+      "pre_transport_obs_id": "e4a85fe482a545bfbfad12188f3261c2:83",
+      "arrival_obs_id": "e4a85fe482a545bfbfad12188f3261c2:102",
+      "cache_measured_at_ns": 36851894266908,
+      "eef_object_grasp_tcp_in_obj_mm": [
+        -4.5,
+        -2.93,
+        55.4
+      ],
+      "eef_object_z_axis_tilt_deg": 20.97,
+      "stages": {
+        "align": {
+          "planned": true,
+          "variant": 1,
+          "waypoints": 18,
+          "arm_r_j6_deg": [
+            7.55,
+            31.91
+          ],
+          "plan_6000d_s": 3.003,
+          "cache_age_s": 7.0868,
+          "revalidate_ok": true,
+          "revalidate_segments": 18,
+          "output_audit": {
+            "samples": 455,
+            "virtual_duration_s": 9.1,
+            "complete_publications": true,
+            "immutable_left_arm": true,
+            "sampled_max_speed_deg_s": 26.518,
+            "profile_max_velocity_deg_s": 30.0,
+            "sampled_speed_within_profile": true,
+            "final_arm_err_deg": 0.0695,
+            "final_gripper_err": 0.0,
+            "passed": true
+          },
+          "verify_outcome": "success",
+          "verify_reason": "owner_arrival_and_fresh_scene",
+          "post_align_hole_xy_mm": 0.22,
+          "post_align_hole_z_mm": 40.6,
+          "candidate_ranking": [
+            {
+              "variant": 1,
+              "score": 7.227470089711309,
+              "path_length_m": 0.3507192160917172,
+              "rotation_rad": 1.3905669540827696,
+              "historical_orientation_error_rad": 1.4529129344820748,
+              "predicted_target_in_wrist_frame": true,
+              "visibility_is_occlusion_unverified": true,
+              "insertion_preview": {
+                "status": "predicted_blocked",
+                "motion_authorized": false,
+                "requires_fresh_observation": true,
+                "diagnostic": {
+                  "error_type": "HarnessError",
+                  "code": "scene_sweep_blocked",
+                  "metrics": {
+                    "stage_index": 1,
+                    "segment_index": 0,
+                    "goal_index": 0,
+                    "variant": 1,
+                    "route_family": "aligned_insertion_preview",
+                    "obstacle_index": 1,
+                    "obstacle_role": "bucket",
+                    "obstacle_name": "wall_x_low",
+                    "collision_body": "tool",
+                    "start_pose_clear": true,
+                    "end_pose_clear": false,
+                    "collision_location": "end_pose",
+                    "endpoint_clearance_hint": {
+                      "frame": "object",
+                      "translation_m": [
+                        -0.0009578708771896725,
+                        0.0014926934439967667,
+                        0.004368351247081245
+                      ],
+                      "distance_m": 0.0047146731544186185,
+                      "scope": "single_obstacle_tool_endpoint_fixed_orientation",
+                      "path_checked": false,
+                      "grasp_checked": false,
+                      "motion_authorized": false
+                    },
+                    "segment_start_tcp_pose": [
+                      -0.983208850986679,
+                      -0.181505567842841,
+                      0.018870192990493154,
+                      0.8138866094537385,
+                      0.17746553139012114,
+                      -0.9269606596176534,
+                      0.33052975764636744,
+                      -0.07416178778281632,
+                      -0.042501064809058,
+                      0.32832859205897724,
+                      0.9436069070999673,
+                      0.8662329494989767,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ],
+                    "segment_end_tcp_pose": [
+                      -0.983208850986679,
+                      -0.181505567842841,
+                      0.018870192990493154,
+                      0.8150418734409678,
+                      0.17746553139012114,
+                      -0.9269606596176534,
+                      0.33052975764636744,
+                      -0.07276631409447434,
+                      -0.042501064809058,
+                      0.32832859205897724,
+                      0.9436069070999673,
+                      0.8142645165968296,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ]
+                  }
+                }
+              },
+              "endpoint_ik": {
+                "converged": true,
+                "min_margin_deg": 23.6768,
+                "final_arm_deg": [
+                  4.3695,
+                  -57.348,
+                  16.6378,
+                  -46.4652,
+                  56.0824,
+                  0.631,
+                  66.3232
+                ],
+                "position_error_m": 0.000984,
+                "rotation_error_rad": 0.000154,
+                "elapsed_ms": 0.803
+              },
+              "endpoint_ik_ranking_ms": 15.317
+            },
+            {
+              "variant": 0,
+              "score": 1.9117045459280206,
+              "path_length_m": 0.10513762229030811,
+              "rotation_rad": 0.3703324603312311,
+              "historical_orientation_error_rad": 0.22715180696793835,
+              "predicted_target_in_wrist_frame": true,
+              "visibility_is_occlusion_unverified": true,
+              "insertion_preview": {
+                "status": "predicted_blocked",
+                "motion_authorized": false,
+                "requires_fresh_observation": true,
+                "diagnostic": {
+                  "error_type": "HarnessError",
+                  "code": "scene_sweep_blocked",
+                  "metrics": {
+                    "stage_index": 1,
+                    "segment_index": 0,
+                    "goal_index": 0,
+                    "variant": 0,
+                    "route_family": "aligned_insertion_preview",
+                    "obstacle_index": 7,
+                    "obstacle_role": "bucket",
+                    "obstacle_name": "rim_x_high",
+                    "collision_body": "tool",
+                    "start_pose_clear": true,
+                    "end_pose_clear": false,
+                    "collision_location": "end_pose",
+                    "endpoint_clearance_hint": {
+                      "frame": "object",
+                      "translation_m": [
+                        0.0001759580318847253,
+                        0.00027111265321625664,
+                        0.0010217334477432142
+                      ],
+                      "distance_m": 0.0010716354501209824,
+                      "scope": "single_obstacle_tool_endpoint_fixed_orientation",
+                      "path_checked": false,
+                      "grasp_checked": false,
+                      "motion_authorized": false
+                    },
+                    "segment_start_tcp_pose": [
+                      0.17678141161454747,
+                      -0.9255190708611313,
+                      0.33490712440922116,
+                      0.8149624836643149,
+                      0.9842376930028407,
+                      0.16451955887136674,
+                      -0.06488049337990284,
+                      -0.06664225722780172,
+                      0.004949361579213543,
+                      0.34109788070478514,
+                      0.9400147549899193,
+                      0.8664587832429069,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ],
+                    "segment_end_tcp_pose": [
+                      0.17678141161454747,
+                      -0.9255190708611313,
+                      0.33490712440922116,
+                      0.8161177476515442,
+                      0.9842376930028407,
+                      0.16451955887136674,
+                      -0.06488049337990284,
+                      -0.06524678353945976,
+                      0.004949361579213543,
+                      0.34109788070478514,
+                      0.9400147549899193,
+                      0.8144903503407599,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ]
+                  }
+                }
+              },
+              "endpoint_ik": {
+                "converged": true,
+                "min_margin_deg": 7.9001,
+                "final_arm_deg": [
+                  -17.9482,
+                  -69.7195,
+                  27.3181,
+                  -100.1394,
+                  75.1729,
+                  18.6738,
+                  -82.0999
+                ],
+                "position_error_m": 0.000997,
+                "rotation_error_rad": 0.000197,
+                "elapsed_ms": 4.239
+              },
+              "endpoint_ik_ranking_ms": 15.317
+            },
+            {
+              "variant": 2,
+              "score": 8.638284693374356,
+              "path_length_m": 0.41066309515508403,
+              "rotation_rad": 1.7985789671441317,
+              "historical_orientation_error_rad": 1.706417036791673,
+              "predicted_target_in_wrist_frame": true,
+              "visibility_is_occlusion_unverified": true,
+              "insertion_preview": {
+                "status": "predicted_blocked",
+                "motion_authorized": false,
+                "requires_fresh_observation": true,
+                "diagnostic": {
+                  "error_type": "HarnessError",
+                  "code": "scene_sweep_blocked",
+                  "metrics": {
+                    "stage_index": 1,
+                    "segment_index": 0,
+                    "goal_index": 0,
+                    "variant": 2,
+                    "route_family": "aligned_insertion_preview",
+                    "obstacle_index": 8,
+                    "obstacle_role": "bucket",
+                    "obstacle_name": "rim_y_low",
+                    "collision_body": "tool",
+                    "start_pose_clear": true,
+                    "end_pose_clear": false,
+                    "collision_location": "end_pose",
+                    "endpoint_clearance_hint": {
+                      "frame": "object",
+                      "translation_m": [
+                        0.00017595803188474353,
+                        0.00027111265321628467,
+                        0.0010217334477433198
+                      ],
+                      "distance_m": 0.0010716354501210934,
+                      "scope": "single_obstacle_tool_endpoint_fixed_orientation",
+                      "path_checked": false,
+                      "grasp_checked": false,
+                      "motion_authorized": false
+                    },
+                    "segment_start_tcp_pose": [
+                      0.9843371956456273,
+                      0.16564123115601187,
+                      -0.060359488149123404,
+                      0.8224835098979978,
+                      -0.17610257426486695,
+                      0.9077977109979505,
+                      -0.38064576609269557,
+                      -0.06772249558001242,
+                      -0.00825642815122078,
+                      0.3853132471745288,
+                      0.9227489002681672,
+                      0.866596969564027,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ],
+                    "segment_end_tcp_pose": [
+                      0.9843371956456273,
+                      0.16564123115601187,
+                      -0.060359488149123404,
+                      0.8236387738852271,
+                      -0.17610257426486695,
+                      0.9077977109979505,
+                      -0.38064576609269557,
+                      -0.06632702189167047,
+                      -0.00825642815122078,
+                      0.3853132471745288,
+                      0.9227489002681672,
+                      0.81462853666188,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ]
+                  }
+                }
+              },
+              "endpoint_ik": {
+                "converged": false,
+                "min_margin_deg": null,
+                "final_arm_deg": null,
+                "position_error_m": 0.299026,
+                "rotation_error_rad": 0.41011,
+                "elapsed_ms": 4.603
+              },
+              "endpoint_ik_ranking_ms": 15.317
+            },
+            {
+              "variant": 3,
+              "score": 12.527956123328378,
+              "path_length_m": 0.5262807843631597,
+              "rotation_rad": 2.9351672857400724,
+              "historical_orientation_error_rad": 3.0142790330488105,
+              "predicted_target_in_wrist_frame": true,
+              "visibility_is_occlusion_unverified": true,
+              "insertion_preview": {
+                "status": "predicted_blocked",
+                "motion_authorized": false,
+                "requires_fresh_observation": true,
+                "diagnostic": {
+                  "error_type": "HarnessError",
+                  "code": "scene_sweep_blocked",
+                  "metrics": {
+                    "stage_index": 1,
+                    "segment_index": 0,
+                    "goal_index": 0,
+                    "variant": 3,
+                    "route_family": "aligned_insertion_preview",
+                    "obstacle_index": 1,
+                    "obstacle_role": "bucket",
+                    "obstacle_name": "wall_x_low",
+                    "collision_body": "tool",
+                    "start_pose_clear": true,
+                    "end_pose_clear": false,
+                    "collision_location": "end_pose",
+                    "endpoint_clearance_hint": {
+                      "frame": "object",
+                      "translation_m": [
+                        -0.0011503238335045741,
+                        0.0005166773202531163,
+                        0.0009778178699509585
+                      ],
+                      "distance_m": 0.0015957218310181643,
+                      "scope": "single_obstacle_tool_endpoint_fixed_orientation",
+                      "path_checked": false,
+                      "grasp_checked": false,
+                      "motion_authorized": false
+                    },
+                    "segment_start_tcp_pose": [
+                      -0.175653066955599,
+                      0.9096547341743023,
+                      -0.37639641956785147,
+                      0.8214076356874214,
+                      -0.9828747358775867,
+                      -0.18368250749106949,
+                      0.014764484933574617,
+                      -0.07524202613502705,
+                      -0.055706854539492326,
+                      0.37254395852872096,
+                      0.9263410523782153,
+                      0.866371135820097,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ],
+                    "segment_end_tcp_pose": [
+                      -0.175653066955599,
+                      0.9096547341743023,
+                      -0.37639641956785147,
+                      0.8225628996746506,
+                      -0.9828747358775867,
+                      -0.18368250749106949,
+                      0.014764484933574617,
+                      -0.07384655244668509,
+                      -0.055706854539492326,
+                      0.37254395852872096,
+                      0.9263410523782153,
+                      0.8144027029179499,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ]
+                  }
+                }
+              },
+              "endpoint_ik": {
+                "converged": false,
+                "min_margin_deg": null,
+                "final_arm_deg": null,
+                "position_error_m": 0.238965,
+                "rotation_error_rad": 1.261763,
+                "elapsed_ms": 4.608
+              },
+              "endpoint_ik_ranking_ms": 15.317
+            }
+          ]
+        },
+        "insert": {
+          "planned": false,
+          "plan_6000d_s": 0.025,
+          "cache_age_s": 16.4868,
+          "error": "registered_candidates_exhausted:{\"diagnostic\":{\"code\":\"registered_candidates_exhausted\",\"metrics\":{}},\"candidates\":[{\"variant\":0,\"diagnostic\":{\"error_type\":\"HarnessError\",\"code\":\"no_clear_square_symmetry_route\",\"metrics\":{}}}]}",
+          "symmetry_diagnostics": [
+            {
+              "sym": 0,
+              "clear": false,
+              "error": "scene_sweep_blocked:{\"diagnostic\":{\"code\":\"scene_sweep_blocked\",\"metrics\":{\"stage_index\":0,\"segment_index\":0,\"goal_index\":0,\"variant\":0,\"skill\":\"insert\",\"obstacle_index\":1,\"obstacle_role\":\"bucket\",\"obstacle_name\":\"wall_x_low\",\"collision_body\":\"tool\",\"start_pose_clear\":true,\"end_pose_clear\":false,\"collision_location\":\"end_pose\",\"endpoint_clearance_hint\":{\"frame\":\"object\",\"translation_m\":[2.91447764190566e-07,0.0017296234152870378,0.00438594866697549],\"distance_m\":0.0047146731544186185,\"scope\":\"single_obstacle_tool_endpoint_fixed_orientation\",\"path_checked\":false,\"grasp_checked\":false,\"motion_authorized\":false},\"segment_start_tcp_pose\":[-0.9831046591336627,-0.1820782266682816,0.018781601716007238,0.8139920813824877,0.1779618195588317,-0.9267510737475263,0.3308504769334887,-0.07433104636374746,-0.04283479857539605,0.32860305336551765,0.9434962709782506,0.8668323192348204,0.0,0.0,0.0,1.0],\"segment_end_tcp_pose\":[-0.983208850986679,-0.181505567842841,0.018870192990493154,0.8150418734409678,0.17746553139012114,-0.9269606596176534,0.33052975764636744,-0.0727663140944744,-0.042501064809058,0.32832859205897724,0.9436069070999673,0.8142645165968296,0.0,0.0,0.0,1.0]}}}"
+            },
+            {
+              "sym": 1,
+              "clear": false,
+              "error": "scene_sweep_blocked:{\"diagnostic\":{\"code\":\"scene_sweep_blocked\",\"metrics\":{\"stage_index\":0,\"segment_index\":0,\"goal_index\":0,\"variant\":1,\"skill\":\"insert\",\"obstacle_index\":7,\"obstacle_role\":\"bucket\",\"obstacle_name\":\"rim_x_high\",\"collision_body\":\"tool\",\"start_pose_clear\":true,\"end_pose_clear\":false,\"collision_location\":\"end_pose\",\"endpoint_clearance_hint\":{\"frame\":\"object\",\"translation_m\":[2.846349789250447e-07,-4.070629998232922e-07,0.001071635335008381],\"distance_m\":0.0010716354501209824,\"scope\":\"single_obstacle_tool_endpoint_fixed_orientation\",\"path_checked\":false,\"grasp_checked\":false,\"motion_authorized\":false},\"segment_start_tcp_pose\":[-0.9831046591336627,-0.1820782266682816,0.018781601716007238,0.8139920813824877,0.1779618195588317,-0.9267510737475263,0.3308504769334887,-0.07433104636374746,-0.04283479857539605,0.32860305336551765,0.9434962709782506,0.8668323192348204,0.0,0.0,0.0,1.0],\"segment_end_tcp_pose\":[0.17678141161454747,-0.9255190708611313,0.33490712440922116,0.8161177476515442,0.9842376930028407,0.16451955887136674,-0.06488049337990284,-0.06524678353945976,0.004949361579213543,0.34109788070478514,0.9400147549899193,0.8144903503407599,0.0,0.0,0.0,1.0]}}}"
+            },
+            {
+              "sym": 2,
+              "clear": false,
+              "error": "scene_sweep_blocked:{\"diagnostic\":{\"code\":\"scene_sweep_blocked\",\"metrics\":{\"stage_index\":0,\"segment_index\":0,\"goal_index\":0,\"variant\":2,\"skill\":\"insert\",\"obstacle_index\":1,\"obstacle_role\":\"bucket\",\"obstacle_name\":\"wall_x_low\",\"collision_body\":\"tool\",\"start_pose_clear\":true,\"end_pose_clear\":false,\"collision_location\":\"end_pose\",\"endpoint_clearance_hint\":{\"frame\":\"object\",\"translation_m\":[-4.412488448779654e-07,0.0013346740352365868,0.0008746274560935457],\"distance_m\":0.0015957218310181643,\"scope\":\"single_obstacle_tool_endpoint_fixed_orientation\",\"path_checked\":false,\"grasp_checked\":false,\"motion_authorized\":false},\"segment_start_tcp_pose\":[-0.9831046591336627,-0.1820782266682816,0.018781601716007238,0.8139920813824877,0.1779618195588317,-0.9267510737475263,0.3308504769334887,-0.07433104636374746,-0.04283479857539605,0.32860305336551765,0.9434962709782506,0.8668323192348204,0.0,0.0,0.0,1.0],\"segment_end_tcp_pose\":[-0.175653066955599,0.9096547341743023,-0.37639641956785147,0.8225628996746508,-0.9828747358775867,-0.18368250749106949,0.014764484933574617,-0.07384655244668509,-0.055706854539492326,0.37254395852872096,0.9263410523782153,0.8144027029179499,0.0,0.0,0.0,1.0]}}}"
+            },
+            {
+              "sym": 3,
+              "clear": false,
+              "error": "scene_sweep_blocked:{\"diagnostic\":{\"code\":\"scene_sweep_blocked\",\"metrics\":{\"stage_index\":0,\"segment_index\":0,\"goal_index\":0,\"variant\":3,\"skill\":\"insert\",\"obstacle_index\":1,\"obstacle_role\":\"bucket\",\"obstacle_name\":\"wall_x_low\",\"collision_body\":\"tool\",\"start_pose_clear\":true,\"end_pose_clear\":true,\"collision_location\":\"sweep_envelope\",\"segment_start_tcp_pose\":[-0.9831046591336627,-0.1820782266682816,0.018781601716007238,0.8139920813824877,0.1779618195588317,-0.9267510737475263,0.3308504769334887,-0.07433104636374746,-0.04283479857539605,0.32860305336551765,0.9434962709782506,0.8668323192348204,0.0,0.0,0.0,1.0],\"segment_end_tcp_pose\":[0.9843371956456273,0.16564123115601187,-0.060359488149123404,0.8236387738852271,-0.17610257426486695,0.9077977109979505,-0.38064576609269557,-0.06632702189167047,-0.00825642815122078,0.3853132471745288,0.9227489002681672,0.81462853666188,0.0,0.0,0.0,1.0]}}}"
+            }
+          ]
+        },
+        "release": {
+          "planned": true,
+          "variant": 0,
+          "waypoints": 1,
+          "plan_6000d_s": 0.014,
+          "cache_age_s": 16.4868,
+          "revalidate_ok": true,
+          "revalidate_segments": 1,
+          "output_audit": {
+            "samples": 1,
+            "virtual_duration_s": 0.02,
+            "complete_publications": true,
+            "immutable_left_arm": true,
+            "sampled_max_speed_deg_s": 0.0,
+            "profile_max_velocity_deg_s": 30.0,
+            "sampled_speed_within_profile": true,
+            "final_arm_err_deg": 0.0,
+            "final_gripper_err": 0.0,
+            "passed": true
+          },
+          "post_open_cache_result": false,
+          "post_open_cache_diag": {
+            "status": "invalidated",
+            "reason": "cache_invalidated:not_held",
+            "age_s": 16.8068,
+            "measured_at_ns": 36851894266908
+          },
+          "post_release_occluded_verify_gate_error": "aperture_measurement_required:square-hole-1:partial_lid_landmarks_unavailable"
+        },
+        "withdraw_reset": {
+          "current_engine_precondition_error": "skill_precondition:verify_placed",
+          "current_return_observation_error": "verified_placement_required_for_return_scene",
+          "geometry_probe_planned": false,
+          "geometry_probe_error": "numerical_stage_failed:{\"diagnostic\":{\"error_type\":\"HarnessError\",\"code\":\"numerical_stage_failed\",\"metrics\":{\"stage_index\":0}},\"candidates\":[{\"variant\":0,\"diagnostic\":{\"error_type\":\"HarnessError\",\"code\":\"numerical_stage_failed\",\"metrics\":{\"stage_index\":0}}}]}",
+          "variant": null,
+          "waypoints": null,
+          "plan_6000d_s": 0.018,
+          "revalidate_ok": null,
+          "revalidate_segments": null,
+          "output_audit": null,
+          "sweep_outputs_ok": null,
+          "sweep_outputs_detail": null
+        },
+        "verify_placed": {
+          "cached_aperture_rejected": true,
+          "cached_aperture_result": {
+            "outcome": "pending_review",
+            "reason": "matching_hole_evidence_missing"
+          },
+          "simulated_fresh_visible_block_result": {
+            "outcome": "success",
+            "reason": "placement_observed"
+          },
+          "simulated_dropped_invisible_block_result": {
+            "outcome": "pending_review",
+            "reason": "object_not_observed"
+          },
+          "total_cache_span_s": 16.807
+        }
+      },
+      "blockers_found": [
+        "insert_plan_failed:registered_candidates_exhausted:{\"diagnostic\":{\"code\":\"registered_candidates_exhausted\",\"metrics\":{}},\"candidates\":[{\"variant\":0,\"diagnostic\":{\"error_type\":\"HarnessError\",\"code\":\"no_clear_square_symmetry_route\",\"metrics\":{}}}]}",
+        "release_post_verify_blocked_when_occluded:aperture_measurement_required:square-hole-1:partial_lid_landmarks_unavailable",
+        "withdraw_reset_engine_precondition:skill_precondition:verify_placed",
+        "withdraw_reset_return_observation:verified_placement_required_for_return_scene"
+      ]
+    },
+    "V60-Trial1": {
+      "source_trace": "/home/xza_100850113/Artifacts/WorkspaceReports/github-harness-v53/Claude-advice/HARNESS/evidence/20261127-v60-batch/runs/trial1/owner-trace.jsonl",
+      "pre_transport_obs_id": "c50ebca5033b4aec84f8d04f5eef94b4:77",
+      "arrival_obs_id": "c50ebca5033b4aec84f8d04f5eef94b4:110",
+      "cache_measured_at_ns": 25533029370410,
+      "eef_object_grasp_tcp_in_obj_mm": [
+        5.1,
+        3.72,
+        55.6
+      ],
+      "eef_object_z_axis_tilt_deg": 22.61,
+      "stages": {
+        "align": {
+          "planned": true,
+          "variant": 1,
+          "waypoints": 18,
+          "arm_r_j6_deg": [
+            2.95,
+            21.53
+          ],
+          "plan_6000d_s": 4.233,
+          "cache_age_s": 11.9799,
+          "revalidate_ok": true,
+          "revalidate_segments": 18,
+          "output_audit": {
+            "samples": 505,
+            "virtual_duration_s": 10.1,
+            "complete_publications": true,
+            "immutable_left_arm": true,
+            "sampled_max_speed_deg_s": 26.519,
+            "profile_max_velocity_deg_s": 30.0,
+            "sampled_speed_within_profile": true,
+            "final_arm_err_deg": 0.0763,
+            "final_gripper_err": 0.0,
+            "passed": true
+          },
+          "verify_outcome": "success",
+          "verify_reason": "owner_arrival_and_fresh_scene",
+          "post_align_hole_xy_mm": 0.43,
+          "post_align_hole_z_mm": 40.11,
+          "candidate_ranking": [
+            {
+              "variant": 1,
+              "score": 7.088661775018782,
+              "path_length_m": 0.34471940052016836,
+              "rotation_rad": 1.3589227596765319,
+              "historical_orientation_error_rad": 1.4207465088401454,
+              "predicted_target_in_wrist_frame": true,
+              "visibility_is_occlusion_unverified": true,
+              "insertion_preview": {
+                "status": "predicted_blocked",
+                "motion_authorized": false,
+                "requires_fresh_observation": true,
+                "diagnostic": {
+                  "error_type": "HarnessError",
+                  "code": "scene_sweep_blocked",
+                  "metrics": {
+                    "stage_index": 1,
+                    "segment_index": 0,
+                    "goal_index": 0,
+                    "variant": 1,
+                    "route_family": "aligned_insertion_preview",
+                    "obstacle_index": 1,
+                    "obstacle_role": "bucket",
+                    "obstacle_name": "wall_x_low",
+                    "collision_body": "tool",
+                    "start_pose_clear": true,
+                    "end_pose_clear": false,
+                    "collision_location": "end_pose",
+                    "endpoint_clearance_hint": {
+                      "frame": "object",
+                      "translation_m": [
+                        0.0006897757072949799,
+                        -0.0012186314458913347,
+                        0.0030096217046446045
+                      ],
+                      "distance_m": 0.003319439099058379,
+                      "scope": "single_obstacle_tool_endpoint_fixed_orientation",
+                      "path_checked": false,
+                      "grasp_checked": false,
+                      "motion_authorized": false
+                    },
+                    "segment_start_tcp_pose": [
+                      -0.9768784931899235,
+                      -0.2095039285646966,
+                      0.0426205755350236,
+                      0.6603356026063225,
+                      0.2111760620041187,
+                      -0.9144339979480766,
+                      0.34527544690184575,
+                      -0.04029746650579774,
+                      -0.0333628592816083,
+                      0.3462926036068827,
+                      0.937533120645786,
+                      0.8640101052986082,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ],
+                    "segment_end_tcp_pose": [
+                      -0.9768784931899235,
+                      -0.2095039285646966,
+                      0.0426205755350236,
+                      0.6610809054807426,
+                      0.2111760620041187,
+                      -0.9144339979480766,
+                      0.34527544690184575,
+                      -0.03834123899836411,
+                      -0.0333628592816083,
+                      0.3462926036068827,
+                      0.937533120645786,
+                      0.8120522599086717,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ]
+                  }
+                }
+              },
+              "endpoint_ik": {
+                "converged": true,
+                "min_margin_deg": 42.6042,
+                "final_arm_deg": [
+                  2.3251,
+                  -28.4876,
+                  6.216,
+                  -102.3958,
+                  65.2662,
+                  6.8842,
+                  36.0626
+                ],
+                "position_error_m": 0.00027,
+                "rotation_error_rad": 0.00064,
+                "elapsed_ms": 0.794
+              },
+              "endpoint_ik_ranking_ms": 16.797
+            },
+            {
+              "variant": 0,
+              "score": 2.178888345700766,
+              "path_length_m": 0.11772898902262821,
+              "rotation_rad": 0.4282974993761177,
+              "historical_orientation_error_rad": 0.2789784835417958,
+              "predicted_target_in_wrist_frame": true,
+              "visibility_is_occlusion_unverified": true,
+              "insertion_preview": {
+                "status": "predicted_blocked",
+                "motion_authorized": false,
+                "requires_fresh_observation": true,
+                "diagnostic": {
+                  "error_type": "HarnessError",
+                  "code": "scene_sweep_blocked",
+                  "metrics": {
+                    "stage_index": 1,
+                    "segment_index": 0,
+                    "goal_index": 0,
+                    "variant": 0,
+                    "route_family": "aligned_insertion_preview",
+                    "obstacle_index": 7,
+                    "obstacle_role": "bucket",
+                    "obstacle_name": "rim_x_high",
+                    "collision_body": "tool",
+                    "start_pose_clear": true,
+                    "end_pose_clear": false,
+                    "collision_location": "end_pose",
+                    "endpoint_clearance_hint": {
+                      "frame": "object",
+                      "translation_m": [
+                        -0.0001275134623142009,
+                        -0.00019544175606110083,
+                        0.0006422688752580847
+                      ],
+                      "distance_m": 0.0006833494502880001,
+                      "scope": "single_obstacle_tool_endpoint_fixed_orientation",
+                      "path_checked": false,
+                      "grasp_checked": false,
+                      "motion_authorized": false
+                    },
+                    "segment_start_tcp_pose": [
+                      0.21014074700337348,
+                      -0.9061606498121758,
+                      0.3670337085077785,
+                      0.6612885634307906,
+                      0.9775909767591766,
+                      0.18994677008560099,
+                      -0.09075299825949174,
+                      -0.03142546910958146,
+                      0.012519928431544881,
+                      0.3778797444507985,
+                      0.9257700309072289,
+                      0.8643578081269004,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ],
+                    "segment_end_tcp_pose": [
+                      0.21014074700337348,
+                      -0.9061606498121758,
+                      0.3670337085077785,
+                      0.6620338663052107,
+                      0.9775909767591766,
+                      0.18994677008560099,
+                      -0.09075299825949174,
+                      -0.029469241602147825,
+                      0.012519928431544881,
+                      0.3778797444507985,
+                      0.9257700309072289,
+                      0.8123999627369639,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ]
+                  }
+                }
+              },
+              "endpoint_ik": {
+                "converged": false,
+                "min_margin_deg": null,
+                "final_arm_deg": null,
+                "position_error_m": 0.009484,
+                "rotation_error_rad": 0.036187,
+                "elapsed_ms": 5.741
+              },
+              "endpoint_ik_ranking_ms": 16.797
+            },
+            {
+              "variant": 2,
+              "score": 8.811759969407257,
+              "path_length_m": 0.41765888912094357,
+              "rotation_rad": 1.8445757945346786,
+              "historical_orientation_error_rad": 1.7464480608607846,
+              "predicted_target_in_wrist_frame": true,
+              "visibility_is_occlusion_unverified": true,
+              "insertion_preview": {
+                "status": "predicted_blocked",
+                "motion_authorized": false,
+                "requires_fresh_observation": true,
+                "diagnostic": {
+                  "error_type": "HarnessError",
+                  "code": "scene_sweep_blocked",
+                  "metrics": {
+                    "stage_index": 1,
+                    "segment_index": 0,
+                    "goal_index": 0,
+                    "variant": 2,
+                    "route_family": "aligned_insertion_preview",
+                    "obstacle_index": 8,
+                    "obstacle_role": "bucket",
+                    "obstacle_name": "rim_y_low",
+                    "collision_body": "tool",
+                    "start_pose_clear": true,
+                    "end_pose_clear": false,
+                    "collision_location": "end_pose",
+                    "endpoint_clearance_hint": {
+                      "frame": "object",
+                      "translation_m": [
+                        -0.00012751346231422162,
+                        -0.00019544175606113257,
+                        0.000642268875258189
+                      ],
+                      "distance_m": 0.0006833494502881111,
+                      "scope": "single_obstacle_tool_endpoint_fixed_orientation",
+                      "path_checked": false,
+                      "grasp_checked": false,
+                      "motion_authorized": false
+                    },
+                    "segment_start_tcp_pose": [
+                      0.977660455019274,
+                      0.19851313539769236,
+                      -0.06908378801195482,
+                      0.670166449100976,
+                      -0.2091236142102892,
+                      0.8855860051927339,
+                      -0.41473454327620507,
+                      -0.032382640938384305,
+                      -0.02115061869448796,
+                      0.4199166137241184,
+                      0.9073162011379653,
+                      0.8644491180688795,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ],
+                    "segment_end_tcp_pose": [
+                      0.977660455019274,
+                      0.19851313539769236,
+                      -0.06908378801195482,
+                      0.6709117519753961,
+                      -0.2091236142102892,
+                      0.8855860051927339,
+                      -0.41473454327620507,
+                      -0.030426413430950677,
+                      -0.02115061869448796,
+                      0.4199166137241184,
+                      0.9073162011379653,
+                      0.8124912726789429,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ]
+                  }
+                }
+              },
+              "endpoint_ik": {
+                "converged": false,
+                "min_margin_deg": null,
+                "final_arm_deg": null,
+                "position_error_m": 0.26058,
+                "rotation_error_rad": 0.690625,
+                "elapsed_ms": 4.562
+              },
+              "endpoint_ik_ranking_ms": 16.797
+            },
+            {
+              "variant": 3,
+              "score": 12.448679698943767,
+              "path_length_m": 0.5260768575887919,
+              "rotation_rad": 2.8950184061457005,
+              "historical_orientation_error_rad": 2.977700572938169,
+              "predicted_target_in_wrist_frame": true,
+              "visibility_is_occlusion_unverified": true,
+              "insertion_preview": {
+                "status": "predicted_blocked",
+                "motion_authorized": false,
+                "requires_fresh_observation": true,
+                "diagnostic": {
+                  "error_type": "HarnessError",
+                  "code": "scene_sweep_blocked",
+                  "metrics": {
+                    "stage_index": 1,
+                    "segment_index": 0,
+                    "goal_index": 0,
+                    "variant": 3,
+                    "route_family": "aligned_insertion_preview",
+                    "obstacle_index": 1,
+                    "obstacle_role": "bucket",
+                    "obstacle_name": "wall_x_low",
+                    "collision_body": "tool",
+                    "start_pose_clear": true,
+                    "end_pose_clear": false,
+                    "collision_location": "end_pose",
+                    "endpoint_clearance_hint": {
+                      "frame": "object",
+                      "translation_m": [
+                        0.0012699485760463995,
+                        -0.0006795017168952113,
+                        0.001084829270563407
+                      ],
+                      "distance_m": 0.0018031490552189156,
+                      "scope": "single_obstacle_tool_endpoint_fixed_orientation",
+                      "path_checked": false,
+                      "grasp_checked": false,
+                      "motion_authorized": false
+                    },
+                    "segment_start_tcp_pose": [
+                      -0.20935878517402318,
+                      0.8951698566451715,
+                      -0.3934969209847097,
+                      0.669213488276508,
+                      -0.9755385289653468,
+                      -0.21879476284094376,
+                      0.02129390188513244,
+                      -0.04125463833460058,
+                      -0.06703340640764113,
+                      0.3883294728802026,
+                      0.9190792908765224,
+                      0.8641014152405874,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ],
+                    "segment_end_tcp_pose": [
+                      -0.20935878517402318,
+                      0.8951698566451715,
+                      -0.3934969209847097,
+                      0.669958791150928,
+                      -0.9755385289653468,
+                      -0.21879476284094376,
+                      0.02129390188513244,
+                      -0.03929841082716694,
+                      -0.06703340640764113,
+                      0.3883294728802026,
+                      0.9190792908765224,
+                      0.8121435698506508,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ]
+                  }
+                }
+              },
+              "endpoint_ik": {
+                "converged": false,
+                "min_margin_deg": null,
+                "final_arm_deg": null,
+                "position_error_m": 0.093755,
+                "rotation_error_rad": 1.148079,
+                "elapsed_ms": 4.562
+              },
+              "endpoint_ik_ranking_ms": 16.797
+            }
+          ]
+        },
+        "insert": {
+          "planned": false,
+          "plan_6000d_s": 0.026,
+          "cache_age_s": 22.3799,
+          "error": "registered_candidates_exhausted:{\"diagnostic\":{\"code\":\"registered_candidates_exhausted\",\"metrics\":{}},\"candidates\":[{\"variant\":0,\"diagnostic\":{\"error_type\":\"HarnessError\",\"code\":\"no_clear_square_symmetry_route\",\"metrics\":{}}}]}",
+          "symmetry_diagnostics": [
+            {
+              "sym": 0,
+              "clear": false,
+              "error": "scene_sweep_blocked:{\"diagnostic\":{\"code\":\"scene_sweep_blocked\",\"metrics\":{\"stage_index\":0,\"segment_index\":0,\"goal_index\":0,\"variant\":0,\"skill\":\"insert\",\"obstacle_index\":1,\"obstacle_role\":\"bucket\",\"obstacle_name\":\"wall_x_low\",\"collision_body\":\"tool\",\"start_pose_clear\":true,\"end_pose_clear\":false,\"collision_location\":\"end_pose\",\"endpoint_clearance_hint\":{\"frame\":\"object\",\"translation_m\":[4.104387644130996e-06,-0.0013129810452039608,0.0030487275806955435],\"distance_m\":0.003319439099058268,\"scope\":\"single_obstacle_tool_endpoint_fixed_orientation\",\"path_checked\":false,\"grasp_checked\":false,\"motion_authorized\":false},\"segment_start_tcp_pose\":[-0.9769554136062026,-0.20888882492952593,0.04385862110344743,0.6599946502210198,0.21102090081632335,-0.9143855342537932,0.34549858779172,-0.04038899781098748,-0.03206710532931195,0.3467918014702303,0.9373938058195351,0.8641218022868757,0.0,0.0,0.0,1.0],\"segment_end_tcp_pose\":[-0.9768784931899235,-0.2095039285646966,0.0426205755350236,0.6610809054807426,0.2111760620041187,-0.9144339979480766,0.34527544690184575,-0.03834123899836411,-0.0333628592816083,0.3462926036068827,0.937533120645786,0.8120522599086718,0.0,0.0,0.0,1.0]}}}"
+            },
+            {
+              "sym": 1,
+              "clear": false,
+              "error": "scene_sweep_blocked:{\"diagnostic\":{\"code\":\"scene_sweep_blocked\",\"metrics\":{\"stage_index\":0,\"segment_index\":0,\"goal_index\":0,\"variant\":1,\"skill\":\"insert\",\"obstacle_index\":1,\"obstacle_role\":\"bucket\",\"obstacle_name\":\"wall_x_low\",\"collision_body\":\"tool\",\"start_pose_clear\":true,\"end_pose_clear\":false,\"collision_location\":\"end_pose\",\"endpoint_clearance_hint\":{\"frame\":\"object\",\"translation_m\":[1.2032886746221774e-06,-0.0015153785745389704,0.0009772271195896227],\"distance_m\":0.0018031490552189156,\"scope\":\"single_obstacle_tool_endpoint_fixed_orientation\",\"path_checked\":false,\"grasp_checked\":false,\"motion_authorized\":false},\"segment_start_tcp_pose\":[-0.9769554136062026,-0.20888882492952593,0.04385862110344743,0.6599946502210198,0.21102090081632335,-0.9143855342537932,0.34549858779172,-0.04038899781098748,-0.03206710532931195,0.3467918014702303,0.9373938058195351,0.8641218022868757,0.0,0.0,0.0,1.0],\"segment_end_tcp_pose\":[-0.20935878517402318,0.8951698566451715,-0.3934969209847097,0.669958791150928,-0.9755385289653468,-0.21879476284094376,0.02129390188513244,-0.03929841082716694,-0.06703340640764113,0.3883294728802026,0.9190792908765224,0.812143569850651,0.0,0.0,0.0,1.0]}}}"
+            },
+            {
+              "sym": 2,
+              "clear": false,
+              "error": "scene_sweep_blocked:{\"diagnostic\":{\"code\":\"scene_sweep_blocked\",\"metrics\":{\"stage_index\":0,\"segment_index\":0,\"goal_index\":0,\"variant\":2,\"skill\":\"insert\",\"obstacle_index\":7,\"obstacle_role\":\"bucket\",\"obstacle_name\":\"rim_x_high\",\"collision_body\":\"tool\",\"start_pose_clear\":true,\"end_pose_clear\":false,\"collision_location\":\"end_pose\",\"endpoint_clearance_hint\":{\"frame\":\"object\",\"translation_m\":[9.50177648307933e-07,1.1123264012564071e-07,0.0006833487806373824],\"distance_m\":0.0006833494502880001,\"scope\":\"single_obstacle_tool_endpoint_fixed_orientation\",\"path_checked\":false,\"grasp_checked\":false,\"motion_authorized\":false},\"segment_start_tcp_pose\":[-0.9769554136062026,-0.20888882492952593,0.04385862110344743,0.6599946502210198,0.21102090081632335,-0.9143855342537932,0.34549858779172,-0.04038899781098748,-0.03206710532931195,0.3467918014702303,0.9373938058195351,0.8641218022868757,0.0,0.0,0.0,1.0],\"segment_end_tcp_pose\":[0.21014074700337348,-0.9061606498121758,0.3670337085077785,0.6620338663052107,0.9775909767591766,0.18994677008560099,-0.09075299825949174,-0.029469241602147825,0.012519928431544881,0.3778797444507985,0.9257700309072289,0.8123999627369639,0.0,0.0,0.0,1.0]}}}"
+            },
+            {
+              "sym": 3,
+              "clear": false,
+              "error": "scene_sweep_blocked:{\"diagnostic\":{\"code\":\"scene_sweep_blocked\",\"metrics\":{\"stage_index\":0,\"segment_index\":0,\"goal_index\":0,\"variant\":3,\"skill\":\"insert\",\"obstacle_index\":4,\"obstacle_role\":\"bucket\",\"obstacle_name\":\"wall_y_high\",\"collision_body\":\"tool\",\"start_pose_clear\":true,\"end_pose_clear\":true,\"collision_location\":\"sweep_envelope\",\"segment_start_tcp_pose\":[-0.9769554136062026,-0.20888882492952593,0.04385862110344743,0.6599946502210198,0.21102090081632335,-0.9143855342537932,0.34549858779172,-0.04038899781098748,-0.03206710532931195,0.3467918014702303,0.9373938058195351,0.8641218022868757,0.0,0.0,0.0,1.0],\"segment_end_tcp_pose\":[0.977660455019274,0.19851313539769236,-0.06908378801195482,0.6709117519753961,-0.2091236142102892,0.8855860051927339,-0.41473454327620507,-0.030426413430950677,-0.02115061869448796,0.4199166137241184,0.9073162011379653,0.8124912726789432,0.0,0.0,0.0,1.0]}}}"
+            }
+          ]
+        },
+        "release": {
+          "planned": true,
+          "variant": 0,
+          "waypoints": 1,
+          "plan_6000d_s": 0.015,
+          "cache_age_s": 22.3799,
+          "revalidate_ok": true,
+          "revalidate_segments": 1,
+          "output_audit": {
+            "samples": 1,
+            "virtual_duration_s": 0.02,
+            "complete_publications": true,
+            "immutable_left_arm": true,
+            "sampled_max_speed_deg_s": 0.0,
+            "profile_max_velocity_deg_s": 30.0,
+            "sampled_speed_within_profile": true,
+            "final_arm_err_deg": 0.0,
+            "final_gripper_err": 0.0,
+            "passed": true
+          },
+          "post_open_cache_result": false,
+          "post_open_cache_diag": {
+            "status": "invalidated",
+            "reason": "cache_invalidated:not_held",
+            "age_s": 22.6999,
+            "measured_at_ns": 25533029370410
+          },
+          "post_release_occluded_verify_gate_error": "aperture_measurement_required:square-hole-1:partial_lid_landmarks_unavailable"
+        },
+        "withdraw_reset": {
+          "current_engine_precondition_error": "skill_precondition:verify_placed",
+          "current_return_observation_error": "verified_placement_required_for_return_scene",
+          "geometry_probe_planned": false,
+          "geometry_probe_error": "numerical_stage_failed:{\"diagnostic\":{\"error_type\":\"HarnessError\",\"code\":\"numerical_stage_failed\",\"metrics\":{\"stage_index\":0}},\"candidates\":[{\"variant\":0,\"diagnostic\":{\"error_type\":\"HarnessError\",\"code\":\"numerical_stage_failed\",\"metrics\":{\"stage_index\":0}}}]}",
+          "variant": null,
+          "waypoints": null,
+          "plan_6000d_s": 0.017,
+          "revalidate_ok": null,
+          "revalidate_segments": null,
+          "output_audit": null,
+          "sweep_outputs_ok": null,
+          "sweep_outputs_detail": null
+        },
+        "verify_placed": {
+          "cached_aperture_rejected": true,
+          "cached_aperture_result": {
+            "outcome": "pending_review",
+            "reason": "matching_hole_evidence_missing"
+          },
+          "simulated_fresh_visible_block_result": {
+            "outcome": "success",
+            "reason": "placement_observed"
+          },
+          "simulated_dropped_invisible_block_result": {
+            "outcome": "pending_review",
+            "reason": "object_not_observed"
+          },
+          "total_cache_span_s": 22.7
+        }
+      },
+      "blockers_found": [
+        "insert_plan_failed:registered_candidates_exhausted:{\"diagnostic\":{\"code\":\"registered_candidates_exhausted\",\"metrics\":{}},\"candidates\":[{\"variant\":0,\"diagnostic\":{\"error_type\":\"HarnessError\",\"code\":\"no_clear_square_symmetry_route\",\"metrics\":{}}}]}",
+        "release_post_verify_blocked_when_occluded:aperture_measurement_required:square-hole-1:partial_lid_landmarks_unavailable",
+        "withdraw_reset_engine_precondition:skill_precondition:verify_placed",
+        "withdraw_reset_return_observation:verified_placement_required_for_return_scene"
+      ]
+    },
+    "V60-Trial2": {
+      "source_trace": "/home/xza_100850113/Artifacts/WorkspaceReports/github-harness-v53/Claude-advice/HARNESS/evidence/20261127-v60-batch/runs/trial2/owner-trace.jsonl",
+      "pre_transport_obs_id": "078860e21fbd4777a77df00929596a46:77",
+      "arrival_obs_id": "078860e21fbd4777a77df00929596a46:101",
+      "cache_measured_at_ns": 25662769751643,
+      "eef_object_grasp_tcp_in_obj_mm": [
+        -4.15,
+        -1.33,
+        56.73
+      ],
+      "eef_object_z_axis_tilt_deg": 22.22,
+      "stages": {
+        "align": {
+          "planned": true,
+          "variant": 1,
+          "waypoints": 18,
+          "arm_r_j6_deg": [
+            8.62,
+            34.36
+          ],
+          "plan_6000d_s": 3.108,
+          "cache_age_s": 8.7027,
+          "revalidate_ok": true,
+          "revalidate_segments": 18,
+          "output_audit": {
+            "samples": 470,
+            "virtual_duration_s": 9.4,
+            "complete_publications": true,
+            "immutable_left_arm": true,
+            "sampled_max_speed_deg_s": 26.516,
+            "profile_max_velocity_deg_s": 30.0,
+            "sampled_speed_within_profile": true,
+            "final_arm_err_deg": 0.0688,
+            "final_gripper_err": 0.0,
+            "passed": true
+          },
+          "verify_outcome": "success",
+          "verify_reason": "owner_arrival_and_fresh_scene",
+          "post_align_hole_xy_mm": 0.18,
+          "post_align_hole_z_mm": 40.51,
+          "candidate_ranking": [
+            {
+              "variant": 1,
+              "score": 7.5632660671665555,
+              "path_length_m": 0.3642894206885065,
+              "rotation_rad": 1.4714336705091782,
+              "historical_orientation_error_rad": 1.5382146380510453,
+              "predicted_target_in_wrist_frame": true,
+              "visibility_is_occlusion_unverified": true,
+              "insertion_preview": {
+                "status": "predicted_blocked",
+                "motion_authorized": false,
+                "requires_fresh_observation": true,
+                "diagnostic": {
+                  "error_type": "HarnessError",
+                  "code": "scene_sweep_blocked",
+                  "metrics": {
+                    "stage_index": 1,
+                    "segment_index": 0,
+                    "goal_index": 0,
+                    "variant": 1,
+                    "route_family": "aligned_insertion_preview",
+                    "obstacle_index": 1,
+                    "obstacle_role": "bucket",
+                    "obstacle_name": "wall_x_low",
+                    "collision_body": "tool",
+                    "start_pose_clear": true,
+                    "end_pose_clear": false,
+                    "collision_location": "end_pose",
+                    "endpoint_clearance_hint": {
+                      "frame": "object",
+                      "translation_m": [
+                        -0.00011187331852945649,
+                        0.00014072026797222058,
+                        0.0004013761036394201
+                      ],
+                      "distance_m": 0.00043979610024388785,
+                      "scope": "single_obstacle_tool_endpoint_fixed_orientation",
+                      "path_checked": false,
+                      "grasp_checked": false,
+                      "motion_authorized": false
+                    },
+                    "segment_start_tcp_pose": [
+                      -0.9937719583888028,
+                      -0.10808012578793755,
+                      -0.027128972146965802,
+                      0.7856143827160501,
+                      0.09115828676706055,
+                      -0.9285210613343504,
+                      0.3599149974818336,
+                      -0.04896433557504082,
+                      -0.06408948021169025,
+                      0.355200401278452,
+                      0.932590592627833,
+                      0.8680675399233421,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ],
+                    "segment_end_tcp_pose": [
+                      -0.9937719583888028,
+                      -0.10808012578793755,
+                      -0.027128972146965802,
+                      0.786549373570178,
+                      0.09115828676706055,
+                      -0.9285210613343504,
+                      0.3599149974818336,
+                      -0.047949479688686014,
+                      -0.06408948021169025,
+                      0.355200401278452,
+                      0.932590592627833,
+                      0.8160858521897505,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ]
+                  }
+                }
+              },
+              "endpoint_ik": {
+                "converged": true,
+                "min_margin_deg": 24.3684,
+                "final_arm_deg": [
+                  4.3891,
+                  -55.9684,
+                  16.0941,
+                  -53.7705,
+                  54.3944,
+                  1.8678,
+                  65.6316
+                ],
+                "position_error_m": 0.000711,
+                "rotation_error_rad": 0.000143,
+                "elapsed_ms": 0.818
+              },
+              "endpoint_ik_ranking_ms": 16.712
+            },
+            {
+              "variant": 0,
+              "score": 1.8774335019932904,
+              "path_length_m": 0.10591653518697661,
+              "rotation_rad": 0.3470804577923775,
+              "historical_orientation_error_rad": 0.2063963543637053,
+              "predicted_target_in_wrist_frame": true,
+              "visibility_is_occlusion_unverified": true,
+              "insertion_preview": {
+                "status": "predicted_blocked",
+                "motion_authorized": false,
+                "requires_fresh_observation": true,
+                "diagnostic": {
+                  "error_type": "HarnessError",
+                  "code": "scene_sweep_blocked",
+                  "metrics": {
+                    "stage_index": 1,
+                    "segment_index": 0,
+                    "goal_index": 0,
+                    "variant": 0,
+                    "route_family": "aligned_insertion_preview",
+                    "obstacle_index": 7,
+                    "obstacle_role": "bucket",
+                    "obstacle_name": "rim_x_high",
+                    "collision_body": "tool",
+                    "start_pose_clear": true,
+                    "end_pose_clear": false,
+                    "collision_location": "end_pose",
+                    "endpoint_clearance_hint": {
+                      "frame": "object",
+                      "translation_m": [
+                        0.00012458675615654132,
+                        0.0002666443895995078,
+                        0.0008803246959094716
+                      ],
+                      "distance_m": 0.0009282201573671257,
+                      "scope": "single_obstacle_tool_endpoint_fixed_orientation",
+                      "path_checked": false,
+                      "grasp_checked": false,
+                      "motion_authorized": false
+                    },
+                    "segment_start_tcp_pose": [
+                      0.09073804672786652,
+                      -0.928007061754478,
+                      0.3613440191977065,
+                      0.7877463034094421,
+                      0.9955107083056665,
+                      0.09433394386523934,
+                      -0.007716001787883046,
+                      -0.043181243074155454,
+                      -0.026926502275452447,
+                      0.36042197542440063,
+                      0.9324006451662764,
+                      0.8682187918768415,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ],
+                    "segment_end_tcp_pose": [
+                      0.09073804672786652,
+                      -0.928007061754478,
+                      0.3613440191977065,
+                      0.7886812942635699,
+                      0.9955107083056665,
+                      0.09433394386523934,
+                      -0.007716001787883046,
+                      -0.042166387187800664,
+                      -0.026926502275452447,
+                      0.36042197542440063,
+                      0.9324006451662764,
+                      0.8162371041432499,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ]
+                  }
+                }
+              },
+              "endpoint_ik": {
+                "converged": false,
+                "min_margin_deg": null,
+                "final_arm_deg": null,
+                "position_error_m": 0.001037,
+                "rotation_error_rad": 0.000244,
+                "elapsed_ms": 5.67
+              },
+              "endpoint_ik_ranking_ms": 16.712
+            },
+            {
+              "variant": 2,
+              "score": 8.34032841187479,
+              "path_length_m": 0.3995582406346411,
+              "rotation_rad": 1.7221518365284705,
+              "historical_orientation_error_rad": 1.623698567413305,
+              "predicted_target_in_wrist_frame": true,
+              "visibility_is_occlusion_unverified": true,
+              "insertion_preview": {
+                "status": "predicted_blocked",
+                "motion_authorized": false,
+                "requires_fresh_observation": true,
+                "diagnostic": {
+                  "error_type": "HarnessError",
+                  "code": "scene_sweep_blocked",
+                  "metrics": {
+                    "stage_index": 1,
+                    "segment_index": 0,
+                    "goal_index": 0,
+                    "variant": 2,
+                    "route_family": "aligned_insertion_preview",
+                    "obstacle_index": 8,
+                    "obstacle_role": "bucket",
+                    "obstacle_name": "rim_y_low",
+                    "collision_body": "tool",
+                    "start_pose_clear": true,
+                    "end_pose_clear": false,
+                    "collision_location": "end_pose",
+                    "endpoint_clearance_hint": {
+                      "frame": "object",
+                      "translation_m": [
+                        0.0001245867561565264,
+                        0.0002666443895994759,
+                        0.0008803246959093663
+                      ],
+                      "distance_m": 0.0009282201573670147,
+                      "scope": "single_obstacle_tool_endpoint_fixed_orientation",
+                      "path_checked": false,
+                      "grasp_checked": false,
+                      "motion_authorized": false
+                    },
+                    "segment_start_tcp_pose": [
+                      0.9954972821980638,
+                      0.09458964252022016,
+                      -0.006161222620103099,
+                      0.793530311245035,
+                      -0.08928558927920126,
+                      0.9138782482056758,
+                      -0.3960487735162231,
+                      -0.045315132592422314,
+                      -0.03183150457269035,
+                      0.3948155860456886,
+                      0.9182088043207561,
+                      0.868281167767841,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ],
+                    "segment_end_tcp_pose": [
+                      0.9954972821980638,
+                      0.09458964252022016,
+                      -0.006161222620103099,
+                      0.7944653020991629,
+                      -0.08928558927920126,
+                      0.9138782482056758,
+                      -0.3960487735162231,
+                      -0.04430027670606751,
+                      -0.03183150457269035,
+                      0.3948155860456886,
+                      0.9182088043207561,
+                      0.8162994800342495,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ]
+                  }
+                }
+              },
+              "endpoint_ik": {
+                "converged": false,
+                "min_margin_deg": null,
+                "final_arm_deg": null,
+                "position_error_m": 0.331108,
+                "rotation_error_rad": 0.318794,
+                "elapsed_ms": 4.521
+              },
+              "endpoint_ik_ranking_ms": 16.712
+            },
+            {
+              "variant": 3,
+              "score": 12.69645328635355,
+              "path_length_m": 0.5266565292669035,
+              "rotation_rad": 3.0146125974447093,
+              "historical_orientation_error_rad": 3.0986340730725472,
+              "predicted_target_in_wrist_frame": true,
+              "visibility_is_occlusion_unverified": true,
+              "insertion_preview": {
+                "status": "predicted_blocked",
+                "motion_authorized": false,
+                "requires_fresh_observation": true,
+                "diagnostic": {
+                  "error_type": "HarnessError",
+                  "code": "scene_sweep_blocked",
+                  "metrics": {
+                    "stage_index": 1,
+                    "segment_index": 0,
+                    "goal_index": 0,
+                    "variant": 3,
+                    "route_family": "aligned_insertion_preview",
+                    "obstacle_index": 6,
+                    "obstacle_role": "bucket",
+                    "obstacle_name": "rim_x_low",
+                    "collision_body": "tool",
+                    "start_pose_clear": true,
+                    "end_pose_clear": false,
+                    "collision_location": "end_pose",
+                    "endpoint_clearance_hint": {
+                      "frame": "object",
+                      "translation_m": [
+                        0.0001245867561565264,
+                        0.0002666443895994759,
+                        0.0008803246959093663
+                      ],
+                      "distance_m": 0.0009282201573670147,
+                      "scope": "single_obstacle_tool_endpoint_fixed_orientation",
+                      "path_checked": false,
+                      "grasp_checked": false,
+                      "motion_authorized": false
+                    },
+                    "segment_start_tcp_pose": [
+                      -0.08901272291860553,
+                      0.9145165784867609,
+                      -0.39463421396477544,
+                      0.7913983905516428,
+                      -0.9936380108178073,
+                      -0.10897675699391395,
+                      -0.028417774246506537,
+                      -0.051098225093307706,
+                      -0.06899448250892815,
+                      0.38959401189973997,
+                      0.9183987517823127,
+                      0.8681299158143416,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ],
+                    "segment_end_tcp_pose": [
+                      -0.08901272291860553,
+                      0.9145165784867609,
+                      -0.39463421396477544,
+                      0.7923333814057707,
+                      -0.9936380108178073,
+                      -0.10897675699391395,
+                      -0.028417774246506537,
+                      -0.050083369206952916,
+                      -0.06899448250892815,
+                      0.38959401189973997,
+                      0.9183987517823127,
+                      0.8161482280807499,
+                      0.0,
+                      0.0,
+                      0.0,
+                      1.0
+                    ]
+                  }
+                }
+              },
+              "endpoint_ik": {
+                "converged": false,
+                "min_margin_deg": null,
+                "final_arm_deg": null,
+                "position_error_m": 0.226412,
+                "rotation_error_rad": 1.38305,
+                "elapsed_ms": 4.551
+              },
+              "endpoint_ik_ranking_ms": 16.712
+            }
+          ]
+        },
+        "insert": {
+          "planned": false,
+          "plan_6000d_s": 0.027,
+          "cache_age_s": 18.4027,
+          "error": "registered_candidates_exhausted:{\"diagnostic\":{\"code\":\"registered_candidates_exhausted\",\"metrics\":{}},\"candidates\":[{\"variant\":0,\"diagnostic\":{\"error_type\":\"HarnessError\",\"code\":\"no_clear_square_symmetry_route\",\"metrics\":{}}}]}",
+          "symmetry_diagnostics": [
+            {
+              "sym": 0,
+              "clear": false,
+              "error": "scene_sweep_blocked:{\"diagnostic\":{\"code\":\"scene_sweep_blocked\",\"metrics\":{\"stage_index\":0,\"segment_index\":0,\"goal_index\":0,\"variant\":0,\"skill\":\"insert\",\"obstacle_index\":1,\"obstacle_role\":\"bucket\",\"obstacle_name\":\"wall_x_low\",\"collision_body\":\"tool\",\"start_pose_clear\":true,\"end_pose_clear\":false,\"collision_location\":\"end_pose\",\"endpoint_clearance_hint\":{\"frame\":\"object\",\"translation_m\":[-4.4575268843879404e-08,0.00016873046344873478,0.0004061411558894826],\"distance_m\":0.00043979610024399887,\"scope\":\"single_obstacle_tool_endpoint_fixed_orientation\",\"path_checked\":false,\"grasp_checked\":false,\"motion_authorized\":false},\"segment_start_tcp_pose\":[-0.9937196489473816,-0.10857404091700637,-0.027072808033986068,0.785676591167845,0.09161456005009111,-0.9283342610176275,0.3602808240909912,-0.049107338355106445,-0.06424976017636977,0.35553787064081976,0.9324509589557363,0.8685778171321348,0.0,0.0,0.0,1.0],\"segment_end_tcp_pose\":[-0.9937719583888028,-0.10808012578793755,-0.027128972146965802,0.786549373570178,0.09115828676706055,-0.9285210613343504,0.3599149974818336,-0.047949479688686014,-0.06408948021169025,0.355200401278452,0.932590592627833,0.8160858521897504,0.0,0.0,0.0,1.0]}}}"
+            },
+            {
+              "sym": 1,
+              "clear": false,
+              "error": "scene_sweep_blocked:{\"diagnostic\":{\"code\":\"scene_sweep_blocked\",\"metrics\":{\"stage_index\":0,\"segment_index\":0,\"goal_index\":0,\"variant\":1,\"skill\":\"insert\",\"obstacle_index\":7,\"obstacle_role\":\"bucket\",\"obstacle_name\":\"rim_x_high\",\"collision_body\":\"tool\",\"start_pose_clear\":true,\"end_pose_clear\":false,\"collision_location\":\"end_pose\",\"endpoint_clearance_hint\":{\"frame\":\"object\",\"translation_m\":[8.114500365589243e-08,-3.7183471617763744e-07,0.0009282200793437885],\"distance_m\":0.0009282201573671257,\"scope\":\"single_obstacle_tool_endpoint_fixed_orientation\",\"path_checked\":false,\"grasp_checked\":false,\"motion_authorized\":false},\"segment_start_tcp_pose\":[-0.9937196489473816,-0.10857404091700637,-0.027072808033986068,0.785676591167845,0.09161456005009111,-0.9283342610176275,0.3602808240909912,-0.049107338355106445,-0.06424976017636977,0.35553787064081976,0.9324509589557363,0.8685778171321348,0.0,0.0,0.0,1.0],\"segment_end_tcp_pose\":[0.09073804672786652,-0.928007061754478,0.3613440191977065,0.7886812942635699,0.9955107083056665,0.09433394386523934,-0.007716001787883046,-0.042166387187800664,-0.026926502275452447,0.36042197542440063,0.9324006451662764,0.8162371041432499,0.0,0.0,0.0,1.0]}}}"
+            },
+            {
+              "sym": 2,
+              "clear": false,
+              "error": "scene_sweep_blocked:{\"diagnostic\":{\"code\":\"scene_sweep_blocked\",\"metrics\":{\"stage_index\":0,\"segment_index\":0,\"goal_index\":0,\"variant\":2,\"skill\":\"insert\",\"obstacle_index\":6,\"obstacle_role\":\"bucket\",\"obstacle_name\":\"rim_x_low\",\"collision_body\":\"tool\",\"start_pose_clear\":true,\"end_pose_clear\":false,\"collision_location\":\"end_pose\",\"endpoint_clearance_hint\":{\"frame\":\"object\",\"translation_m\":[8.114500365589243e-08,-3.7183471617763744e-07,0.0009282200793437885],\"distance_m\":0.0009282201573671257,\"scope\":\"single_obstacle_tool_endpoint_fixed_orientation\",\"path_checked\":false,\"grasp_checked\":false,\"motion_authorized\":false},\"segment_start_tcp_pose\":[-0.9937196489473816,-0.10857404091700637,-0.027072808033986068,0.785676591167845,0.09161456005009111,-0.9283342610176275,0.3602808240909912,-0.049107338355106445,-0.06424976017636977,0.35553787064081976,0.9324509589557363,0.8685778171321348,0.0,0.0,0.0,1.0],\"segment_end_tcp_pose\":[-0.08901272291860553,0.9145165784867609,-0.39463421396477544,0.7923333814057707,-0.9936380108178073,-0.10897675699391395,-0.028417774246506537,-0.050083369206952916,-0.06899448250892815,0.38959401189973997,0.9183987517823127,0.8161482280807499,0.0,0.0,0.0,1.0]}}}"
+            },
+            {
+              "sym": 3,
+              "clear": false,
+              "error": "scene_sweep_blocked:{\"diagnostic\":{\"code\":\"scene_sweep_blocked\",\"metrics\":{\"stage_index\":0,\"segment_index\":0,\"goal_index\":0,\"variant\":3,\"skill\":\"insert\",\"obstacle_index\":1,\"obstacle_role\":\"bucket\",\"obstacle_name\":\"wall_x_low\",\"collision_body\":\"tool\",\"start_pose_clear\":true,\"end_pose_clear\":true,\"collision_location\":\"sweep_envelope\",\"segment_start_tcp_pose\":[-0.9937196489473816,-0.10857404091700637,-0.027072808033986068,0.785676591167845,0.09161456005009111,-0.9283342610176275,0.3602808240909912,-0.049107338355106445,-0.06424976017636977,0.35553787064081976,0.9324509589557363,0.8685778171321348,0.0,0.0,0.0,1.0],\"segment_end_tcp_pose\":[0.9954972821980638,0.09458964252022016,-0.006161222620103099,0.7944653020991629,-0.08928558927920126,0.9138782482056758,-0.3960487735162231,-0.04430027670606751,-0.03183150457269035,0.3948155860456886,0.9182088043207561,0.8162994800342493,0.0,0.0,0.0,1.0]}}}"
+            }
+          ]
+        },
+        "release": {
+          "planned": true,
+          "variant": 0,
+          "waypoints": 1,
+          "plan_6000d_s": 0.014,
+          "cache_age_s": 18.4027,
+          "revalidate_ok": true,
+          "revalidate_segments": 1,
+          "output_audit": {
+            "samples": 1,
+            "virtual_duration_s": 0.02,
+            "complete_publications": true,
+            "immutable_left_arm": true,
+            "sampled_max_speed_deg_s": 0.0,
+            "profile_max_velocity_deg_s": 30.0,
+            "sampled_speed_within_profile": true,
+            "final_arm_err_deg": 0.0,
+            "final_gripper_err": 0.0,
+            "passed": true
+          },
+          "post_open_cache_result": false,
+          "post_open_cache_diag": {
+            "status": "invalidated",
+            "reason": "cache_invalidated:not_held",
+            "age_s": 18.7227,
+            "measured_at_ns": 25662769751643
+          },
+          "post_release_occluded_verify_gate_error": "aperture_measurement_required:square-hole-1:partial_lid_landmarks_unavailable"
+        },
+        "withdraw_reset": {
+          "current_engine_precondition_error": "skill_precondition:verify_placed",
+          "current_return_observation_error": "verified_placement_required_for_return_scene",
+          "geometry_probe_planned": false,
+          "geometry_probe_error": "numerical_stage_failed:{\"diagnostic\":{\"error_type\":\"HarnessError\",\"code\":\"numerical_stage_failed\",\"metrics\":{\"stage_index\":0}},\"candidates\":[{\"variant\":0,\"diagnostic\":{\"error_type\":\"HarnessError\",\"code\":\"numerical_stage_failed\",\"metrics\":{\"stage_index\":0}}}]}",
+          "variant": null,
+          "waypoints": null,
+          "plan_6000d_s": 0.016,
+          "revalidate_ok": null,
+          "revalidate_segments": null,
+          "output_audit": null,
+          "sweep_outputs_ok": null,
+          "sweep_outputs_detail": null
+        },
+        "verify_placed": {
+          "cached_aperture_rejected": true,
+          "cached_aperture_result": {
+            "outcome": "pending_review",
+            "reason": "matching_hole_evidence_missing"
+          },
+          "simulated_fresh_visible_block_result": {
+            "outcome": "success",
+            "reason": "placement_observed"
+          },
+          "simulated_dropped_invisible_block_result": {
+            "outcome": "pending_review",
+            "reason": "object_not_observed"
+          },
+          "total_cache_span_s": 18.723
+        }
+      },
+      "blockers_found": [
+        "insert_plan_failed:registered_candidates_exhausted:{\"diagnostic\":{\"code\":\"registered_candidates_exhausted\",\"metrics\":{}},\"candidates\":[{\"variant\":0,\"diagnostic\":{\"error_type\":\"HarnessError\",\"code\":\"no_clear_square_symmetry_route\",\"metrics\":{}}}]}",
+        "release_post_verify_blocked_when_occluded:aperture_measurement_required:square-hole-1:partial_lid_landmarks_unavailable",
+        "withdraw_reset_engine_precondition:skill_precondition:verify_placed",
+        "withdraw_reset_return_observation:verified_placement_required_for_return_scene"
+      ]
+    }
+  }
+}

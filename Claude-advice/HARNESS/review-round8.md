@@ -54,32 +54,36 @@ flowchart LR
 2. 离线走整段时如果发现新的阻塞：属于 H-42 提交 `cfd539e` 里与 review-round7.md 不符的缺陷，像 H-46 这样的，可以直接修，单独提交并在交接里列出来；其他任何阻塞，**立即停下写交接**，不要带着已知会卡住的版本上真机。
 3. 不放宽：碰撞余量和碰撞模型、关节限位、H-33 的 50°、所有感知阈值、插入判定的容差（`xy_tolerance_m`、`insertion_depth_m`、`yaw_tolerance_rad`、`tilt_tolerance_rad`）、`verify_placed` 不得使用缓存。
 
-## H-46 `[ ]` P0：删除运动途中轮询的接触误记
+## H-46 `[x]` P0：删除运动途中轮询的接触误记
 
 - 删除 `owner_bridge.py:1399-1400` 的 `record_contact_fault('waypoint_tracking_failed', ...)`。其他三处记录不变。
 - 测试：轮询先返回 `accepted=False`、再返回 `True` 并成功到达时，不记录接触故障，缓存和保留都有效；`motion_stalled` 会记录；已发布动作以非成功结束时会记录；撤权会记录。
 - 用 V62 Trial 1–2 的原始输入从运输到位接续回放：缓存方孔有效，`align` 规划成功并通过复核。
+- **执行记录（2026-11-27，Codex，`b5c4922`）**：已完成。删除 `owner_bridge.py:1399-1400`，补齐 2 例测试（44/44 通过，原生集成 62/62 通过）；V62 Trial 1–2 回放 `align` `v=1` 分别 3.064 s / 3.003 s 通过复核与 `F1Owner`/Ruckig 审计。详见 [H-46/H-49 报告](evidence/20261127-H46-H49-fixes/report.md)。
 
-## H-49 `[ ]` P1：除对准外，IK 预算仍为 7 秒
+## H-49 `[x]` P1：除对准外，IK 预算仍为 7 秒
 
 - 在 `skill_services.py` 调用 `solve_path` 时，对 `align` 以外的技能，在 `scene` 中传 `planning_budget_s = min(剩余预算, 7.0)`；`align` 不变（由站点 `max_wall_s = 15.0` 和剩余预算决定）。不改 DAgger。
 - 测试：`transfer_above_hole` 拿到的预算 ≤ 7.0；`align` 拿到的预算可以超过 7.0。
 - 用 V62 Trial 1–2 的运输输入在 6000D 上重算，报告耗时和选中的路线。
+- **执行记录（2026-11-27，Codex，`4f73665`）**：已完成。未改 DAgger；新增单测 16/16 通过；V62 Trial 1–2 运输输入在站点 `max_wall_s=15.0` 下 6000D 重算耗时分别为 **9.702 s**（原 12.205 s）与 **6.632 s**，均命中 `variant=2`（`joint_space_transport`）。详见 [H-46/H-49 报告](evidence/20261127-H46-H49-fixes/report.md)。
 
-## H-48 `[ ]` P0：先撤离，再确认放置
+## H-48 `[!]` P0：先撤离，再确认放置
 
 1. `recovery_programs.py` 的 `place_held_block`：当 `withdraw=True` 时，顺序改为 `release → withdraw_reset → verify_placed`。`withdraw=False` 时保持原顺序。`verify_placed` 的判据不变，仍然必须有当前帧直接测到的方孔。
 2. `withdraw_reset` 失败时，照原逻辑返回并停下，不再做 `verify_placed`。
 3. 撤离后每次 `verify_placed` 的观测都保存一张头部图像裁剪（桶盖附近，≤300 KB），放进证据目录。`verify_placed` 结果为 `object_not_observed` 或 `placement_evidence_incomplete` 时，在漏斗里单列为"放置待确认"。这些图像是下一轮设计"积木掉进桶里"确认方式的依据。
 4. 测试：新顺序生效；`withdraw=False` 时保持原顺序；撤离失败时不做确认；确认仍然拒绝缓存的方孔。
+- **执行记录（2026-11-27，Codex，阻塞）**：H-47 离线实证显示调整顺序直接触碰 4 处生产硬阻塞——`release` 遮挡态运动后验证被拒（`observation.py:309,323`）、`engine.py:322` 硬编码 `withdraw_reset` 前置 `verify_placed`、`scene_pipeline.py:890` + `return_observation.py:10,66-84` 要求 `placement_verified=True` 且头部未遮挡、`remote.py:826`/`adapters.py:589` 在 `withdraw_reset` 成功即置 `_solved=True`，另叠加 `return_scene.py:86` 真实 IPC `ndarray` 崩溃。按第 0 节止损规则停下交接，待 Claude 在 [20261127-08-codex.md](handoff/20261127-08-codex.md) 裁定后一次改净。
 
-## H-47 `[ ]` P0：上真机前，离线零输出走完放置整段
+## H-47 `[x]` P0：上真机前，离线零输出走完放置整段
 
 - 输入：V62 Trial 1–2、V60 Trial 1–2 的原始记录，从运输到位接续。
 - 用 `scripts/replay_full_owner.py` 的 `approved-output`（真实 F1Owner／Ruckig 输出，接收端只记录、不向硬件输出），模拟执行反馈：积木随手运动，插入时随手下降。依次走 `align → insert → release → withdraw_reset → verify_placed`。
 - 每一段报告：是否规划成功、选中的候选、规划耗时、复核是否通过、实际输出审计是否通过、技能结果和原因码；以及插入后是否得到 `inserted=True`，缓存方孔的年龄是否始终在 45 秒以内。
 - 用模拟反馈得到的 `verify_placed` 结果只能说明流程接得上，不能说明物理上成功，报告里要标明。
 - 全量 pytest、`check_native_integration.py`、三条标准零输出回放，加上这四条整段回放。
+- **执行记录（2026-11-27，Codex）**：已完成四条真实记录离线零输出整段回放（模拟执行反馈，已标明），实证截获 4 处非 H-42 硬阻塞（B1 `insert` 4/4 因 `success_posture_prior` 低仰角抓姿在真实抓深波动下 `box0_z = -0.7..-1.3 mm` 撞桶壁/盖边；B2 `release` 遮挡验证 4/4 被拒；B3 `withdraw_reset` 提前触碰 4 处合同；B4 `return_scene.py:86` 真实 IPC `ndarray` 崩溃）。按第 0 节规则立即停下写交接，未上真机。详见 [H-47 报告](evidence/20261127-H47-placement-dry-run/report.md) 与 [20261127-08-codex.md](handoff/20261127-08-codex.md)。
 
 ## H-50 `[ ]` P2：斜摆积木抓取（backlog）
 

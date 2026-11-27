@@ -1,14 +1,13 @@
 # HARNESS 当前待办
 
-**V62（`e9d6a8feb0f3`，合入 H-42 + H-43 + H-44 + H-45）已完成 ARM 离线计时（5.66–9.19 s ≤ 15 s）与 4 次真机验证：Trial 1–2 暴露 `owner_bridge.py:1399-1400` 飞行中轮询误记 `contact_fault` 导致 H-32/H-42/H-39 到位同时作废，离线去掉误记后两次均 3.0–3.1 s 解出 `align` `v=1`；Trial 3–4 斜摆抓取截断按操作者要求降级，先集中打通 S6→S8 放置。** [V62 批次报告](../../Claude-advice/HARNESS/evidence/20261127-v62-batch/report.md) · [最新交接](../../Claude-advice/HARNESS/handoff/20261127-06-codex.md)
+**H-46（`b5c4922`）与 H-49（`4f73665`）已完成；H-47 四条真实记录零输出放置整段回放截获 4 处非 H-42 硬阻塞（B1 `insert` 低仰角抓姿撞桶、B2 `release` 遮挡验证被拒、B3 H-48 提前撤离触碰 4 处合同、B4 `return_scene.py:86` 真实 IPC `ndarray` 崩溃），按止损规则暂缓上真机（现场仍在 V62，V63 已标 `cancelled`，下一正式版为 V64）。** [H-47 报告](../../Claude-advice/HARNESS/evidence/20261127-H47-placement-dry-run/report.md) · [最新交接](../../Claude-advice/HARNESS/handoff/20261127-08-codex.md)
 
-当前等待 Claude 审阅合并本轮 PR 并裁定 `owner_bridge.py:1399` 误记 `contact_fault` 修复（发 V63 优先冲首次 S6→S8）、`transfer_above_hole` 15 s IK 上限副作用与斜摆抓取降级安排。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
+当前等待 Claude 审阅合并本轮 PR 并一次性裁定 B1–B4 四处放置阻塞，裁定后落地修复 + H-48、复跑 H-47 4/4 全绿并冻结 V64 上真机冲首次放置。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
 
 ## 现在做
 
-- [ ] **P0 修复 `owner_bridge.py:1399-1400` 飞行中路点到达轮询误记 `contact_fault = waypoint_tracking_failed`（待 Claude 裁定后立即修并冻结 V63）：** 仅在真实终态运动故障/堵转/超时/未知或部分发布时记 `contact_fault`，补飞行中 `proof.accepted=False → True` 回归测试，上线 V63 优先跑通首次 S6→S7→S8 完整放置。
-- [ ] **P1 `transfer_above_hole` 规划因全局 `ik.max_wall_s=15.0` 拉长至 17–31 s（待 Claude 裁定是否暂保留先冲 S8 或改为仅对 `align` 生效）。**
-- [ ] **P2 斜摆积木 `approach_grasp` 到位后右腕 `mask_truncated`（Trial 3 & 4，按操作者指示降为低优先级，待首次 S8 跑通后再治理）。**
+- [ ] **P0 待 Claude 裁定 B1–B4 四处放置阻塞并落地 H-48 + V64：** ① 更直立抓姿解决 `insert` 4/4 撞桶壁/盖边（不改碰撞模型与 12 mm 插入容差）；② `release` 遮挡态运动后验证合同；③ `release → withdraw_reset → verify_placed` 状态机／退回遮挡态静态锚点／`_solved` 合同；④ `return_scene.py:86` 真实 IPC `ndarray` 序列化修复 + 补测。修完后复跑 H-47 四条整段回放全绿再发 V64 上真机。
+- [ ] **H-50（P2，backlog）：** 斜摆积木 `approach_grasp` 到位后右腕 `mask_truncated`（V62 Trial 3 & 4，待首次放置跑通后再开规格）。
 - [ ] **H-31（P1，第一批之后做）：修复 `support_lift` 首步下探。** 不改审计代码、不改 `1e-9` 与 `1.0 mm` 阈值，修完后 Replay A 必须审计全过。
 - [ ] **H-38 动态避让（P2，backlog）：** 静态预设部分已由 V6 关闭；动态避让触发条件不变（首次 S8 后或左臂遮挡成为首要停因）。
 

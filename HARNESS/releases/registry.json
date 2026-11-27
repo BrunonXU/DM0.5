@@ -1149,6 +1149,23 @@
       "activation": "HARNESS/artifacts/cached-aperture-align-v62-20261127/activation.json",
       "verification": "HARNESS/artifacts/cached-aperture-align-v62-20261127/post-activation.json",
       "deployment_kind": "shared_harness_base_both_strategies"
+    },
+    {
+      "version": 63,
+      "name": "F1 Harness 缓存方孔与对准优化 V63",
+      "status": "cancelled",
+      "artifact_directory": "HARNESS/artifacts/cached-aperture-align-v63-20261127",
+      "previous_version": 62,
+      "previous_bundle": "e9d6a8feb0f3566f44b4d9f374a9566f97e68bc0cf7a4358dd2781e5e7212631",
+      "source_base_version": 62,
+      "source_base_bundle": "e9d6a8feb0f3566f44b4d9f374a9566f97e68bc0cf7a4358dd2781e5e7212631",
+      "start_sent": false,
+      "physical_task_verified": false,
+      "currently_active": false,
+      "bundle_id": "56635256908328ac6ba6d685b31a5ecc622d223dd89f0f7b281ead87ee33c935",
+      "manifest": "HARNESS/artifacts/cached-aperture-align-v63-20261127/bundle-final/manifest.json",
+      "frozen": true,
+      "cancelled_reason": "superseded_by_round8_spec_adding_H48_and_H49"
     }
   ],
   "active_bundle_id": "e9d6a8feb0f3566f44b4d9f374a9566f97e68bc0cf7a4358dd2781e5e7212631",
