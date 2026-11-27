@@ -259,6 +259,8 @@ class TaskEngine:
                 raise HarnessError('live_scene_authority_scope_changed')
             if bool(context.get('placement_verified')) != expected['placement_verified']:
                 raise HarnessError('live_scene_placement_stage_changed')
+            if 'return_scene_requested' in context and bool(context.get('return_scene_requested')) != expected['return_scene_requested']:
+                raise HarnessError('live_scene_return_stage_changed')
             if self.mode == Mode.HARDWARE and (observation.synthetic or observation.host_boot_id != self.host_boot_id):
                 raise HarnessError('live_scene_hardware_identity_mismatch')
             self.live_observation = observation
@@ -319,7 +321,8 @@ class TaskEngine:
         prerequisites = {"grasp": "approach_grasp", "verify_grasp": "grasp", "recover_grasp": "grasp",
                          "inspect_in_hand": "verify_grasp", "transfer_above_hole": "verify_grasp",
                          "align": "inspect_in_hand", "insert": "align", "release": "insert",
-                         "verify_placed": "release", "regrasp": "approach_grasp", "withdraw_reset": "verify_placed",
+                         "verify_placed": "release", "regrasp": "approach_grasp",
+                         "withdraw_reset": ("verify_placed", "release"),
                          "release_supported": "verify_grasp"}
         required = prerequisites.get(intent.skill)
         # External VLA motion is never recorded as a successful Harness skill.
@@ -348,8 +351,11 @@ class TaskEngine:
                 and (target is None or target.held is not False or target.stationary is not True
                      or not target.evidence_ids)):
             raise HarnessError('external_execution_attachment_unresolved')
-        if required and required not in self.completed_skills and not attachment and not external_admission:
-            raise HarnessError("skill_precondition:" + required)
+        if required:
+            required_options = (required,) if isinstance(required, str) else tuple(required)
+            if (not any(req in self.completed_skills for req in required_options)
+                    and not attachment and not external_admission):
+                raise HarnessError("skill_precondition:" + required_options[0])
         if self.motion_wait is not None:
             raise HarnessError('owner_motion_wait')
         if self._motion_wait_observation_key(intent) in self.retired_motion_observations:
@@ -1036,6 +1042,10 @@ class TaskEngine:
                            placement_verified=bool(self.authorized and self.task
                                and 'withdraw_reset' in self.task.allowed_skills
                                and 'verify_placed' in self.completed_skills),
+                           return_scene_requested=bool(self.authorized and self.task
+                               and 'withdraw_reset' in self.task.allowed_skills
+                               and ('release' in self.completed_skills or 'verify_placed' in self.completed_skills)
+                               and 'withdraw_reset' not in self.completed_skills),
                            request_id=active.request_id if active else None)
             if self.grasp_contact is not None and self.authorized:
                 context['grasp_contact'] = deepcopy(self.grasp_contact)

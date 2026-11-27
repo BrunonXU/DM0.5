@@ -197,6 +197,9 @@ def read_json_first(directory, names):
     return None
 
 
+PENDING_CONFIRMATION_REASONS = frozenset(("object_not_observed", "placement_evidence_incomplete"))
+
+
 def owner_metrics(rows, auth, planner, table, ended, planner_result=None):
     stamps = {key: None for key in STAGE_KEYS.values()}
     reached = {key: False for key in stamps}
@@ -218,6 +221,8 @@ def owner_metrics(rows, auth, planner, table, ended, planner_result=None):
     active_faults = []
     last_failed_result = None
     last_fault = None
+    verify_placed_pending = False
+    verify_placed_pending_reason = None
     active = False
     # The first task closure ends the study window. Subsequent releases of the
     # already-closed owner remain visible in the raw revocation diagnostics.
@@ -266,6 +271,11 @@ def owner_metrics(rows, auth, planner, table, ended, planner_result=None):
             elif res.get("outcome") in {"failure", "pending_review", "interrupted"}:
                 raw = res.get("reason")
                 reason = reason_code(raw) or "unknown"
+                if (active and row.get("skill") == "verify_placed"
+                        and res.get("outcome") == "pending_review"
+                        and reason in PENDING_CONFIRMATION_REASONS):
+                    verify_placed_pending = True
+                    verify_placed_pending_reason = reason
                 last_failed_result = dict(reason=reason, event_id=row.get("event_id"), request_id=request,
                                           nonphysical=False)
                 if res["outcome"] == "failure":
@@ -299,6 +309,13 @@ def owner_metrics(rows, auth, planner, table, ended, planner_result=None):
     stage_s = {"S0": 0.0 if reached["S0"] else None}
     for i in range(1, 10):
         stage_s[f"S{i}"] = seconds(stamps[f"S{i-1}"], stamps[f"S{i}"])
+    if (stamps["S9"] is not None and stamps["S7"] is not None
+            and (stamps["S8"] is None or stamps["S9"] < stamps["S8"])):
+        # H-48/H-53 order: withdraw_reset (S9) precedes verify_placed (S8).
+        stage_s["S9"] = seconds(stamps["S7"], stamps["S9"])
+        if stamps["S8"] is not None:
+            stage_s["S8"] = seconds(stamps["S9"], stamps["S8"])
+    placement_pending_confirmation = bool(not reached["S8"] and verify_placed_pending)
     guard_termination = None
     if reached["S8"]:
         guard_termination = False
@@ -314,7 +331,11 @@ def owner_metrics(rows, auth, planner, table, ended, planner_result=None):
                 guard_termination = None
     return dict(stages=reached, stage_interval_s=stage_s, stage_skill_duration_s=stage_request_s,
                 furthest_stage=next((s for s in reversed(reached) if reached[s]), None),
-                complete_success=verdict, first_motion_s=seconds(stamps["S0"], stamps["S1"]),
+                complete_success=verdict,
+                placement_pending_confirmation=placement_pending_confirmation,
+                placement_pending_confirmation_label="放置待确认" if placement_pending_confirmation else None,
+                placement_pending_confirmation_reason=verify_placed_pending_reason if placement_pending_confirmation else None,
+                first_motion_s=seconds(stamps["S0"], stamps["S1"]),
                 task_s=seconds(stamps["S0"], stamps["S8"]), reset_after_placement_s=stage_s["S9"],
                 assisted_results=assisted_results, manual_interventions=intervention_count,
                 physical_rejections=sum(physical.values()), nonphysical_rejections=sum(nonphysical.values()),
@@ -393,6 +414,7 @@ def summarize(runs):
                 mode_counts=Counter(r["mode"] or "unknown" for r in rows),
                 version_counts=Counter(str(r["version"]) if r["version"] is not None else "unknown" for r in rows),
                 stages=stages, complete_successes=sum(r["complete_success"] is True for r in rows),
+                placement_pending_confirmation=sum(r.get("placement_pending_confirmation") is True for r in rows),
                 success_unknown=sum(r["complete_success"] is None for r in rows),
                 success_rate=metric(rows, "complete_success", lambda values: sum(values)/len(values)),
                 first_motion_median_s=metric(rows, "first_motion_s", median),

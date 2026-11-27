@@ -41,7 +41,7 @@ def test_localization_uses_owner_plan_once_and_completes_in_one_cell(tmp_path,is
         assert [n for n,_ in backend.calls[:3]]==['locate_entities','locate_entities','execute_skill']
         assert backend.calls[2][1]==dict(name='approach_grasp',parameters={'pitch_offset_deg':10.})
         assert [m['name'] for m in backend.motions]==['approach_grasp','grasp','verify_grasp',
-            'transfer_above_hole','inspect_in_hand','align','insert','release','verify_placed','withdraw_reset']
+            'transfer_above_hole','inspect_in_hand','align','insert','release','withdraw_reset','verify_placed']
         assert backend.motions[0]['parameters']=={'pitch_offset_deg':10.}
     finally:
         if isolated:arm.close()
@@ -95,12 +95,12 @@ def test_execution_failure_returns_without_new_localization_or_restart(tmp_path)
 
 
 @pytest.mark.parametrize('stage,remaining',[
-    ('approach_grasp',['grasp','verify_grasp','transfer_above_hole','inspect_in_hand','align','insert','release','verify_placed','withdraw_reset']),
-    ('grasp',['verify_grasp','transfer_above_hole','inspect_in_hand','align','insert','release','verify_placed','withdraw_reset']),
-    ('transfer_above_hole',['inspect_in_hand','align','insert','release','verify_placed','withdraw_reset']),
-    ('release',['verify_placed','withdraw_reset']),
-    ('verify_placed',['withdraw_reset']),
-    ('withdraw_reset',[]),
+    ('approach_grasp',['grasp','verify_grasp','transfer_above_hole','inspect_in_hand','align','insert','release','withdraw_reset','verify_placed']),
+    ('grasp',['verify_grasp','transfer_above_hole','inspect_in_hand','align','insert','release','withdraw_reset','verify_placed']),
+    ('transfer_above_hole',['inspect_in_hand','align','insert','release','withdraw_reset','verify_placed']),
+    ('release',['withdraw_reset','verify_placed']),
+    ('withdraw_reset',['verify_placed']),
+    ('verify_placed',[]),
 ])
 def test_relocalized_completed_stage_resumes_remaining_cycle(tmp_path,stage,remaining):
     backend,arm=make(tmp_path,{},[dict(outcome='success')]*(1+len(remaining)))

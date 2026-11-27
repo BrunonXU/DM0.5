@@ -105,6 +105,8 @@ class RemoteTaskBackend:
         self.session,self.instance=session['session_id'],session['owner_instance_id']
         self.call('prepare_task',session_id=self.session,task=task.model_dump())
         self.steps,self._solved=0,False
+        self.placement_verified=False
+        self.withdraw_completed=False
         self.pending=None
         self.deferred_grasp=None
         self._closed=False
@@ -821,9 +823,16 @@ class RemoteTaskBackend:
                     result=checked(read('skill_result',session_id=self.session,request_id=self.pending))
                     continue
                 self.pending=None;self.steps+=1
-                if intent.skill=='verify_placed' and result['outcome']=='success':
+                if intent.skill=='verify_placed' and result['outcome']=='success' and not result['assisted']:
                     self.placement_verified=True
-                self._solved=intent.skill==('withdraw_reset' if 'withdraw_reset' in self.task.allowed_skills else 'verify_placed') and result['outcome']=='success' and not result['assisted']
+                if intent.skill=='withdraw_reset' and result['outcome']=='success' and not result['assisted']:
+                    self.withdraw_completed=True
+                if intent.skill=='verify_placed':
+                    self._capture_verify_placed_lid_crop(intent,result)
+                if 'withdraw_reset' in self.task.allowed_skills:
+                    self._solved=bool(getattr(self,'placement_verified',False) and getattr(self,'withdraw_completed',False))
+                else:
+                    self._solved=bool(getattr(self,'placement_verified',False))
                 return result
             if time.monotonic()>=deadline:break
             result=checked(read('skill_result',session_id=self.session,request_id=self.pending))
@@ -835,6 +844,47 @@ class RemoteTaskBackend:
         # pending remains set until the caller obtains the terminal owner result.
         self.call('cancel_skill',timeout_s=2.,session_id=self.session,request_id=self.pending)
         raise HarnessError('skill_deadline_stop_pending')
+
+    def _capture_verify_placed_lid_crop(self, intent, result):
+        """Best-effort <=300 KB head lid-area JPEG crop saved on each verify_placed (H-48/H-53)."""
+        store = getattr(self, 'evidence_store', None)
+        root = getattr(store, 'root', None)
+        if root is None:
+            return
+        try:
+            reply = self.call('view_camera', camera='head', timeout_s=2.0)
+            blob = reply.get('bytes') or reply.get('image_bytes')
+            if isinstance(blob, str):
+                import base64
+                blob = base64.b64decode(blob)
+            if not isinstance(blob, (bytes, bytearray)) or not blob:
+                return
+            import io
+            from PIL import Image
+            img = Image.open(io.BytesIO(blob)).convert('RGB')
+            w, h = img.size
+            # Crop around the standard head lid ROI when full-res (1280x720)
+            if w >= 1229 and h >= 720:
+                img = img.crop((307, 28, 1229, 720))
+            out_dir = Path(root) / 'verify_placed_crops'
+            out_dir.mkdir(parents=True, exist_ok=True)
+            out_path = out_dir / f'verify_placed_{intent.request_id[:12]}.jpg'
+            quality = 85
+            data = b''
+            while quality >= 30:
+                buf = io.BytesIO()
+                img.save(buf, format='JPEG', quality=quality, optimize=True)
+                data = buf.getvalue()
+                if len(data) <= 300_000:
+                    break
+                quality -= 15
+            out_path.write_bytes(data)
+            store.event('verify_placed_head_crop_saved', request_id=intent.request_id,
+                        outcome=result.get('outcome'), reason=result.get('reason'),
+                        path=str(out_path), bytes=len(data), jpeg_quality=quality)
+        except Exception:
+            # Diagnostic image export must never alter authoritative skill receipts.
+            return
 
     def solved(self):return self._solved
     def env_steps(self):return self.steps

@@ -66,7 +66,7 @@ def test_pyrua_parameter_choice_then_fixed_macro_without_model_roundtrips(tmp_pa
     cell(arm,'place_held_block()')
     assert backend.motions[0]['parameters']=={'pitch_offset_deg':22.75,'variant':2}
     assert [v['name'] for v in backend.motions]==['approach_grasp','grasp','verify_grasp',
-        'transfer_above_hole','inspect_in_hand','align','insert','release','verify_placed','withdraw_reset']
+        'transfer_above_hole','inspect_in_hand','align','insert','release','withdraw_reset','verify_placed']
 
 
 def test_macro_stops_before_release_if_insert_has_no_success(tmp_path):
@@ -80,7 +80,7 @@ def test_one_real_pyrua_cell_runs_entire_guarded_pick_place_without_planner_betw
     result=ast.literal_eval(cell(arm,'pick_and_place(pitch_offset_deg=10., variant=2)')['value'])
     assert result['outcome']=='success'
     assert [v['name'] for v in backend.motions]==['approach_grasp','grasp','verify_grasp',
-        'transfer_above_hole','inspect_in_hand','align','insert','release','verify_placed','withdraw_reset']
+        'transfer_above_hole','inspect_in_hand','align','insert','release','withdraw_reset','verify_placed']
     assert backend.motions[0]['parameters']=={'pitch_offset_deg':10.,'variant':2}
     assert 'pick_and_place' in receipt['helper_names']
 

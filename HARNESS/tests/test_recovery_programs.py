@@ -70,7 +70,7 @@ def test_loaded_loss_recovers_locally_only_after_measured_hold(cancel_stage):
         assert calls==['transfer_above_hole'] and result['outcome']=='failure'
     else:
         assert calls==['transfer_above_hole','reobserve','regrasp','verify_grasp','transfer_above_hole',
-                       'inspect_in_hand','align','insert','release','verify_placed','withdraw_reset']
+                       'inspect_in_hand','align','insert','release','withdraw_reset','verify_placed']
         assert result['outcome']=='success'
 
 

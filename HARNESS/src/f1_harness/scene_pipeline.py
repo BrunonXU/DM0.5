@@ -65,6 +65,7 @@ class CalibratedScenePipeline:
         self.live_fixture_anchors=None
         self.measured_fixture=None
         self.cached_aperture=None
+        self.return_static_anchor=None
         self._occluded_fixture_retained=False
         self._occluded_fixture_expired=False
         self.lid_registration=None
@@ -146,6 +147,7 @@ class CalibratedScenePipeline:
         self.stationary_history.clear();self._clear_following()
         self.measured_fixture=None
         self.cached_aperture=None
+        self.return_static_anchor=None
         self.return_history.clear()
         self.square_pose_reference=None
         self.observed_face_object=None
@@ -170,6 +172,7 @@ class CalibratedScenePipeline:
         prior_fixture=(self.measured_fixture if self.measured_fixture is not None
                        and self.measured_fixture.source=='rgbd_anchor_registration' else None)
         prior_cached_aperture=getattr(self,'cached_aperture',None)
+        prior_return_anchor=getattr(self,'return_static_anchor',None)
         history=list(self.tracking_history)
         if self.in_hand_reference is not None and self.tracking_history:
             sample=self.tracking_history[-1]
@@ -184,6 +187,8 @@ class CalibratedScenePipeline:
             self.measured_fixture=prior_fixture
         if prior_cached_aperture is not None:
             self.cached_aperture=prior_cached_aperture
+        if prior_return_anchor is not None:
+            self.return_static_anchor=prior_return_anchor
         # These are historical samples, not a current observation or permission
         # to move. The next real frame still checks scope, grip, time and pose;
         # the rolling window expires old pre-proof samples normally.
@@ -596,11 +601,32 @@ class CalibratedScenePipeline:
             return 'expired'
         return 'none'
 
+    def _update_return_static_anchor(self, *, hole_pose, evidence_ids, measured_at_ns, source_kind, context):
+        cfg = self.config
+        ctx = context or {}
+        if (not self.coarse or self.development or ctx.get('authorized') is not True
+                or not evidence_ids or measured_at_ns is None):
+            return
+        if self._contact_fault_since(int(measured_at_ns), ctx) is not None:
+            return
+        self.return_static_anchor = dict(
+            hole_pose=tuple(transform(hole_pose).ravel()),
+            evidence_ids=tuple(evidence_ids),
+            measured_at_ns=int(measured_at_ns),
+            scope_identity=self.context_identity,
+            calibration_id=cfg['calibration_id'],
+            acquisition_identity=self.acquisition_identity,
+            frame_id=cfg['native_frame'],
+            source_kind=source_kind,
+        )
+
     def _update_cached_aperture(self, observation, *, base_hole, hole_evidence, held, fixture, context):
         cfg = self.config
         ctx = context or {}
         if (not self.coarse or self.development or held is not True
-                or ctx.get('authorized') is not True or ctx.get('placement_verified') is True
+                or ctx.get('authorized') is not True
+                or ctx.get('placement_verified') is True
+                or ctx.get('return_scene_requested') is True
                 or len(hole_evidence) not in (2, 3)):
             return
         grasp_contact = ctx.get('grasp_contact') or {}
@@ -625,6 +651,13 @@ class CalibratedScenePipeline:
             calibration_id=cfg['calibration_id'],
             acquisition_identity=self.acquisition_identity,
             frame_id=cfg['native_frame'],
+        )
+        self._update_return_static_anchor(
+            hole_pose=base_hole,
+            evidence_ids=hole_evidence,
+            measured_at_ns=int(observation.received_ns),
+            source_kind='pre_transport_aperture',
+            context=ctx,
         )
         self.last_timing['cached_aperture'] = dict(
             status='updated',
@@ -652,7 +685,7 @@ class CalibratedScenePipeline:
             )
             return None
 
-        if ctx.get('placement_verified') is True:
+        if ctx.get('placement_verified') is True or ctx.get('return_scene_requested') is True:
             return invalidate('placement_verified')
         if ctx.get('authorized') is not True:
             return invalidate('not_authorized')
@@ -866,8 +899,9 @@ class CalibratedScenePipeline:
             self.stream_identities={}
         # Missing frames are unavailable measurements, not a new camera identity.
         self.stream_identities.update(streams)
-        camera=(cfg['hole_camera']['camera'] if self.coarse and (context or {}).get('placement_verified') is True
-                else cfg['camera'])
+        from .return_observation import _wants_return_scene
+        want_return = bool(self.coarse and _wants_return_scene(context))
+        camera=(cfg['hole_camera']['camera'] if want_return else cfg['camera'])
         primary_times=[f.received_ns for f in observation.frames if f.camera==camera]
         context=self._context(context,min(primary_times) if primary_times and self.coarse else observation.received_ns)
         # Consume authoritative gripper changes even if RGB-D pairing fails.
@@ -887,7 +921,7 @@ class CalibratedScenePipeline:
                     and abs(self._gripper_value(observation)-reference_grip)>=cfg['gripper_stationary_delta']):
                 self._clear_following()
         if observation.synthetic:raise ValueError('synthetic_capture_in_real_scene_pipeline')
-        if self.coarse and context.get('placement_verified') is True:
+        if self.coarse and _wants_return_scene(context):
             from .return_observation import observe_return
             return observe_return(self,observation,context)
         if self.coarse and not self.development:
@@ -1362,6 +1396,12 @@ class CalibratedScenePipeline:
             try:
                 fixture=self._locate_bucket_for_object(observation,object_camera,(hole_depth,hole_evidence,hole_masks))
                 self.measured_fixture=fixture
+                if fixture is not None and fixture.source=='rgbd_anchor_registration' and fixture.measured_at_ns is not None:
+                    self._update_return_static_anchor(
+                        hole_pose=fixture.pose, evidence_ids=fixture.evidence_ids,
+                        measured_at_ns=fixture.measured_at_ns, source_kind='rgbd_anchor_registration',
+                        context=context,
+                    )
             except ValueError as exc:
                 err_code=str(exc)
                 retention=self._check_occluded_fixture_retention(

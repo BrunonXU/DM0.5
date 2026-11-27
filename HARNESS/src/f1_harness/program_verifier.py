@@ -47,16 +47,22 @@ def verify_program(candidate, rows, placement, *, synthetic):
         return None
     completion = placement
     if 'withdraw_reset' in tasks[0].get('task', {}).get('allowed_skills', []):
-        resets = [r for r in rows[rows.index(placement) + 1:] if r.get('kind') == 'skill_result'
-                  and r.get('skill') == 'withdraw_reset' and successful(r, synthetic)]
+        placement_pos = rows.index(placement)
+        resets = [r for r in rows if r.get('kind') == 'skill_result'
+                  and r.get('skill') == 'withdraw_reset' and successful(r, synthetic)
+                  and r['result'].get('request_id') in accepted
+                  and same_scope(accepted[r['result']['request_id']][1], placement_scope)]
         if not resets:
             return None
-        completion = resets[-1]
-        reset_id = completion['result']['request_id']
-        if (reset_id not in accepted or not same_scope(accepted[reset_id][1], placement_scope)
-                or not any(r.get('kind') == 'harness_measured_waypoint' and r.get('request_id') == reset_id
-                           for r in rows[:rows.index(completion)])):
+        reset = resets[-1]
+        reset_pos = rows.index(reset)
+        reset_id = reset['result']['request_id']
+        if not any(r.get('kind') == 'harness_measured_waypoint' and r.get('request_id') == reset_id
+                   for r in rows[:reset_pos]):
             return None
+        # Support both H-53 order (release -> withdraw_reset -> verify_placed)
+        # and historical order (release -> verify_placed -> withdraw_reset).
+        completion = reset if reset_pos > placement_pos else placement
     rows = rows[:rows.index(completion) + 1]
     # Accepted/results maps were built from the full original trace. Do not use
     # later operations to validate an already completed task.

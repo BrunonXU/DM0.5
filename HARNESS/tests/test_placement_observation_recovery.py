@@ -33,7 +33,7 @@ def inspection(stamp, *, measured=False, candidate=True, held=True, visible=None
 def test_single_cell_recovers_changed_aperture_and_completes_only_remaining_stages(tmp_path, entry):
     pickup = [] if entry in ('place_held_block()', 'isolated') else ['approach_grasp','grasp','verify_grasp']
     before = pickup + ['transfer_above_hole','inspect_in_hand']
-    suffix = ['move_tcp','reobserve','align','insert','release','verify_placed','withdraw_reset']
+    suffix = ['move_tcp','reobserve','align','insert','release','withdraw_reset','verify_placed']
     backend,arm = setup(tmp_path, [OK]*len(before)+[ALIGN_REJECT]+[OK]*len(suffix),
         inspections=[inspection(70),inspection(72,measured=True)], isolated=entry=='isolated')
     try:
@@ -76,7 +76,7 @@ def test_no_repeated_view_after_rejection_and_fresh_alignment_joins_same_placeme
         assert result['placement_recovery']['view_source_tried']==VIEW['source_observation_id']
     result=ast.literal_eval(cell(arm,'resume_pick(result)')['value'])
     assert result['outcome']=='success'
-    assert [r['name'] for r in backend.motions]==['align','align','align','insert','release','verify_placed','withdraw_reset']
+    assert [r['name'] for r in backend.motions]==['align','align','align','insert','release','withdraw_reset','verify_placed']
     assert sum(op=='preview_skill' for op,_ in backend.calls)==1
 
 
@@ -109,7 +109,7 @@ def test_recovered_bucket_reruns_previously_unplanned_view_and_rejoins_after_ali
     first=ast.literal_eval(cell(arm,'result=place_held_block(start="align")\nresult')['value'])
     assert first['no_motion'] is True and 'fixture collision reference' in first['placement_recovery']['next']
     assert ast.literal_eval(cell(arm,'resume_pick(result)')['value'])['outcome']=='success'
-    assert [a['name'] for a in backend.motions]==['align','move_tcp','reobserve','align','insert','release','verify_placed','withdraw_reset']
+    assert [a['name'] for a in backend.motions]==['align','move_tcp','reobserve','align','insert','release','withdraw_reset','verify_placed']
 
 
 @pytest.mark.parametrize('held', [True,False])
@@ -144,5 +144,5 @@ def test_reobserved_direct_hole_drives_next_align_without_overwriting_request_sn
     backend,arm=setup(tmp_path,[ALIGN_REJECT,OK,receipt]+[OK]*5,inspections=[inspection(70)])
     result=ast.literal_eval(cell(arm,'place_held_block(start="align")')['value'])
     assert result['outcome']=='success'
-    assert [m['name'] for m in backend.motions]==['align','move_tcp','reobserve','align','insert','release','verify_placed','withdraw_reset']
+    assert [m['name'] for m in backend.motions]==['align','move_tcp','reobserve','align','insert','release','withdraw_reset','verify_placed']
     assert sum(op=='inspect_plan' for op,_ in backend.calls)==1

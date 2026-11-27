@@ -49,7 +49,7 @@ def _check_aperture_frame_binding(observation, task, skill, frames):
     if task.hole_id not in planning_entity_ids(task, observation, skill):
         return
     hole = next((obj for obj in observation.objects if obj.object_id == task.hole_id), None)
-    if hole is None or len(hole.evidence_ids) != 3 or hole.source == 'cached_pre_transport_aperture':
+    if hole is None or len(hole.evidence_ids) != 3 or hole.source in ('cached_pre_transport_aperture', 'static_return_anchor'):
         return
     by_stream = {(frame.camera, frame.stream): frame for frame in frames}
     head = (by_stream.get(('head','rgb')), by_stream.get(('head','depth')))
@@ -613,6 +613,12 @@ def _scene_unchanged(original,latest,*,task,threshold,skill=None,world_motion=Fa
             if _held_evidence_equivalent(before,after,original,latest,task=task,skill=skill,threshold=threshold,
                                          world_motion=world_motion):
                 changes.pop('held',None)
+            if skill=='withdraw_reset' and key==task.hole_id:
+                if before.source=='static_return_anchor' and after.source=='static_return_anchor':
+                    if before.evidence_ids!=after.evidence_ids or before.measured_at_ns!=after.measured_at_ns:
+                        raise HarnessError('revalidation_return_anchor_lineage_changed')
+                elif resweep and before.source=='static_return_anchor' and after.source is None and after.visible:
+                    changes.pop('visible',None)
         if (before is None or after is None or before.pose is None or after.pose is None
                 or before.frame_id!=after.frame_id or before.shape!=after.shape
                 or changes or not after.evidence_ids

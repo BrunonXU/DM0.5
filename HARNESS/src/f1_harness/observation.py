@@ -294,6 +294,9 @@ def require_geometry_identity(observation: Observation, *, required_cameras=("he
         raise ValueError('scene_evidence_observation_binding_mismatch')
     if skill=='withdraw_reset' and observation.geometry_scope!='coarse_fixture_return':
         raise ValueError('fixture_return_scope_required')
+    if (any(o.source == 'static_return_anchor' for o in observation.objects)
+            and (skill != 'withdraw_reset' or observation.geometry_scope != 'coarse_fixture_return')):
+        raise ValueError('static_return_anchor_only_allowed_for_withdraw_reset')
     local=(admission_profile=='development_coarse' and goal=='placed'
            and (observation.geometry_scope=='coarse_local_environment'
                 or observation.geometry_scope=='coarse_object_verification'
@@ -324,10 +327,10 @@ def require_geometry_identity(observation: Observation, *, required_cameras=("he
         hole_obj = next((o for o in observation.objects if o.object_id == hole_id), None)
         if skill == 'verify_placed':
             if (hole_obj is None or hole_obj.pose is None or not hole_obj.evidence_ids
-                    or hole_obj.source == 'cached_pre_transport_aperture'):
+                    or hole_obj.source in ('cached_pre_transport_aperture', 'static_return_anchor')):
                 from .geometry_context import aperture_missing_reason
                 reason = ('cached_aperture_not_allowed_for_verify_placed'
-                          if hole_obj is not None and hole_obj.source == 'cached_pre_transport_aperture'
+                          if hole_obj is not None and hole_obj.source in ('cached_pre_transport_aperture', 'static_return_anchor')
                           else aperture_missing_reason(observation))
                 raise ValueError('aperture_measurement_required:'+hole_id+':'+reason)
         elif hole_obj is None or hole_obj.pose is None or not hole_obj.evidence_ids:

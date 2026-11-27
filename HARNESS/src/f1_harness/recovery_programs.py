@@ -454,7 +454,15 @@ def recovered_aperture(before, after):
             and after["measurement_received_ns"] > before["measurement_received_ns"])
 
 def place_held_block(withdraw=True, *, start="transfer_above_hole"):
-    stages = ("transfer_above_hole", "inspect_in_hand", "align", "insert", "release", "verify_placed", "withdraw_reset")
+    # H-48/H-53: when withdraw=True, withdraw clear of the bucket before
+    # verify_placed so the head camera has an unobstructed direct view of the
+    # aperture (verify_placed never uses cached or return-anchor apertures).
+    # withdraw=False preserves the original release -> verify_placed sequence.
+    stages = (
+        ("transfer_above_hole", "inspect_in_hand", "align", "insert", "release", "withdraw_reset", "verify_placed")
+        if withdraw else
+        ("transfer_above_hole", "inspect_in_hand", "align", "insert", "release", "verify_placed")
+    )
     offset = stages.index(start)
     for name in stages[offset:2]:
         result = motion(name)
@@ -479,11 +487,15 @@ def place_held_block(withdraw=True, *, start="transfer_above_hole"):
         result = skill("insert")
         stage = "insert"
     if result["outcome"] != "success": return recover_attachment(dict(result, program_stage=stage), withdraw=withdraw)
-    for name in stages[max(offset,4):6]:
-        result = skill(name)
-        if result["outcome"] != "success": return dict(result, program_stage=name)
-    return (dict(motion("withdraw_reset"), program_stage="withdraw_reset") if withdraw
-            else dict(result, program_stage="verify_placed"))
+    if offset <= 4:
+        result = skill("release")
+        if result["outcome"] != "success": return dict(result, program_stage="release")
+    if withdraw:
+        if offset <= 5:
+            result = motion("withdraw_reset")
+            if result["outcome"] != "success": return dict(result, program_stage="withdraw_reset")
+        return dict(skill("verify_placed"), program_stage="verify_placed")
+    return dict(skill("verify_placed"), program_stage="verify_placed")
 
 def continue_external_task(withdraw=True):
     # Read the owner's scoped handoff receipt. Never manufacture successful
@@ -508,9 +520,15 @@ def resume_pick(result, hints_by_camera=None, withdraw=True):
     # Only original owner checkpoints or explicit zero-motion rejections can
     # restart a stage. Rechecking never repeats the completed physical action.
     stage = result.get("program_stage")
-    stages = ("approach_grasp", "grasp", "regrasp", "verify_grasp", "recover_grasp",
-              "transfer_above_hole", "inspect_in_hand", "align", "insert",
-              "release", "verify_placed", "withdraw_reset")
+    stages = (
+        ("approach_grasp", "grasp", "regrasp", "verify_grasp", "recover_grasp",
+         "transfer_above_hole", "inspect_in_hand", "align", "insert",
+         "release", "withdraw_reset", "verify_placed")
+        if withdraw else
+        ("approach_grasp", "grasp", "regrasp", "verify_grasp", "recover_grasp",
+         "transfer_above_hole", "inspect_in_hand", "align", "insert",
+         "release", "verify_placed")
+    )
     if stage not in stages: return result
     if result.get("reason") == "attachment_lost":
         return recover_attachment(result, withdraw=withdraw)
@@ -555,7 +573,7 @@ def resume_pick(result, hints_by_camera=None, withdraw=True):
     if stage in ("grasp", "regrasp", "recover_grasp"):
         return grasp_and_place(withdraw=withdraw, start="verify_grasp")
     if stage == "verify_grasp": return place_held_block(withdraw=withdraw)
-    if stage == "withdraw_reset": return dict(checked, program_stage=stage)
+    if stage == stages[-1]: return dict(checked, program_stage=stage)
     return place_held_block(withdraw=withdraw, start=stages[stages.index(stage)+1])
 '''.replace('range(BUDGET)','range('+str(local_corrections)+')').replace('REGRASP_BUDGET',str(regrasp_limit))
     return code

@@ -337,7 +337,8 @@ if args.occlude_aperture_after_transfer:
 def observation():
     global sequence,recovery_anchor,recovery_observed,occluded_tcp,cleared_aperture
     sequence+=1
-    returning=engine.status()['perception_context']['placement_verified']
+    pctx=engine.status()['perception_context']
+    returning=bool(pctx.get('return_scene_requested')) if 'return_scene_requested' in pctx else bool(pctx.get('placement_verified'))
     relative=np.linalg.inv(transform(hole.pose))@object_pose
     yaw=math.atan2(relative[1,0],relative[0,0]);yaw_error=abs((yaw+math.pi/4)%(math.pi/2)-math.pi/4)
     tilt=math.acos(float(np.clip(relative[2,2],-1,1)))
@@ -880,8 +881,12 @@ if result and result['outcome']=='success':
         # transport receipt remains part of the same session's execution history.
         completed=[s['skill'] for s in outcomes if s['result']['outcome']=='success' and
                    s['request']['session_id']==session and s['request']['epoch']==outcomes[-1]['request']['epoch']]
-        suffix=['move_tcp','reobserve','align','insert','release','verify_placed','withdraw_reset']
-        checks['full_cycle_completed']=required.issubset(completed) and completed[-len(suffix):]==suffix
+        suffixes=(
+            ['move_tcp','reobserve','align','insert','release','withdraw_reset','verify_placed'],
+            ['move_tcp','reobserve','align','insert','release','verify_placed','withdraw_reset'],
+        )
+        checks['full_cycle_completed']=required.issubset(completed) and any(
+            completed[-len(suffix):]==suffix for suffix in suffixes)
         checks['occlusion_cleared_by_displacement']=cleared_aperture and [
             i['kind'] for i in injections if i['kind'].startswith('simulated_aperture_')]==[
             'simulated_aperture_hidden','simulated_aperture_visible_after_lateral_displacement']

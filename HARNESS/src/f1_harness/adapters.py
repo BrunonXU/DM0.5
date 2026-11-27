@@ -541,6 +541,8 @@ class ScopedBackend:
         self.plant, self.poll_s = plant, poll_s
         self.steps = 0
         self._solved = False
+        self.placement_verified = False
+        self.withdraw_completed = False
 
     def execute_tool(self, name, input_dict):
         if name == 'aperture_observation' and not input_dict:
@@ -586,8 +588,14 @@ class ScopedBackend:
             self.engine.heartbeat(self.session_id)
             time.sleep(self.poll_s)
         self.steps += 1
-        if intent.skill == ("withdraw_reset" if "withdraw_reset" in task.allowed_skills else "verify_placed") and result["outcome"] == "success":
-            self._solved = True
+        if intent.skill == "verify_placed" and result["outcome"] == "success" and not result.get("assisted"):
+            self.placement_verified = True
+        if intent.skill == "withdraw_reset" and result["outcome"] == "success" and not result.get("assisted"):
+            self.withdraw_completed = True
+        if "withdraw_reset" in task.allowed_skills:
+            self._solved = bool(self.placement_verified and self.withdraw_completed)
+        else:
+            self._solved = bool(self.placement_verified)
         return result
 
     def solved(self):

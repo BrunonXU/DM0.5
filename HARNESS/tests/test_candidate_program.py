@@ -41,7 +41,7 @@ def test_changed_scene_zero_output_failure_tries_next_then_completes(tmp_path,is
         result=ast.literal_eval(cell(arm,f'pick_with_candidates({CANDIDATES!r})')['value'])
         assert result['outcome']=='success'
         assert [c['name'] for c in backend.motions]==['approach_grasp','approach_grasp','grasp',
-            'verify_grasp','transfer_above_hole','inspect_in_hand','align','insert','release','verify_placed','withdraw_reset']
+            'verify_grasp','transfer_above_hole','inspect_in_hand','align','insert','release','withdraw_reset','verify_placed']
         assert backend.motions[0]['parameters']!=backend.motions[1]['parameters']
         assert len(result['candidate_search'])==2
     finally:
