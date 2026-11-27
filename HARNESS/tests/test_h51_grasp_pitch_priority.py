@@ -77,3 +77,48 @@ def test_rank_grasp_choices_preserves_descriptor_tier_only_when_requested():
     # Without prefer_registered_grasp_pitch, descriptors still keep 0.0 first.
     legacy_scene = replace(scene0, prefer_registered_grasp_pitch=False)
     assert descriptors(legacy_scene)[0]['pitch_offset_deg'] == 0.0
+
+
+def test_prefer_registered_grasp_pitch_prefers_feasible_grasp_lookahead_without_veto(monkeypatch):
+    plan, obs, intent, _ = setup()
+    plan.fixture['grasp_pitch_offsets_deg'] = [15.0, 12.0]
+    plan.fixture['prefer_registered_grasp_pitch'] = True
+    plan.fixture['native_grasp_lookahead'] = True
+    monkeypatch.setattr('f1_harness.planning_lessons.planning_scope', lambda *a: dict(synthetic_test=True))
+    calls = []
+
+    def solve(i, scene, held, full, variant, *, deadline_ns=None):
+        pitch = scene.grasp_candidate_descriptor['pitch_offset_deg']
+        calls.append((i.skill, pitch, scene.grasp_candidate_variant))
+        if i.skill == 'grasp' and pitch == 15.0:
+            raise HarnessError('planning_joint_envelope_exceeded:{"joint":"arm_r_j6","target_deg":50.5}')
+        return dict(targets=[list(held)], geometry_trace=[dict(grasp_candidate_descriptor=scene.grasp_candidate_descriptor)])
+
+    monkeypatch.setattr(plan, '_solve_candidate', solve)
+    result = plan.dispatch('plan_skill', dict(
+        intent=intent.model_dump(), observation=obs.model_dump(),
+        full22=[0.] * 22, held16=list(obs.state16),
+    ))
+    # Skipped infeasible +15 deg variants and picked feasible +12 deg!
+    assert result['geometry_trace'][0]['grasp_candidate_descriptor']['pitch_offset_deg'] == 12.0
+    assert result['geometry_trace'][0]['native_grasp_lookahead']['feasible'] is True
+
+    # If ALL candidates have infeasible lookahead, still returns first solved approach (never a veto).
+    plan2, obs2, intent2, _ = setup()
+    plan2.fixture['grasp_pitch_offsets_deg'] = [15.0, 12.0]
+    plan2.fixture['prefer_registered_grasp_pitch'] = True
+    plan2.fixture['native_grasp_lookahead'] = True
+
+    def all_grasp_fail(i, scene, held, full, variant, *, deadline_ns=None):
+        if i.skill == 'grasp':
+            raise HarnessError('bounded_IK_did_not_reach_goal:{"position_error_m":0.002}')
+        return dict(targets=[list(held)], geometry_trace=[dict(grasp_candidate_descriptor=scene.grasp_candidate_descriptor)])
+
+    monkeypatch.setattr(plan2, '_solve_candidate', all_grasp_fail)
+    fallback_res = plan2.dispatch('plan_skill', dict(
+        intent=intent2.model_dump(), observation=obs2.model_dump(),
+        full22=[0.] * 22, held16=list(obs2.state16),
+    ))
+    assert fallback_res['geometry_trace'][0]['grasp_candidate_descriptor']['pitch_offset_deg'] == 15.0
+    assert fallback_res['geometry_trace'][0]['native_grasp_lookahead']['feasible'] is False
+

@@ -249,9 +249,12 @@ class Direct:
     def call(self,method,**kwargs):return planning_numeric.dispatch(method,kwargs)
 # Construct the real service so configuration validation is not bypassed.
 numerics_ipc_server=None
+numerics_ipc_tmpdir=None
 if args.real_numerics_ipc:
+    import tempfile
     from f1_harness.ipc import UnixServer
-    numerics_sock=area/'numerics.sock'
+    numerics_ipc_tmpdir=Path(tempfile.mkdtemp(prefix='f1-num-ipc-'))
+    numerics_sock=numerics_ipc_tmpdir/'n.sock'
     numerics_ipc_server=UnixServer(numerics_sock,planning_numeric.dispatch).start()
     service=PlanService(task,fixture,numerics_sock,clock=lambda:clock[0])
 else:
@@ -760,6 +763,9 @@ finally:
     if output_owner is not None:output_owner.close()
     if audit_pool is not None:audit_pool.close()
     if numerics_ipc_server is not None:numerics_ipc_server.close()
+    if numerics_ipc_tmpdir is not None:
+        import shutil
+        shutil.rmtree(numerics_ipc_tmpdir,ignore_errors=True)
 provenance=replay_provenance(engine.mode.value,outcomes,
     [json.loads(line) for line in (store.root/'trace.jsonl').read_text().splitlines()],
     publications,owner_outputs)

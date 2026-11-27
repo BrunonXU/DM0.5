@@ -396,8 +396,11 @@ class PlanService:
                 camera=self.fixture.get('candidate_wrist_camera'),skill=intent.skill,
                 preserve_descriptor_order=bool(scene.prefer_registered_grasp_pitch))
         free_search_candidates=[]
+        fallback_infeasible_lookahead=None
         for descriptor,variant in candidates:
             if self.clock()-started>=intent.budget_ms*1_000_000:
+                if fallback_infeasible_lookahead is not None:
+                    return completed(fallback_infeasible_lookahead)
                 raise HarnessError('registered_candidate_planning_budget_exhausted')
             candidate_started=time.perf_counter_ns()
             failure_key=None
@@ -415,12 +418,14 @@ class PlanService:
                         candidates=[dict(variant=item['variant'],diagnostic=dict(code=item['code'],metrics=item['metrics']))
                                     for item in previous.get('candidates',())])))
                 result=self._solve_candidate(intent,candidate_scene,held,full,variant,deadline_ns=deadline_ns)
+                lookahead=None
                 if (intent.skill=='approach_grasp' and self.task.goal=='placed'
                         and self.fixture.get('native_grasp_lookahead',False)):
-                    result['geometry_trace'][0]['native_grasp_lookahead']=self._grasp_continuation(
+                    lookahead=self._grasp_continuation(
                         intent,candidate_scene,result,full,deadline_ns=deadline_ns,
                         transport_deadline_ns=(started+intent.budget_ms*1_000_000
                             if preview and self.fixture.get('native_transport_lookahead_on_preview') is True else None))
+                    result['geometry_trace'][0]['native_grasp_lookahead']=lookahead
                 if (intent.skill=='approach_grasp' and self.task.goal=='placed'
                         and self.fixture.get('grasp_route_lookahead') is True
                         and not candidate_scene.aperture_measured):
@@ -442,6 +447,15 @@ class PlanService:
                             selected_variant=variant,motion_success_inferred=False)
                     except (OSError,ValueError,TypeError) as diagnostic_error:
                         result['geometry_trace'][0]['candidate_evaluation_error']=type(diagnostic_error).__name__
+                # Candidate ordering only (never a veto): when preferring registered grasp
+                # pitches, prefer a candidate whose grasp continuation is actually feasible
+                # (e.g. +15 deg -> +12 deg -> 0 deg), falling back to the first solved approach
+                # if no candidate achieves feasible lookahead.
+                if (scene.prefer_registered_grasp_pitch and intent.skill=='approach_grasp'
+                        and isinstance(lookahead,dict) and lookahead.get('feasible') is False):
+                    if fallback_infeasible_lookahead is None:
+                        fallback_infeasible_lookahead=result
+                    continue
                 return completed(result)
             except HarnessError as exc:
                 detail=numerical_failure_detail(exc)
@@ -507,18 +521,27 @@ class PlanService:
                 break
             try:
                 result=self._solve_candidate(intent,candidate_scene,held,full,variant,joint_search=True,deadline_ns=deadline_ns)
+                lookahead=None
                 if intent.skill=='approach_grasp' and self.fixture.get('native_grasp_lookahead',False):
-                    result['geometry_trace'][0]['native_grasp_lookahead']=self._grasp_continuation(
+                    lookahead=self._grasp_continuation(
                         intent,candidate_scene,result,full,deadline_ns=deadline_ns,
                         transport_deadline_ns=started+intent.budget_ms*1_000_000 if preview else None)
+                    result['geometry_trace'][0]['native_grasp_lookahead']=lookahead
                 result['geometry_trace'][0]['preceding_candidate_failures']=rejected
                 for stage in result['geometry_trace']:
                     stage['candidate_ranking']=ranking
+                if (scene.prefer_registered_grasp_pitch and intent.skill=='approach_grasp'
+                        and isinstance(lookahead,dict) and lookahead.get('feasible') is False):
+                    if fallback_infeasible_lookahead is None:
+                        fallback_infeasible_lookahead=result
+                    continue
                 return completed(result)
             except HarnessError as exc:
                 detail=numerical_failure_detail(exc)
                 if detail['code'] not in CANDIDATE_FAILURES:fail_with_attempts(detail,variant,exc)
                 rejected.append(dict(variant=variant,diagnostic=detail))
+        if fallback_infeasible_lookahead is not None:
+            return completed(fallback_infeasible_lookahead)
         # Optional implementation of the same transport primitive. Existing
         # explicit route requests/exclusions retain their meaning; no extra
         # model call, action budget, output owner or recovery scheduler.
