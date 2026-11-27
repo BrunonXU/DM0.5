@@ -27,7 +27,8 @@ CANDIDATE_FAILURES = frozenset((
     'regrasp_support_geometry_missing','regrasp_object_not_on_registered_support',
     'support_release_attachment_unresolved','support_release_contact_unavailable',
     'support_release_object_not_stationary','support_motion_requires_attachment_and_support',
-    'actual_IK_uncertain_grasp_departure_not_proven','planning_joint_envelope_exceeded'))
+    'actual_IK_uncertain_grasp_departure_not_proven','planning_joint_envelope_exceeded',
+    'insertion_preview_blocked_all_candidates'))
 
 
 def _arm_joint_names():
@@ -353,6 +354,18 @@ class PlanService:
                 numerics=self.numerics,full22=full,held16=held,
                 posture_prior=self.posture_prior,
                 planning_joint_envelope=self.planning_joint_envelope)
+            if ranking and all((row.get('insertion_preview') or {}).get('status')=='predicted_blocked' for row in ranking):
+                import json
+                blocked_candidates=[dict(
+                    variant=row['variant'],
+                    diagnostic=(row.get('insertion_preview') or {}).get('diagnostic')
+                               or dict(code='insertion_preview_blocked_all_candidates',metrics={}),
+                ) for row in ranking]
+                raise HarnessError('insertion_preview_blocked_all_candidates:'+json.dumps(dict(
+                    diagnostic=dict(code='insertion_preview_blocked_all_candidates',
+                                    metrics=dict(blocked_variants=[row['variant'] for row in ranking],
+                                                 candidate_count=len(ranking))),
+                    candidates=blocked_candidates),separators=(',',':')))
         attempts=[];joint_transport_attempted=False
         def fail_with_attempts(detail,variant,error):
             import json
