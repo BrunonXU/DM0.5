@@ -41,13 +41,17 @@ def angle(a,b):
     return float(np.arccos(np.clip((np.trace(a[:3,:3].T@b[:3,:3])-1)/2,-1,1)))
 
 
-def rank_grasp_choices(scene,candidates,prior,*,camera=None,skill='approach_grasp'):
+def rank_grasp_choices(scene,candidates,prior,*,camera=None,skill='approach_grasp',preserve_descriptor_order=False):
     """Score actual continuous geometry, not a variant before its pitch is applied.
 
     Visibility is a soft cost, never a new action veto. User/model supplied
     poses remain a single choice; the agent can inspect and replace them.
     """
     from .grasp_candidates import apply_descriptor
+    descriptor_order=[]
+    for descriptor,_ in candidates:
+        if descriptor not in descriptor_order:
+            descriptor_order.append(descriptor)
     rows=[]
     reference=(prior or {}).get('eef_poses',{}).get('grasp')
     for index,(descriptor,variant) in enumerate(candidates):
@@ -76,7 +80,10 @@ def rank_grasp_choices(scene,candidates,prior,*,camera=None,skill='approach_gras
                 wrist_view=view)
         except HarnessError as exc:row['geometry_reason']=str(exc)[:300]
         rows.append(row)
-    rows.sort(key=lambda r:(r['score'] is None,r['score'] or 0.,r['index']))
+    if preserve_descriptor_order:
+        rows.sort(key=lambda r:(descriptor_order.index(r['descriptor']),r['score'] is None,r['score'] or 0.,r['index']))
+    else:
+        rows.sort(key=lambda r:(r['score'] is None,r['score'] or 0.,r['index']))
     return [candidates[r['index']] for r in rows],rows
 
 

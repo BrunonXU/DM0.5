@@ -57,6 +57,7 @@ class SkillGeometry:
     # Registered pitch freedom about nominal local X at the same TCP. The
     # descriptor must be reapplied to the nominal scene for every replan.
     grasp_pitch_offsets_deg: tuple[float, ...] = ()
+    prefer_registered_grasp_pitch: bool = False
     parameterized_grasp: bool = False
     grasp_candidate_descriptor: dict | None = None
     grasp_candidate_variant: int | None = None

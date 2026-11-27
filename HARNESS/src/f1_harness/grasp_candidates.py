@@ -24,9 +24,11 @@ def registered_offsets(scene):
 
 
 def descriptors(scene):
-    """Prefer the unchanged nominal grasp before fixture-registered pitches."""
+    """Prefer nominal grasp unless the fixture prioritizes registered pitches."""
+    offsets=registered_offsets(scene)
+    order=(*offsets,0.) if getattr(scene,'prefer_registered_grasp_pitch',False) else (0.,*offsets)
     return tuple(dict(strategy='tcp_pitch',pitch_offset_deg=value)
-                 for value in (0.,*registered_offsets(scene)))
+                 for value in order)
 
 
 def validate_descriptor(scene, descriptor):

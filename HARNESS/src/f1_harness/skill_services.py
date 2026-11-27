@@ -393,7 +393,8 @@ class PlanService:
         if self.fixture.get('geometric_candidate_ranking') and intent.skill in ('approach_grasp','regrasp'):
             from .candidate_ranking import rank_grasp_choices
             candidates,ranking=rank_grasp_choices(scene,candidates,self.posture_prior,
-                camera=self.fixture.get('candidate_wrist_camera'),skill=intent.skill)
+                camera=self.fixture.get('candidate_wrist_camera'),skill=intent.skill,
+                preserve_descriptor_order=bool(scene.prefer_registered_grasp_pitch))
         free_search_candidates=[]
         for descriptor,variant in candidates:
             if self.clock()-started>=intent.budget_ms*1_000_000:
@@ -1060,6 +1061,7 @@ class PlanService:
             success_trajectory=self.fixture.get('success_trajectory'),
             tool_padding_policy=self.fixture.get('tool_padding_policy','required'),
             grasp_pitch_offsets_deg=self.fixture.get('grasp_pitch_offsets_deg',()),
+            prefer_registered_grasp_pitch=bool(self.fixture.get('prefer_registered_grasp_pitch',False)),
             parameterized_grasp=self.fixture.get('parameterized_grasp',False),
             transfer_policy=self.fixture.get('transfer_policy','hole_aligned'))
         if coarse and skill in ('approach_grasp','grasp','regrasp'):
