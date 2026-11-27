@@ -1,0 +1,52 @@
+[
+  {
+    "snapshot": "6c2bc8f6cb994ee2ae4bf0debd51fa47.json",
+    "observation_id": "c2b0e692b1914b799a3a4f4360e90eec:5",
+    "total_candidates": 33,
+    "excluded_by_fixture": 31,
+    "excluded_by_invalid_depth": 0,
+    "excluded_by_below_table": 1,
+    "remaining_candidates": 1,
+    "exclusion_box": [
+      0,
+      0,
+      186,
+      480
+    ],
+    "identity_status": "confirmed",
+    "recovery_search_source": "fixture_exclusion_unique_candidate",
+    "mask_area_px": 7075,
+    "score": 0.9999545812606812,
+    "block_pose_xyz_m": [
+      0.8199295809058171,
+      -0.312713601987253,
+      0.5461948932886231
+    ],
+    "error": null
+  },
+  {
+    "snapshot": "e47022f1debd44ac90eeb796dd26dddb.json",
+    "observation_id": "c2b0e692b1914b799a3a4f4360e90eec:4",
+    "total_candidates": 34,
+    "excluded_by_fixture": 32,
+    "excluded_by_invalid_depth": 0,
+    "excluded_by_below_table": 1,
+    "remaining_candidates": 1,
+    "exclusion_box": [
+      0,
+      0,
+      183,
+      480
+    ],
+    "identity_status": "confirmed",
+    "recovery_search_source": "fixture_exclusion_unique_candidate",
+    "mask_area_px": 7061,
+    "score": 0.9999545812606812,
+    "block_pose_xyz_m": [
+      0.8199596873990496,
+      -0.31256872996386853,
+      0.5459310879226777
+    ],
+    "error": null
+  }
+]

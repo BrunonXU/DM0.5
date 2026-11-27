@@ -212,14 +212,15 @@ class ConfiguredMaskProvider:
             if selected not in self.states:return 0
             return int(self.states[selected]['config'].get('prompt_padding_px',0))
 
-    def segment_frame(self,rgb,*,view,source,boxes=None,exclusion_boxes=None):
+    def segment_frame(self,rgb,*,view,source,boxes=None,exclusion_boxes=None,candidate_depth_filters=None):
         """One source-bound request; geometry transactions never rewind video memory."""
         with self._locked_views([view]):
             with self.lock:
                 if view not in self.states:raise ValueError('unknown_or_missing_mask_view')
                 state=(self.pending_tracking[1] if self.pending_tracking is not None else self.states)[view]
             state['frame_source']=source
-            try:return _segment_state(state,rgb,search_boxes=boxes,exclusion_boxes=exclusion_boxes)
+            try:return _segment_state(state,rgb,search_boxes=boxes,exclusion_boxes=exclusion_boxes,
+                                      candidate_depth_filters=candidate_depth_filters)
             except ValueError as exc:raise ValueError('mask_view='+str(view)+':'+str(exc)) from exc
             finally:state['frame_source']=None
 
@@ -388,7 +389,7 @@ def _mask_missing(state,key,mask,score):
         (not tracking and not sam and score<state['config']['minimum_score']))
 
 
-def _segment_state(state,rgb,search_boxes=None,exclusion_boxes=None):
+def _segment_state(state,rgb,search_boxes=None,exclusion_boxes=None,candidate_depth_filters=None):
     cfg=state['config'];backend=state['backend'];segmenter=state['segmenter']
     # A group relocation is provisional until every required mask, measurement
     # region and identity check has passed. Failed frames must not poison the
@@ -465,38 +466,73 @@ def _segment_state(state,rgb,search_boxes=None,exclusion_boxes=None):
             if mask.shape!=rgb.shape[:2]:raise ValueError('mask_dimensions_changed')
         tracking=state['tracking_results'].get(key) or {}
         fixture_exclusion_diag=None
+        has_box_ex=key in (exclusion_boxes or {})
+        has_depth_ex=key in (candidate_depth_filters or {})
         if (_mask_missing(state,key,mask,score) and key in discover
                 and tracking.get('identity_status')=='unresolved'
-                and key in (exclusion_boxes or {})):
-            ex=np.asarray(exclusion_boxes[key],float)
+                and (has_box_ex or has_depth_ex)):
+            ex=np.asarray(exclusion_boxes[key],float) if has_box_ex else None
+            depth_filter=candidate_depth_filters[key] if has_depth_ex else None
             total=int(tracking.get('semantic_candidates',0))
             summary=list(tracking.get('semantic_candidate_summary') or [])
             truncated=bool(tracking.get('semantic_candidate_summary_truncated',False))
             fixture_exclusion_diag=dict(
-                exclusion_box=[int(round(v)) for v in ex.tolist()],
+                exclusion_box=[int(round(v)) for v in ex.tolist()] if ex is not None else None,
+                depth_filter_enabled=depth_filter is not None,
                 total_candidates=total,
                 summary_count=len(summary),
                 truncated=truncated,
                 applied=False,
                 excluded_candidates=0,
+                excluded_by_fixture=0,
+                excluded_by_invalid_depth=0,
+                excluded_by_below_table=0,
                 remaining_candidates=len(summary),
                 semantic_candidate_summary=summary,
             )
             if total>=2 and len(summary)==total and not truncated:
                 remaining=[]
+                excluded_by_fixture=0
+                excluded_by_invalid_depth=0
+                excluded_by_below_table=0
                 for cand in summary:
                     cbox=cand.get('box')
                     if not isinstance(cbox,(list,tuple)) or len(cbox)!=4:
                         remaining.append(cand);continue
                     cx=(float(cbox[0])+float(cbox[2]))/2.0
                     cy=(float(cbox[1])+float(cbox[3]))/2.0
-                    if ex[0]<=cx<=ex[2] and ex[1]<=cy<=ex[3]:
+                    if ex is not None and ex[0]<=cx<=ex[2] and ex[1]<=cy<=ex[3]:
+                        excluded_by_fixture+=1
                         continue
+                    if depth_filter is not None:
+                        depth_arr=depth_filter['aligned_depth_m']
+                        u=int(round(cx));v=int(round(cy))
+                        if not (0<=v<depth_arr.shape[0] and 0<=u<depth_arr.shape[1]):
+                            excluded_by_invalid_depth+=1
+                            continue
+                        d=float(depth_arr[v,u])
+                        if not np.isfinite(d) or d<=0.0:
+                            excluded_by_invalid_depth+=1
+                            continue
+                        k_mat=np.asarray(depth_filter['k_rgb'],float)
+                        p_cam=np.array([(u-k_mat[0,2])*d/k_mat[0,0],(v-k_mat[1,2])*d/k_mat[1,1],d],float)
+                        cam_world=np.asarray(depth_filter['base_camera'],float)
+                        p_world=cam_world[:3,:3]@p_cam+cam_world[:3,3]
+                        t_pt=np.asarray(depth_filter['table_point'],float)
+                        t_nrm=np.asarray(depth_filter['table_normal'],float)
+                        margin=float(depth_filter.get('below_table_margin_m',0.05))
+                        height_above_table=float(np.dot(p_world-t_pt,t_nrm))
+                        if height_above_table<-margin:
+                            excluded_by_below_table+=1
+                            continue
                     remaining.append(cand)
                 excluded_count=len(summary)-len(remaining)
                 fixture_exclusion_diag.update(
                     applied=True,
                     excluded_candidates=excluded_count,
+                    excluded_by_fixture=excluded_by_fixture,
+                    excluded_by_invalid_depth=excluded_by_invalid_depth,
+                    excluded_by_below_table=excluded_by_below_table,
                     remaining_candidates=len(remaining),
                 )
                 if len(remaining)==1:
@@ -525,6 +561,8 @@ def _segment_state(state,rgb,search_boxes=None,exclusion_boxes=None):
                                     recovery_search_source='fixture_exclusion_unique_candidate',
                                     fixture_exclusion_excluded_candidates=excluded_count,
                                     fixture_exclusion_box=fixture_exclusion_diag['exclusion_box'],
+                                    fixture_exclusion_by_invalid_depth=excluded_by_invalid_depth,
+                                    fixture_exclusion_by_below_table=excluded_by_below_table,
                                 )
         tracking=state['tracking_results'].get(key) or {}
         if (_mask_missing(state,key,mask,score) and tracking.get('identity_status')=='unresolved'

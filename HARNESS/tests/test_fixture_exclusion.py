@@ -343,3 +343,124 @@ def test_h36_sam_seed_sorts_truncates_64_and_http_header_roundtrips_35(monkeypat
     assert received['semantic_candidate_summary_truncated'] is False
     assert len(received['semantic_candidate_summary']) == 35
     assert received['semantic_candidate_summary'] == cands_35
+
+
+def _depth_filter_setup():
+    # Camera at world [0, 0, 1.0] looking straight down (-Z_world = +Z_cam):
+    # p_world = [0, 0, 1.0] + [p_cam_x, -p_cam_y, -p_cam_z]
+    cam_world = np.array([
+        [1.0, 0.0, 0.0, 0.0],
+        [0.0, -1.0, 0.0, 0.0],
+        [0.0, 0.0, -1.0, 1.0],
+        [0.0, 0.0, 0.0, 1.0],
+    ], float)
+    k = np.array([[400.0, 0.0, 320.0], [0.0, 400.0, 240.0], [0.0, 0.0, 1.0]], float)
+    # Table at z = 0.55 m, normal = [0, 0, 1].
+    # Depth 0.40 m -> world z = 0.60 m (5 cm above table -> KEEP)
+    # Depth 0.60 m -> world z = 0.40 m (15 cm below table -> EXCLUDE)
+    depth = np.full((480, 640), 0.40, float)
+    return dict(
+        aligned_depth_m=depth,
+        k_rgb=k,
+        base_camera=cam_world,
+        table_point=np.array([0.0, 0.0, 0.55], float),
+        table_normal=np.array([0.0, 0.0, 1.0], float),
+        below_table_margin_m=0.05,
+    )
+
+
+def test_h45_invalid_depth_candidate_excluded_and_tabletop_kept():
+    df = _depth_filter_setup()
+    # Candidate 0: on table (center 440, 245, depth 0.40 -> z=0.60 > 0.50)
+    # Candidate 1: invalid depth 0.0 at center (389, 38)
+    df['aligned_depth_m'][38, 389] = 0.0
+    cands = [
+        dict(index=0, box=[400, 200, 480, 290], area_px=7000, score=0.97, in_scope=True),
+        dict(index=1, box=[377, 27, 401, 49], area_px=268, score=0.26, in_scope=True),
+    ]
+    fake = _DiscoverFake(cands)
+    provider = _provider(fake)
+    masks = provider.segment_frame(
+        np.zeros((480, 640, 3), np.uint8),
+        view='right',
+        source=_source(10),
+        candidate_depth_filters={'block': df},
+    )
+    assert masks['block'].sum() >= 100
+    diag = provider.diagnostic_snapshot()['right']['block']['fixture_exclusion']
+    assert diag['applied'] is True
+    assert diag['excluded_by_invalid_depth'] == 1
+    assert diag['excluded_by_below_table'] == 0
+    assert diag['remaining_candidates'] == 1
+
+
+def test_h45_below_table_candidate_excluded_and_tabletop_kept():
+    df = _depth_filter_setup()
+    # Candidate 1: depth 1.15 -> world z = -0.15 m (70 cm below table -> EXCLUDE)
+    df['aligned_depth_m'][38, 389] = 1.15
+    cands = [
+        dict(index=0, box=[400, 200, 480, 290], area_px=7000, score=0.97, in_scope=True),
+        dict(index=1, box=[377, 27, 401, 49], area_px=268, score=0.26, in_scope=True),
+    ]
+    fake = _DiscoverFake(cands)
+    provider = _provider(fake)
+    masks = provider.segment_frame(
+        np.zeros((480, 640, 3), np.uint8),
+        view='right',
+        source=_source(11),
+        candidate_depth_filters={'block': df},
+    )
+    assert masks['block'].sum() >= 100
+    diag = provider.diagnostic_snapshot()['right']['block']['fixture_exclusion']
+    assert diag['applied'] is True
+    assert diag['excluded_by_below_table'] == 1
+    assert diag['excluded_by_invalid_depth'] == 0
+    assert diag['remaining_candidates'] == 1
+
+
+def test_h45_two_tabletop_blocks_both_kept_and_still_unresolved():
+    df = _depth_filter_setup()
+    # Both candidates have depth 0.40 m -> z = 0.60 m (above table)
+    cands = [
+        dict(index=0, box=[400, 200, 480, 290], area_px=7000, score=0.97, in_scope=True),
+        dict(index=1, box=[200, 200, 280, 290], area_px=6500, score=0.95, in_scope=True),
+    ]
+    fake = _DiscoverFake(cands)
+    provider = _provider(fake)
+    with pytest.raises(ValueError, match='mask_uncertain_requires_new_prompt:object=block'):
+        provider.segment_frame(
+            np.zeros((480, 640, 3), np.uint8),
+            view='right',
+            source=_source(12),
+            candidate_depth_filters={'block': df},
+        )
+    assert len(fake.track_calls) == 0
+    diag = provider.diagnostic_snapshot()['right']['block']['fixture_exclusion']
+    assert diag['applied'] is True
+    assert diag['excluded_candidates'] == 0
+    assert diag['remaining_candidates'] == 2
+
+
+def test_h45_combined_with_h36_bucket_exclusion():
+    df = _depth_filter_setup()
+    # Candidate 0: tabletop block; Candidate 1: inside bucket box (also valid depth); Candidate 2: below table
+    df['aligned_depth_m'][38, 389] = 1.15
+    cands = [
+        dict(index=0, box=[400, 200, 480, 290], area_px=7000, score=0.97, in_scope=True),
+        dict(index=1, box=[20, 300, 60, 340], area_px=1200, score=0.45, in_scope=True),
+        dict(index=2, box=[377, 27, 401, 49], area_px=268, score=0.26, in_scope=True),
+    ]
+    fake = _DiscoverFake(cands)
+    provider = _provider(fake)
+    masks = provider.segment_frame(
+        np.zeros((480, 640, 3), np.uint8),
+        view='right',
+        source=_source(13),
+        exclusion_boxes={'block': [0, 0, 196, 480]},
+        candidate_depth_filters={'block': df},
+    )
+    assert masks['block'].sum() >= 100
+    diag = provider.diagnostic_snapshot()['right']['block']['fixture_exclusion']
+    assert diag['excluded_by_fixture'] == 1
+    assert diag['excluded_by_below_table'] == 1
+    assert diag['remaining_candidates'] == 1

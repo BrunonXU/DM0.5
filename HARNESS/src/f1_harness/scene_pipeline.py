@@ -224,7 +224,7 @@ class CalibratedScenePipeline:
         return (*result,dict(head_view_ms=(rectified-start)*1000,
             head_mask_ms=(time.perf_counter()-rectified)*1000,head_cache_hit=False))
 
-    def _segment_view(self,rgb,observation,camera,boxes=None,exclusion_boxes=None):
+    def _segment_view(self,rgb,observation,camera,boxes=None,exclusion_boxes=None,candidate_depth_filters=None):
         source_bound=getattr(self.segment,'segment_frame',None)
         if source_bound is not None:
             frame=next(f for f in observation.frames if f.camera==camera and f.stream=='rgb')
@@ -233,9 +233,12 @@ class CalibratedScenePipeline:
                 host_boot_id=observation.host_boot_id,camera=camera,frame_id=frame.frame_id,
                 source_epoch=frame.source_epoch,publisher_id=frame.publisher_id,
                 width=frame.width,height=frame.height))
+            extra={}
             if exclusion_boxes:
-                return source_bound(rgb,view=camera,source=source,boxes=boxes,exclusion_boxes=exclusion_boxes)
-            return source_bound(rgb,view=camera,source=source,boxes=boxes)
+                extra['exclusion_boxes']=exclusion_boxes
+            if candidate_depth_filters:
+                extra['candidate_depth_filters']=candidate_depth_filters
+            return source_bound(rgb,view=camera,source=source,boxes=boxes,**extra)
         return (self.segment.with_search_boxes(rgb,view=camera,boxes=boxes) if boxes
                 else self.segment(rgb,view=camera))
 
@@ -957,34 +960,52 @@ class CalibratedScenePipeline:
                     measured_at_ns=self.search_hint['received_ns'],pose_used_as_evidence=False)
             else:
                 exclusion_boxes=None
+                candidate_depth_filters=None
                 if (self.coarse and not self.development and camera=='right'
-                        and pregrasp and self.contact_attachment is None and self.in_hand_reference is None
-                        and cfg.get('fixture_exclusion_box')):
+                        and pregrasp and self.contact_attachment is None and self.in_hand_reference is None):
                     is_seeded=getattr(self.segment,'is_sam_seeded',None)
                     if is_seeded is None or not is_seeded(camera,cfg['object_id']):
-                        fixture_pose=(self.measured_fixture if self.measured_fixture is not None
-                                      and self.measured_fixture.source=='rgbd_anchor_registration' else None)
-                        if (fixture_pose is None and self.secondary_future is not None
-                                and secondary_error is None and self.fixture_reference_camera is not None):
-                            try:
-                                head_depth,head_evidence,head_masks,_=self.secondary_future.result()
-                                head_fixture=self._locate_bucket_for_object(
-                                    observation,camera,(head_depth,head_evidence,head_masks))
-                                if head_fixture is not None and head_fixture.source=='rgbd_anchor_registration':
-                                    self.measured_fixture=head_fixture
-                                    fixture_pose=head_fixture
-                            except ValueError:
-                                pass
-                        if fixture_pose is not None and fixture_pose.source=='rgbd_anchor_registration':
-                            pad_fn=getattr(self.segment,'prompt_padding_px',None)
-                            pad_px=pad_fn(camera) if pad_fn is not None else int(cfg.get('prompt_padding_px',0))
-                            rect=self._project_fixture_exclusion_box(fixture_pose,base_camera,cfg,pad_px)
-                            if rect is not None:
-                                exclusion_boxes={cfg['object_id']:rect}
-                                self.last_timing['fixture_exclusion_region']=dict(
-                                    camera=camera,box=rect,fixture_source=fixture_pose.source,
-                                    fixture_measured_at_ns=fixture_pose.measured_at_ns,motion_evidence=False)
-                masks=(self._segment_view(rgb[y0:y1,x0:x1],observation,camera,exclusion_boxes=exclusion_boxes)
+                        if cfg.get('fixture_exclusion_box'):
+                            fixture_pose=(self.measured_fixture if self.measured_fixture is not None
+                                          and self.measured_fixture.source=='rgbd_anchor_registration' else None)
+                            if (fixture_pose is None and self.secondary_future is not None
+                                    and secondary_error is None and self.fixture_reference_camera is not None):
+                                try:
+                                    head_depth,head_evidence,head_masks,_=self.secondary_future.result()
+                                    head_fixture=self._locate_bucket_for_object(
+                                        observation,camera,(head_depth,head_evidence,head_masks))
+                                    if head_fixture is not None and head_fixture.source=='rgbd_anchor_registration':
+                                        self.measured_fixture=head_fixture
+                                        fixture_pose=head_fixture
+                                except ValueError:
+                                    pass
+                            if fixture_pose is not None and fixture_pose.source=='rgbd_anchor_registration':
+                                pad_fn=getattr(self.segment,'prompt_padding_px',None)
+                                pad_px=pad_fn(camera) if pad_fn is not None else int(cfg.get('prompt_padding_px',0))
+                                rect=self._project_fixture_exclusion_box(fixture_pose,base_camera,cfg,pad_px)
+                                if rect is not None:
+                                    exclusion_boxes={cfg['object_id']:rect}
+                                    self.last_timing['fixture_exclusion_region']=dict(
+                                        camera=camera,box=rect,fixture_source=fixture_pose.source,
+                                        fixture_measured_at_ns=fixture_pose.measured_at_ns,motion_evidence=False)
+                        table_plane=cfg.get('table_support_plane')
+                        if isinstance(table_plane,dict) and 'point' in table_plane and 'normal' in table_plane:
+                            pt=np.asarray(table_plane['point'],float)
+                            nrm=np.asarray(table_plane['normal'],float)
+                            nrm_len=float(np.linalg.norm(nrm)) if nrm.shape==(3,) and np.isfinite(nrm).all() else 0.0
+                            if pt.shape==(3,) and np.isfinite(pt).all() and nrm_len>0.0:
+                                from .geometry import crop_intrinsics
+                                candidate_depth_filters={cfg['object_id']:dict(
+                                    aligned_depth_m=aligned[y0:y1,x0:x1],
+                                    k_rgb=crop_intrinsics(cfg['k_rgb'],cfg['roi']),
+                                    base_camera=base_camera,
+                                    table_point=pt,
+                                    table_normal=nrm/nrm_len,
+                                    below_table_margin_m=0.05,
+                                )}
+                masks=(self._segment_view(rgb[y0:y1,x0:x1],observation,camera,
+                                          exclusion_boxes=exclusion_boxes,
+                                          candidate_depth_filters=candidate_depth_filters)
                        if self.coarse and not self.development
                        else self.segment(rgb[y0:y1,x0:x1]))
             self._mark('right_mask_ms')

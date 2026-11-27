@@ -72,6 +72,18 @@ def serve(kind,config_path:Path,store, *, numerical_pool=None):
                         lo = np.min([o['min'] for o in bucket_obs], axis=0).tolist()
                         hi = np.max([o['max'] for o in bucket_obs], axis=0).tolist()
                         config['scene']['geometry']['fixture_exclusion_box'] = dict(min=lo, max=hi)
+                    table_obs = next(
+                        (o for o in (plan_doc.get('fixture') or {}).get('obstacles', ())
+                         if o.get('role') == 'table' and o.get('type') == 'halfspace'
+                         and 'point' in o and 'normal' in o),
+                        None,
+                    )
+                    if (table_obs is not None
+                            and (plan_doc.get('fixture') or {}).get('frame_chain') == config['scene'].get('frame_chain')):
+                        config['scene']['geometry']['table_support_plane'] = dict(
+                            point=list(table_obs['point']),
+                            normal=list(table_obs['normal']),
+                        )
                 mask_client=scene_mask_provider(config['scene'],config_path.parent)
                 observer=LiveSceneObserver(observer,config['scene'],mask_client,store)
             server=GatewayServer(Gateway(OwnerProxy(Path(config['owner_socket'])),observer,store),port=config['control_port']).start()
