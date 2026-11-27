@@ -451,7 +451,7 @@ class PlanService:
                 # pitches, prefer a candidate whose grasp continuation is actually feasible
                 # (e.g. +15 deg -> +12 deg -> 0 deg), falling back to the first solved approach
                 # if no candidate achieves feasible lookahead.
-                if (scene.prefer_registered_grasp_pitch and intent.skill=='approach_grasp'
+                if (intent.skill=='approach_grasp' and getattr(scene,'prefer_registered_grasp_pitch',False)
                         and isinstance(lookahead,dict) and lookahead.get('feasible') is False):
                     if fallback_infeasible_lookahead is None:
                         fallback_infeasible_lookahead=result
@@ -530,7 +530,7 @@ class PlanService:
                 result['geometry_trace'][0]['preceding_candidate_failures']=rejected
                 for stage in result['geometry_trace']:
                     stage['candidate_ranking']=ranking
-                if (scene.prefer_registered_grasp_pitch and intent.skill=='approach_grasp'
+                if (intent.skill=='approach_grasp' and getattr(scene,'prefer_registered_grasp_pitch',False)
                         and isinstance(lookahead,dict) and lookahead.get('feasible') is False):
                     if fallback_infeasible_lookahead is None:
                         fallback_infeasible_lookahead=result
