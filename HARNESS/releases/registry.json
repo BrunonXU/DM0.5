@@ -1009,12 +1009,12 @@
       "start_sent": false,
       "physical_task_verified": false,
       "currently_active": false,
-      "production_activated": false,
-      "superseded_by": 56,
-      "cancellation_reason": "Frozen candidate omitted class default PlanService.planning_joint_envelope = {}, caught by full pytest regression on PlanService.__new__ tests before qualification. Never deployed.",
       "bundle_id": "0e8235c5389677aca8f5b7803453b2bccf53e287adafd4749e94ac75d408b711",
       "manifest": "/home/user/projects/HARNESS/artifacts/j6-envelope-fastdds-v55-20261126/bundle-final/manifest.json",
-      "frozen": true
+      "frozen": true,
+      "production_activated": false,
+      "superseded_by": 56,
+      "cancellation_reason": "Frozen candidate omitted class default PlanService.planning_joint_envelope = {}, caught by full pytest regression on PlanService.__new__ tests before qualification. Never deployed."
     },
     {
       "version": 56,
@@ -1047,7 +1047,7 @@
       "source_base_bundle": "d5b1b1d2de1ae687f0d2501fcbc33404d359edc03d0d1267515406cdd1877483",
       "start_sent": false,
       "physical_task_verified": false,
-      "currently_active": true,
+      "currently_active": false,
       "bundle_id": "de4f6b0beaea03eab6c2b6c9c34901c4cf04e1b44d3846f4c834133c126e7d6d",
       "manifest": "/home/user/projects/HARNESS/artifacts/occluded-fixture-v57-20261126/bundle-final/manifest.json",
       "frozen": true,
@@ -1055,13 +1055,33 @@
       "activation": "/home/user/projects/HARNESS/artifacts/occluded-fixture-v57-20261126/activation.json",
       "verification": "/home/user/projects/HARNESS/artifacts/occluded-fixture-v57-20261126/post-activation.json",
       "deployment_kind": "shared_harness_base_both_strategies"
+    },
+    {
+      "version": 58,
+      "name": "F1 Harness 近身对称朝向关节空间运输 V58",
+      "status": "deployed",
+      "artifact_directory": "/home/user/projects/HARNESS/artifacts/near-body-transport-v58-20261126",
+      "previous_version": 57,
+      "previous_bundle": "de4f6b0beaea03eab6c2b6c9c34901c4cf04e1b44d3846f4c834133c126e7d6d",
+      "source_base_version": 57,
+      "source_base_bundle": "de4f6b0beaea03eab6c2b6c9c34901c4cf04e1b44d3846f4c834133c126e7d6d",
+      "start_sent": false,
+      "physical_task_verified": false,
+      "currently_active": true,
+      "bundle_id": "cfc9b2ad5696969b6b8a5b730ad2949511a0fee29a4fcff499d2ae0b1feb240a",
+      "manifest": "/home/user/projects/HARNESS/artifacts/near-body-transport-v58-20261126/bundle-final/manifest.json",
+      "frozen": true,
+      "validation": "/home/user/projects/HARNESS/artifacts/near-body-transport-v58-20261126/replay-qualification-v58.json",
+      "activation": "/home/user/projects/HARNESS/artifacts/near-body-transport-v58-20261126/activation.json",
+      "verification": "/home/user/projects/HARNESS/artifacts/near-body-transport-v58-20261126/post-activation.json",
+      "deployment_kind": "shared_harness_base_both_strategies"
     }
   ],
-  "active_bundle_id": "de4f6b0beaea03eab6c2b6c9c34901c4cf04e1b44d3846f4c834133c126e7d6d",
-  "active_version": 57,
+  "active_bundle_id": "cfc9b2ad5696969b6b8a5b730ad2949511a0fee29a4fcff499d2ae0b1feb240a",
+  "active_version": 58,
   "active_strategy_versions": {
-    "astra": 57,
-    "vla_astra": 57
+    "astra": 58,
+    "vla_astra": 58
   },
-  "active_coordinator_service_version": 57
+  "active_coordinator_service_version": 58
 }
