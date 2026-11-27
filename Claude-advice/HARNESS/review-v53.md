@@ -167,7 +167,7 @@ flowchart LR
 
 ## 0. 通用约束
 
-执行、状态和回写约定见 [Claude-advice 说明](../README.md#codex-执行与回写约定)。硬保护清单和冲突优先级以 [HARNESS/AGENTS.md](../../HARNESS/AGENTS.md) 为准。本轮追加三条：
+执行、状态和回写约定见 [Claude-advice 说明](../README.md#六执行与回写)。硬保护清单和冲突优先级以 [HARNESS/AGENTS.md](../../HARNESS/AGENTS.md) 为准。本轮追加三条：
 
 1. **H-20、H-22、H-25 完成并取得第一批真机数据之前，不做 H-07 至 H-19 中任何未动的条目，也不做 H-23，不冻结新功能版本。** 决策已定不等于现在就做。
 2. 新增拒绝原因数必须为 0。本轮所有条目都不新增 `raise HarnessError`。
