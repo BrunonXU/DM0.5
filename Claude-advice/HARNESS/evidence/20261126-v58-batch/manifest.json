@@ -1,0 +1,19 @@
+{
+  "evidence_id": "20261126-v58-batch",
+  "version": 58,
+  "bundle_id": "cfc9b2ad5696969b6b8a5b730ad2949511a0fee29a4fcff499d2ae0b1feb240a",
+  "preset": "V6",
+  "trials": 3,
+  "files": [
+    "report.md",
+    "funnel.json",
+    "preflight-3x-summary.json",
+    "layouts.md",
+    "runs/v58-trial-01-web-7413dc30/owner-trace.jsonl",
+    "runs/v58-trial-01-web-7413dc30/planner-trace.jsonl",
+    "runs/v58-trial-02-web-7fce1b96/owner-trace.jsonl",
+    "runs/v58-trial-02-web-7fce1b96/planner-trace.jsonl",
+    "runs/v58-trial-03-web-a4d29078/owner-trace.jsonl",
+    "runs/v58-trial-03-web-a4d29078/planner-trace.jsonl"
+  ]
+}

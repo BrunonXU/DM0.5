@@ -1,0 +1,106 @@
+{
+  "version": 58,
+  "bundle_id": "cfc9b2ad5696969b6b8a5b730ad2949511a0fee29a4fcff499d2ae0b1feb240a",
+  "preset": {
+    "name": "V6",
+    "id": "04a159f3c79c4b7a8ae9f9ffb06c7b4c",
+    "joints_deg": {
+      "arm_l_j1": 45.534,
+      "arm_l_j2": -47.325,
+      "arm_l_j3": -91.527,
+      "arm_l_j4": -104.152,
+      "arm_l_j5": -36.975,
+      "arm_l_j6": 51.212,
+      "arm_l_j7": -54.469,
+      "arm_r_j1": -71.916,
+      "arm_r_j2": -87.721,
+      "arm_r_j3": 92.123,
+      "arm_r_j4": -85.337,
+      "arm_r_j5": -2.539,
+      "arm_r_j6": 1.017,
+      "arm_r_j7": -2.687,
+      "head_j1": 0.002,
+      "head_j2": -14.997,
+      "head_j3": -0.005,
+      "body_j1": 0.001,
+      "body_j2": 0.002,
+      "body_j3": -59.683,
+      "body_j4": -68.347,
+      "body_j5": -30.144
+    },
+    "note": "User-created static left-arm preset V6 moving left wrist clear of head main view; right arm, head, and body match 积木demoV5."
+  },
+  "consecutive_passes": 3,
+  "all_passed": true,
+  "rounds": [
+    {
+      "round": 1,
+      "name": "probe-v6-01",
+      "passed": true,
+      "sha256": "4ec27f00f7d6b35dff90f1ed2d4cc1be438e44f0cf25062f64665cd43e2610cf",
+      "local_path": "/home/user/projects/HARNESS/artifacts/v58-preflight-20261126/probe-v6-01/result.json",
+      "arm_l_j2_deg": [
+        -47.324,
+        -47.324
+      ],
+      "contiguous_s": 36.54,
+      "left_frames": 1097,
+      "block_solved": 195,
+      "fixture_solved": 192,
+      "first_paired_s": 11.31,
+      "request_outcomes": {
+        "observe_with_status: frame_feedback_skew:no_frames": 11,
+        "observe_with_status: mask_view=right:mask_uncertain_requires_new_prompt:object=square-1": 51,
+        "paired": 195
+      },
+      "cmd_pubs": 0,
+      "start_sent": false
+    },
+    {
+      "round": 2,
+      "name": "preflight-02",
+      "passed": true,
+      "sha256": "4d4c9d513e18de913a42d4c33c35940a63958065b836d050e0d3e1a9d7b5a3d8",
+      "local_path": "/home/user/projects/HARNESS/artifacts/v58-preflight-20261126/preflight-02/result.json",
+      "arm_l_j2_deg": [
+        -47.324,
+        -47.324
+      ],
+      "contiguous_s": 16.56,
+      "left_frames": 497,
+      "block_solved": 89,
+      "fixture_solved": 87,
+      "first_paired_s": 31.37,
+      "request_outcomes": {
+        "observe_with_status: scene_not_ready": 2,
+        "observe_with_status: mask_view=right:mask_uncertain_requires_new_prompt:object=square-1": 170,
+        "paired": 89
+      },
+      "cmd_pubs": 0,
+      "start_sent": false
+    },
+    {
+      "round": 3,
+      "name": "preflight-03",
+      "passed": true,
+      "sha256": "028f64efa9a674ffd1d4670c3c1a8a5a40af29c0e78133845af5d60d96dac483",
+      "local_path": "/home/user/projects/HARNESS/artifacts/v58-preflight-20261126/preflight-03/result.json",
+      "arm_l_j2_deg": [
+        -47.324,
+        -47.324
+      ],
+      "contiguous_s": 44.98,
+      "left_frames": 1351,
+      "block_solved": 240,
+      "fixture_solved": 233,
+      "first_paired_s": 2.92,
+      "request_outcomes": {
+        "observe_with_status: frame_feedback_skew:no_frames": 13,
+        "observe_with_status: unverified_pairing": 3,
+        "paired": 240
+      },
+      "cmd_pubs": 0,
+      "start_sent": false
+    }
+  ]
+}

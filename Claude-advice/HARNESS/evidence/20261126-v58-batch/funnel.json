@@ -1,0 +1,131 @@
+{
+  "version": 58,
+  "bundle_id": "cfc9b2ad5696969b6b8a5b730ad2949511a0fee29a4fcff499d2ae0b1feb240a",
+  "preset": "V6",
+  "total_trials": 3,
+  "stop_reason": "operator_requested_stop_for_claude_review_after_3_trials_revealing_two_new_s4_s5_blockers",
+  "safety_events": 0,
+  "motion_stalled_count": 0,
+  "camera_sample_feedback_aged_right_count": 0,
+  "h36_included": false,
+  "h36_applied_count": 0,
+  "h37_included": true,
+  "h37_nonzero_yaw_triggered_count": 0,
+  "h32_retention_triggered_count": 1,
+  "h32_move_aside_succeeded_count": 0,
+  "h32_hole_measured_after_move_aside_count": 0,
+  "static_fixture_retention_expired_count": 0,
+  "s0_segmentation_failures": 1,
+  "stage_counts": {
+    "S0_observed": 2,
+    "S1_approach_grasp": 2,
+    "S2_grasp": 2,
+    "S3_verify_grasp": 2,
+    "S4_transfer_above_hole_arrived": 2,
+    "S4_transfer_above_hole_verified": 1,
+    "S5_align_reached": 1,
+    "S6_insert": 0,
+    "S7_release": 0,
+    "S8_placed": 0
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "run_id": "web-7413dc3061334d70845c21aa0e3c8176",
+      "preset": "V6",
+      "bucket_xyz_m": [
+        0.819,
+        -0.059,
+        0.774
+      ],
+      "bucket_xyz_source": "preflight_v6_same_layout",
+      "bucket_in_right_wrist": true,
+      "block_xyz_m": [
+        0.823,
+        -0.317,
+        0.547
+      ],
+      "highest_stage": "S0",
+      "outcome": "pending_review",
+      "stop_skill": "approach_grasp",
+      "stop_reason": "observation_readiness_timeout:observation_unavailable:RpcError:observe_with_status: mask_view=right:mask_uncertain_requires_new_prompt:object=square-1",
+      "attempts": 75,
+      "waited_ms": 15000.4,
+      "moved": false
+    },
+    {
+      "trial": 2,
+      "run_id": "web-7fce1b965f2f4ca497c7d93b505486e9",
+      "preset": "V6",
+      "bucket_xyz_m": [
+        0.7414,
+        -0.0302,
+        0.7745
+      ],
+      "bucket_in_right_wrist": false,
+      "block_xyz_m": [
+        0.8198,
+        -0.3121,
+        0.5461
+      ],
+      "highest_stage": "S5_align",
+      "outcome": "pending_review",
+      "stop_skill": "align",
+      "stop_reason": "observation_viewpoint_required:aperture_measurement_required:square-hole-1:fixture_aperture_not_detected_in_search_region",
+      "transfer_route_family": "joint_space_transport",
+      "transfer_goal_yaw_offset_deg": 0,
+      "transfer_plan_arm_r_j6_range_deg": [
+        15.56,
+        31.08
+      ],
+      "transfer_reval_to_pub_s": 0.0236,
+      "h32_fixture_retained": true,
+      "h32_observation_move_reason": "no_distinct_measured_view_in_current_holding_episode",
+      "left_camera_aperture_candidates": {
+        "square": 1,
+        "triangle": 1,
+        "circle": 2
+      },
+      "moved": true
+    },
+    {
+      "trial": 3,
+      "run_id": "web-a4d290783627423bbd8b8020d2468138",
+      "preset": "V6",
+      "bucket_xyz_m": [
+        0.6635,
+        -0.0331,
+        0.7716
+      ],
+      "square_hole_pre_transfer_xyz_m": [
+        0.6642,
+        -0.0339,
+        0.7679
+      ],
+      "bucket_in_right_wrist": false,
+      "block_xyz_m": [
+        0.8544,
+        -0.2781,
+        0.5473
+      ],
+      "highest_stage": "S4_transfer_above_hole_post_motion",
+      "outcome": "pending_review",
+      "stop_skill": "transfer_above_hole",
+      "stop_reason": "post_motion_verification_unavailable:post_motion_scene_not_ready:local_environment_only_supports_world_observation_motion",
+      "post_motion_retry_timeout_reason": "observation_readiness_timeout:local_environment_only_supports_world_observation_motion",
+      "post_motion_scope": "coarse_local_environment",
+      "post_motion_warnings": [
+        "object_pose_unavailable:supported_upright_face_not_observed",
+        "aperture_unavailable:aperture_not_directly_visible"
+      ],
+      "transfer_route_family": "joint_space_transport",
+      "transfer_goal_yaw_offset_deg": 0,
+      "transfer_plan_arm_r_j6_range_deg": [
+        18.32,
+        21.33
+      ],
+      "transfer_reval_to_pub_s": 0.0189,
+      "moved": true
+    }
+  ]
+}
