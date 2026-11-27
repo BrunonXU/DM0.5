@@ -47,7 +47,7 @@ def test_normal_example_executes_installed_macro_in_real_pyrua_cell(tmp_path):
     assert not result.get('error') and not result.get('exception'), result
     names = [args['name'] for _,args in backend.calls]
     assert names == ['approach_grasp','grasp','verify_grasp','transfer_above_hole',
-                     'inspect_in_hand','align','insert','release','verify_placed','withdraw_reset']
+                     'inspect_in_hand','align','insert','release','withdraw_reset','verify_placed']
 
 
 @pytest.mark.parametrize('stage', ['transfer_above_hole','inspect_in_hand','align','insert',
