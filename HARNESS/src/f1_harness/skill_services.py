@@ -692,7 +692,9 @@ class PlanService:
             elif self.posture_prior and intent.skill in self.posture_prior['postures_deg']:
                 bounds['posture_reference_deg']=self.posture_prior['postures_deg'][intent.skill]
             if scene.tool_local_boxes:
-                bounds.update(eef_tip_reference=scene.eef_tip_reference,tool_local_boxes=scene.tool_local_boxes)
+                tip_ref=(scene.eef_tip_reference.tolist()
+                         if hasattr(scene.eef_tip_reference,'tolist') else scene.eef_tip_reference)
+                bounds.update(eef_tip_reference=tip_ref,tool_local_boxes=scene.tool_local_boxes)
             if stage.get('eef_object') is not None:
                 bounds.update(eef_object=stage['eef_object'],object_local_box=scene.object_local_box,
                               object_planning_margin_m=scene.object_planning_margin_m if coarse else scene.uncertainty_m)
@@ -700,7 +702,9 @@ class PlanService:
                     bounds['support_contact_tolerance_m']=stage['support_contact_tolerance_m']
                     bounds['support_contact_direction']=stage.get('support_contact_direction','depart')
             if development:
-                bounds.update(eef_tip_reference=scene.eef_tip_reference,
+                tip_ref=(scene.eef_tip_reference.tolist()
+                         if hasattr(scene.eef_tip_reference,'tolist') else scene.eef_tip_reference)
+                bounds.update(eef_tip_reference=tip_ref,
                               maximum_approach_translation_m=scene.maximum_approach_translation_m,
                               maximum_approach_rotation_rad=.01,tool_local_boxes=scene.tool_local_boxes)
             try:

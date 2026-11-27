@@ -34,7 +34,7 @@ class ReturnGeometry:
     right_axis: tuple
     obstacles: tuple
     tool_local_boxes: tuple
-    eef_tip_reference: np.ndarray
+    eef_tip_reference: list | tuple
     attached_radius_m: float
     planning_margin_m: float
     tool_padding_policy: str
@@ -51,7 +51,7 @@ class ReturnGeometry:
     def proposal(self,variant=0):
         from .skills import tool_margin
         return propose_return(current=self.base_eef,home=self.home,hole=self.base_hole,
-            obstacles=self.obstacles,tool_boxes=self.tool_local_boxes,tip=self.eef_tip_reference,
+            obstacles=self.obstacles,tool_boxes=self.tool_local_boxes,tip=transform(self.eef_tip_reference),
             radius_m=self.attached_radius_m,right_axis=self.right_axis,
             clearance_m=self.planning_margin_m,tool_margin_m=tool_margin(self),variant=variant,
             continuous_transit=self.continuous_transit,rotation_fraction=self.rotation_fraction)
@@ -83,6 +83,6 @@ def build_return_scene(service,obs,full,held,*,base_eef=None):
     return ReturnGeometry(base_eef=transform(base_eef),base_hole=world_hole,home=transform(home),
         home_right_deg=tuple(cfg['home_right_deg']),right_axis=tuple(cfg['right_axis_ik_world']),
         obstacles=tuple(obstacles),tool_local_boxes=tuple(fixture['tool_local_boxes']),
-        eef_tip_reference=transform(fixture['eef_tip_reference']),attached_radius_m=fixture['attached_radius_m'],
+        eef_tip_reference=transform(fixture['eef_tip_reference']).tolist(),attached_radius_m=fixture['attached_radius_m'],
         planning_margin_m=fixture['planning_margin_m'],tool_padding_policy=fixture.get('tool_padding_policy','required'),
         continuous_transit=cfg.get('continuous_transit',False),rotation_fraction=cfg.get('rotation_fraction',0.))

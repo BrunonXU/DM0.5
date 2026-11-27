@@ -92,6 +92,8 @@ parser.add_argument('--clock-origin-ns',type=int,default=10_000_000_000,
                     help='Initial monotonic clock for offline time-origin comparisons')
 parser.add_argument('--tick-pattern-ns',type=int,nargs='+',default=[20_000_000],
                     help='Repeating actual sample intervals for offline scheduling experiments')
+parser.add_argument('--real-numerics-ipc',action='store_true',
+                    help='Route PlanService numerical calls over a real local UnixServer/UnixClient JSON IPC socket')
 args=parser.parse_args()
 # Only the trusted local sequence driver injects this callable via runpy. It
 # creates no socket service or hardware entry and cannot change FAKE mode.
@@ -246,9 +248,16 @@ assert engine.mode is (Mode.HARDWARE if args.rpc_planner else Mode.FAKE)
 class Direct:
     def call(self,method,**kwargs):return planning_numeric.dispatch(method,kwargs)
 # Construct the real service so configuration validation is not bypassed.
-# The client is replaced before any calls: only pure local numerics run.
-service=PlanService(task,fixture,area/'unused-numerics.sock',clock=lambda:clock[0])
-service.numerics=Direct()
+numerics_ipc_server=None
+if args.real_numerics_ipc:
+    from f1_harness.ipc import UnixServer
+    numerics_sock=area/'numerics.sock'
+    numerics_ipc_server=UnixServer(numerics_sock,planning_numeric.dispatch).start()
+    service=PlanService(task,fixture,numerics_sock,clock=lambda:clock[0])
+else:
+    # The client is replaced before any calls: only pure local numerics run.
+    service=PlanService(task,fixture,area/'unused-numerics.sock',clock=lambda:clock[0])
+    service.numerics=Direct()
 verifier=VerifyService(task,clock=lambda:clock[0],independent_grasp=args.simulated_gripper_can)
 verifier_dropout=threading.Event()
 gripper_plant=None
@@ -749,6 +758,7 @@ finally:
     if paced_clock is not None:bridge.executor.shutdown(wait=True,cancel_futures=True)
     if output_owner is not None:output_owner.close()
     if audit_pool is not None:audit_pool.close()
+    if numerics_ipc_server is not None:numerics_ipc_server.close()
 provenance=replay_provenance(engine.mode.value,outcomes,
     [json.loads(line) for line in (store.root/'trace.jsonl').read_text().splitlines()],
     publications,owner_outputs)
