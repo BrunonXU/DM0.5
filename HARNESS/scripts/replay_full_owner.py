@@ -258,7 +258,7 @@ else:
     # The client is replaced before any calls: only pure local numerics run.
     service=PlanService(task,fixture,area/'unused-numerics.sock',clock=lambda:clock[0])
     service.numerics=Direct()
-verifier=VerifyService(task,clock=lambda:clock[0],independent_grasp=args.simulated_gripper_can)
+verifier=VerifyService(task,clock=lambda:clock[0],fixture=fixture,independent_grasp=args.simulated_gripper_can)
 verifier_dropout=threading.Event()
 gripper_plant=None
 if args.simulated_gripper_can:

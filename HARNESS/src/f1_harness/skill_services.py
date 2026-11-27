@@ -1091,6 +1091,10 @@ class VerifyService:
         # evidence must return to the orchestrator instead of hiding there for
         # the whole task deadline. No old frame is made fresh by retrying.
         after=kwargs['after_ns'];deadline=time.monotonic()+2
+        publication_complete=kwargs.get('publication_complete',True)
+        if intent.skill=='release' and publication_complete is False:
+            return SkillResult(request_id=intent.request_id,lifecycle='completed',
+                outcome='failure',reason='release_publication_incomplete').model_dump()
         needs_can = self.independent_grasp and intent.skill in ('verify_grasp','recover_grasp')
         last_reason='grasp_held_evidence_missing' if needs_can else 'fresh_post_motion_scene_missing'
         last_result=None
@@ -1112,7 +1116,8 @@ class VerifyService:
                 if not needs_can and obs is not None and obs.received_ns>after:
                     if obs.calibration_id!=intent.calibration_id:
                         raise HarnessError('verifier_scope_mismatch')
-                    if (any(f.received_ns<=after for f in obs.frames) or intent.skill=='transfer_above_hole'
+                    if (any(f.received_ns<=after for f in obs.frames)
+                            or intent.skill in ('transfer_above_hole','release')
                             and (obs.state_received_ns is None or obs.state_received_ns<=after)):
                         last_reason='pre_motion_frame'
                         last_result=None
@@ -1135,7 +1140,7 @@ class VerifyService:
                                 if obs.geometry_camera is None or f.camera==obs.geometry_camera))
                             if key not in seen_measurements:
                                 seen_measurements.add(key)
-                                result=self._verify_observation(intent,obs)
+                                result=self._verify_observation(intent,obs,publication_complete=publication_complete)
                                 if not needs_semantic_evidence(result):
                                     return result.model_dump()
                                 last_result=result
@@ -1147,7 +1152,7 @@ class VerifyService:
                         reason=last_reason).model_dump()
                 self.condition.wait(remaining)
 
-    def _verify_observation(self,intent,obs):
+    def _verify_observation(self,intent,obs,*,publication_complete=True):
         """Evaluate one admitted measurement; waiting owns no robot commands."""
         if intent.skill=='release_supported':
             from .support_motion import scene_support,verify_support_release
@@ -1163,6 +1168,29 @@ class VerifyService:
                 reason='owner_return_arrival_and_fresh_fixture',
                 evidence_ids=hole.evidence_ids if hole else ())
         obj=next((o for o in obs.objects if o.object_id==self.task.object_id),None)
+        if intent.skill=='release':
+            if publication_complete is False:
+                return SkillResult(request_id=intent.request_id,lifecycle='completed',
+                    outcome='failure',reason='release_publication_incomplete',
+                    evidence_ids=obj.evidence_ids if obj and obj.evidence_ids else ())
+            # H-52: release's physical responsibility is opening the gripper.
+            # When publication completed and measured gripper CAN is in the
+            # registered open window, release succeeds even if the block has
+            # already dropped out of right-wrist view into the bucket.
+            if ('release_opening' in self.fixture and 'gripper_tolerance' in self.fixture
+                    and obs.state16 is not None and obs.state_valid_mask is not None
+                    and obs.state_valid_mask[15]):
+                from .gripper_state import observed_open
+                opening=[0.,float(self.fixture['release_opening'])+float(self.fixture['gripper_tolerance'])]
+                evidence=(obj.evidence_ids if (obj and obj.evidence_ids)
+                          else tuple(f.blob_sha256 for f in obs.frames) or (obs.observation_id,))
+                if observed_open(obs.state16[15],opening):
+                    return SkillResult(request_id=intent.request_id,lifecycle='completed',
+                        outcome='success',reason='gripper_can_open_release_postcondition',
+                        evidence_ids=evidence)
+                return SkillResult(request_id=intent.request_id,lifecycle='completed',
+                    outcome='failure',reason='gripper_can_not_open',
+                    evidence_ids=evidence)
         outcome,reason='pending_review','postcondition_evidence_missing';evidence=()
         if obj and obj.evidence_ids and obj.visible:
             evidence=obj.evidence_ids

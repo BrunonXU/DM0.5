@@ -299,14 +299,14 @@ def require_geometry_identity(observation: Observation, *, required_cameras=("he
                 or observation.geometry_scope=='coarse_object_verification'
                    and local_evidence and skill in ('move_tcp','reobserve')))
     if local:
-        if skill not in ('reobserve','move_tcp') or not local_evidence:
+        if (skill not in ('reobserve','move_tcp') and not (verification and skill=='release')) or not local_evidence:
             raise ValueError('local_environment_only_supports_world_observation_motion')
         required_cameras=(tuple(v.camera for v in observation.local_collision_evidence.free_space_views)
             if observation.local_collision_evidence is not None else reference.cameras)
     object_only=(admission_profile=='development_coarse' and goal=='placed'
                  and observation.geometry_scope=='coarse_object_verification'
                  and (skill in ('verify_grasp','inspect_in_hand','reobserve')
-                      or verification and skill in ('grasp','regrasp','recover_grasp','release_supported',
+                      or verification and skill in ('grasp','regrasp','recover_grasp','release','release_supported',
                                                      'transfer_above_hole')))
     """Check geometry structure independently; this alone never admits motion."""
     development = goal == "approach_grasp" and observation.geometry_scope == "coarse_static_approach"
@@ -320,7 +320,7 @@ def require_geometry_identity(observation: Observation, *, required_cameras=("he
     )
     if (hole_id and admission_profile=='development_coarse' and goal=='placed'
             and observation.geometry_scope in ('coarse_static_task','coarse_object_verification')
-            and skill in ('align','insert','release','verify_placed')):
+            and (skill in ('align','insert','verify_placed') or (skill=='release' and not verification))):
         hole_obj = next((o for o in observation.objects if o.object_id == hole_id), None)
         if skill == 'verify_placed':
             if (hole_obj is None or hole_obj.pose is None or not hole_obj.evidence_ids
