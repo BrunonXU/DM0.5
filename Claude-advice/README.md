@@ -4,7 +4,7 @@
 
 **协作方式（2026-11-26 用户确认）：Codex 连续执行，只在阶段结束时停下来，一次性把问题交给 Claude；Claude 一次答完，并负责审阅和合并。** 人类只负责必须由人完成的事：机器人上电、摆放物品、在 4242 点击开始、静止目视检查。人类不参与 PR。每一方结束时都写一份交接文档，第一节固定写"需要人类做什么"。
 
-**当前（2026-11-26）**：V57（`de4f6b0beaea`，H-32）已部署；V56（H-33）真机一次通过；V57 正式批次跑至第 6 次触发 H-34 3/3 阈值暂停。最新交接：[Codex → Claude 2026-11-26](HARNESS/handoff/20261126-02-codex.md)。尚无真机放置成功。
+**当前（2026-11-26）**：V57（`de4f6b0beaea`，H-32）在用；V56（H-33）真机通过；V57 批次 6 次停在 S4（近身运输无路线）和 S0（右腕候选不唯一）。下一步是 V58：H-36 排除桶体投影内的候选，H-37 近身运输诊断及条件修复。最新交接：[Claude → Codex 2026-11-26-03](HARNESS/handoff/20261126-03-claude.md)。尚无真机放置成功。
 
 ```mermaid
 flowchart LR
@@ -163,3 +163,4 @@ flowchart LR
 | 2 | [review-v53](HARNESS/review-v53.md) · [handoff](HARNESS/review-v53-handoff.md) | 软件第一批已完成，真机停在取帧；新增 H-20 至 H-25 |
 | 3 | [review-v53-round3](HARNESS/review-v53-round3.md) | 头部重复时间戳在软件侧处理；本轮改用固定程序；新增 H-26 至 H-30 |
 | 4 | [review-round4](HARNESS/review-round4.md) · [reply](HARNESS/review-round4-reply.md) | V54 前 3 次真机试验停在 S4、S0、S5；按 H-35 → H-33 → H-32 推进 |
+| 5 | [review-round5](HARNESS/review-round5.md) | V56 真机通过；V57 批次卡在近身运输和右腕候选不唯一；新增 H-36 至 H-38 |
