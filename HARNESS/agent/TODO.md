@@ -1,16 +1,16 @@
 # HARNESS 当前待办
 
-**V58（`cfc9b2ad5696`，含 H-37 四向对称关节运输）已部署，前一版本是 V57（`de4f6b0beaea`）。H-37 离线 5/5 与正式复核 5/5 全过；H-36 第 0 步因 V5 左腕挡槽与右腕 26–35 候选标 `[!]` 未改代码。操作者新建左臂静态预设 V6 后，V58 连续 3 次预检 5/5 全过，真机 3 次暴露 S0（H-36）、S5（无历史方孔视点未让开）、S4 到位后持块退化局部环境三处阻塞，已交 Claude 审阅，尚无放置成功。** [最新交接](../../Claude-advice/HARNESS/handoff/20261126-05-codex.md) · [V58 批次报告](../../Claude-advice/HARNESS/evidence/20261126-v58-batch/report.md) · [H-36 证据](../../Claude-advice/HARNESS/evidence/20261126-H36-fixture-exclusion/report.md) · [H-37 证据](../../Claude-advice/HARNESS/evidence/20261126-H37-near-body-transport/report.md)
+**V60（`cabff256328d`，合入 H-36 + H-39 + H-40 + H-41；V59 因单测边界取消未复用）已部署并完成 3 次真机验证：H-36（桶入右腕）、H-40（运输到位持块）、H-32（保留桶位姿）、H-39（右移露出方孔）全部真机打通，历史上首次连续两次到达 S6 `align`。** [V60 批次报告](../../Claude-advice/HARNESS/evidence/20261127-v60-batch/report.md) · [最新交接](../../Claude-advice/HARNESS/handoff/20261127-03-codex.md)
 
-当前等待 Claude 审阅合并本轮 PR 并给出下一轮规格：修订 H-36（结合 V6 预设与放开 26–35 候选上限）、修复 S5 无历史视点时的让开视野、修复 S4 运输到位后持块触发 `supported_upright_face_not_observed` 退化局部环境，并在下一版补完 H-37 近身真机与 S6–S8 完整放置验收。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
+当前等待 Claude 审阅合并本轮 PR 并裁定 S6 `align` 机载 `bounded_IK_wall_time_exceeded`、S5 `live_scene.latest` 竞态与 V58 Trial 1 远景误检三项议题。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
 
 ## 现在做
 
-- [ ] **H-36 `[!]`（待 Claude 修订规格）：结合 V6 预设解决头部桶定位，放开原 `2..16` 候选上限与排序截断，排除右腕桶体投影内的印刷候选。**
-- [ ] **S5 `align` 无历史方孔视点时让开视野（待 Claude 裁定，V58 Trial 2 暴露）：** H-32 成功保留桶位姿但持块期从未测出方孔时，`live_scene.py:110` 报 `no_distinct_measured_view_in_current_holding_episode` 导致不让开。
-- [ ] **S4 运输到位后持块丢位姿退化局部环境（待 Claude 裁定，V58 Trial 3 暴露）：** `transfer_above_hole` 到位后 `held=True` 仍触发 `surface.py:99-100` `supported_upright_face_not_observed` 并清掉 `fixture`，导致 `coarse_local_environment` 15 s 超时。
-- [ ] **H-38 / V6 静态左臂预设转正 + H-37 近身 `[0.650, -0.051]` m 与 S6–S8 完整放置真机补验。**
+- [ ] **S6 `align` `variant=1` 机载 `bounded_IK_wall_time_exceeded` 修复（待 Claude 裁定，V60 Trial 1 & 2 暴露）：** 离线 6000D 复现证实 `variant=1` 已有 21/22 路点合法且复核全过解（3.81–4.89 s），仅因 F1-09 ARM 单候选 IK 墙钟上限过紧被截断。
+- [ ] **S5 `inspect_plan('align')` 与 `owner_perception_stage_advanced` 清空 `live_scene.latest` 竞态修复（待 Claude 裁定，V60 Trial 3 暴露）。**
+- [ ] **V60 后续补跑完整 10 次批次并冲击首次 S6→S7→S8 放置成功（含 H-37 近身补验）。**
 - [ ] **H-31（P1，第一批之后做）：修复 `support_lift` 首步下探。** 不改审计代码、不改 `1e-9` 与 `1.0 mm` 阈值，修完后 Replay A 必须审计全过。
+- [ ] **H-38 动态避让（P2，backlog）：** 静态预设部分已由 V6 关闭；动态避让触发条件不变（首次 S8 后或左臂遮挡成为首要停因）。
 
 ## 单块全流程跑通后
 

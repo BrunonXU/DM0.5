@@ -1,0 +1,116 @@
+{
+  "version": 60,
+  "bundle_id": "cabff256328d8148241e3661bed3c37625b1181e0db5ee70a37caa1bcd42e2ff",
+  "cancelled_candidate_version": 59,
+  "preset": "V6 (04a159f3c79c4b7a8ae9f9ffb06c7b4c)",
+  "preflight_skipped_by_operator": true,
+  "batch_stopped_by_operator_after": 3,
+  "trials": [
+    {
+      "trial": 1,
+      "run_id": "web-ecd7898e2866457eb1b11def567d6381",
+      "bucket_xyz": [
+        0.6634,
+        -0.0332,
+        0.7728
+      ],
+      "block_xyz": [
+        0.8382,
+        -0.2683,
+        0.5468
+      ],
+      "elapsed_s": 58.22,
+      "stage_reached": "S6_align",
+      "h36_in_right_wrist": false,
+      "h37_near_body": true,
+      "h40_arrival_ok": true,
+      "h39_sidestep_ok": true,
+      "hole_measured_after_sidestep": [
+        0.6666,
+        -0.0328,
+        0.7681
+      ],
+      "h32_retained_count": 0,
+      "h32_expired_count": 0,
+      "stop_reason": "numerical_plan_rejected:registered_candidates_exhausted",
+      "offline_v1_repro": {
+        "planned": true,
+        "targets": 21,
+        "solve_6000d_s": 4.894,
+        "arm_r_j6_deg": [
+          -6.68,
+          10.6
+        ],
+        "revalidation_passed": true
+      },
+      "model_calls": 0,
+      "stop_confirmation": "measured_stationary"
+    },
+    {
+      "trial": 2,
+      "run_id": "web-1b689a7a87dd4dedb69570ca214c910a",
+      "bucket_xyz": [
+        0.7896,
+        -0.0455,
+        0.7723
+      ],
+      "block_xyz": [
+        0.8164,
+        -0.2859,
+        0.5467
+      ],
+      "elapsed_s": 53.24,
+      "stage_reached": "S6_align",
+      "h36_in_right_wrist": true,
+      "h37_near_body": false,
+      "h40_arrival_ok": true,
+      "h39_sidestep_ok": true,
+      "hole_measured_after_sidestep": [
+        0.7915,
+        -0.0453,
+        0.7713
+      ],
+      "h32_retained_count": 24,
+      "h32_expired_count": 0,
+      "stop_reason": "numerical_plan_rejected:registered_candidates_exhausted",
+      "offline_v1_repro": {
+        "planned": true,
+        "targets": 22,
+        "solve_6000d_s": 3.806,
+        "arm_r_j6_deg": [
+          -3.48,
+          30.68
+        ],
+        "revalidation_passed": true
+      },
+      "model_calls": 0,
+      "stop_confirmation": "measured_stationary"
+    },
+    {
+      "trial": 3,
+      "run_id": "web-be099b9916b341acb3cab74d1f053b5d",
+      "bucket_xyz": [
+        0.7414,
+        -0.0603,
+        0.7648
+      ],
+      "block_xyz": [
+        0.8269,
+        -0.3135,
+        0.5466
+      ],
+      "elapsed_s": 38.45,
+      "stage_reached": "S5_align_preview",
+      "h36_in_right_wrist": false,
+      "h37_near_body": false,
+      "h40_arrival_ok": true,
+      "h39_sidestep_ok": false,
+      "h32_retained_count": 8,
+      "h32_expired_count": 0,
+      "stop_reason": "observation_viewpoint_required:aperture_measurement_required:square-hole-1:fixture_aperture_not_detected_in_search_region",
+      "no_sidestep_root_cause": "live_scene.latest cleared by owner_perception_stage_advanced at own[94] racing with aperture_observation()",
+      "model_calls": 0,
+      "stop_confirmation": "measured_stationary"
+    }
+  ]
+}

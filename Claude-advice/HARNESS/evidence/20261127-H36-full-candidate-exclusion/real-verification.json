@@ -1,0 +1,362 @@
+{
+  "V58-Trial1": [
+    {
+      "snapshot": "6c2bc8f6cb994ee2ae4bf0debd51fa47.json",
+      "bucket_pose_source": "same_frame_head_rgbd_anchor_registration",
+      "exclusion_box": [
+        0,
+        0,
+        186,
+        480
+      ],
+      "candidates_before": 33,
+      "candidates_excluded": 31,
+      "candidates_remaining": 2,
+      "remaining_details": [
+        {
+          "index": 3,
+          "box": [
+            390,
+            195,
+            486,
+            297
+          ],
+          "area_px": 7082,
+          "score": 0.973,
+          "in_scope": true,
+          "approx_world_xyz_m": [
+            0.8141,
+            -0.3108,
+            0.5912
+          ],
+          "median_depth_m": 0.2063
+        },
+        {
+          "index": 29,
+          "box": [
+            377,
+            27,
+            401,
+            49
+          ],
+          "area_px": 268,
+          "score": 0.258,
+          "in_scope": true,
+          "approx_world_xyz_m": [
+            2.4983,
+            -0.7448,
+            -0.1587
+          ],
+          "median_depth_m": 1.8406
+        }
+      ],
+      "truncated": false,
+      "confirmed": false,
+      "error": "mask_view=right:mask_uncertain_requires_new_prompt:object=square-1",
+      "mask_area_px": 0,
+      "score": 0.0,
+      "block_pose_xyz_m": null,
+      "http_tracking_header_bytes": 3671
+    },
+    {
+      "snapshot": "e47022f1debd44ac90eeb796dd26dddb.json",
+      "bucket_pose_source": "same_frame_head_rgbd_anchor_registration",
+      "exclusion_box": [
+        0,
+        0,
+        183,
+        480
+      ],
+      "candidates_before": 34,
+      "candidates_excluded": 32,
+      "candidates_remaining": 2,
+      "remaining_details": [
+        {
+          "index": 2,
+          "box": [
+            391,
+            196,
+            488,
+            298
+          ],
+          "area_px": 7061,
+          "score": 0.977,
+          "in_scope": true,
+          "approx_world_xyz_m": [
+            0.8133,
+            -0.3107,
+            0.5919
+          ],
+          "median_depth_m": 0.2054
+        },
+        {
+          "index": 29,
+          "box": [
+            378,
+            28,
+            402,
+            49
+          ],
+          "area_px": 267,
+          "score": 0.311,
+          "in_scope": true,
+          "approx_world_xyz_m": [
+            2.4682,
+            -0.7392,
+            -0.1444
+          ],
+          "median_depth_m": 1.8112
+        }
+      ],
+      "truncated": false,
+      "confirmed": false,
+      "error": "mask_view=right:mask_uncertain_requires_new_prompt:object=square-1",
+      "mask_area_px": 0,
+      "score": 0.0,
+      "block_pose_xyz_m": null,
+      "http_tracking_header_bytes": 3766
+    }
+  ],
+  "V57-Trial4": [
+    {
+      "snapshot": "3f20c958e5364ee5b42d49b04baecfb2.json",
+      "bucket_pose_source": "v6_preflight_same_bucket_region_proxy",
+      "exclusion_box": [
+        0,
+        0,
+        193,
+        480
+      ],
+      "candidates_before": 32,
+      "candidates_excluded": 31,
+      "candidates_remaining": 1,
+      "remaining_details": [
+        {
+          "index": 4,
+          "box": [
+            391,
+            196,
+            488,
+            298
+          ],
+          "area_px": 7064,
+          "score": 0.973,
+          "in_scope": true
+        }
+      ],
+      "truncated": false,
+      "confirmed": true,
+      "error": null,
+      "mask_area_px": 7065,
+      "score": 1.0,
+      "block_pose_xyz_m": [
+        0.8199,
+        -0.312,
+        0.6064
+      ],
+      "http_tracking_header_bytes": 3433
+    },
+    {
+      "snapshot": "518e861534fe4dcabaaffae5db4fef4a.json",
+      "bucket_pose_source": "v6_preflight_same_bucket_region_proxy",
+      "exclusion_box": [
+        0,
+        0,
+        195,
+        480
+      ],
+      "candidates_before": 35,
+      "candidates_excluded": 33,
+      "candidates_remaining": 2,
+      "remaining_details": [
+        {
+          "index": 5,
+          "box": [
+            393,
+            197,
+            490,
+            299
+          ],
+          "area_px": 7079,
+          "score": 0.973,
+          "in_scope": true
+        },
+        {
+          "index": 33,
+          "box": [
+            231,
+            441,
+            262,
+            481
+          ],
+          "area_px": 344,
+          "score": 0.241,
+          "in_scope": true
+        }
+      ],
+      "truncated": false,
+      "confirmed": false,
+      "error": "mask_view=right:mask_uncertain_requires_new_prompt:object=square-1",
+      "mask_area_px": 0,
+      "score": 0.0,
+      "block_pose_xyz_m": null,
+      "http_tracking_header_bytes": 3716
+    }
+  ],
+  "V57-Trial5": [
+    {
+      "snapshot": "5e8def2812d54601840a8ae12360b8bf.json",
+      "bucket_pose_source": "v6_preflight_same_bucket_region_proxy",
+      "exclusion_box": [
+        0,
+        0,
+        187,
+        480
+      ],
+      "candidates_before": 22,
+      "candidates_excluded": 21,
+      "candidates_remaining": 1,
+      "remaining_details": [
+        {
+          "index": 2,
+          "box": [
+            385,
+            195,
+            481,
+            297
+          ],
+          "area_px": 7042,
+          "score": 0.977,
+          "in_scope": true
+        }
+      ],
+      "truncated": false,
+      "confirmed": true,
+      "error": null,
+      "mask_area_px": 7039,
+      "score": 1.0,
+      "block_pose_xyz_m": [
+        0.8199,
+        -0.3124,
+        0.606
+      ],
+      "http_tracking_header_bytes": 2513
+    },
+    {
+      "snapshot": "9b3e65054f974bb2b059e0448fca6a1f.json",
+      "bucket_pose_source": "v6_preflight_same_bucket_region_proxy",
+      "exclusion_box": [
+        0,
+        0,
+        185,
+        480
+      ],
+      "candidates_before": 34,
+      "candidates_excluded": 33,
+      "candidates_remaining": 1,
+      "remaining_details": [
+        {
+          "index": 4,
+          "box": [
+            384,
+            194,
+            479,
+            297
+          ],
+          "area_px": 7034,
+          "score": 0.973,
+          "in_scope": true
+        }
+      ],
+      "truncated": false,
+      "confirmed": true,
+      "error": null,
+      "mask_area_px": 7028,
+      "score": 1.0,
+      "block_pose_xyz_m": [
+        0.8194,
+        -0.3121,
+        0.6062
+      ],
+      "http_tracking_header_bytes": 3617
+    }
+  ],
+  "V57-Trial6": [
+    {
+      "snapshot": "0b437a5092134859b1cae1cd7d68a076.json",
+      "bucket_pose_source": "v6_preflight_same_bucket_region_proxy",
+      "exclusion_box": [
+        0,
+        0,
+        176,
+        480
+      ],
+      "candidates_before": 25,
+      "candidates_excluded": 24,
+      "candidates_remaining": 1,
+      "remaining_details": [
+        {
+          "index": 2,
+          "box": [
+            376,
+            193,
+            470,
+            296
+          ],
+          "area_px": 7005,
+          "score": 0.977,
+          "in_scope": true
+        }
+      ],
+      "truncated": false,
+      "confirmed": true,
+      "error": null,
+      "mask_area_px": 7002,
+      "score": 1.0,
+      "block_pose_xyz_m": [
+        0.8199,
+        -0.3116,
+        0.606
+      ],
+      "http_tracking_header_bytes": 2780
+    },
+    {
+      "snapshot": "f101da22fe73476d84ffff946de28de8.json",
+      "bucket_pose_source": "v6_preflight_same_bucket_region_proxy",
+      "exclusion_box": [
+        0,
+        0,
+        176,
+        480
+      ],
+      "candidates_before": 26,
+      "candidates_excluded": 25,
+      "candidates_remaining": 1,
+      "remaining_details": [
+        {
+          "index": 2,
+          "box": [
+            377,
+            193,
+            471,
+            296
+          ],
+          "area_px": 6980,
+          "score": 0.977,
+          "in_scope": true
+        }
+      ],
+      "truncated": false,
+      "confirmed": true,
+      "error": null,
+      "mask_area_px": 6973,
+      "score": 1.0,
+      "block_pose_xyz_m": [
+        0.8197,
+        -0.3117,
+        0.6063
+      ],
+      "http_tracking_header_bytes": 2869
+    }
+  ]
+}

@@ -6,6 +6,9 @@ import sys
 import numpy as np
 
 
+SEMANTIC_CANDIDATE_SUMMARY_LIMIT = 64
+
+
 def unique_scoped_candidate(masks, boxes, box):
     """Use the explicit current-frame search scope, never a score argmax."""
     centers = (boxes[:, :2] + boxes[:, 2:]) / 2
@@ -51,13 +54,24 @@ class Sam3SeedProvider:
         index, scoped = unique_scoped_candidate(masks, boxes, box)
         # No semantic match is an ordinary observation miss, not permission to
         # seed SAM2 on whatever occupies the old box (often the robot's hand).
+        order = sorted(range(len(masks)), key=lambda i: float(scores[i]), reverse=True)
+        truncated = len(masks) > SEMANTIC_CANDIDATE_SUMMARY_LIMIT
+        summary = [
+            dict(
+                index=int(i),
+                box=[int(round(v)) for v in boxes[i].tolist()],
+                area_px=int(masks[i].sum()),
+                score=round(float(scores[i]), 3),
+                in_scope=i in scoped,
+            )
+            for i in order[:SEMANTIC_CANDIDATE_SUMMARY_LIMIT]
+        ]
         detail = dict(seed_backend='sam3',
             seed_reason='unique_in_current_hint' if index is not None else 'semantic_scope_ambiguous_or_empty',
             identity_status='confirmed' if index is not None else 'unresolved',
             identity_source='semantic',
             semantic_model_sha256=self.identity, semantic_candidates=len(masks),
             semantic_scoped_candidates=len(scoped), semantic_selected_index=index,
-            semantic_candidate_summary=[dict(index=i,box=boxes[i].tolist(),
-                area_px=int(masks[i].sum()),score=float(scores[i]),in_scope=i in scoped)
-                for i in range(min(len(masks),16))])
+            semantic_candidate_summary=summary,
+            semantic_candidate_summary_truncated=truncated)
         return ((masks[index], float(scores[index])) if index is not None else None), detail

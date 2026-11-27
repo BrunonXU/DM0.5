@@ -61,7 +61,9 @@ flowchart LR
 2. 三条分别作用于 S0、S4 到位后和 S5，在漏斗里分得开，可以放进同一个版本。
 3. 不放宽：分数和面积阈值、15 秒窗口、碰撞余量和碰撞模型、关节限位、H-33 的 50°、H-32 的 20 秒和允许的原因码。新的观测字段要走正式通信验收。
 
-## H-36 `[ ]` P0（改写）：对全部候选做桶体投影排除
+## H-36 `[x]` P0（改写）：对全部候选做桶体投影排除
+
+> **执行记录（Codex 2026-11-27）**：已完成 `sam_seed.py`（64 候选降序摘要+截断标记）、`mask_service.py`（全候选桶体投影排除与唯一剩余重播）、`services.py`（注入桶 AABB）与 `scene_pipeline.py`（12 边近平面裁剪投影、S0 头部优先定桶与失败诊断）。单元测试 19/19 通过（含新增 10 例与真实 35 候选 HTTP 头往返，`X-SAM-Tracking-Result` = 3,716 字节）；真实 SAM3/SAM2 离线实测中，V57 Trials 4–6（以 V6 预检同桶区头部实测桶位姿为代理）5/6 帧确认（3/3 试验可恢复，实测积木 `[0.820, -0.312, 0.606] m`）；V58 Trial 1 同帧头部实测桶投影排除 31/31 与 32/32 个桶身候选，但因画面右上角桌面外远景（深度 1.81–1.84 m、世界 `z = −0.14 至 −0.16 m`）存在 1 个无关低分误检（`score = 0.258–0.311`），按规格保守保持 `unresolved`（未放宽任何阈值或增加未授权过滤）。证据见 [20261127-H36-full-candidate-exclusion/report.md](evidence/20261127-H36-full-candidate-exclusion/report.md)。
 
 在 [review-round5.md 的 H-36](review-round5.md#h-36--p0右腕无提示发现时排除桶体投影内的候选) 基础上，只改以下几处，其余照旧（桶位姿只用本任务内头部实测、未持块时的 `rgbd_anchor_registration`，排除只减不增，持块后不启用，之后照常过分数和面积阈值）：
 
@@ -77,7 +79,9 @@ flowchart LR
 - 离线用 V57 Trial 4–6 的右腕帧做（这三次头部在 V5 下测不到桶，所以离线时允许用同一桶位、V6 下预检记录里的头部实测桶位姿，并在报告里标明）；再用 V58 Trial 1 的帧做（V6 下头部有实测桶位）。报告每帧排除前后的候选数、是否得到确认的掩码，以及算出的积木位置是否与真实积木一致。
 - 正式通信验收：35 个候选时 `X-SAM-Tracking-Result` 的字节数，以及经正式 HTTP 路径能完整取回摘要。
 
-## H-39 `[ ]` P0：持块遮挡、又没有历史视点时，向一个确定方向横移
+## H-39 `[x]` P0：持块遮挡、又没有历史视点时，向一个确定方向横移
+
+> **执行记录（Codex 2026-11-27）**：仅修改 `HARNESS/src/f1_harness/aperture_view.py` 并在 `HARNESS/tests/test_held_aperture_view.py` 增补 5 项测试（9/9 通过）。针对 H-32 `object_only` 仅保留右腕帧但 `live_scene.py` 仍提供实测 `head_pose` 的真机事实，在 `aperture_view.py` 内兼容 `scene.fixture.source == 'retained_static_fixture'`（仍要求 `head_pose is not None`）。V58 Trial 2（`OBS:127`）零输出回放：`move_tcp` 候选位移 `0.1100 m`、方向 `[-0.2267, -0.9731, -0.0404]`（右臂负 `y` 侧），`PlanService` 预览 `planned=True`（5 路点，`arm_r_j6 ∈ [28.54°, 31.01°]`），正式 `revalidate_candidate` 通过，保留桶位姿年龄预览 `2.415 s` / 复核 `2.715 s`。证据见 [20261127-H39-fallback-view/report.md](evidence/20261127-H39-fallback-view/report.md)。
 
 **代码事实**
 
@@ -101,7 +105,9 @@ flowchart LR
 - 测试：没有 anchor 时生成候选，方向的 `y` 分量为负、垂直于视线、步长等于公式值；有 anchor 时与原来一致；执行过一次后不再生成；没有头部图像或 `head_pose` 时不生成；积木没有持块或没有位姿时不生成。
 - 用 V58 Trial 2 的原始输入从运输到位接续做零输出回放：预览 `planned=True`，报告位移和方向，以及保留桶位姿在预览和复核时的年龄。预览被拒就报告原因码，标 `[!]`。
 
-## H-40 `[ ]` P0：运输到位后测不出夹着的积木（先诊断，条件满足才改）
+## H-40 `[x]` P0：运输到位后测不出夹着的积木（先诊断，条件满足才改）
+
+> **执行记录（Codex 2026-11-27）**：V58 Trial 3 5 项离线诊断同时证实条件 A（`[250]` 瞬时 `mask_truncated` 触发 `reject_measurement()` 时因 `contact_attachment is not None` 跳过隔离保存，导致 `invalidate()` 清空 `in_hand_reference`，到位后 `OBS:114` 法向偏离 `+Z` 19.93° 却正对相机 20.78°、无 `surface_association` 致拟合失败；全程 CAN 恒定 `87.06%`）与条件 B（`reject_measurement()` 清空 `measured_fixture` 且 `_partial_observation` 未走 `_locate_bucket_for_object` 与 H-32 五条件保留）。已在 `scene_pipeline.py` 同时修复 A+B（保持参考仅用于深度点面关联，并在张开/未持/未知/换范围时即刻清空；`_partial` 复用完全一致的 H-32 五条件与 20 s）。新增 13 例正反单测及全部场景/夹爪/保留回归通过；Trial 3 真实 `OBS:49 → [250]/[251] → OBS:114` 零输出回放恢复 `held=True`、`square-1` `[0.6626, -0.0349, 0.8183] m`、`retained_static_fixture`（`7.562 s`），可进入 `align`/`inspect_in_hand`。证据见 [20261127-H40-held-after-transport/report.md](evidence/20261127-H40-held-after-transport/report.md)。
 
 **诊断**：用 V58 Trial 3 运输前（OBS:48–49）和到位后（OBS:114 起）的原始 RGB-D 与状态，离线走正式场景处理，报告：
 
@@ -128,13 +134,17 @@ A 和 B 可以同时成立，同时修。
 - 用 Trial 3 的原始输入从运输到位接续做零输出回放：到位后的复核得到 `held=True` 且有位姿的积木（A），场景带着桶位姿（实测或保留，B），并报告能否进入 `align` 或 `inspect_in_hand`。
 - 对照：V54 Trial 3 和 V58 Trial 2 的回放结果不变。
 
-## H-41 `[ ]` P1：V6 转为标准静态预设，H-37 近身真机补验
+## H-41 `[x]` P1：V6 转为标准静态预设，H-37 近身真机补验
+
+> **执行记录（Codex 2026-11-27）**：已将 `HARNESS/agent/STATUS.md`、`HARNESS/agent/TODO.md` 及 V59 批次 `layouts.md` 模板（`evidence/20261127-v59-batch/layouts.md`）的标准静态预设更新为 **V6（`04a159f3c79c4b7a8ae9f9ffb06c7b4c`）**（V5 保留在 4242，F1-4242 配置未动）；`review-round5.md` 中 H-38 静态部分标 `[x]`（动态避让保持 backlog）；H-37 的 2 次近身桶位补验已排入 V59 正式 10 次批次。
 
 1. 在 STATUS、`layouts.md` 模板和预检说明里，把 `积木demoV5` 换成 V6（`04a159f3c79c4b7a8ae9f9ffb06c7b4c`）。V5 保留在 4242，不删除。F1-4242 的配置文件不改，预设已经由操作者保存在 4242。
 2. H-38 的静态部分标 `[x]`（V6）。动态避让仍为 backlog，触发条件不变。
 3. H-37 的真机补验放进 V59 正式批次，见下文。
 
 ## V59 真机
+
+> **执行记录（Codex 2026-11-27，实发版本 V60 `cabff256328d`）**：候选 V59（`c9ca71437c76`）在全量 3,169 例 pytest 中检出 `test_measured_head` 边界（`object.__new__` 未初始化 `measured_fixture`）按规则取消未复用，修 1 行（`8722e59`）重冻为 **V60（`cabff256328d`）**。全量 pytest `3,168 passed`、原生集成 `62 passed`、三套冻结零输出回放与审计全过，同步切换协调器与 SAM 服务并核对 4242（未重启）。上线前 3 次预检按操作者明确要求跳过（如实登记）；随后执行 3 次真机后按操作者要求停下交 Claude 审阅：3/3 到达 S4（H-40 保住持块位姿、0 次 `supported_upright_face_not_observed` 超时）、Trial 2 桶入右腕 `x=0.790 m` 由 H-36 通过 S0、Trial 1 近身 `x=0.663 m` 运输通过、Trial 1 & 2 由 H-39 右移 `0.11 m` 露出实测方孔并**首次连续两次进入 S6 `align`**。两次 S6 均在 `variant=1` 触发机载 7 s 单候选 IK 墙钟上限 `bounded_IK_wall_time_exceeded`（离线 6000D 证实 `v=1` 3.81–4.89 s 可解 21/22 路点且正式复核全过）；Trial 3 在 S5 遇 `owner_perception_stage_advanced` 清空 `live_scene.latest` 竞态未横移。完整数据与原始轨迹见 [20261127-v60-batch/report.md](evidence/20261127-v60-batch/report.md)。
 
 1. 部署（Harness 包和 SAM 服务换成同一个冻结包），核对 4242，在 V6 下预检连续 3 次五项全过。
 2. **重新计正式 10 次**。V58 的 3 次单独记为"V58 批次"。

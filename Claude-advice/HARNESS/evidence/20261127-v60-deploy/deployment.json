@@ -1,0 +1,57 @@
+{
+  "version": 60,
+  "cancelled_candidate_version": 59,
+  "cancelled_candidate_bundle_id": "c9ca71437c76a0a9ad23619301411eb75d0b2a0163824effe7cd874be5833956",
+  "bundle_id": "cabff256328d8148241e3661bed3c37625b1181e0db5ee70a37caa1bcd42e2ff",
+  "product_version": "F1 Harness 全候选桶排除与到位横移恢复 V60",
+  "software_suite": {
+    "pytest_passed": 3168,
+    "pytest_skipped": 70,
+    "pytest_failed": 0,
+    "native_integration_passed": 62,
+    "layout_check_passed": true
+  },
+  "replay_qualification": {
+    "normal": {
+      "outcome": "success",
+      "stages": 10,
+      "checks_all_passed": true,
+      "audit_passed": true,
+      "physical_motion": false,
+      "paid_model_calls": 0,
+      "wall_s": 64.87
+    },
+    "grasp-miss": {
+      "outcome": "success",
+      "stages": 12,
+      "checks_all_passed": true,
+      "audit_passed": true,
+      "physical_motion": false,
+      "paid_model_calls": 0,
+      "wall_s": 72.73
+    },
+    "aperture-occluded": {
+      "outcome": "success",
+      "stages": 12,
+      "checks_all_passed": true,
+      "audit_passed": true,
+      "physical_motion": false,
+      "paid_model_calls": 0,
+      "wall_s": 69.49
+    }
+  },
+  "deployment": {
+    "coordinator_unit": "f1-harness-workspace-v60.service",
+    "sam_service_pid": 1158006,
+    "sam_seed_sha256": "dfbbdc7b2467999dee795d70ac1c45fab63aa2772714210b3b7de4aa46bbd965",
+    "sam_model_sha256": "7402e0d864fa82708a20fbd15bc84245c2f26dff0eb43a4b5b93452deb34be69",
+    "sam_seed_model_sha256": "9999e2341ceef5e136daa386eecb55cb414446a00ac2b55eb2dfd2f7c3cf8c9e",
+    "sam_same_frozen_bundle_as_coordinator": true,
+    "f1_4242_pid": 716917,
+    "f1_4242_profile": "/home/user/Bruno/F1/F1-4242/runtime/robot-v22.json",
+    "f1_4242_restarted": false,
+    "route_probes_passed": 10,
+    "start_sent": false,
+    "physical_task_verified": false
+  }
+}

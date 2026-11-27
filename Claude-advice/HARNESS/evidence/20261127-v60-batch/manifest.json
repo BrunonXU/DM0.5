@@ -1,0 +1,45 @@
+{
+  "batch": "V60-3trials-20261127",
+  "files": {
+    "align-diagnosis.json": {
+      "bytes": 34451,
+      "sha256": "04af600daef356fa23b8c5dbfa3afed83a14baca9b0ec3917022e22f92832bb8"
+    },
+    "layouts.md": {
+      "bytes": 2368,
+      "sha256": "dbc159b3264fa0090c01b2484a7c084a008a9bf44ce5f5f0585b3ae5f165a5de"
+    },
+    "report.md": {
+      "bytes": 6476,
+      "sha256": "369d5fb758d2ab0658339c3f4c891b250ec5bcee4df77143c46b11f5f7ae9f71"
+    },
+    "runs/trial1/owner-trace.jsonl": {
+      "bytes": 774591,
+      "sha256": "f79cfbd2ec417117ed88124ea4c767fd17652ac238c8b3f4d02c4ba16888f6e7"
+    },
+    "runs/trial1/planner-trace.jsonl": {
+      "bytes": 1083681,
+      "sha256": "a157c148b3f50f211bd5346338908237a1428f426167e1cdff043c97022672c9"
+    },
+    "runs/trial2/owner-trace.jsonl": {
+      "bytes": 761745,
+      "sha256": "cab7692ca506f9c09f48efdbd80971ee44b31fae08a78fe4545439fca1a380a6"
+    },
+    "runs/trial2/planner-trace.jsonl": {
+      "bytes": 1062653,
+      "sha256": "90aa07763e470824e00219f21661e8bcf24afe5c99fdc0f9327204d83a20b69e"
+    },
+    "runs/trial3/owner-trace.jsonl": {
+      "bytes": 541804,
+      "sha256": "d5c4952f25478746699d67b6f212aaac97fb2862702805c42ca49f9de3aa915f"
+    },
+    "runs/trial3/planner-trace.jsonl": {
+      "bytes": 741256,
+      "sha256": "6c29a79ff051882bdf849ddff5afba23592366e290c9189bb8e9012418e6f2d6"
+    },
+    "summary.json": {
+      "bytes": 3082,
+      "sha256": "0e9c0cc5141fe1c13f5c7ab301e55e217d0b76f3e73d152684800bad98011834"
+    }
+  }
+}
