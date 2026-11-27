@@ -134,7 +134,9 @@ A 和 B 可以同时成立，同时修。
 - 用 Trial 3 的原始输入从运输到位接续做零输出回放：到位后的复核得到 `held=True` 且有位姿的积木（A），场景带着桶位姿（实测或保留，B），并报告能否进入 `align` 或 `inspect_in_hand`。
 - 对照：V54 Trial 3 和 V58 Trial 2 的回放结果不变。
 
-## H-41 `[ ]` P1：V6 转为标准静态预设，H-37 近身真机补验
+## H-41 `[x]` P1：V6 转为标准静态预设，H-37 近身真机补验
+
+> **执行记录（Codex 2026-11-27）**：已将 `HARNESS/agent/STATUS.md`、`HARNESS/agent/TODO.md` 及 V59 批次 `layouts.md` 模板（`evidence/20261127-v59-batch/layouts.md`）的标准静态预设更新为 **V6（`04a159f3c79c4b7a8ae9f9ffb06c7b4c`）**（V5 保留在 4242，F1-4242 配置未动）；`review-round5.md` 中 H-38 静态部分标 `[x]`（动态避让保持 backlog）；H-37 的 2 次近身桶位补验已排入 V59 正式 10 次批次。
 
 1. 在 STATUS、`layouts.md` 模板和预检说明里，把 `积木demoV5` 换成 V6（`04a159f3c79c4b7a8ae9f9ffb06c7b4c`）。V5 保留在 4242，不删除。F1-4242 的配置文件不改，预设已经由操作者保存在 4242。
 2. H-38 的静态部分标 `[x]`（V6）。动态避让仍为 backlog，触发条件不变。

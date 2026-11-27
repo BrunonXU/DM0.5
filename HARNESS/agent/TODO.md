@@ -1,16 +1,15 @@
 # HARNESS 当前待办
 
-**V58（`cfc9b2ad5696`，含 H-37 四向对称关节运输）已部署，前一版本是 V57（`de4f6b0beaea`）。H-37 离线 5/5 与正式复核 5/5 全过；H-36 第 0 步因 V5 左腕挡槽与右腕 26–35 候选标 `[!]` 未改代码。操作者新建左臂静态预设 V6 后，V58 连续 3 次预检 5/5 全过，真机 3 次暴露 S0（H-36）、S5（无历史方孔视点未让开）、S4 到位后持块退化局部环境三处阻塞，已交 Claude 审阅，尚无放置成功。** [最新交接](../../Claude-advice/HARNESS/handoff/20261126-05-codex.md) · [V58 批次报告](../../Claude-advice/HARNESS/evidence/20261126-v58-batch/report.md) · [H-36 证据](../../Claude-advice/HARNESS/evidence/20261126-H36-fixture-exclusion/report.md) · [H-37 证据](../../Claude-advice/HARNESS/evidence/20261126-H37-near-body-transport/report.md)
+**H-36、H-39、H-40 均已完成离线单测与真实数据零输出回放，H-41 已将 V6（`04a159f3c79c4b7a8ae9f9ffb06c7b4c`）转为标准静态预设并关闭 H-38 静态部分；即将冻结上线 V59（同步切换协调器与 SAM 服务）。** [第六轮审阅](../../Claude-advice/HARNESS/review-round6.md) · [H-36 验收](../../Claude-advice/HARNESS/evidence/20261127-H36-full-candidate-exclusion/report.md) · [H-39 验收](../../Claude-advice/HARNESS/evidence/20261127-H39-fallback-view/report.md) · [H-40 验收](../../Claude-advice/HARNESS/evidence/20261127-H40-held-after-transport/report.md)
 
-当前等待 Claude 审阅合并本轮 PR 并给出下一轮规格：修订 H-36（结合 V6 预设与放开 26–35 候选上限）、修复 S5 无历史视点时的让开视野、修复 S4 运输到位后持块触发 `supported_upright_face_not_observed` 退化局部环境，并在下一版补完 H-37 近身真机与 S6–S8 完整放置验收。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
+当前推进 V59 冻结、全量回归、三套冻结零输出回放、上线部署与 V6 预检及 10 次正式真机试验。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
 
 ## 现在做
 
-- [ ] **H-36 `[!]`（待 Claude 修订规格）：结合 V6 预设解决头部桶定位，放开原 `2..16` 候选上限与排序截断，排除右腕桶体投影内的印刷候选。**
-- [ ] **S5 `align` 无历史方孔视点时让开视野（待 Claude 裁定，V58 Trial 2 暴露）：** H-32 成功保留桶位姿但持块期从未测出方孔时，`live_scene.py:110` 报 `no_distinct_measured_view_in_current_holding_episode` 导致不让开。
-- [ ] **S4 运输到位后持块丢位姿退化局部环境（待 Claude 裁定，V58 Trial 3 暴露）：** `transfer_above_hole` 到位后 `held=True` 仍触发 `surface.py:99-100` `supported_upright_face_not_observed` 并清掉 `fixture`，导致 `coarse_local_environment` 15 s 超时。
-- [ ] **H-38 / V6 静态左臂预设转正 + H-37 近身 `[0.650, -0.051]` m 与 S6–S8 完整放置真机补验。**
+- [ ] **V59 冻结、部署（协调器＋SAM 服务同包）与 V6 连续 3 次 5/5 预检。**
+- [ ] **V59 正式 10 次真机试验（V6 预设）：3 次 `x >= 0.78 m` 检 H-36、2 次近身 `[0.650, -0.051] m` 补验 H-37、5 次 `x = 0.66–0.76 m` 检 H-39/H-40 与 S6–S8 完整放置。**
 - [ ] **H-31（P1，第一批之后做）：修复 `support_lift` 首步下探。** 不改审计代码、不改 `1e-9` 与 `1.0 mm` 阈值，修完后 Replay A 必须审计全过。
+- [ ] **H-38 动态避让（P2，backlog）：** 静态预设部分已由 V6 关闭；动态避让触发条件不变（首次 S8 后或左臂遮挡成为首要停因）。
 
 ## 单块全流程跑通后
 
