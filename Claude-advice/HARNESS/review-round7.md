@@ -100,7 +100,7 @@ flowchart LR
 2. 用 V60 Trial 1–3、V58 Trial 2–3 的原始输入，从运输到位接续做零输出回放：报告每次是否直接得到可以执行的 `align` 计划（不经横移）、选中的候选、`arm_r_j6` 范围、最小余量、6000D 上的规划耗时，以及缓存的年龄。
 3. 全量 pytest、`check_native_integration.py`、三条零输出回放；另加一条从运输到位直接对准的回放。
 
-## H-43 `[ ]` P0：IK 墙钟上限改为站点配置，对准先试余量大的候选
+## H-43 `[x]` P0：IK 墙钟上限改为站点配置，对准先试余量大的候选
 
 **代码事实**：`harness_compute.py:168` 是 `deadline=planning_deadline(scene,7.,'bounded_IK_wall_time_exceeded')`。`planning_deadline`（`:8-16`）取 `min(scene.planning_budget_s, maximum_s)`，调用方只能缩短时限，不能延长。`NUMERICAL_RPC_TIMEOUT_S = 18`。
 
@@ -116,6 +116,10 @@ flowchart LR
 - 测试：缺省值为 7.0；超过 16 时配置报错；调用方剩余预算更小时仍按剩余预算；排序只改顺序不删候选；终点 IK 失败的排到最后。
 - 用 V60 Trial 1–2 的原始输入：排序后 v=1 是否排第一，6000D 上的总耗时。
 - **在 ARM 上计时**：V61 上线后，上电时先在 F1-09 上用 Trial 1–2 的输入，离线（零输出）跑一次对准规划，记录 v=1 的实际耗时，再开始真机试验。如果超过 15 秒，停下交接，不要继续调大。
+
+> **执行记录（2026-11-27，离线部分完成；ARM 上电计时待 V61 上线后执行）**：
+> - 独立提交 `6b04361` 修改 `DAgger/F1/src/f1dagger/harness_compute.py` 读取 `spec['ik']['max_wall_s']`（缺省 7.0，上限 16.0），`control_manifest_sha256` 从 `8c0d2f85...` 变更为 `a62cb692...`；V61 冻结脚本中 F1-09 `numerics.local.json` 设为 `15.0`。
+> - 在 `numerical_service.py`/`numerical_pool.py`/`transport.py`/`skill_services.py` 新增 `endpoint_ik` 终点最小关节余量排序（保留全部 4 个变体，超 1 s 告警不阻塞）。单测 15 passed；V60 Trial 1–2 原始输入回放排序耗时 15.08 ms / 14.87 ms，均将 `v=1` 排第 1（余量 42.86° / 23.89°，其余 3 变体终点 IK 失败排后），1 次尝试即解出（6000D 总耗时 4.930 s / 3.861 s）且 `revalidate_candidate` 均通过。证据见 [evidence/20261127-H43-ik-wall-and-order/report.md](evidence/20261127-H43-ik-wall-and-order/report.md)。
 
 ## H-44 `[x]` P1：S5 读取场景的竞态
 

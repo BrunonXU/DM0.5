@@ -16,7 +16,7 @@ import uuid
 from .contracts import Task, digest
 from .ipc import UnixClient, UnixServer
 
-METHODS = frozenset(('solve_path', 'forward_pose', 'forward_path'))
+METHODS = frozenset(('solve_path', 'forward_pose', 'forward_path', 'endpoint_ik'))
 # Native joint search has a 15-second computation budget. The transport must
 # outlive it, including serialization, so warm and cold routes return the same
 # typed solver result instead of turning a legal search into an RPC timeout.

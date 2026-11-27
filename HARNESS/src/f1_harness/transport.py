@@ -248,8 +248,11 @@ def check_predicted_feed(scene, end, variant):
     _check_route(scene, [future], variant, family='aligned_insertion_preview', start=end, stage_index=1)
 
 
-def rank_alignment_feeds(scene, variants, ranking):
-    """Prefer a clear next feed while keeping every current-stage candidate."""
+def rank_alignment_feeds(scene, variants, ranking, *, numerics=None, full22=None, held16=None,
+                         posture_prior=None, planning_joint_envelope=None):
+    """Prefer a clear next feed and larger endpoint joint-limit margin; never drop variants."""
+    import logging
+    import time
     from .owner_bridge import numerical_failure_detail
     if (not variants or scene.object_held is not True or scene.eef_object is None
             or scene.base_hole is None or not scene.aperture_measured):
@@ -266,7 +269,46 @@ def rank_alignment_feeds(scene, variants, ranking):
                 raise
             feed.update(status='predicted_blocked', diagnostic=numerical_failure_detail(exc))
         scored.append(dict(rows.get(variant, {}), variant=variant, insertion_preview=feed))
-    scored.sort(key=lambda row: row['insertion_preview']['status'] == 'predicted_blocked')
+    endpoint_results = None
+    ranking_elapsed_ms = None
+    if numerics is not None and full22 is not None and held16 is not None:
+        started = time.perf_counter()
+        posture_ref = (posture_prior or {}).get('postures_deg', {}).get('align')
+        envelope = None
+        if planning_joint_envelope:
+            envelope = {str(idx): [low, high] for idx, low, high in planning_joint_envelope.values()}
+        try:
+            reply = numerics.call(
+                'endpoint_ik',
+                goals=[endpoints[row['variant']].tolist() for row in scored],
+                full22=full22,
+                held16=held16,
+                posture_reference_deg=posture_ref,
+                envelope_deg=envelope,
+            )
+            ranking_elapsed_ms = round((time.perf_counter() - started) * 1000.0, 3)
+            if isinstance(reply, dict) and isinstance(reply.get('results'), list) and len(reply['results']) == len(scored):
+                endpoint_results = reply['results']
+        except (ValueError, KeyError, AttributeError, RuntimeError, OSError):
+            ranking_elapsed_ms = round((time.perf_counter() - started) * 1000.0, 3)
+            endpoint_results = None
+        if ranking_elapsed_ms is not None and ranking_elapsed_ms > 1000.0:
+            logging.getLogger(__name__).warning(
+                'align endpoint_ik variant ranking took %.1f ms (>1000 ms)', ranking_elapsed_ms)
+    if endpoint_results is not None:
+        for row, ep in zip(scored, endpoint_results):
+            row['endpoint_ik'] = ep
+            row['endpoint_ik_ranking_ms'] = ranking_elapsed_ms
+            if ranking_elapsed_ms is not None and ranking_elapsed_ms > 1000.0:
+                row['endpoint_ik_ranking_slow'] = True
+        scored.sort(key=lambda row: (
+            not row['endpoint_ik'].get('converged', False),
+            row['insertion_preview']['status'] == 'predicted_blocked',
+            -(row['endpoint_ik']['min_margin_deg']
+              if row['endpoint_ik'].get('min_margin_deg') is not None else -1e9),
+        ))
+    else:
+        scored.sort(key=lambda row: row['insertion_preview']['status'] == 'predicted_blocked')
     return [row['variant'] for row in scored], scored
 
 

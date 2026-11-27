@@ -348,7 +348,11 @@ class PlanService:
                                        preferences=self.fixture.get('candidate_order'))
         if intent.skill=='align' and scene.transfer_policy=='registered_transport':
             from .transport import rank_alignment_feeds
-            variants,ranking=rank_alignment_feeds(scene,variants,ranking)
+            variants,ranking=rank_alignment_feeds(
+                scene,variants,ranking,
+                numerics=self.numerics,full22=full,held16=held,
+                posture_prior=self.posture_prior,
+                planning_joint_envelope=self.planning_joint_envelope)
         attempts=[];joint_transport_attempted=False
         def fail_with_attempts(detail,variant,error):
             import json
