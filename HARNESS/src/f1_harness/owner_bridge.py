@@ -1396,8 +1396,10 @@ class OwnerBridge:
                 self.arrival_evidence=check if reached else None
                 self.engine.store.event('harness_waypoint_tracking_check',request_id=plan.request_id,
                     index=self.index,error_deg=float(error),accepted=reached,proof=proof)
-                if proof.get('accepted') is False and hasattr(self.engine, 'record_contact_fault'):
-                    self.engine.record_contact_fault('waypoint_tracking_failed', now_ns)
+                # Note: proof['accepted'] is False during normal in-flight arrival polling
+                # (e.g. tracking_task_space_error while arm is still approaching waypoint).
+                # Actual tracking/contact failures terminate via motion_stalled (engine.py:761)
+                # or non-success published skill outcome (engine.py:586), which record contact_fault.
                 # A valid proof can expire while the arm is still moving. Use
                 # cheap feedback to advance its retry once motion slows; eager
                 # geometry on every tick wastes work on soon-expired poses.

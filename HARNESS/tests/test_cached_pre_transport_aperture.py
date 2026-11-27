@@ -354,3 +354,71 @@ def test_h42_cross_view_3_evidence_cached_aperture_and_revalidation_binding(monk
     finally:
         pipe.close()
         registered.close()
+
+
+def test_h42_inflight_waypoint_polling_does_not_record_contact_fault():
+    """Regression for V62 Trial 1-2: in-flight proof.accepted=False must not poison cached aperture."""
+    import concurrent.futures
+    from types import SimpleNamespace
+    from f1_harness.owner_bridge import OwnerBridge
+
+    events = []
+    recorded_faults = []
+    engine = SimpleNamespace(
+        store=SimpleNamespace(event=lambda kind, **kw: events.append((kind, kw))),
+        record_contact_fault=lambda reason, at_ns=None: recorded_faults.append((reason, at_ns)),
+        record_skill_publication=lambda *a, **kw: None,
+        hold_requested=False,
+        authorized=True,
+        epoch=1,
+        running=SimpleNamespace(skill='transfer_above_hole'),
+        deadline_ns=999_000_000_000,
+    )
+    bridge = object.__new__(OwnerBridge)
+    bridge.engine = engine
+    bridge.stop_delta_deg = 0.5
+    bridge.stop_gripper_delta = 2.0
+    bridge.feedback_age_ns = 1_000_000_000
+    bridge.waypoint_published_ns = 100
+    bridge.trajectory_start_ns = None
+    bridge.trajectory_at_boundary = True
+    bridge.index = 11
+    bridge.current_target = np.zeros(16, dtype=float)
+    bridge.arrival_evidence = None
+    bridge.arrival_refresh = None
+    bridge.arrival_retry_ns = 0
+    bridge.waypoint_wait_logged_ns = 0
+    bridge.settled_since = None
+    bridge.progress_key = None
+    bridge.progress_anchor = None
+    bridge.progress_changed_ns = 0
+    bridge.plan_observation = None
+    bridge.feedback_snapshot = {'full22': [0.0] * 22, 'stamps16': tuple([250] * 16)}
+    bridge.waypoint_verifier = lambda *a, **kw: {'accepted': False, 'reason': 'tracking_task_space_error'}
+    bridge.executor = SimpleNamespace(submit=lambda *a, **kw: None)
+    bridge._record_grasp_close = lambda *a, **kw: None
+
+    fut = concurrent.futures.Future()
+    fut.set_result({'accepted': False, 'reason': 'tracking_task_space_error'})
+    bridge.arrival_future = fut
+    bridge.arrival_check = {
+        'key': ('req-1', 1, 11),
+        'stamp': 200,
+        'measured': np.array([0.0] * 7 + [5.0] * 7 + [0.0, 0.0]),
+    }
+    plan = SimpleNamespace(
+        request_id='req-1',
+        epoch=1,
+        trajectory=None,
+        tolerance_deg=0.5,
+        gripper_tolerance=2.0,
+        free_space_tracking_tolerance_deg=1.0,
+        geometry_trace=(),
+        targets=[np.zeros(16, dtype=float)],
+    )
+    bridge.proposal = plan
+    measured = np.array([0.0] * 7 + [3.0] * 7 + [0.0, 0.0])
+    bridge.after_publication(publication_id='pub-1', measured16=measured, publication_complete=True, now_ns=300)
+    assert any(k == 'harness_waypoint_tracking_check' for k, _ in events)
+    assert recorded_faults == [], f'In-flight arrival poll must not record contact_fault: {recorded_faults}'
+
