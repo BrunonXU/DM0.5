@@ -1,0 +1,102 @@
+{
+  "directory": "20261126-first-batch",
+  "file_count": 24,
+  "files": {
+    "funnel.json": {
+      "bytes": 18333,
+      "sha256": "c48e78f8bbb4d2fb7046191aba4ed971fbfa179623b5c9da80c7ba888242aa1f"
+    },
+    "layouts.md": {
+      "bytes": 4540,
+      "sha256": "362fe6c6171aa80fa6c5708801c145d77cfd0635cc7cf82af08755e019588f5f"
+    },
+    "preflight-3x-summary.json": {
+      "bytes": 3056,
+      "sha256": "dbe4bdb0e71b2a8219481a9f83ef0e2bf09bd3728393362dc43c7fada61364d8"
+    },
+    "report.md": {
+      "bytes": 2518,
+      "sha256": "98b99c20ddbb45b2939ae9e22451dfbb2d4cc6aa04aa4fd175d7a0281180a0f3"
+    },
+    "runs/web-31d266ffe7284581966c9d2b174fb93e/owner-trace.jsonl": {
+      "bytes": 10764,
+      "sha256": "40c10e3a3d1d2dfe500a911e1a21eefd5923444ba2b488b9a928783b1135f7ba"
+    },
+    "runs/web-31d266ffe7284581966c9d2b174fb93e/planner-final.json": {
+      "bytes": 2436,
+      "sha256": "72aa984a15bcdcb7023257f8424e3d618ff07812d0467e4ed5eddbfc641d7933"
+    },
+    "runs/web-31d266ffe7284581966c9d2b174fb93e/planner-trace.jsonl": {
+      "bytes": 20794,
+      "sha256": "c2c1878d9e1b93bf81cc1e4572a7e40baa6f7349d29339176acbe231e3e0fbe8"
+    },
+    "runs/web-82094dda40f9450fafcbf455e7210afd/owner-trace.jsonl": {
+      "bytes": 401920,
+      "sha256": "3062e1c06a4e5161ac3d01b87442d52b2861dacafa1a187406164474eca49d06"
+    },
+    "runs/web-82094dda40f9450fafcbf455e7210afd/planner-final.json": {
+      "bytes": 17816,
+      "sha256": "300f8550a2c9a7c6075d5c87139781464eee373bf0385a6c57c7a78cf5801c10"
+    },
+    "runs/web-82094dda40f9450fafcbf455e7210afd/planner-trace.jsonl": {
+      "bytes": 537544,
+      "sha256": "33cc93db61b24a70884b366aae3ea36a2096a04c68c350ef79b9c03b89ad7494"
+    },
+    "runs/web-a1e9a264ec114fe4800a51d5112819dd/owner-trace.jsonl": {
+      "bytes": 10745,
+      "sha256": "10f4a1fd342a25ec1eeff161d5ef355aa13c2db0f176c2810bb476a69e103ac7"
+    },
+    "runs/web-a1e9a264ec114fe4800a51d5112819dd/planner-final.json": {
+      "bytes": 2436,
+      "sha256": "0bb41ab41461feee86695013c227d4bb2e341c72bafff247e2d426fca9d14b69"
+    },
+    "runs/web-a1e9a264ec114fe4800a51d5112819dd/planner-trace.jsonl": {
+      "bytes": 20680,
+      "sha256": "a8190a2e8cf8be2b956e1d146c236953efaf2fce156d34339e59ecdbb4a018bc"
+    },
+    "runs/web-bbdfb13634e64694bfd5869611481fe2/owner-trace.jsonl": {
+      "bytes": 10743,
+      "sha256": "bf009e5460f9fa31189ed0f9ad815cdd560820e5562073ae27f6e5994387978d"
+    },
+    "runs/web-bbdfb13634e64694bfd5869611481fe2/planner-final.json": {
+      "bytes": 2436,
+      "sha256": "6f87d4387b4b0c8da4cbf67a20d7792587d015e7ee121114a6a41535ddc7762e"
+    },
+    "runs/web-bbdfb13634e64694bfd5869611481fe2/planner-trace.jsonl": {
+      "bytes": 20774,
+      "sha256": "423484c5cf5771aa08bb185525c2a217b66c8148dcaa2b4f1c94723696d934ab"
+    },
+    "runs/web-f7c5d2a321744442929abc484b2fa545/owner-trace.jsonl": {
+      "bytes": 401651,
+      "sha256": "a6926af9dac2e9b3dc001d8a630dfa837b208e7c88cdba36b7ac0f5b13ae2223"
+    },
+    "runs/web-f7c5d2a321744442929abc484b2fa545/planner-final.json": {
+      "bytes": 17821,
+      "sha256": "8d2eac52484df64de564d78d7a1c225f39466ffc22b30cc0136e04795fd6bc62"
+    },
+    "runs/web-f7c5d2a321744442929abc484b2fa545/planner-trace.jsonl": {
+      "bytes": 537208,
+      "sha256": "7f586c20ee09015b2360eef07ef74f42b76fb5acce8fae12a5424baa25904704"
+    },
+    "runs/web-f8b242850fac4062be8da247ab4b334c/owner-trace.jsonl": {
+      "bytes": 402483,
+      "sha256": "42a28c02ec5e25130abbca289aa70b2450a031a14aa4461a686b16a22913c49e"
+    },
+    "runs/web-f8b242850fac4062be8da247ab4b334c/planner-final.json": {
+      "bytes": 17827,
+      "sha256": "0576c16176fffee3e3be4066f2e9940b9a09f3e6ef9de6ac00bd7cc15881327f"
+    },
+    "runs/web-f8b242850fac4062be8da247ab4b334c/planner-trace.jsonl": {
+      "bytes": 538096,
+      "sha256": "70c6104fd654ebd1c667e45ab39d06d44cd76db106b6c16d03d905cdc740f1f9"
+    },
+    "trial-06-right-wrist-crop.jpg": {
+      "bytes": 16596,
+      "sha256": "2870f11efd3ab4ec9c03e16ffe777245ff2bb9c670d9d1d11f4e645fe638ab0b"
+    },
+    "trial-06-seg-diagnostic.json": {
+      "bytes": 3703,
+      "sha256": "431075857b0571530b9d539594dbb017860034bc788bd991e6fe8091c48376d5"
+    }
+  }
+}

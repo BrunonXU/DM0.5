@@ -1,0 +1,132 @@
+{
+  "run_id": "web-a1e9a264ec114fe4800a51d5112819dd",
+  "failure_file": "0b437a5092134859b1cae1cd7d68a076.json",
+  "reason": "mask_view=right:mask_uncertain_requires_new_prompt:object=square-1",
+  "search_before": {
+    "hint": null,
+    "object_camera": null,
+    "prompts": {
+      "head": {
+        "backend": "sam2_remote",
+        "prompts": {
+          "bucket-left-slot": [
+            300,
+            305,
+            345,
+            355
+          ],
+          "bucket-lid": [
+            280,
+            230,
+            515,
+            447
+          ],
+          "bucket-triangle": [
+            350,
+            250,
+            440,
+            305
+          ],
+          "bucket-u-slot": [
+            350,
+            360,
+            440,
+            420
+          ],
+          "square-1": [
+            500,
+            235,
+            625,
+            350
+          ],
+          "square-hole-1": [
+            395,
+            300,
+            455,
+            365
+          ]
+        },
+        "visual_prompts": {},
+        "visual_state_is_motion_evidence": false
+      },
+      "right": {
+        "backend": "sam2_remote",
+        "prompts": {
+          "square-1": [
+            283,
+            134,
+            497,
+            370
+          ]
+        },
+        "visual_prompts": {},
+        "visual_state_is_motion_evidence": false
+      }
+    }
+  },
+  "measurement_diagnostics": {
+    "attempts": [
+      {
+        "camera": "right",
+        "diagnostic_only": true,
+        "frames": [
+          {
+            "blob_sha256": "7dbb0d3cbc9f85671cf7122d07e85610a3142f80acd9af25c702b50b0ee472e1",
+            "received_ns": 9465863320405,
+            "source_ns": 1795750493963232910,
+            "stream": "rgb"
+          },
+          {
+            "blob_sha256": "ec2842ddad7af254baae843fc34b123e8143d4cf6cc9498b6b05447e3d5efa64",
+            "received_ns": 9465865500010,
+            "source_ns": 1795750493962205078,
+            "stream": "depth"
+          }
+        ],
+        "mask_available": null,
+        "metrics": {},
+        "object_id": "square-1",
+        "observation_id": "ca11ab71298a4897a76d8fc0a3e87fb7:5",
+        "reason": "mask_view=right:mask_uncertain_requires_new_prompt:object=square-1",
+        "stage": "segmentation_or_view"
+      },
+      {
+        "camera": "head",
+        "diagnostic_only": true,
+        "frames": [
+          {
+            "blob_sha256": "637f20f6d367e1e05b8be9f1cea0542297a220b91e04aea246c17b5086e612e4",
+            "received_ns": 9465859663414,
+            "source_ns": 1795750493952677120,
+            "stream": "rgb"
+          },
+          {
+            "blob_sha256": "579a2eb5b578b84dda0548ea5994f5affa6039c29e6ead206c9d6373dfab582c",
+            "received_ns": 9465847590423,
+            "source_ns": 1795750493952695040,
+            "stream": "depth"
+          }
+        ],
+        "mask_available": null,
+        "metrics": {},
+        "object_id": "square-1",
+        "observation_id": "ca11ab71298a4897a76d8fc0a3e87fb7:5",
+        "reason": "object_mask_missing:camera=head:object=square-1",
+        "stage": "segmentation_or_view"
+      }
+    ],
+    "calibration_id": null,
+    "diagnostic_only": true,
+    "observation_id": "ca11ab71298a4897a76d8fc0a3e87fb7:5",
+    "reason": "mask_view=right:mask_uncertain_requires_new_prompt:object=square-1",
+    "scope": {
+      "epoch": 1,
+      "owner_instance_id": "9b3d55b5a5824ec498022f9d9a875533",
+      "session_id": "aac0055ea562413f8d5ac7a5db3d8d8b",
+      "task_generation": 1,
+      "task_hash": "6cfdbdc42f96bdae7d3b17145f15acbc8d566e45d0a07a864f4390ab78b5c3ca",
+      "task_id": "web-a1e9a264ec114fe4800a51d5112819dd"
+    }
+  },
+  "right_camera_roi": null
+}

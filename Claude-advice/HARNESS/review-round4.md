@@ -365,7 +365,14 @@ Codex 报告里写“真机物理／固件在 +54.86° 顶死”，方向对，�
 
 **证据**：`Claude-advice/HARNESS/evidence/<日期>-H32-occluded-fixture/`（软件和回放），以及正式 10 次的 `evidence/<日期>-first-batch/`。
 
-## H-34 `[ ]` P2：没有模型提示时积木分割不确定（先计数，不改代码）
+**执行记录（2026-11-26，软件/回放/上线/3×预检全过；真机跑至第 6 次触发 H-34 3/3 阈值暂停，尚未进入 S5 触发真机让开）**：
+- ARM 实机 `independent_fixture.reason` 核对：试验 3 遮挡帧全为 `partial_lid_landmarks_unavailable`（在 `20261126-01-claude.md` 批准的允许列表内，见 `evidence/20261126-H33-j6-envelope/arm-scene-timing-summary.json`）。
+- 代码改动（提交 `e19bf8b`）：仅改 `HARNESS/src/f1_harness/scene_pipeline.py`（净增 `raise HarnessError` = `0`），新增 `OCCLUDED_FIXTURE_RETAIN_NS = 20_000_000_000`、`OCCLUDED_FIXTURE_RETAIN_REASONS`（两项精确匹配）、五条件保留逻辑及超 20 秒清除告警 `static_fixture_retention_expired`；其他运行时文件未改。
+- 版本：**V57**（`F1 Harness 遮挡保留桶位姿与让开视野 V57`，`bundle_id`: `de4f6b0beaea03eab6c2b6c9c34901c4cf04e1b44d3846f4c834133c126e7d6d`，已部署）。
+- 软件与零输出验收（`evidence/20261126-H32-occluded-fixture/`）：`test_occluded_fixture_retention.py` 13/13 通过；试验 3 原始输入零输出让开回放 `planned=True`、位移 `0.1329 m`、`arm_r_j6` `[4.13°, 16.88°]`、预览龄 `13.569 s`、重验龄 `14.169 s`、正式重验 `revalidation_ok=True`（`f1-harness-plan-revalidation-v1`）；全量 pytest `3,137 passed` + `check_native_integration.py` `62 passed`；V57 三条冻结零输出回放（`normal` / `grasp-miss` / `aperture-occluded`）及审计全过（`physical_motion=False`、`paid_model_calls=0`）；已上线 6000D 与 F1-09（4242 显示 V57，`robot-v22.json` 未重启），连续 3 次预检 5/5 全过。
+- 真机批次（`evidence/20261126-first-batch/`，6 次试验）：第 1–3 次 15.8 s 内完成抓稳验稳后在 `transfer_above_hole` 因 `arm_R_Link5/body_Link5` `-0.04~-0.88 mm` 与 `joint_space_transport` `numerical_joint_search_no_valid_goal` 停在 S4；桶前移 3–4 cm 后第 4–6 次连续 3 次停在 S0（`mask_view=right:mask_uncertain_requires_new_prompt:object=square-1`），触发 H-34 3/3 阈值暂停。全程 0 次 `motion_stalled`、0 次 `camera_sample_feedback_aged:right`、0 次 `static_fixture_retention_expired`；因未进入 S5，真机让开成功比 / 让开后测孔比 / S6 到达数为 `0/0` / `0/0` / `0/6`。
+
+## H-34 `[!]` P2：没有模型提示时积木分割不确定（已达 3/6 触发线，待 Claude 出规格）
 
 **现场事实**：试验 2 在接近之前等了 15.02 秒，全程是 `mask_view=right:mask_uncertain_requires_new_prompt:object=square-1`，没有动作。H-20 的预检里，同一原因每 10 轮出现两三次，都在启动头一两帧，之后自行恢复；试验 2 没有恢复。
 
@@ -377,6 +384,10 @@ Codex 报告里写“真机物理／固件在 +54.86° 顶死”，方向对，�
 **何时改代码**：H-32 之后的正式 10 次里，这类停点达到 3 次（即无需模型定位成功的少于 8 次），按上一轮对 H-16 定的结论执行：固定程序在首次定位失败时，改用 `masks` 配置里的固定提示框再试一次。届时另开一轮规格。
 
 **不做**：不降低分割置信度阈值，不延长 15 秒窗口，不接模型。
+
+**执行记录（2026-11-26，已触发 ≥3 次阈值，请 Claude 出规格）**：
+- 在 V57 正式批次（`evidence/20261126-first-batch/`）前 6 次试验中，第 4、5、6 次连续 **3 次**停在 S0 且原因均为 `mask_view=right:mask_uncertain_requires_new_prompt:object=square-1`（`funnel.json` 已单列，见 `trial-06-right-wrist-crop.jpg` 与 `trial-06-seg-diagnostic.json`）。
+- 现场画面证实方形木块在右腕视角右侧完全清晰、无任何遮挡，仅因桶前移后木色桶壁（印有木块图案）进入右腕画面左侧，无提示框全图发现即连续拒识。未改阈值、未改 15 秒窗口、未接模型，已停下并写入 `handoff/20261126-02-codex.md` 请 Claude 出规格。
 
 ## 版本登记
 

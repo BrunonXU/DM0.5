@@ -1,0 +1,86 @@
+{
+  "version": 57,
+  "bundle_id": "de4f6b0beaea03eab6c2b6c9c34901c4cf04e1b44d3846f4c834133c126e7d6d",
+  "ros_env": "production-gateway (pinned to fastdds-udp)",
+  "consecutive_pass_count": 3,
+  "rounds": [
+    {
+      "round": 1,
+      "passed": true,
+      "bundle_id": "de4f6b0beaea03eab6c2b6c9c34901c4cf04e1b44d3846f4c834133c126e7d6d",
+      "rmw": "rmw_fastrtps_cpp",
+      "middleware_environment": {
+        "ROS_DOMAIN_ID": null,
+        "ROS_AUTOMATIC_DISCOVERY_RANGE": "SUBNET",
+        "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+        "CYCLONEDDS_URI": null,
+        "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/user/Bruno/HARNESS/development/de4f6b0beaea/configs/fastdds-udp-only.xml"
+      },
+      "head_j2_deg": -14.997,
+      "arm_l_j2_deg": -77.687,
+      "dual_rgbd_contiguous_s": 47.31,
+      "unique_paired_scenes": 166,
+      "left_frames": 1420,
+      "left_max_gap_s": 0.0377,
+      "geometry_counts": {
+        "block": 252,
+        "fixture": 252
+      },
+      "hardware_command_publishers": 0,
+      "start_sent": false,
+      "result_json_sha256_on_6000d": "2fd308e4405fb5416c65c8c44a66802ce2f04dd3271124a347da1faa43655936"
+    },
+    {
+      "round": 2,
+      "passed": true,
+      "bundle_id": "de4f6b0beaea03eab6c2b6c9c34901c4cf04e1b44d3846f4c834133c126e7d6d",
+      "rmw": "rmw_fastrtps_cpp",
+      "middleware_environment": {
+        "ROS_DOMAIN_ID": null,
+        "ROS_AUTOMATIC_DISCOVERY_RANGE": "SUBNET",
+        "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+        "CYCLONEDDS_URI": null,
+        "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/user/Bruno/HARNESS/development/de4f6b0beaea/configs/fastdds-udp-only.xml"
+      },
+      "head_j2_deg": -14.997,
+      "arm_l_j2_deg": -77.686,
+      "dual_rgbd_contiguous_s": 45.54,
+      "unique_paired_scenes": 159,
+      "left_frames": 1368,
+      "left_max_gap_s": 0.0371,
+      "geometry_counts": {
+        "block": 243,
+        "fixture": 243
+      },
+      "hardware_command_publishers": 0,
+      "start_sent": false,
+      "result_json_sha256_on_6000d": "36e94bd98a25d3645eabf759046e4ecc1859bc76be2a3f5ffab8b4f58886f2cc"
+    },
+    {
+      "round": 3,
+      "passed": true,
+      "bundle_id": "de4f6b0beaea03eab6c2b6c9c34901c4cf04e1b44d3846f4c834133c126e7d6d",
+      "rmw": "rmw_fastrtps_cpp",
+      "middleware_environment": {
+        "ROS_DOMAIN_ID": null,
+        "ROS_AUTOMATIC_DISCOVERY_RANGE": "SUBNET",
+        "RMW_IMPLEMENTATION": "rmw_fastrtps_cpp",
+        "CYCLONEDDS_URI": null,
+        "FASTRTPS_DEFAULT_PROFILES_FILE": "/home/user/Bruno/HARNESS/development/de4f6b0beaea/configs/fastdds-udp-only.xml"
+      },
+      "head_j2_deg": -14.997,
+      "arm_l_j2_deg": -77.686,
+      "dual_rgbd_contiguous_s": 47.6,
+      "unique_paired_scenes": 166,
+      "left_frames": 1429,
+      "left_max_gap_s": 0.037,
+      "geometry_counts": {
+        "block": 254,
+        "fixture": 254
+      },
+      "hardware_command_publishers": 0,
+      "start_sent": false,
+      "result_json_sha256_on_6000d": "c7377401658bd1dbd46de718cb883ebd91e9343f471fbad266f2f055b81f3b9f"
+    }
+  ]
+}
