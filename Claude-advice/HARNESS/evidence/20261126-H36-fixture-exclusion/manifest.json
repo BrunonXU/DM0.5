@@ -1,0 +1,17 @@
+{
+  "evidence_id": "20261126-H36-fixture-exclusion",
+  "item": "H-36",
+  "verdict": "blocked_mark_exclamation",
+  "code_modified": false,
+  "source_runs": [
+    "web-31d266ffe7284581966c9d2b174fb93e",
+    "web-bbdfb13634e64694bfd5869611481fe2",
+    "web-a1e9a264ec114fe4800a51d5112819dd"
+  ],
+  "files": [
+    "report.md",
+    "step0-reproduction.json",
+    "trial-04-head-left-occludes-slot.jpg",
+    "trial-06-head-left-occludes-slot.jpg"
+  ]
+}
