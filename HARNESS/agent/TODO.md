@@ -1,12 +1,14 @@
 # HARNESS 当前待办
 
-**V62（`e9d6a8feb0f3`，合入 H-42 + H-43 + H-44 + H-45；V61 因假模型单测边界取消未复用）已部署至 6000D 与 F1-09 ARM，并通过 H-43 机载 ARM 离线零输出对准计时门槛（5.66–9.19 s ≤ 15 s），现等待人类确认 V6 复位后执行预检与正式 10 次真机验证。** [V62 上线回执](../../Claude-advice/HARNESS/evidence/20261127-v62-deploy/report.md) · [最新交接](../../Claude-advice/HARNESS/handoff/20261127-05-codex.md)
+**V62（`e9d6a8feb0f3`，合入 H-42 + H-43 + H-44 + H-45）已完成 ARM 离线计时（5.66–9.19 s ≤ 15 s）与 4 次真机验证：Trial 1–2 暴露 `owner_bridge.py:1399-1400` 飞行中轮询误记 `contact_fault` 导致 H-32/H-42/H-39 到位同时作废，离线去掉误记后两次均 3.0–3.1 s 解出 `align` `v=1`；Trial 3–4 斜摆抓取截断按操作者要求降级，先集中打通 S6→S8 放置。** [V62 批次报告](../../Claude-advice/HARNESS/evidence/20261127-v62-batch/report.md) · [最新交接](../../Claude-advice/HARNESS/handoff/20261127-06-codex.md)
 
-当前重点是在 V62 上完成 3 次预检（可按操作者决定跳过并登记）和 10 次真机试验，验证运输前缓存方孔直对准（H-42）与 15 s IK 时限＋余量排序（H-43），冲击首次 S6→S7→S8 放置成功。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
+当前等待 Claude 审阅合并本轮 PR 并裁定 `owner_bridge.py:1399` 误记 `contact_fault` 修复（发 V63 优先冲首次 S6→S8）、`transfer_above_hole` 15 s IK 上限副作用与斜摆抓取降级安排。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
 
 ## 现在做
 
-- [ ] **V62 预检（连续 3 次 5/5，V6 复位）与正式 10 次真机批次：** 3 次桶身入右腕画面、2 次近身 `[0.650, -0.051]`、5 次中距 `x = 0.66–0.76 m`，重点记录缓存方孔使用/作废次数、ARM 实机对准耗时、S7/S8 次数及撤离后放置确认结果。
+- [ ] **P0 修复 `owner_bridge.py:1399-1400` 飞行中路点到达轮询误记 `contact_fault = waypoint_tracking_failed`（待 Claude 裁定后立即修并冻结 V63）：** 仅在真实终态运动故障/堵转/超时/未知或部分发布时记 `contact_fault`，补飞行中 `proof.accepted=False → True` 回归测试，上线 V63 优先跑通首次 S6→S7→S8 完整放置。
+- [ ] **P1 `transfer_above_hole` 规划因全局 `ik.max_wall_s=15.0` 拉长至 17–31 s（待 Claude 裁定是否暂保留先冲 S8 或改为仅对 `align` 生效）。**
+- [ ] **P2 斜摆积木 `approach_grasp` 到位后右腕 `mask_truncated`（Trial 3 & 4，按操作者指示降为低优先级，待首次 S8 跑通后再治理）。**
 - [ ] **H-31（P1，第一批之后做）：修复 `support_lift` 首步下探。** 不改审计代码、不改 `1e-9` 与 `1.0 mm` 阈值，修完后 Replay A 必须审计全过。
 - [ ] **H-38 动态避让（P2，backlog）：** 静态预设部分已由 V6 关闭；动态避让触发条件不变（首次 S8 后或左臂遮挡成为首要停因）。
 

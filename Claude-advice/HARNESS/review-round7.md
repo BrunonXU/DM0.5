@@ -101,6 +101,7 @@ flowchart LR
 3. 全量 pytest、`check_native_integration.py`、三条零输出回放；另加一条从运输到位直接对准的回放。
 
 > **执行记录（2026-11-27）**：已完成 `contracts.py`、`engine.py`、`owner_bridge.py`、`scene_pipeline.py`、`observation.py`、`revalidation.py`、`verification.py` 改动，实现持块周期内运输前实测方孔缓存（45 s 上限、接触故障/撤权/桶位移/换闭爪作废、兼容 2/3 哈希头部/跨视角直接实测）、H-32 45 s 同步修订与接触故障作废、`align`/`insert`/`release` 允许而 `verify_placed` 拒绝、H-39 自动降级为备用路径。单测 85 passed；V60 Trial 1–3 与 V58 Trial 2–3 共 5 次真实试验从运输到位直接进入 `align` 零输出回放 **5/5 不经横移即解出 `v=1`**（6000D 规划 3.07–4.35 s，缓存年龄 7.60–14.84 s，`arm_r_j6 ∈ [0.17°, 36.12°]`，最小余量 17.06°–44.92°）且全部通过正式 `revalidate_candidate`（17–19 段）。证据见 [evidence/20261127-H42-cached-aperture/report.md](evidence/20261127-H42-cached-aperture/report.md)。已在 V62（`e9d6a8feb0f3`；V61 `2dd3292b7a64` 因 `ForwardKinematics.__init__` 提前读 `idx_qs` 触发 17 例单测 setup 失败已取消未复用）上完成全量 3,195 pytest + 62 原生集成 + 四套冻结零输出回放与审计（含第 4 条 V60 Trial 2 到位缓存直对准回放），并已部署至 6000D 与 F1-09 ARM，见 [evidence/20261127-v62-deploy/report.md](evidence/20261127-v62-deploy/report.md)。
+> - `[!]` **V62 真机批次暴露实现缺陷（2026-11-27）**：V62 真机 Trial 1 & 2 均顺利通过 S0→S5 并在运输前 14.59 s / 7.09 s 直接实测方孔，但 `owner_bridge.py:1399-1400` 把正常飞行途中的路点到达轮询 `proof.get('accepted') is False` 误记为 `contact_fault = waypoint_tracking_failed`，导致到位后 H-32、H-42 与 H-39 同时作废、未能进入 `align`。离线去掉该误记后，V62 Trial 1 & 2 原始数据在 6000D 上均 3.11 s / 3.01 s 一次解出 `align` `v=1` 并通过 `revalidate_plan`（17 / 18 段）。详见 [evidence/20261127-v62-batch/report.md](evidence/20261127-v62-batch/report.md) 与 [handoff/20261127-06-codex.md](handoff/20261127-06-codex.md)。
 
 ## H-43 `[x]` P0：IK 墙钟上限改为站点配置，对准先试余量大的候选
 
