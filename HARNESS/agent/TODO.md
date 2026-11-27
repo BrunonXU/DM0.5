@@ -1,13 +1,13 @@
 # HARNESS 当前待办
 
-**H-36、H-39、H-40 均已完成离线单测与真实数据零输出回放，H-41 已将 V6（`04a159f3c79c4b7a8ae9f9ffb06c7b4c`）转为标准静态预设并关闭 H-38 静态部分；即将冻结上线 V59（同步切换协调器与 SAM 服务）。** [第六轮审阅](../../Claude-advice/HARNESS/review-round6.md) · [H-36 验收](../../Claude-advice/HARNESS/evidence/20261127-H36-full-candidate-exclusion/report.md) · [H-39 验收](../../Claude-advice/HARNESS/evidence/20261127-H39-fallback-view/report.md) · [H-40 验收](../../Claude-advice/HARNESS/evidence/20261127-H40-held-after-transport/report.md)
+**V60（`cabff256328d`，含 H-36 + H-39 + H-40；V59 候选因单测边界取消未复用）已部署至 6000D（协调器＋SAM 服务同包）与 F1-09 ARM，4242 核验通过（`robot-v22.json`，未重启），H-41 已将 V6 转为标准静态预设并关闭 H-38 静态部分。** [V60 上线回执](../../Claude-advice/HARNESS/evidence/20261127-v60-deploy/report.md) · [最新人类待办交接](../../Claude-advice/HARNESS/handoff/20261127-02-codex.md)
 
-当前推进 V59 冻结、全量回归、三套冻结零输出回放、上线部署与 V6 预检及 10 次正式真机试验。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
+当前待操作者确认真机就绪并复位至 V6 后，执行连续 3 次 5/5 预检与 V60 正式 10 次真机试验。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
 
 ## 现在做
 
-- [ ] **V59 冻结、部署（协调器＋SAM 服务同包）与 V6 连续 3 次 5/5 预检。**
-- [ ] **V59 正式 10 次真机试验（V6 预设）：3 次 `x >= 0.78 m` 检 H-36、2 次近身 `[0.650, -0.051] m` 补验 H-37、5 次 `x = 0.66–0.76 m` 检 H-39/H-40 与 S6–S8 完整放置。**
+- [ ] **V60 在 V6 预设下连续 3 次 5/5 预检。**
+- [ ] **V60 正式 10 次真机试验（V6 预设）：3 次 `x >= 0.78 m` 检 H-36、2 次近身 `[0.650, -0.051] m` 补验 H-37、5 次 `x = 0.66–0.76 m` 检 H-39/H-40 与 S6–S8 完整放置。**
 - [ ] **H-31（P1，第一批之后做）：修复 `support_lift` 首步下探。** 不改审计代码、不改 `1e-9` 与 `1.0 mm` 阈值，修完后 Replay A 必须审计全过。
 - [ ] **H-38 动态避让（P2，backlog）：** 静态预设部分已由 V6 关闭；动态避让触发条件不变（首次 S8 后或左臂遮挡成为首要停因）。
 
