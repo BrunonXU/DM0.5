@@ -27,8 +27,14 @@ class ForwardKinematics:
         self.frame = self.model.getFrameId('arm_R_Link7')
         if not 0 <= self.frame < self.model.nframes:
             raise ValueError('right_eef_frame_missing')
-        self.arm_q_idx = [self.model.idx_qs[self.model.getJointId(name)] for name in self.names[7:14]]
-        self.arm_v_idx = [self.model.idx_vs[self.model.getJointId(name)] for name in self.names[7:14]]
+        self._arm_q_idx = None
+        self._arm_v_idx = None
+
+    def _endpoint_ik_indices(self):
+        if self._arm_q_idx is None or self._arm_v_idx is None:
+            self._arm_q_idx = [self.model.idx_qs[self.model.getJointId(name)] for name in self.names[7:14]]
+            self._arm_v_idx = [self.model.idx_vs[self.model.getJointId(name)] for name in self.names[7:14]]
+        return self._arm_q_idx, self._arm_v_idx
 
     def _pose(self, full, held):
         seed = full.copy()
@@ -93,6 +99,7 @@ class ForwardKinematics:
         for name, value in zip(self.names, model22):
             self.arm._set(base_q, name, value)
         results = []
+        arm_q_idx, arm_v_idx = self._endpoint_ik_indices()
         eye6 = np.eye(6)
         eye7 = np.eye(7)
         for raw_goal in goals:
@@ -108,7 +115,7 @@ class ForwardKinematics:
                 for _ in range(60):
                     q_rad = np.deg2rad(q_deg) * signs
                     full_q = base_q.copy()
-                    for idx_q, val in zip(self.arm_q_idx, q_rad):
+                    for idx_q, val in zip(arm_q_idx, q_rad):
                         full_q[idx_q] = val
                     self.pin.forwardKinematics(self.model, self.data, full_q)
                     self.pin.computeJointJacobians(self.model, self.data, full_q)
@@ -124,7 +131,7 @@ class ForwardKinematics:
                     jac = self.pin.getFrameJacobian(
                         self.model, self.data, self.frame,
                         self.pin.ReferenceFrame.LOCAL_WORLD_ALIGNED,
-                    )[:, self.arm_v_idx]
+                    )[:, arm_v_idx]
                     jjt = jac @ jac.T + 1e-3 * eye6
                     err = np.r_[pos_err, rot_err]
                     dq_task = jac.T @ np.linalg.solve(jjt, err)
