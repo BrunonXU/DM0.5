@@ -1,0 +1,42 @@
+{
+  "trial": "V58-Trial2",
+  "run_id": "web-7fce1b965f2f4ca497c7d93b505486e9",
+  "observation_id": "acd02682612d433bba40f3b5e935e86d:127",
+  "fixture_source": "retained_static_fixture",
+  "fixture_measured_at_ns": 19681937163536,
+  "observation_received_ns": 19684352393590,
+  "retained_fixture_age_preview_s": 2.4152,
+  "retained_fixture_age_revalidation_s": 2.7152,
+  "tcp_before_xyz_m": [
+    0.7196,
+    -0.0214,
+    0.8683
+  ],
+  "tcp_after_xyz_m": [
+    0.6947,
+    -0.1285,
+    0.8639
+  ],
+  "displacement_m": 0.11,
+  "delta_xyz_m": [
+    -0.0249,
+    -0.1071,
+    -0.0044
+  ],
+  "direction": [
+    -0.2267,
+    -0.9731,
+    -0.0404
+  ],
+  "purpose": "noncontact_lateral_aperture_reobservation_without_prior_view",
+  "planned": true,
+  "targets": 5,
+  "arm_r_j6_range_deg": [
+    28.538,
+    31.006
+  ],
+  "revalidation_passed": true,
+  "revalidation_schema": "f1-harness-plan-revalidation-v1",
+  "revalidation_decision": null,
+  "physical_motion": false
+}

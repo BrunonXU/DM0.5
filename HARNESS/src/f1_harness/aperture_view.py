@@ -42,6 +42,31 @@ class ApertureViewpoint:
         self.scope = None
         self.anchor = None
         self.move = None
+        self.fallback_issued = False
+        self.fallback_issued_tcp = None
+        self.fallback_used = False
+
+    def _reset_fallback(self):
+        self.fallback_issued = False
+        self.fallback_issued_tcp = None
+        self.fallback_used = False
+
+    def _projected_width(self, direction, target, eef, tcp):
+        # Width of the measured payload and tool silhouette along the
+        # proposed displacement. Half the combined aperture/occluder width
+        # clears their overlapping centers under an orthographic view.
+        intervals = []
+        for pose, box in [(transform(target.pose), self.envelope['object_box']),
+                          *((eef, box) for box in self.envelope['tool_boxes'])]:
+            if 'pose' in box:
+                pose = pose @ transform(box['pose'])
+            axes = direction @ pose[:3, :3]
+            low = axes * np.asarray(box['min'])
+            high = axes * np.asarray(box['max'])
+            center = direction @ (pose[:3, 3] - tcp[:3, 3])
+            intervals.append((center + np.minimum(low, high).sum(),
+                              center + np.maximum(low, high).sum()))
+        return max(r for _, r in intervals) - min(l for l, _ in intervals)
 
     def update(self, scene, context, world_eef, head_pose=None):
         self.move = None
@@ -51,15 +76,20 @@ class ApertureViewpoint:
         if (context.get('authorized') is not True or context.get('placement_verified')
                 or None in scope or scene.synthetic):
             self.scope = self.anchor = None
+            self._reset_fallback()
             return
         # A regrasp within one owner epoch starts a different held-object episode.
         scope += ((context.get('grasp_contact') or {}).get('request_id'),)
         if scope != self.scope:
             self.scope, self.anchor = scope, None
+            self._reset_fallback()
         current = {o.object_id: o for o in scene.objects}
         target, hole = current.get(self.object_id), current.get(self.hole_id)
         if target is not None and target.held is False:
             self.anchor = None
+            self._reset_fallback()
+        if self.fallback_issued and context.get('action_published'):
+            self.fallback_used = True
         if (target is None or target.held is not True or target.eef_object_pose is None
                 or not target.visible or not target.pose):
             return
@@ -68,6 +98,10 @@ class ApertureViewpoint:
             return
         eef = self.native_world @ transform(world_eef)
         tcp = eef @ self.envelope['tool']
+        if (self.fallback_issued and not self.fallback_used
+                and self.fallback_issued_tcp is not None and not context.get('action_published')
+                and np.linalg.norm(tcp[:3, 3] - self.fallback_issued_tcp) > self.envelope['resolution']):
+            self.fallback_used = True
         if hole is not None and hole.pose is not None:
             if (hole.visible and hole.evidence_ids and set(hole.evidence_ids).issubset(hashes)
                     and not context.get('action_published')):
@@ -92,21 +126,7 @@ class ApertureViewpoint:
             if distance <= self.envelope['resolution']:
                 return  # The previous view is already within the owner's arrival tolerance.
             direction = delta / distance
-            # Width of the measured payload and tool silhouette along the
-            # proposed displacement. Half the combined aperture/occluder width
-            # clears their overlapping centers under an orthographic view.
-            intervals = []
-            for pose, box in [(transform(target.pose), self.envelope['object_box']),
-                              *((eef, box) for box in self.envelope['tool_boxes'])]:
-                if 'pose' in box:
-                    pose = pose @ transform(box['pose'])
-                axes = direction @ pose[:3, :3]
-                low = axes * np.asarray(box['min'])
-                high = axes * np.asarray(box['max'])
-                center = direction @ (pose[:3, 3] - tcp[:3, 3])
-                intervals.append((center + np.minimum(low, high).sum(),
-                                  center + np.maximum(low, high).sum()))
-            width = max(r for _, r in intervals) - min(l for l, _ in intervals)
+            width = self._projected_width(direction, target, eef, tcp)
             step = min(distance, (width + self.envelope['hole_width']) / 2)
             goal = tcp.copy()
             goal[:3, 3] += direction * step
@@ -115,3 +135,37 @@ class ApertureViewpoint:
                              source_frame_hashes=self.anchor['source_frame_hashes'],
                              current_observation_id=scene.observation_id,
                              purpose='noncontact_lateral_aperture_reobservation')
+        elif (self.anchor is None and not self.fallback_used and not context.get('action_published')
+                and head_pose is not None and (
+                    any(f.camera == 'head' for f in scene.frames)
+                    or (getattr(scene, 'fixture', None) is not None
+                        and getattr(scene.fixture, 'source', None) == 'retained_static_fixture'))):
+            normal = np.asarray(self.envelope['normal'], float)
+            n_norm = np.linalg.norm(normal)
+            if n_norm <= np.finfo(float).eps:
+                return
+            n = normal / n_norm
+            ray = transform(target.pose)[:3, 3] - transform(head_pose)[:3, 3]
+            ray_plane = ray - n * np.dot(ray, n)
+            if np.linalg.norm(ray_plane) <= np.finfo(float).eps:
+                return
+            perp = np.cross(n, ray_plane)
+            p_norm = np.linalg.norm(perp)
+            if p_norm <= np.finfo(float).eps:
+                return
+            direction = perp / p_norm
+            if abs(direction[1]) <= np.finfo(float).eps:
+                return
+            if direction[1] > 0:
+                direction = -direction
+            width = self._projected_width(direction, target, eef, tcp)
+            step = (width + self.envelope['hole_width']) / 2
+            goal = tcp.copy()
+            goal[:3, 3] += direction * step
+            self.move = dict(target_frame='world', target_tcp_pose=goal.ravel().tolist(),
+                             source_observation_id=scene.observation_id,
+                             source_frame_hashes=list(target.evidence_ids),
+                             current_observation_id=scene.observation_id,
+                             purpose='noncontact_lateral_aperture_reobservation_without_prior_view')
+            self.fallback_issued = True
+            self.fallback_issued_tcp = tcp[:3, 3].copy()

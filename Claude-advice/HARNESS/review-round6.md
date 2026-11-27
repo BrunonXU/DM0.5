@@ -79,7 +79,9 @@ flowchart LR
 - 离线用 V57 Trial 4–6 的右腕帧做（这三次头部在 V5 下测不到桶，所以离线时允许用同一桶位、V6 下预检记录里的头部实测桶位姿，并在报告里标明）；再用 V58 Trial 1 的帧做（V6 下头部有实测桶位）。报告每帧排除前后的候选数、是否得到确认的掩码，以及算出的积木位置是否与真实积木一致。
 - 正式通信验收：35 个候选时 `X-SAM-Tracking-Result` 的字节数，以及经正式 HTTP 路径能完整取回摘要。
 
-## H-39 `[ ]` P0：持块遮挡、又没有历史视点时，向一个确定方向横移
+## H-39 `[x]` P0：持块遮挡、又没有历史视点时，向一个确定方向横移
+
+> **执行记录（Codex 2026-11-27）**：仅修改 `HARNESS/src/f1_harness/aperture_view.py` 并在 `HARNESS/tests/test_held_aperture_view.py` 增补 5 项测试（9/9 通过）。针对 H-32 `object_only` 仅保留右腕帧但 `live_scene.py` 仍提供实测 `head_pose` 的真机事实，在 `aperture_view.py` 内兼容 `scene.fixture.source == 'retained_static_fixture'`（仍要求 `head_pose is not None`）。V58 Trial 2（`OBS:127`）零输出回放：`move_tcp` 候选位移 `0.1100 m`、方向 `[-0.2267, -0.9731, -0.0404]`（右臂负 `y` 侧），`PlanService` 预览 `planned=True`（5 路点，`arm_r_j6 ∈ [28.54°, 31.01°]`），正式 `revalidate_candidate` 通过，保留桶位姿年龄预览 `2.415 s` / 复核 `2.715 s`。证据见 [20261127-H39-fallback-view/report.md](evidence/20261127-H39-fallback-view/report.md)。
 
 **代码事实**
 
