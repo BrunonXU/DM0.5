@@ -38,7 +38,10 @@ def verify(skill: str, task: Task, observation: Observation, request_id: str) ->
                 reason = ("owner_transport_endpoint_and_held_target" if target.held
                           else "transport_target_observed_unheld")
         elif skill == "verify_placed":
-            if None in (target.held, target.inserted, target.stationary):
+            hole = next((o for o in observation.objects if o.object_id == task.hole_id), None)
+            if hole is not None and hole.source == "cached_pre_transport_aperture":
+                reason = "matching_hole_evidence_missing"
+            elif None in (target.held, target.inserted, target.stationary):
                 reason = "placement_evidence_incomplete"
             elif target.shape != task.shape:
                 outcome, reason = "failure", "shape_mismatch"

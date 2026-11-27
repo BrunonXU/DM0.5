@@ -49,7 +49,7 @@ def _check_aperture_frame_binding(observation, task, skill, frames):
     if task.hole_id not in planning_entity_ids(task, observation, skill):
         return
     hole = next((obj for obj in observation.objects if obj.object_id == task.hole_id), None)
-    if hole is None or len(hole.evidence_ids) != 3:
+    if hole is None or len(hole.evidence_ids) != 3 or hole.source == 'cached_pre_transport_aperture':
         return
     by_stream = {(frame.camera, frame.stream): frame for frame in frames}
     head = (by_stream.get(('head','rgb')), by_stream.get(('head','depth')))
@@ -151,7 +151,8 @@ def rebind_preview_candidate(service,intent,observation,scene,full,held,preview)
 
 
 def _measurement_times(observation,*,task,now_ns,skill=None):
-    cameras=require_geometry_identity(observation,goal=task.goal,admission_profile=task.admission_profile,skill=skill)
+    cameras=require_geometry_identity(observation,goal=task.goal,admission_profile=task.admission_profile,
+                                      skill=skill,hole_id=task.hole_id)
     frames = _planning_frames(observation, task, skill)
     _check_aperture_frame_binding(observation, task, skill, frames)
     times=(observation.received_ns,observation.state_received_ns,
@@ -452,6 +453,9 @@ def _measurement_identity(original,latest,*,task=None,skill=None):
             if (hole is not None and hole.visible and set(head) == {'rgb', 'depth'}
                     and hole.evidence_ids == (head['rgb'].blob_sha256, head['depth'].blob_sha256)):
                 return True  # New source must be swept in the worker before publication.
+            if (hole is not None and hole.source == 'cached_pre_transport_aperture'
+                    and skill in CACHED_APERTURE_SKILLS):
+                return True  # Cached aperture alternating with fresh cross-view measurement; sweep in worker.
             raise RevalidationSceneChanged('revalidation_scene_evidence_changed')
         shared = before.keys() & after.keys()
         # Precision observations can omit the single-camera selector. Their
@@ -462,15 +466,32 @@ def _measurement_identity(original,latest,*,task=None,skill=None):
             raise HarnessError('revalidation_camera_identity_changed')
         return before.keys() != after.keys()
     from .geometry_context import FIXTURE_TRANSIT_SKILLS
+    from .observation import CACHED_APERTURE_SKILLS
+    def _cached_hole(obs):
+        if task is None:
+            return None
+        hole = next((o for o in obs.objects if o.object_id == task.hole_id), None)
+        return (hole if hole is not None and hole.source == 'cached_pre_transport_aperture'
+                and hole.pose is not None and hole.evidence_ids else None)
+    orig_cached = _cached_hole(original)
+    latest_cached = _cached_hole(latest)
+    cached_allowed = (skill in CACHED_APERTURE_SKILLS
+                      and (not old_retained or orig_cached is not None)
+                      and (not new_retained or latest_cached is not None))
     if (task is None or task.admission_profile!='development_coarse' or task.goal!='placed'
-            or skill not in FIXTURE_TRANSIT_SKILLS
+            or (skill not in FIXTURE_TRANSIT_SKILLS and not cached_allowed)
             or original.geometry_scope!='coarse_static_task' or original.geometry_camera!='right'):
         raise HarnessError('full_scene_required_for_motion')
+    if cached_allowed and orig_cached is not None and latest_cached is not None:
+        if (orig_cached.evidence_ids != latest_cached.evidence_ids
+                or orig_cached.measured_at_ns != latest_cached.measured_at_ns):
+            raise HarnessError('revalidation_cached_aperture_lineage_changed')
     # Only the independently measured wrist stream is current in this scene.
     # A rejected head sample cannot change its identity or become new evidence.
     wrist={('right','rgb'),('right','depth')}
     full=wrist|{('head','rgb'),('head','depth')}
-    if not transport and (set(before) not in (wrist,full) or set(after) not in (wrist,full)
+    allowed_full=(full, full | {('left', 'rgb')}) if cached_allowed else (full,)
+    if not transport and (set(before) not in (wrist, *allowed_full) or set(after) not in (wrist, *allowed_full)
             or any(before.get(key)!=after.get(key) for key in wrist)
             or (old_retained and set(before)!=wrist)
             or (new_retained and set(after)!=wrist)):

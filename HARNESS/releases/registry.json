@@ -1104,7 +1104,7 @@
       "source_base_bundle": "cfc9b2ad5696969b6b8a5b730ad2949511a0fee29a4fcff499d2ae0b1feb240a",
       "start_sent": false,
       "physical_task_verified": false,
-      "currently_active": true,
+      "currently_active": false,
       "bundle_id": "cabff256328d8148241e3661bed3c37625b1181e0db5ee70a37caa1bcd42e2ff",
       "manifest": "HARNESS/artifacts/s0-s4-s5-unblock-v60-20261127/bundle-final/manifest.json",
       "frozen": true,
@@ -1112,13 +1112,50 @@
       "activation": "HARNESS/artifacts/s0-s4-s5-unblock-v60-20261127/activation.json",
       "verification": "HARNESS/artifacts/s0-s4-s5-unblock-v60-20261127/post-activation.json",
       "deployment_kind": "shared_harness_base_both_strategies"
+    },
+    {
+      "version": 61,
+      "name": "F1 Harness 缓存方孔与对准优化 V61",
+      "status": "cancelled",
+      "artifact_directory": "HARNESS/artifacts/cached-aperture-align-v61-20261127",
+      "previous_version": 60,
+      "previous_bundle": "cabff256328d8148241e3661bed3c37625b1181e0db5ee70a37caa1bcd42e2ff",
+      "source_base_version": 60,
+      "source_base_bundle": "cabff256328d8148241e3661bed3c37625b1181e0db5ee70a37caa1bcd42e2ff",
+      "start_sent": false,
+      "physical_task_verified": false,
+      "currently_active": false,
+      "bundle_id": "2dd3292b7a6483cfd1140dc7f0401ed5de367cd25e18c1f596af89e44c444777",
+      "manifest": "HARNESS/artifacts/cached-aperture-align-v61-20261127/bundle-final/manifest.json",
+      "frozen": true,
+      "cancelled_reason": "forward_kinematics_init_eager_idx_qs_breaks_test_numerical_service"
+    },
+    {
+      "version": 62,
+      "name": "F1 Harness 缓存方孔与对准优化 V62",
+      "status": "deployed",
+      "artifact_directory": "HARNESS/artifacts/cached-aperture-align-v62-20261127",
+      "previous_version": 60,
+      "previous_bundle": "cabff256328d8148241e3661bed3c37625b1181e0db5ee70a37caa1bcd42e2ff",
+      "source_base_version": 60,
+      "source_base_bundle": "cabff256328d8148241e3661bed3c37625b1181e0db5ee70a37caa1bcd42e2ff",
+      "start_sent": false,
+      "physical_task_verified": false,
+      "currently_active": true,
+      "bundle_id": "e9d6a8feb0f3566f44b4d9f374a9566f97e68bc0cf7a4358dd2781e5e7212631",
+      "manifest": "HARNESS/artifacts/cached-aperture-align-v62-20261127/bundle-final/manifest.json",
+      "frozen": true,
+      "validation": "HARNESS/artifacts/cached-aperture-align-v62-20261127/replay-qualification-v62.json",
+      "activation": "HARNESS/artifacts/cached-aperture-align-v62-20261127/activation.json",
+      "verification": "HARNESS/artifacts/cached-aperture-align-v62-20261127/post-activation.json",
+      "deployment_kind": "shared_harness_base_both_strategies"
     }
   ],
-  "active_bundle_id": "cabff256328d8148241e3661bed3c37625b1181e0db5ee70a37caa1bcd42e2ff",
-  "active_version": 60,
+  "active_bundle_id": "e9d6a8feb0f3566f44b4d9f374a9566f97e68bc0cf7a4358dd2781e5e7212631",
+  "active_version": 62,
   "active_strategy_versions": {
-    "astra": 60,
-    "vla_astra": 60
+    "astra": 62,
+    "vla_astra": 62
   },
-  "active_coordinator_service_version": 60
+  "active_coordinator_service_version": 62
 }

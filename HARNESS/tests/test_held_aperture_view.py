@@ -172,3 +172,88 @@ def test_fallback_requires_held_true_and_valid_pose():
     obs_no_pose.objects[0].pose = None
     tracker.update(obs_no_pose, context, pose(0.7, 0.0, 0.2), head_pose=pose(0.0, 0.0, 1.0))
     assert tracker.move is None
+
+
+def _make_observer_for_aperture_race(context_holder):
+    import threading
+    from f1_harness.live_scene import LiveSceneObserver
+    tracker, context, *_ = setup()
+    obs = sample('occ-race', 0.7, z=0.2, aperture=False, held=True)
+    obs.objects[0].pose = pose(0.7, 0.2, 0.2).ravel().tolist()
+    tracker.update(obs, context, pose(0.7, 0.2, 0.2), head_pose=pose(0.0, 0.0, 1.0))
+    assert tracker.move is not None
+    context_holder['ctx'] = dict(context)
+    observer = object.__new__(LiveSceneObserver)
+    observer.lock = threading.Lock()
+    observer.stop = threading.Event()
+    observer.latest = None
+    observer.aperture_viewpoint = tracker
+    observer.raw = SimpleNamespace()
+    observer.owner = SimpleNamespace(call=lambda method, **kw: {'perception_context': dict(context_holder['ctx'])})
+    return observer, tracker, obs
+
+
+def test_h44_waits_for_next_frame_after_stage_advance_and_returns_move():
+    import threading, time
+    holder = {}
+    observer, tracker, obs = _make_observer_for_aperture_race(holder)
+
+    def arrive():
+        time.sleep(0.3)
+        with observer.lock:
+            observer.latest = obs
+            tracker.update(obs, holder['ctx'], pose(0.7, 0.2, 0.2), head_pose=pose(0.0, 0.0, 1.0))
+
+    t = threading.Thread(target=arrive, daemon=True)
+    t.start()
+    started = time.monotonic()
+    res = observer.aperture_observation()
+    elapsed = time.monotonic() - started
+    t.join(timeout=2)
+    assert 'observation_move' in res
+    assert res['observation_move']['purpose'] == 'noncontact_lateral_aperture_reobservation_without_prior_view'
+    assert 0.25 <= elapsed < 1.2
+
+
+def test_h44_times_out_after_1_5s_without_new_frame():
+    import time
+    holder = {}
+    observer, _, _ = _make_observer_for_aperture_race(holder)
+    started = time.monotonic()
+    res = observer.aperture_observation()
+    elapsed = time.monotonic() - started
+    assert 'observation_move' not in res
+    assert res['observation_move_reason'] == 'no_distinct_measured_view_in_current_holding_episode'
+    assert elapsed >= 1.45
+
+
+def test_h44_scope_changed_returns_no_candidate_without_waiting():
+    import time
+    holder = {}
+    observer, _, _ = _make_observer_for_aperture_race(holder)
+    holder['ctx']['epoch'] = 99
+    started = time.monotonic()
+    res = observer.aperture_observation()
+    elapsed = time.monotonic() - started
+    assert 'observation_move' not in res
+    assert res['observation_move_reason'] == 'no_distinct_measured_view_in_current_holding_episode'
+    assert elapsed < 0.3
+
+
+def test_h44_scope_changed_during_wait_rejects_candidate():
+    import threading, time
+    holder = {}
+    observer, tracker, obs = _make_observer_for_aperture_race(holder)
+
+    def change_and_arrive():
+        time.sleep(0.2)
+        holder['ctx']['grasp_contact'] = dict(request_id='different-close')
+        with observer.lock:
+            observer.latest = obs
+
+    t = threading.Thread(target=change_and_arrive, daemon=True)
+    t.start()
+    res = observer.aperture_observation()
+    t.join(timeout=2)
+    assert 'observation_move' not in res
+    assert res['observation_move_reason'] == 'no_distinct_measured_view_in_current_holding_episode'

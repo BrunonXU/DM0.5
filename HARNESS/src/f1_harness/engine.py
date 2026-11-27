@@ -84,6 +84,7 @@ class TaskEngine:
         self.active_grasp_selection = None
         self.grasp_contact = None
         self.hold_requested = False
+        self.last_contact_fault = None
         self.web_task_scope = None
         self.hold_confirmation = None
         self.hardware_ready = False
@@ -581,6 +582,8 @@ class TaskEngine:
                     self.approach_arrivals.clear()
                 elif not (result.outcome == 'pending_review' and result.verification_request_id == source_request):
                     self.approach_arrivals.pop(source_request, None)
+            if result.outcome != "success" and request_id in self.request_publications:
+                self.record_contact_fault(result.reason or 'published_motion_incomplete', self.clock())
             if result.outcome == "success":
                 self.phase = skill
                 self.completed_skills.add(skill)
@@ -725,6 +728,13 @@ class TaskEngine:
                 target_closure=float(target_closure), expected_eef_object=expected_eef_object)
             self.store.event('harness_grasp_close_published', **self.grasp_contact)
 
+    def record_contact_fault(self, reason: str, at_ns: int | None = None):
+        with self._lock:
+            stamp = int(self.clock() if at_ns is None else at_ns)
+            prev = getattr(self, 'last_contact_fault', None)
+            if prev is None or stamp >= prev['at_ns']:
+                self.last_contact_fault = dict(reason=str(reason)[:96], at_ns=stamp)
+
     def complete_stalled_motion(self, *, index, measured16, now_ns, preclosure=False,observation_view=None):
         """Owner-only known progress outcome; it preserves authority, then requests hold."""
         with self._lock:
@@ -748,6 +758,7 @@ class TaskEngine:
                     if resumable and intent.skill=='approach_grasp' and observation_view else None),
                 resume_request_id=intent.request_id if resumable else None, synthetic=self.mode == Mode.FAKE))
             self.hold_requested = True
+            self.record_contact_fault('motion_stalled', now_ns)
             self.hold_confirmation = None
             self.recovery_hold = True
             self.observation_after_ns = max(self.observation_after_ns, now_ns)
@@ -837,6 +848,7 @@ class TaskEngine:
                     revoked.append(result)
             self.pending = self.running = None
             self.hold_requested = bool(had_action) or self.hold_requested
+            self.record_contact_fault('authority_revoked', self.clock())
             # Revocation is a state transition even when its journal has failed.
             for result in revoked:
                 self.store.event("skill_revoked", result=result.model_dump())
@@ -1027,6 +1039,10 @@ class TaskEngine:
                            request_id=active.request_id if active else None)
             if self.grasp_contact is not None and self.authorized:
                 context['grasp_contact'] = deepcopy(self.grasp_contact)
+            if self.hold_requested:
+                context['hold_requested'] = True
+            if getattr(self, 'last_contact_fault', None) is not None:
+                context['contact_fault'] = dict(self.last_contact_fault)
             return dict(mode=self.mode.value, owner_instance_id=self.instance, epoch=self.epoch,
                         admitted_task_hash=getattr(self, 'required_task_hash', None),
                         web_control_enabled=getattr(self, 'web_control_enabled', False),

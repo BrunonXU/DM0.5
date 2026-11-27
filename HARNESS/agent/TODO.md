@@ -1,14 +1,14 @@
 # HARNESS 当前待办
 
-**V60（`cabff256328d`，合入 H-36 + H-39 + H-40 + H-41；V59 因单测边界取消未复用）已部署并完成 3 次真机验证：H-36（桶入右腕）、H-40（运输到位持块）、H-32（保留桶位姿）、H-39（右移露出方孔）全部真机打通，历史上首次连续两次到达 S6 `align`。** [V60 批次报告](../../Claude-advice/HARNESS/evidence/20261127-v60-batch/report.md) · [最新交接](../../Claude-advice/HARNESS/handoff/20261127-03-codex.md)
+**V62（`e9d6a8feb0f3`，合入 H-42 + H-43 + H-44 + H-45）已完成 ARM 离线计时（5.66–9.19 s ≤ 15 s）与 4 次真机验证：Trial 1–2 暴露 `owner_bridge.py:1399-1400` 飞行中轮询误记 `contact_fault` 导致 H-32/H-42/H-39 到位同时作废，离线去掉误记后两次均 3.0–3.1 s 解出 `align` `v=1`；Trial 3–4 斜摆抓取截断按操作者要求降级，先集中打通 S6→S8 放置。** [V62 批次报告](../../Claude-advice/HARNESS/evidence/20261127-v62-batch/report.md) · [最新交接](../../Claude-advice/HARNESS/handoff/20261127-06-codex.md)
 
-当前等待 Claude 审阅合并本轮 PR 并裁定 S6 `align` 机载 `bounded_IK_wall_time_exceeded`、S5 `live_scene.latest` 竞态与 V58 Trial 1 远景误检三项议题。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
+当前等待 Claude 审阅合并本轮 PR 并裁定 `owner_bridge.py:1399` 误记 `contact_fault` 修复（发 V63 优先冲首次 S6→S8）、`transfer_above_hole` 15 s IK 上限副作用与斜摆抓取降级安排。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
 
 ## 现在做
 
-- [ ] **S6 `align` `variant=1` 机载 `bounded_IK_wall_time_exceeded` 修复（待 Claude 裁定，V60 Trial 1 & 2 暴露）：** 离线 6000D 复现证实 `variant=1` 已有 21/22 路点合法且复核全过解（3.81–4.89 s），仅因 F1-09 ARM 单候选 IK 墙钟上限过紧被截断。
-- [ ] **S5 `inspect_plan('align')` 与 `owner_perception_stage_advanced` 清空 `live_scene.latest` 竞态修复（待 Claude 裁定，V60 Trial 3 暴露）。**
-- [ ] **V60 后续补跑完整 10 次批次并冲击首次 S6→S7→S8 放置成功（含 H-37 近身补验）。**
+- [ ] **P0 修复 `owner_bridge.py:1399-1400` 飞行中路点到达轮询误记 `contact_fault = waypoint_tracking_failed`（待 Claude 裁定后立即修并冻结 V63）：** 仅在真实终态运动故障/堵转/超时/未知或部分发布时记 `contact_fault`，补飞行中 `proof.accepted=False → True` 回归测试，上线 V63 优先跑通首次 S6→S7→S8 完整放置。
+- [ ] **P1 `transfer_above_hole` 规划因全局 `ik.max_wall_s=15.0` 拉长至 17–31 s（待 Claude 裁定是否暂保留先冲 S8 或改为仅对 `align` 生效）。**
+- [ ] **P2 斜摆积木 `approach_grasp` 到位后右腕 `mask_truncated`（Trial 3 & 4，按操作者指示降为低优先级，待首次 S8 跑通后再治理）。**
 - [ ] **H-31（P1，第一批之后做）：修复 `support_lift` 首步下探。** 不改审计代码、不改 `1e-9` 与 `1.0 mm` 阈值，修完后 Replay A 必须审计全过。
 - [ ] **H-38 动态避让（P2，backlog）：** 静态预设部分已由 V6 关闭；动态避让触发条件不变（首次 S8 后或左臂遮挡成为首要停因）。
 

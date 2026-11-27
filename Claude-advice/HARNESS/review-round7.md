@@ -71,7 +71,7 @@ flowchart LR
 2. H-43 要改 `DAgger/F1/src/f1dagger/harness_compute.py`。动手前先读 `DAgger/AGENTS.md`，改动只限下文写的那一处，单独提交，提交信息写明 `control_manifest_sha256` 的变化。
 3. 不放宽：碰撞余量和碰撞模型、关节限位、H-33 的 50°、分数和面积阈值、面拟合阈值、15 秒观测窗口、`intent.budget_ms`。H-32 的允许原因码不变，只有保留时长按 H-42 修订。
 
-## H-42 `[ ]` P0：对准和插入复用运输前实测的方孔
+## H-42 `[x]` P0：对准和插入复用运输前实测的方孔
 
 **代码事实**
 
@@ -100,7 +100,10 @@ flowchart LR
 2. 用 V60 Trial 1–3、V58 Trial 2–3 的原始输入，从运输到位接续做零输出回放：报告每次是否直接得到可以执行的 `align` 计划（不经横移）、选中的候选、`arm_r_j6` 范围、最小余量、6000D 上的规划耗时，以及缓存的年龄。
 3. 全量 pytest、`check_native_integration.py`、三条零输出回放；另加一条从运输到位直接对准的回放。
 
-## H-43 `[ ]` P0：IK 墙钟上限改为站点配置，对准先试余量大的候选
+> **执行记录（2026-11-27）**：已完成 `contracts.py`、`engine.py`、`owner_bridge.py`、`scene_pipeline.py`、`observation.py`、`revalidation.py`、`verification.py` 改动，实现持块周期内运输前实测方孔缓存（45 s 上限、接触故障/撤权/桶位移/换闭爪作废、兼容 2/3 哈希头部/跨视角直接实测）、H-32 45 s 同步修订与接触故障作废、`align`/`insert`/`release` 允许而 `verify_placed` 拒绝、H-39 自动降级为备用路径。单测 85 passed；V60 Trial 1–3 与 V58 Trial 2–3 共 5 次真实试验从运输到位直接进入 `align` 零输出回放 **5/5 不经横移即解出 `v=1`**（6000D 规划 3.07–4.35 s，缓存年龄 7.60–14.84 s，`arm_r_j6 ∈ [0.17°, 36.12°]`，最小余量 17.06°–44.92°）且全部通过正式 `revalidate_candidate`（17–19 段）。证据见 [evidence/20261127-H42-cached-aperture/report.md](evidence/20261127-H42-cached-aperture/report.md)。已在 V62（`e9d6a8feb0f3`；V61 `2dd3292b7a64` 因 `ForwardKinematics.__init__` 提前读 `idx_qs` 触发 17 例单测 setup 失败已取消未复用）上完成全量 3,195 pytest + 62 原生集成 + 四套冻结零输出回放与审计（含第 4 条 V60 Trial 2 到位缓存直对准回放），并已部署至 6000D 与 F1-09 ARM，见 [evidence/20261127-v62-deploy/report.md](evidence/20261127-v62-deploy/report.md)。
+> - `[!]` **V62 真机批次暴露实现缺陷（2026-11-27）**：V62 真机 Trial 1 & 2 均顺利通过 S0→S5 并在运输前 14.59 s / 7.09 s 直接实测方孔，但 `owner_bridge.py:1399-1400` 把正常飞行途中的路点到达轮询 `proof.get('accepted') is False` 误记为 `contact_fault = waypoint_tracking_failed`，导致到位后 H-32、H-42 与 H-39 同时作废、未能进入 `align`。离线去掉该误记后，V62 Trial 1 & 2 原始数据在 6000D 上均 3.11 s / 3.01 s 一次解出 `align` `v=1` 并通过 `revalidate_plan`（17 / 18 段）。详见 [evidence/20261127-v62-batch/report.md](evidence/20261127-v62-batch/report.md) 与 [handoff/20261127-06-codex.md](handoff/20261127-06-codex.md)。
+
+## H-43 `[x]` P0：IK 墙钟上限改为站点配置，对准先试余量大的候选
 
 **代码事实**：`harness_compute.py:168` 是 `deadline=planning_deadline(scene,7.,'bounded_IK_wall_time_exceeded')`。`planning_deadline`（`:8-16`）取 `min(scene.planning_budget_s, maximum_s)`，调用方只能缩短时限，不能延长。`NUMERICAL_RPC_TIMEOUT_S = 18`。
 
@@ -117,18 +120,27 @@ flowchart LR
 - 用 V60 Trial 1–2 的原始输入：排序后 v=1 是否排第一，6000D 上的总耗时。
 - **在 ARM 上计时**：V61 上线后，上电时先在 F1-09 上用 Trial 1–2 的输入，离线（零输出）跑一次对准规划，记录 v=1 的实际耗时，再开始真机试验。如果超过 15 秒，停下交接，不要继续调大。
 
-## H-44 `[ ]` P1：S5 读取场景的竞态
+> **执行记录（2026-11-27，离线与 F1-09 ARM 实机计时全部完成）**：
+> - 独立提交 `6b04361` 修改 `DAgger/F1/src/f1dagger/harness_compute.py` 读取 `spec['ik']['max_wall_s']`（缺省 7.0，上限 16.0），`control_manifest_sha256` 从 `8c0d2f85...` 变更为 `a62cb692...`；V62 F1-09 站点 `numerics.local.json` 设为 `15.0`。
+> - 在 `numerical_service.py`/`numerical_pool.py`/`transport.py`/`skill_services.py` 新增 `endpoint_ik` 终点最小关节余量排序（`c92bff7` 改为延迟解析索引避免假模型单测 setup 失败；保留全部 4 个变体，超 1 s 告警不阻塞）。单测 15 passed；6000D 回放 V60 Trial 1–2 排序耗时 15.08 ms / 14.87 ms，均将 `v=1` 排第 1（4.930 s / 3.861 s）且复核通过。
+> - **F1-09 ARM 实机离线零输出计时通过**：在已部署 V62（`e9d6a8feb0f3`）的 F1-09 ARM（`ms-thor`，`aarch64`，`ik.max_wall_s=15.0`）上实测 4 组输入全部将 `v=1` 排第 1（排序仅 28.4–28.9 ms），总规划耗时：V60 Trial 1 横移后 **9.186 s** / 到位缓存直对准 **7.868 s**；V60 Trial 2 横移后 **7.417 s** / 到位缓存直对准 **5.664 s**，全部远低于 15 s 门槛并通过 `revalidate_plan`（38–41 ms）。证据见 [evidence/20261127-H43-ik-wall-and-order/report.md](evidence/20261127-H43-ik-wall-and-order/report.md) 与 [f1-09-arm-offline-align-timing.json](evidence/20261127-H43-ik-wall-and-order/f1-09-arm-offline-align-timing.json)。
+
+## H-44 `[x]` P1：S5 读取场景的竞态
 
 - 只改 `live_scene.py` 的 `aperture_observation()`：当 `viewpoint.move` 存在、作用域一致，只是 `self.latest is None`（因为 `owner_perception_stage_advanced` 刚刚清空）时，最多等 1.5 秒，等到下一帧场景再判断；超时后照原逻辑返回。
 - 不改场景失效的触发条件，不改 `recovery_programs.py`。
 - 测试：清空后 0.3 秒有新帧时，返回 `observation_move`；1.5 秒内没有新帧时，返回原来的原因；作用域变了时不返回候选。
 - 用 V60 Trial 3 的原始输入回放，确认会给出横移候选。注意：有 H-42 之后，Trial 3 应该直接用缓存的孔对准；这条回放要在关闭缓存的条件下做，专门检验备用路径。
 
-## H-45 `[ ]` P1：排除桌面以外的远处候选
+> **执行记录（2026-11-27）**：仅修改 `live_scene.py` 的 `aperture_observation()`，在 `self.latest is None`、`viewpoint.move` 存在且作用域匹配时最多等待 1.5 s 后重检。单测 `test_held_aperture_view.py` 13 passed；关闭缓存回放 V60 Trial 3 `OBS:108` 竞态（0.35 s 后下一帧到达）等待 0.3616 s 即返回 `noncontact_lateral_aperture_reobservation_without_prior_view`（右移 0.1194 m）。`[!]` 备忘：`remote.py:532` 仍带 `timeout_s=1`，若帧间隔在 1.0–1.5 s 之间会先触发远端 1 s 超时（本轮按规格未改 `remote.py`）。证据见 [evidence/20261127-H44-scene-race/report.md](evidence/20261127-H44-scene-race/report.md)。
+
+## H-45 `[x]` P1：排除桌面以外的远处候选
 
 - 在 H-36 的同一条路径上（`scene_pipeline.py` 计算排除区域、`mask_service.py` 过滤候选）增加一条排除：候选框中心像素的对齐深度无效，或者按当前相机位姿换算到世界坐标后，高度低于桌面支撑面 5 cm 以上，就排除。桌面高度用站点配置里现有的支撑面或桌面参数；没有这个参数时标 `[!]`，不另设数值。
 - 只减少候选，排除后仍然必须恰好剩 1 个，之后照常过阈值。
 - 测试：深度无效 → 排除；低于桌面 5 cm 以上 → 排除；桌上的积木 → 保留。用 V58 Trial 1 的两帧离线回放，确认在排除远处误检之后 `remaining = 1`，并得到确认的积木掩码。
+
+> **执行记录（2026-11-27）**：已在 `services.py`（从 `plan.local.json` 提取已有 `table` 半空间 `point`/`normal`）、`scene_pipeline.py` 与 `mask_service.py` 实现中心像素深度无效或低于桌面支撑面 5 cm 以上的只减不增排除。单测 `test_fixture_exclusion.py` 14 passed；V58 Trial 1 两帧真实快照（`:4`、`:5`）接真实 SAM3/SAM2 回放均将 34/33 候选排至 `remaining = 1`（桶排除 32/31 + 低于桌面 1），恢复出 `confirmed` 积木掩码（7061/7075 px，score 0.99995，位姿 `[0.820, -0.313, 0.546] m`）。证据见 [evidence/20261127-H45-far-field/report.md](evidence/20261127-H45-far-field/report.md)。
 
 ## V61 真机
 

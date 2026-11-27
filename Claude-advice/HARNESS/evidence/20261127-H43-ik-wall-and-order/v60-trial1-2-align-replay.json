@@ -1,0 +1,168 @@
+{
+  "V60-Trial1": {
+    "observation_id": "c50ebca5033b4aec84f8d04f5eef94b4:131",
+    "ordered_variants": [
+      1,
+      0,
+      2,
+      3
+    ],
+    "v1_ranked_first": true,
+    "ranking_elapsed_ms": 15.081,
+    "ranking_details": [
+      {
+        "variant": 1,
+        "endpoint_ik": {
+          "converged": true,
+          "min_margin_deg": 42.8632,
+          "final_arm_deg": [
+            2.113,
+            -28.1561,
+            5.4116,
+            -102.1368,
+            65.6586,
+            4.6914,
+            36.2069
+          ],
+          "position_error_m": 0.000266,
+          "rotation_error_rad": 0.000501,
+          "elapsed_ms": 0.786
+        }
+      },
+      {
+        "variant": 0,
+        "endpoint_ik": {
+          "converged": false,
+          "min_margin_deg": null,
+          "final_arm_deg": null,
+          "position_error_m": 0.007421,
+          "rotation_error_rad": 0.027619,
+          "elapsed_ms": 4.841
+        }
+      },
+      {
+        "variant": 2,
+        "endpoint_ik": {
+          "converged": false,
+          "min_margin_deg": null,
+          "final_arm_deg": null,
+          "position_error_m": 0.254169,
+          "rotation_error_rad": 0.713584,
+          "elapsed_ms": 4.658
+        }
+      },
+      {
+        "variant": 3,
+        "endpoint_ik": {
+          "converged": false,
+          "min_margin_deg": null,
+          "final_arm_deg": null,
+          "position_error_m": 0.090312,
+          "rotation_error_rad": 1.096194,
+          "elapsed_ms": 4.697
+        }
+      }
+    ],
+    "selected_variant": 1,
+    "attempts_count": 1,
+    "attempts": [
+      {
+        "variant": 1,
+        "outcome": "planned",
+        "elapsed_s": 4.87
+      }
+    ],
+    "total_plan_s": 4.9303,
+    "waypoint_count": 21,
+    "arm_r_j6_range_deg": [
+      -6.68,
+      10.6
+    ],
+    "revalidation_passed": true,
+    "revalidation_swept_segments": 21,
+    "robot_actions": 0
+  },
+  "V60-Trial2": {
+    "observation_id": "078860e21fbd4777a77df00929596a46:117",
+    "ordered_variants": [
+      1,
+      0,
+      2,
+      3
+    ],
+    "v1_ranked_first": true,
+    "ranking_elapsed_ms": 14.874,
+    "ranking_details": [
+      {
+        "variant": 1,
+        "endpoint_ik": {
+          "converged": true,
+          "min_margin_deg": 23.8865,
+          "final_arm_deg": [
+            4.4117,
+            -56.2637,
+            16.1729,
+            -53.1671,
+            54.537,
+            2.1603,
+            66.1135
+          ],
+          "position_error_m": 0.000732,
+          "rotation_error_rad": 0.000143,
+          "elapsed_ms": 0.819
+        }
+      },
+      {
+        "variant": 0,
+        "endpoint_ik": {
+          "converged": false,
+          "min_margin_deg": null,
+          "final_arm_deg": null,
+          "position_error_m": 0.00103,
+          "rotation_error_rad": 0.000242,
+          "elapsed_ms": 4.714
+        }
+      },
+      {
+        "variant": 2,
+        "endpoint_ik": {
+          "converged": false,
+          "min_margin_deg": null,
+          "final_arm_deg": null,
+          "position_error_m": 0.330559,
+          "rotation_error_rad": 0.31913,
+          "elapsed_ms": 4.604
+        }
+      },
+      {
+        "variant": 3,
+        "endpoint_ik": {
+          "converged": false,
+          "min_margin_deg": null,
+          "final_arm_deg": null,
+          "position_error_m": 0.225302,
+          "rotation_error_rad": 1.224202,
+          "elapsed_ms": 4.637
+        }
+      }
+    ],
+    "selected_variant": 1,
+    "attempts_count": 1,
+    "attempts": [
+      {
+        "variant": 1,
+        "outcome": "planned",
+        "elapsed_s": 3.8039
+      }
+    ],
+    "total_plan_s": 3.8608,
+    "waypoint_count": 22,
+    "arm_r_j6_range_deg": [
+      -3.48,
+      30.68
+    ],
+    "revalidation_passed": true,
+    "revalidation_swept_segments": 22,
+    "robot_actions": 0
+  }
+}
