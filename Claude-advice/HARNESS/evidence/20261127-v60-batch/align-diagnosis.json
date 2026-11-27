@@ -1,0 +1,934 @@
+{
+  "V60-Trial1": {
+    "run_id": "web-ecd7898e2866457eb1b11def567d6381",
+    "observation_id": "c50ebca5033b4aec84f8d04f5eef94b4:131",
+    "start_arm_deg": [
+      -44.1,
+      -39.31,
+      29.1,
+      -129.63,
+      45.02,
+      8.85,
+      -66.64
+    ],
+    "start_eef_xyz": [
+      0.4478,
+      -0.1484,
+      0.8688
+    ],
+    "start_eef_z": [
+      0.0445,
+      0.0958,
+      0.9944
+    ],
+    "start_block_xyz": [
+      0.7197,
+      -0.1472,
+      0.8141
+    ],
+    "start_block_z": [
+      -0.3329,
+      0.0737,
+      0.9401
+    ],
+    "hole_xyz": [
+      0.6666,
+      -0.0328,
+      0.7681
+    ],
+    "hole_z_axis": [
+      -0.0271,
+      -0.0489,
+      0.9984
+    ],
+    "eef_object_translation_m": [
+      0.0038,
+      -0.2749,
+      -0.0409
+    ],
+    "eef_object_z_axis": [
+      -0.0181,
+      0.3758,
+      0.9265
+    ],
+    "eef_to_block_dist_m": 0.278,
+    "candidates": [
+      {
+        "variant": 0,
+        "route_family": "overhead_square_alignment",
+        "stage_keys": [
+          "name",
+          "route_family",
+          "goals",
+          "gripper",
+          "eef_object",
+          "allow_target_contact"
+        ],
+        "goals": [
+          {
+            "idx": 0,
+            "eef_xyz": [
+              0.4478,
+              -0.1484,
+              0.8688
+            ],
+            "eef_z": [
+              0.0445,
+              0.0958,
+              0.9944
+            ],
+            "blk_xyz": [
+              0.7205,
+              -0.147,
+              0.8153
+            ]
+          },
+          {
+            "idx": 1,
+            "eef_xyz": [
+              0.4824,
+              -0.1052,
+              0.9524
+            ],
+            "eef_z": [
+              0.3459,
+              -0.1073,
+              0.9321
+            ],
+            "blk_xyz": [
+              0.7205,
+              -0.147,
+              0.8153
+            ]
+          },
+          {
+            "idx": 2,
+            "eef_xyz": [
+              0.4271,
+              0.0065,
+              0.9564
+            ],
+            "eef_z": [
+              0.3459,
+              -0.1073,
+              0.9321
+            ],
+            "blk_xyz": [
+              0.6652,
+              -0.0353,
+              0.8193
+            ]
+          },
+          {
+            "idx": 3,
+            "eef_xyz": [
+              0.4274,
+              0.0071,
+              0.9452
+            ],
+            "eef_z": [
+              0.3459,
+              -0.1073,
+              0.9321
+            ],
+            "blk_xyz": [
+              0.6656,
+              -0.0348,
+              0.8081
+            ]
+          }
+        ],
+        "cart_probe": {
+          "ok": false,
+          "err": "'SkillGeometry' object is not subscriptable",
+          "diag": null
+        }
+      },
+      {
+        "variant": 1,
+        "route_family": "overhead_square_alignment",
+        "stage_keys": [
+          "name",
+          "route_family",
+          "goals",
+          "gripper",
+          "eef_object",
+          "allow_target_contact"
+        ],
+        "goals": [
+          {
+            "idx": 0,
+            "eef_xyz": [
+              0.4478,
+              -0.1484,
+              0.8688
+            ],
+            "eef_z": [
+              0.0445,
+              0.0958,
+              0.9944
+            ],
+            "blk_xyz": [
+              0.7205,
+              -0.147,
+              0.8153
+            ]
+          },
+          {
+            "idx": 1,
+            "eef_xyz": [
+              0.6682,
+              -0.388,
+              0.9436
+            ],
+            "eef_z": [
+              0.0365,
+              0.3254,
+              0.9449
+            ],
+            "blk_xyz": [
+              0.7205,
+              -0.147,
+              0.8153
+            ]
+          },
+          {
+            "idx": 2,
+            "eef_xyz": [
+              0.6129,
+              -0.2763,
+              0.9476
+            ],
+            "eef_z": [
+              0.0365,
+              0.3254,
+              0.9449
+            ],
+            "blk_xyz": [
+              0.6652,
+              -0.0353,
+              0.8193
+            ]
+          },
+          {
+            "idx": 3,
+            "eef_xyz": [
+              0.6132,
+              -0.2758,
+              0.9364
+            ],
+            "eef_z": [
+              0.0365,
+              0.3254,
+              0.9449
+            ],
+            "blk_xyz": [
+              0.6656,
+              -0.0348,
+              0.8081
+            ]
+          }
+        ],
+        "cart_probe": {
+          "ok": false,
+          "err": "'SkillGeometry' object is not subscriptable",
+          "diag": null
+        }
+      },
+      {
+        "variant": 2,
+        "route_family": "overhead_square_alignment",
+        "stage_keys": [
+          "name",
+          "route_family",
+          "goals",
+          "gripper",
+          "eef_object",
+          "allow_target_contact"
+        ],
+        "goals": [
+          {
+            "idx": 0,
+            "eef_xyz": [
+              0.4478,
+              -0.1484,
+              0.8688
+            ],
+            "eef_z": [
+              0.0445,
+              0.0958,
+              0.9944
+            ],
+            "blk_xyz": [
+              0.7205,
+              -0.147,
+              0.8153
+            ]
+          },
+          {
+            "idx": 1,
+            "eef_xyz": [
+              0.7652,
+              0.0801,
+              0.9691
+            ],
+            "eef_z": [
+              -0.0867,
+              -0.4159,
+              0.9053
+            ],
+            "blk_xyz": [
+              0.7205,
+              -0.147,
+              0.8153
+            ]
+          },
+          {
+            "idx": 2,
+            "eef_xyz": [
+              0.7099,
+              0.1918,
+              0.9731
+            ],
+            "eef_z": [
+              -0.0867,
+              -0.4159,
+              0.9053
+            ],
+            "blk_xyz": [
+              0.6652,
+              -0.0353,
+              0.8193
+            ]
+          },
+          {
+            "idx": 3,
+            "eef_xyz": [
+              0.7102,
+              0.1924,
+              0.9619
+            ],
+            "eef_z": [
+              -0.0867,
+              -0.4159,
+              0.9053
+            ],
+            "blk_xyz": [
+              0.6656,
+              -0.0348,
+              0.8081
+            ]
+          }
+        ],
+        "cart_probe": {
+          "ok": false,
+          "err": "'SkillGeometry' object is not subscriptable",
+          "diag": null
+        }
+      },
+      {
+        "variant": 3,
+        "route_family": "overhead_square_alignment",
+        "stage_keys": [
+          "name",
+          "route_family",
+          "goals",
+          "gripper",
+          "eef_object",
+          "allow_target_contact"
+        ],
+        "goals": [
+          {
+            "idx": 0,
+            "eef_xyz": [
+              0.4478,
+              -0.1484,
+              0.8688
+            ],
+            "eef_z": [
+              0.0445,
+              0.0958,
+              0.9944
+            ],
+            "blk_xyz": [
+              0.7205,
+              -0.147,
+              0.8153
+            ]
+          },
+          {
+            "idx": 1,
+            "eef_xyz": [
+              0.951,
+              -0.2027,
+              0.9603
+            ],
+            "eef_z": [
+              -0.3961,
+              0.0168,
+              0.918
+            ],
+            "blk_xyz": [
+              0.7205,
+              -0.147,
+              0.8153
+            ]
+          },
+          {
+            "idx": 2,
+            "eef_xyz": [
+              0.8957,
+              -0.091,
+              0.9643
+            ],
+            "eef_z": [
+              -0.3961,
+              0.0168,
+              0.918
+            ],
+            "blk_xyz": [
+              0.6652,
+              -0.0353,
+              0.8193
+            ]
+          },
+          {
+            "idx": 3,
+            "eef_xyz": [
+              0.896,
+              -0.0905,
+              0.9531
+            ],
+            "eef_z": [
+              -0.3961,
+              0.0168,
+              0.918
+            ],
+            "blk_xyz": [
+              0.6656,
+              -0.0348,
+              0.8081
+            ]
+          }
+        ],
+        "cart_probe": {
+          "ok": false,
+          "err": "'SkillGeometry' object is not subscriptable",
+          "diag": null
+        }
+      }
+    ],
+    "per_variant_exact": [
+      {
+        "variant": 0,
+        "planned": false,
+        "err": "registered_candidates_exhausted:{\"diagnostic\":{\"code\":\"registered_candidates_exhausted\",\"metrics\":{\"goal_index\":1,\"iterations\":125,\"position_error_m\":0.0019371761154457488,\"rotation_error_rad\":0.0042015410179598875,\"goal\":[[0.20806858453711208,-0.9148954750420912,0.345938916394741,0.48238533896578484],[0.9774762660072442,0.18172144112788485,-0.10731946341155373,-0.10515815639378973],[0.03532157302961719,0.3604768891095356,0.932099135766534,0.9524044550441931],[0.0,0.0,0.0,1.0]],\"final_arm_deg\":[-33.43628062603339,-52.9326800608284,35.71049186212631,-128.36867242627176,76.37450373120495,20.000000000027864,-89.99999999997083],\"limits\":{\"min_constraint_margin_rad\":1.0658141036401503e-14,\"active_planes\":[13,17],\"discarded_translation_m\":0.0019371761154457488,\"discarded_rotation_rad\":0.004201541017959603,\"numerical_correction_rad\":2.4467246092197064e-13,\"publication_lead_rad\":[-3.3306690738754696e-16,3.3306690738754696e-16,-1.1102230246251565e-16,-4.440892098500626e-16,-2.220446049250313e-16,0.0,0.0],\"publication_lead_limit_rad\":0.03},\"stalled_ticks\":22,\"cartesian_waypoint_index\":26,\"cartesian_waypoint_count\":26,\"solves\":99,\"termination\":\"cartesian_no_progress\",\"cartesian_stalled_ticks\":25,\"route_family\":\"overhead_square_alignment\",\"stage_index\":0}},\"candidates\":[{\"variant\":0,\"diagnostic\":{\"error_type\":\"HarnessError\",\"code\":\"bounded_IK_did_not_reach_goal\",\"metrics\":{\"goal_index\":1,\"iterations\":125,\"position_error_m\":0.0019371761154457488,\"rotation_error_rad\":0.0042015410179598875,\"goal\":[[0.20806858453711208,-0.9148954750420912,0.345938916394741,0.48238533896578484],[0.9774762660072442,0.18172144112788485,-0.10731946341155373,-0.10515815639378973],[0.03532157302961719,0.3604768891095356,0.932099135766534,0.9524044550441931],[0.0,0.0,0.0,1.0]],\"final_arm_deg\":[-33.43628062603339,-52.9326800608284,35.71049186212631,-128.36867242627176,76.37450373120495,20.000000000027864,-89.99999999997083],\"limits\":{\"min_constraint_margin_rad\":1.0658141036401503e-14,\"active_planes\":[13,17],\"discarded_translation_m\":0.0019371761154457488,\"discarded_rotation_rad\":0.004201541017959603,\"numerical_correction_rad\":2.4467246092197064e-13,\"publication_lead_rad\":[-3.3306690738754696e-16,3.3306690738754696e-16,-1.1102230246251565e-16,-4.440892098500626e-16,-2.220446049250313e-16,0.0,0.0],\"publication_lead_limit_rad\":0.03},\"stalled_ticks\":22,\"cartesian_waypoint_index\":26,\"cartesian_waypoint_count\":26,\"solves\":99,\"termination\":\"cartesian_no_progress\",\"cartesian_stalled_ticks\":25,\"route_family\":\"overhead_square_alignment\",\"stage_index\":0}}}]}",
+        "details": {}
+      },
+      {
+        "variant": 1,
+        "planned": true,
+        "targets": 21
+      },
+      {
+        "variant": 2,
+        "planned": false,
+        "err": "registered_candidates_exhausted:{\"diagnostic\":{\"code\":\"registered_candidates_exhausted\",\"metrics\":{\"goal_index\":1,\"iterations\":172,\"position_error_m\":0.0011542420702974458,\"rotation_error_rad\":0.002874244802887559,\"goal\":[[0.9781666132237133,0.188872120766566,-0.08670293404257479,0.76519969531163],[-0.20781448863105456,0.8853406502943388,-0.41591474036337206,0.08014000110827574],[-0.0017930670629150015,0.42485203887202244,0.9052610286414129,0.9691443577388986],[0.0,0.0,0.0,1.0]],\"final_arm_deg\":[-47.11003274261626,-93.9999999999994,62.32846553017007,-97.93537189435462,20.19737834905702,28.549227836771333,-81.23704146730877],\"limits\":{\"min_constraint_margin_rad\":1.0436096431476471e-14,\"active_planes\":[8,17],\"discarded_translation_m\":0.0011542420702974458,\"discarded_rotation_rad\":0.002874244802887268,\"numerical_correction_rad\":9.441655232293547e-13,\"publication_lead_rad\":[1.1102230246251565e-16,0.0,0.0,0.0,1.1102230246251565e-16,0.0,0.0],\"publication_lead_limit_rad\":0.03},\"stalled_ticks\":22,\"cartesian_waypoint_index\":47,\"cartesian_waypoint_count\":106,\"solves\":125,\"termination\":\"cartesian_no_progress\",\"cartesian_stalled_ticks\":25,\"route_family\":\"overhead_square_alignment\",\"stage_index\":0}},\"candidates\":[{\"variant\":2,\"diagnostic\":{\"error_type\":\"HarnessError\",\"code\":\"bounded_IK_did_not_reach_goal\",\"metrics\":{\"goal_index\":1,\"iterations\":172,\"position_error_m\":0.0011542420702974458,\"rotation_error_rad\":0.002874244802887559,\"goal\":[[0.9781666132237133,0.188872120766566,-0.08670293404257479,0.76519969531163],[-0.20781448863105456,0.8853406502943388,-0.41591474036337206,0.08014000110827574],[-0.0017930670629150015,0.42485203887202244,0.9052610286414129,0.9691443577388986],[0.0,0.0,0.0,1.0]],\"final_arm_deg\":[-47.11003274261626,-93.9999999999994,62.32846553017007,-97.93537189435462,20.19737834905702,28.549227836771333,-81.23704146730877],\"limits\":{\"min_constraint_margin_rad\":1.0436096431476471e-14,\"active_planes\":[8,17],\"discarded_translation_m\":0.0011542420702974458,\"discarded_rotation_rad\":0.002874244802887268,\"numerical_correction_rad\":9.441655232293547e-13,\"publication_lead_rad\":[1.1102230246251565e-16,0.0,0.0,0.0,1.1102230246251565e-16,0.0,0.0],\"publication_lead_limit_rad\":0.03},\"stalled_ticks\":22,\"cartesian_waypoint_index\":47,\"cartesian_waypoint_count\":106,\"solves\":125,\"termination\":\"cartesian_no_progress\",\"cartesian_stalled_ticks\":25,\"route_family\":\"overhead_square_alignment\",\"stage_index\":0}}}]}",
+        "details": {}
+      },
+      {
+        "variant": 3,
+        "planned": false,
+        "err": "registered_candidates_exhausted:{\"diagnostic\":{\"code\":\"registered_candidates_exhausted\",\"metrics\":{\"goal_index\":1,\"iterations\":475,\"position_error_m\":0.0016145887480882636,\"rotation_error_rad\":0.0020290640885164855,\"goal\":[[-0.20708652507824055,0.8945379174330096,-0.396127612526265,0.9510263998667484],[-0.9757046169451075,-0.21844676108657785,0.01677835041882508,-0.20268607614856712],[-0.0715239232917844,0.389978110726198,0.9180421567398176,0.9603444958709939],[0.0,0.0,0.0,1.0]],\"final_arm_deg\":[7.601656093703237,-74.43049138809612,9.92956031198121,-36.584516938807965,58.51132605585824,-20.00000000319868,89.99999999672075],\"limits\":{\"min_constraint_margin_rad\":1.0658141036401503e-14,\"active_planes\":[6,14],\"discarded_translation_m\":0.0016145887480882636,\"discarded_rotation_rad\":0.0020290640885161438,\"numerical_correction_rad\":1.896706788621192e-11,\"publication_lead_rad\":[-2.7755575615628914e-17,0.0,-2.7755575615628914e-16,0.0,0.0,5.551115123125783e-17,0.0],\"publication_lead_limit_rad\":0.03},\"stalled_ticks\":22,\"cartesian_waypoint_index\":115,\"cartesian_waypoint_count\":166,\"solves\":360,\"termination\":\"cartesian_no_progress\",\"cartesian_stalled_ticks\":25,\"route_family\":\"overhead_square_alignment\",\"stage_index\":0}},\"candidates\":[{\"variant\":3,\"diagnostic\":{\"error_type\":\"HarnessError\",\"code\":\"bounded_IK_did_not_reach_goal\",\"metrics\":{\"goal_index\":1,\"iterations\":475,\"position_error_m\":0.0016145887480882636,\"rotation_error_rad\":0.0020290640885164855,\"goal\":[[-0.20708652507824055,0.8945379174330096,-0.396127612526265,0.9510263998667484],[-0.9757046169451075,-0.21844676108657785,0.01677835041882508,-0.20268607614856712],[-0.0715239232917844,0.389978110726198,0.9180421567398176,0.9603444958709939],[0.0,0.0,0.0,1.0]],\"final_arm_deg\":[7.601656093703237,-74.43049138809612,9.92956031198121,-36.584516938807965,58.51132605585824,-20.00000000319868,89.99999999672075],\"limits\":{\"min_constraint_margin_rad\":1.0658141036401503e-14,\"active_planes\":[6,14],\"discarded_translation_m\":0.0016145887480882636,\"discarded_rotation_rad\":0.0020290640885161438,\"numerical_correction_rad\":1.896706788621192e-11,\"publication_lead_rad\":[-2.7755575615628914e-17,0.0,-2.7755575615628914e-16,0.0,0.0,5.551115123125783e-17,0.0],\"publication_lead_limit_rad\":0.03},\"stalled_ticks\":22,\"cartesian_waypoint_index\":115,\"cartesian_waypoint_count\":166,\"solves\":360,\"termination\":\"cartesian_no_progress\",\"cartesian_stalled_ticks\":25,\"route_family\":\"overhead_square_alignment\",\"stage_index\":0}}}]}",
+        "details": {}
+      }
+    ],
+    "variant1_verified": {
+      "variant": 1,
+      "planned": true,
+      "targets": 21,
+      "solve_wall_6000d_s": 4.894,
+      "arm_r_j6_range_deg": [
+        -6.68,
+        10.6
+      ],
+      "final_arm_deg": [
+        -9.78,
+        -29.48,
+        20.2,
+        -102.13,
+        60.53,
+        9.57,
+        38.7
+      ],
+      "revalidation_passed": true,
+      "revalidation_schema": "f1-harness-plan-revalidation-v1"
+    }
+  },
+  "V60-Trial2": {
+    "run_id": "web-1b689a7a87dd4dedb69570ca214c910a",
+    "observation_id": "078860e21fbd4777a77df00929596a46:117",
+    "start_arm_deg": [
+      -65.28,
+      -83.31,
+      74.68,
+      -113.46,
+      3.01,
+      28.97,
+      -15.72
+    ],
+    "start_eef_xyz": [
+      0.5361,
+      -0.1575,
+      0.8686
+    ],
+    "start_eef_z": [
+      0.0492,
+      0.0971,
+      0.9941
+    ],
+    "start_block_xyz": [
+      0.8064,
+      -0.1584,
+      0.8078
+    ],
+    "start_block_z": [
+      -0.3223,
+      0.0591,
+      0.9448
+    ],
+    "hole_xyz": [
+      0.7915,
+      -0.0453,
+      0.7713
+    ],
+    "hole_z_axis": [
+      -0.0171,
+      -0.022,
+      0.9996
+    ],
+    "eef_object_translation_m": [
+      0.0052,
+      -0.2726,
+      -0.0432
+    ],
+    "eef_object_z_axis": [
+      -0.0394,
+      0.3766,
+      0.9255
+    ],
+    "eef_to_block_dist_m": 0.276,
+    "candidates": [
+      {
+        "variant": 0,
+        "route_family": "overhead_square_alignment",
+        "stage_keys": [
+          "name",
+          "route_family",
+          "goals",
+          "gripper",
+          "eef_object",
+          "allow_target_contact"
+        ],
+        "goals": [
+          {
+            "idx": 0,
+            "eef_xyz": [
+              0.5361,
+              -0.1576,
+              0.8737
+            ],
+            "eef_z": [
+              0.0492,
+              0.0971,
+              0.9941
+            ],
+            "blk_xyz": [
+              0.8061,
+              -0.1553,
+              0.8167
+            ]
+          },
+          {
+            "idx": 1,
+            "eef_xyz": [
+              0.5685,
+              -0.1367,
+              0.9559
+            ],
+            "eef_z": [
+              0.3628,
+              -0.018,
+              0.9317
+            ],
+            "blk_xyz": [
+              0.8061,
+              -0.1553,
+              0.8167
+            ]
+          },
+          {
+            "idx": 2,
+            "eef_xyz": [
+              0.553,
+              -0.0277,
+              0.958
+            ],
+            "eef_z": [
+              0.3628,
+              -0.018,
+              0.9317
+            ],
+            "blk_xyz": [
+              0.7907,
+              -0.0463,
+              0.8188
+            ]
+          },
+          {
+            "idx": 3,
+            "eef_xyz": [
+              0.5532,
+              -0.0275,
+              0.9505
+            ],
+            "eef_z": [
+              0.3628,
+              -0.018,
+              0.9317
+            ],
+            "blk_xyz": [
+              0.7908,
+              -0.0461,
+              0.8113
+            ]
+          }
+        ],
+        "cart_probe": {
+          "ok": false,
+          "err": "'SkillGeometry' object is not subscriptable",
+          "diag": null
+        }
+      },
+      {
+        "variant": 1,
+        "route_family": "overhead_square_alignment",
+        "stage_keys": [
+          "name",
+          "route_family",
+          "goals",
+          "gripper",
+          "eef_object",
+          "allow_target_contact"
+        ],
+        "goals": [
+          {
+            "idx": 0,
+            "eef_xyz": [
+              0.5361,
+              -0.1576,
+              0.8737
+            ],
+            "eef_z": [
+              0.0492,
+              0.0971,
+              0.9941
+            ],
+            "blk_xyz": [
+              0.8061,
+              -0.1553,
+              0.8167
+            ]
+          },
+          {
+            "idx": 1,
+            "eef_xyz": [
+              0.782,
+              -0.3936,
+              0.9539
+            ],
+            "eef_z": [
+              -0.0183,
+              0.3582,
+              0.9334
+            ],
+            "blk_xyz": [
+              0.8061,
+              -0.1553,
+              0.8167
+            ]
+          },
+          {
+            "idx": 2,
+            "eef_xyz": [
+              0.7665,
+              -0.2846,
+              0.956
+            ],
+            "eef_z": [
+              -0.0183,
+              0.3582,
+              0.9334
+            ],
+            "blk_xyz": [
+              0.7907,
+              -0.0463,
+              0.8188
+            ]
+          },
+          {
+            "idx": 3,
+            "eef_xyz": [
+              0.7667,
+              -0.2844,
+              0.9485
+            ],
+            "eef_z": [
+              -0.0183,
+              0.3582,
+              0.9334
+            ],
+            "blk_xyz": [
+              0.7908,
+              -0.0461,
+              0.8113
+            ]
+          }
+        ],
+        "cart_probe": {
+          "ok": false,
+          "err": "'SkillGeometry' object is not subscriptable",
+          "diag": null
+        }
+      },
+      {
+        "variant": 2,
+        "route_family": "overhead_square_alignment",
+        "stage_keys": [
+          "name",
+          "route_family",
+          "goals",
+          "gripper",
+          "eef_object",
+          "allow_target_contact"
+        ],
+        "goals": [
+          {
+            "idx": 0,
+            "eef_xyz": [
+              0.5361,
+              -0.1576,
+              0.8737
+            ],
+            "eef_z": [
+              0.0492,
+              0.0971,
+              0.9941
+            ],
+            "blk_xyz": [
+              0.8061,
+              -0.1553,
+              0.8167
+            ]
+          },
+          {
+            "idx": 1,
+            "eef_xyz": [
+              0.8253,
+              0.0767,
+              0.9649
+            ],
+            "eef_z": [
+              -0.0134,
+              -0.3989,
+              0.9169
+            ],
+            "blk_xyz": [
+              0.8061,
+              -0.1553,
+              0.8167
+            ]
+          },
+          {
+            "idx": 2,
+            "eef_xyz": [
+              0.8099,
+              0.1857,
+              0.9671
+            ],
+            "eef_z": [
+              -0.0134,
+              -0.3989,
+              0.9169
+            ],
+            "blk_xyz": [
+              0.7907,
+              -0.0463,
+              0.8188
+            ]
+          },
+          {
+            "idx": 3,
+            "eef_xyz": [
+              0.81,
+              0.1859,
+              0.9596
+            ],
+            "eef_z": [
+              -0.0134,
+              -0.3989,
+              0.9169
+            ],
+            "blk_xyz": [
+              0.7908,
+              -0.0461,
+              0.8113
+            ]
+          }
+        ],
+        "cart_probe": {
+          "ok": false,
+          "err": "'SkillGeometry' object is not subscriptable",
+          "diag": null
+        }
+      },
+      {
+        "variant": 3,
+        "route_family": "overhead_square_alignment",
+        "stage_keys": [
+          "name",
+          "route_family",
+          "goals",
+          "gripper",
+          "eef_object",
+          "allow_target_contact"
+        ],
+        "goals": [
+          {
+            "idx": 0,
+            "eef_xyz": [
+              0.5361,
+              -0.1576,
+              0.8738
+            ],
+            "eef_z": [
+              0.0492,
+              0.0971,
+              0.9941
+            ],
+            "blk_xyz": [
+              0.8061,
+              -0.1553,
+              0.8168
+            ]
+          },
+          {
+            "idx": 1,
+            "eef_xyz": [
+              1.0388,
+              -0.1802,
+              0.9631
+            ],
+            "eef_z": [
+              -0.3945,
+              -0.0227,
+              0.9186
+            ],
+            "blk_xyz": [
+              0.8061,
+              -0.1553,
+              0.8168
+            ]
+          },
+          {
+            "idx": 2,
+            "eef_xyz": [
+              1.0234,
+              -0.0712,
+              0.9652
+            ],
+            "eef_z": [
+              -0.3945,
+              -0.0227,
+              0.9186
+            ],
+            "blk_xyz": [
+              0.7907,
+              -0.0463,
+              0.8189
+            ]
+          },
+          {
+            "idx": 3,
+            "eef_xyz": [
+              1.0235,
+              -0.071,
+              0.9576
+            ],
+            "eef_z": [
+              -0.3945,
+              -0.0227,
+              0.9186
+            ],
+            "blk_xyz": [
+              0.7908,
+              -0.0461,
+              0.8113
+            ]
+          }
+        ],
+        "cart_probe": {
+          "ok": false,
+          "err": "'SkillGeometry' object is not subscriptable",
+          "diag": null
+        }
+      }
+    ],
+    "per_variant_exact": [
+      {
+        "variant": 0,
+        "planned": false,
+        "err": "registered_candidates_exhausted:{\"diagnostic\":{\"code\":\"registered_candidates_exhausted\",\"metrics\":{\"goal_index\":2,\"iterations\":84,\"position_error_m\":0.0012087326827009402,\"rotation_error_rad\":0.002842159089532263,\"goal\":[[0.09034105251414876,-0.9274969698086962,0.3627504172657047,0.5530369601470355],[0.9957832408870412,0.08995582390517026,-0.017991301066225034,-0.027698689287278817],[-0.015944635435323887,0.36284613921248426,0.9317126423203311,0.95798929683177],[0.0,0.0,0.0,1.0]],\"final_arm_deg\":[-47.19144806476086,-93.9999999999994,59.921233003093704,-107.90534055750523,30.902345508190397,52.97827877110735,-56.19726425961437],\"limits\":{\"min_constraint_margin_rad\":1.0436096431476471e-14,\"active_planes\":[8,17],\"discarded_translation_m\":0.0012087326827009402,\"discarded_rotation_rad\":0.002842159089532089,\"numerical_correction_rad\":1.0579998847997448e-10,\"publication_lead_rad\":[2.220446049250313e-16,0.0,0.0,2.220446049250313e-16,-2.220446049250313e-16,1.1102230246251565e-16,-2.220446049250313e-16],\"publication_lead_limit_rad\":0.03},\"stalled_ticks\":22,\"cartesian_waypoint_index\":24,\"cartesian_waypoint_count\":28,\"solves\":60,\"termination\":\"cartesian_no_progress\",\"cartesian_stalled_ticks\":25,\"route_family\":\"overhead_square_alignment\",\"stage_index\":0}},\"candidates\":[{\"variant\":0,\"diagnostic\":{\"error_type\":\"HarnessError\",\"code\":\"bounded_IK_did_not_reach_goal\",\"metrics\":{\"goal_index\":2,\"iterations\":84,\"position_error_m\":0.0012087326827009402,\"rotation_error_rad\":0.002842159089532263,\"goal\":[[0.09034105251414876,-0.9274969698086962,0.3627504172657047,0.5530369601470355],[0.9957832408870412,0.08995582390517026,-0.017991301066225034,-0.027698689287278817],[-0.015944635435323887,0.36284613921248426,0.9317126423203311,0.95798929683177],[0.0,0.0,0.0,1.0]],\"final_arm_deg\":[-47.19144806476086,-93.9999999999994,59.921233003093704,-107.90534055750523,30.902345508190397,52.97827877110735,-56.19726425961437],\"limits\":{\"min_constraint_margin_rad\":1.0436096431476471e-14,\"active_planes\":[8,17],\"discarded_translation_m\":0.0012087326827009402,\"discarded_rotation_rad\":0.002842159089532089,\"numerical_correction_rad\":1.0579998847997448e-10,\"publication_lead_rad\":[2.220446049250313e-16,0.0,0.0,2.220446049250313e-16,-2.220446049250313e-16,1.1102230246251565e-16,-2.220446049250313e-16],\"publication_lead_limit_rad\":0.03},\"stalled_ticks\":22,\"cartesian_waypoint_index\":24,\"cartesian_waypoint_count\":28,\"solves\":60,\"termination\":\"cartesian_no_progress\",\"cartesian_stalled_ticks\":25,\"route_family\":\"overhead_square_alignment\",\"stage_index\":0}}}]}",
+        "details": {}
+      },
+      {
+        "variant": 1,
+        "planned": true,
+        "targets": 22
+      },
+      {
+        "variant": 2,
+        "planned": false,
+        "err": "registered_candidates_exhausted:{\"diagnostic\":{\"code\":\"registered_candidates_exhausted\",\"metrics\":{\"goal_index\":1,\"iterations\":231,\"position_error_m\":0.0028952193608306,\"rotation_error_rad\":0.0072732221717336735,\"goal\":[[0.9957208554372495,0.09143898735354394,-0.013374963143202578,0.8253292654690904],[-0.08916874664136364,0.9126525412124554,-0.3988913055469717,0.07668777641075383],[-0.02426752294216629,0.3983770206856604,0.9169006689494681,0.9649477036779298],[0.0,0.0,0.0,1.0]],\"final_arm_deg\":[-22.247523034320402,-93.99999960323824,56.73179222849793,-65.08295579192675,36.04318014498124,15.365954978227979,-89.99999974561148],\"limits\":{\"min_constraint_margin_rad\":4.439917322685005e-09,\"active_planes\":[8,13],\"discarded_translation_m\":0.0028952193608306,\"discarded_rotation_rad\":0.0072732221717336214,\"numerical_correction_rad\":0.0,\"publication_lead_rad\":[-7.771561172376096e-16,0.0,7.771561172376096e-16,-1.5543122344752192e-15,6.661338147750939e-16,-1.1657341758564144e-15,0.0],\"publication_lead_limit_rad\":0.03},\"stalled_ticks\":23,\"cartesian_waypoint_index\":56,\"cartesian_waypoint_count\":99,\"solves\":175,\"termination\":\"cartesian_no_progress\",\"cartesian_stalled_ticks\":25,\"route_family\":\"overhead_square_alignment\",\"stage_index\":0}},\"candidates\":[{\"variant\":2,\"diagnostic\":{\"error_type\":\"HarnessError\",\"code\":\"bounded_IK_did_not_reach_goal\",\"metrics\":{\"goal_index\":1,\"iterations\":231,\"position_error_m\":0.0028952193608306,\"rotation_error_rad\":0.0072732221717336735,\"goal\":[[0.9957208554372495,0.09143898735354394,-0.013374963143202578,0.8253292654690904],[-0.08916874664136364,0.9126525412124554,-0.3988913055469717,0.07668777641075383],[-0.02426752294216629,0.3983770206856604,0.9169006689494681,0.9649477036779298],[0.0,0.0,0.0,1.0]],\"final_arm_deg\":[-22.247523034320402,-93.99999960323824,56.73179222849793,-65.08295579192675,36.04318014498124,15.365954978227979,-89.99999974561148],\"limits\":{\"min_constraint_margin_rad\":4.439917322685005e-09,\"active_planes\":[8,13],\"discarded_translation_m\":0.0028952193608306,\"discarded_rotation_rad\":0.0072732221717336214,\"numerical_correction_rad\":0.0,\"publication_lead_rad\":[-7.771561172376096e-16,0.0,7.771561172376096e-16,-1.5543122344752192e-15,6.661338147750939e-16,-1.1657341758564144e-15,0.0],\"publication_lead_limit_rad\":0.03},\"stalled_ticks\":23,\"cartesian_waypoint_index\":56,\"cartesian_waypoint_count\":99,\"solves\":175,\"termination\":\"cartesian_no_progress\",\"cartesian_stalled_ticks\":25,\"route_family\":\"overhead_square_alignment\",\"stage_index\":0}}}]}",
+        "details": {}
+      },
+      {
+        "variant": 3,
+        "planned": false,
+        "err": "registered_candidates_exhausted:{\"diagnostic\":{\"code\":\"registered_candidates_exhausted\",\"metrics\":{\"goal_index\":1,\"iterations\":363,\"position_error_m\":0.0026449545489805647,\"rotation_error_rad\":1.1111360133283295e-05,\"goal\":[[-0.08899310147086012,0.9145968777494063,-0.3944525055082642,1.038838101832213],[-0.9940548549332978,-0.10649673466620019,-0.022658130747779205,-0.18020507410928488],[-0.06273095945516897,0.39009101081241476,0.9186369413480501,0.9630670460989614],[0.0,0.0,0.0,1.0]],\"final_arm_deg\":[7.192944858291428,-92.36642533901168,54.768916611001366,-7.331554565397083,17.30565695550624,-21.420658145458795,84.90091054029118],\"limits\":{\"min_constraint_margin_rad\":0.02851125641139629,\"active_planes\":[],\"discarded_translation_m\":0.0026449545489805647,\"discarded_rotation_rad\":1.111136013382729e-05,\"numerical_correction_rad\":0.0,\"publication_lead_rad\":[-0.004254860656748183,0.0029945313557047104,-2.731004744016552e-05,-0.00999999990769937,0.0007151081788759339,-0.004576718150228309,-0.001527383288674411],\"publication_lead_limit_rad\":0.03},\"stalled_ticks\":0,\"cartesian_waypoint_index\":96,\"cartesian_waypoint_count\":173,\"solves\":267,\"termination\":\"cartesian_no_progress\",\"cartesian_stalled_ticks\":25,\"route_family\":\"overhead_square_alignment\",\"stage_index\":0}},\"candidates\":[{\"variant\":3,\"diagnostic\":{\"error_type\":\"HarnessError\",\"code\":\"bounded_IK_did_not_reach_goal\",\"metrics\":{\"goal_index\":1,\"iterations\":363,\"position_error_m\":0.0026449545489805647,\"rotation_error_rad\":1.1111360133283295e-05,\"goal\":[[-0.08899310147086012,0.9145968777494063,-0.3944525055082642,1.038838101832213],[-0.9940548549332978,-0.10649673466620019,-0.022658130747779205,-0.18020507410928488],[-0.06273095945516897,0.39009101081241476,0.9186369413480501,0.9630670460989614],[0.0,0.0,0.0,1.0]],\"final_arm_deg\":[7.192944858291428,-92.36642533901168,54.768916611001366,-7.331554565397083,17.30565695550624,-21.420658145458795,84.90091054029118],\"limits\":{\"min_constraint_margin_rad\":0.02851125641139629,\"active_planes\":[],\"discarded_translation_m\":0.0026449545489805647,\"discarded_rotation_rad\":1.111136013382729e-05,\"numerical_correction_rad\":0.0,\"publication_lead_rad\":[-0.004254860656748183,0.0029945313557047104,-2.731004744016552e-05,-0.00999999990769937,0.0007151081788759339,-0.004576718150228309,-0.001527383288674411],\"publication_lead_limit_rad\":0.03},\"stalled_ticks\":0,\"cartesian_waypoint_index\":96,\"cartesian_waypoint_count\":173,\"solves\":267,\"termination\":\"cartesian_no_progress\",\"cartesian_stalled_ticks\":25,\"route_family\":\"overhead_square_alignment\",\"stage_index\":0}}}]}",
+        "details": {}
+      }
+    ],
+    "variant1_verified": {
+      "variant": 1,
+      "planned": true,
+      "targets": 22,
+      "solve_wall_6000d_s": 3.806,
+      "arm_r_j6_range_deg": [
+        -3.48,
+        30.68
+      ],
+      "final_arm_deg": [
+        -11.53,
+        -67.34,
+        58.75,
+        -52.83,
+        17.28,
+        11.78,
+        79.67
+      ],
+      "revalidation_passed": true,
+      "revalidation_schema": "f1-harness-plan-revalidation-v1"
+    }
+  }
+}

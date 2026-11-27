@@ -144,6 +144,8 @@ A 和 B 可以同时成立，同时修。
 
 ## V59 真机
 
+> **执行记录（Codex 2026-11-27，实发版本 V60 `cabff256328d`）**：候选 V59（`c9ca71437c76`）在全量 3,169 例 pytest 中检出 `test_measured_head` 边界（`object.__new__` 未初始化 `measured_fixture`）按规则取消未复用，修 1 行（`8722e59`）重冻为 **V60（`cabff256328d`）**。全量 pytest `3,168 passed`、原生集成 `62 passed`、三套冻结零输出回放与审计全过，同步切换协调器与 SAM 服务并核对 4242（未重启）。上线前 3 次预检按操作者明确要求跳过（如实登记）；随后执行 3 次真机后按操作者要求停下交 Claude 审阅：3/3 到达 S4（H-40 保住持块位姿、0 次 `supported_upright_face_not_observed` 超时）、Trial 2 桶入右腕 `x=0.790 m` 由 H-36 通过 S0、Trial 1 近身 `x=0.663 m` 运输通过、Trial 1 & 2 由 H-39 右移 `0.11 m` 露出实测方孔并**首次连续两次进入 S6 `align`**。两次 S6 均在 `variant=1` 触发机载 7 s 单候选 IK 墙钟上限 `bounded_IK_wall_time_exceeded`（离线 6000D 证实 `v=1` 3.81–4.89 s 可解 21/22 路点且正式复核全过）；Trial 3 在 S5 遇 `owner_perception_stage_advanced` 清空 `live_scene.latest` 竞态未横移。完整数据与原始轨迹见 [20261127-v60-batch/report.md](evidence/20261127-v60-batch/report.md)。
+
 1. 部署（Harness 包和 SAM 服务换成同一个冻结包），核对 4242，在 V6 下预检连续 3 次五项全过。
 2. **重新计正式 10 次**。V58 的 3 次单独记为"V58 批次"。
 3. 摆位，由 Codex 每次提示人类：
