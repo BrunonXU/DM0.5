@@ -79,19 +79,26 @@ def joint_transport_offsets(fixture):
     return offsets
 
 
-def joint_transport_goal(scene, offsets=((0., 0.),)):
+JOINT_TRANSPORT_YAW_OFFSETS_DEG = (0, 90, 180, 270)
+
+
+def joint_transport_goal(scene, offsets=((0., 0.),), yaw_offset_deg=0):
     """An endpoint for general joint search, without requiring a straight route.
 
     Reuse the measured transport orientation prior and loaded-object clearance.
     Test only the endpoint here; the native planner checks its connecting path.
-    Revalidation supplies only the originally selected hole-plane offset.
+    Revalidation supplies only the originally selected hole-plane offset and yaw.
     """
     if scene.object_held is not True or scene.eef_object is None:
         raise HarnessError('measured_in_hand_transform_required')
+    if type(yaw_offset_deg) is not int or yaw_offset_deg not in JOINT_TRANSPORT_YAW_OFFSETS_DEG:
+        raise ValueError('unregistered_joint_transport_yaw_offset')
     current, hole, attachment = map(transform, (scene.base_eef, scene.base_hole, scene.eef_object))
     segment = (scene.success_trajectory or {}).get('segments', {}).get('transfer')
-    rotation = transform(segment['eef_poses'][-1])[:3, :3] if segment else current[:3, :3]
+    base_rotation = transform(segment['eef_poses'][-1])[:3, :3] if segment else current[:3, :3]
     normal = hole[:3, 2]
+    rotation = (Rotation.from_rotvec(np.deg2rad(float(yaw_offset_deg)) * normal).as_matrix() @ base_rotation
+                if yaw_offset_deg else base_rotation)
     height = max(float(normal @ ((current @ attachment)[:3, 3]-hole[:3, 3])),
                  _minimum_object_height(scene, rotation, normal))
     center = hole[:3, 3] + normal * height
@@ -108,6 +115,8 @@ def joint_transport_goal(scene, offsets=((0., 0.),)):
     stage = dict(name='transport_above_bucket', route_family='joint_space_transport',
                  goals=[goal.tolist()], gripper=None, eef_object=attachment.tolist(),
                  allow_target_contact=False, goal_region_offset_m=list(offset))
+    if yaw_offset_deg:
+        stage['goal_yaw_offset_deg'] = int(yaw_offset_deg)
     return dict(kind='motion', skill='transfer_above_hole', stages=[stage])
 
 
@@ -118,7 +127,10 @@ def uses_joint_transport(fixture, intent, proposal):
             or intent.skill!='transfer_above_hole' or len(proposal.geometry_trace)!=1
             or proposal.candidate_variant!=2
             or ('goal_region_offset_m' in proposal.geometry_trace[0]
-                and proposal.geometry_trace[0]['goal_region_offset_m'] not in joint_transport_offsets(fixture))):
+                and proposal.geometry_trace[0]['goal_region_offset_m'] not in joint_transport_offsets(fixture))
+            or ('goal_yaw_offset_deg' in proposal.geometry_trace[0]
+                and (type(proposal.geometry_trace[0]['goal_yaw_offset_deg']) is not int
+                     or proposal.geometry_trace[0]['goal_yaw_offset_deg'] not in JOINT_TRANSPORT_YAW_OFFSETS_DEG))):
         raise HarnessError('revalidation_joint_transport_contract_changed')
     return marked
 

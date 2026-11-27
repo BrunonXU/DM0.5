@@ -86,7 +86,8 @@ def reconstruction(scene, intent, proposal, *, pregrasp_distance_m=None):
     if intent.skill == 'transfer_above_hole':
         from .transport import joint_transport_goal
         offset = proposal.geometry_trace[0].get('goal_region_offset_m', [0., 0.])
-        return joint_transport_goal(scene, [offset])
+        yaw_deg = proposal.geometry_trace[0].get('goal_yaw_offset_deg', 0)
+        return joint_transport_goal(scene, [offset], yaw_offset_deg=yaw_deg)
     return propose_joint_motion(scene, intent.skill, variant=proposal.candidate_variant,
                                 pregrasp_distance_m=pregrasp_distance_m)
 

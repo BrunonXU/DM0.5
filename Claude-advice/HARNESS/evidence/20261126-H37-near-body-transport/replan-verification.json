@@ -1,0 +1,239 @@
+{
+  "V57-Trial1": {
+    "label": "V57-Trial1",
+    "run_id": "web-f7c5d2a321744442929abc484b2fa545",
+    "hole_xyz_m": [
+      0.65,
+      -0.0514,
+      0.7655
+    ],
+    "planned": true,
+    "uses_joint_transport": true,
+    "route_family": "joint_space_transport",
+    "goal_yaw_offset_deg": 90,
+    "last_stage_yaw_offset_deg": 90,
+    "target_count": 7,
+    "arm_r_j6_min_deg": -2.31,
+    "arm_r_j6_max_deg": 25.36,
+    "within_50_deg": true,
+    "min_self_collision_clearance_mm": 58.71,
+    "min_clearance_waypoint_index": 0,
+    "min_clearance_collision_pair": [
+      "arm_L_Link3/arm_L_Link3_collision",
+      "body_Link5/body_Link5_collision"
+    ],
+    "all_waypoints_safe": true,
+    "plan_wall_s": 4.368,
+    "revalidation_ok": true,
+    "revalidation_error": null,
+    "revalidation_wall_s": 2.416,
+    "jst_endpoint_clearances": {
+      "0deg": {
+        "search_phase": "endpoint_native",
+        "endpoint_rejection": "CandidateSafetyRejected:F1 collision/CoM rejected target",
+        "ik_pose_fit_count": 3,
+        "native_valid_goal_count": 0,
+        "best_fit_clearance": {
+          "safe": false,
+          "clearance_m": null,
+          "clearance_mm": null,
+          "collision_pair": [],
+          "source": "candidate_safety_rejected",
+          "reason": "F1 collision/CoM rejected target: Arm-body collision risk (clearance=-0.0100m, pair=('arm_R_Link5/arm_R_Link5_collision', 'body_Link5/body_Link5_collision'))"
+        }
+      },
+      "180deg": {
+        "search_phase": "endpoint_ik",
+        "ik_pose_fit_count": 0,
+        "native_valid_goal_count": 0,
+        "position_error_m": 0.14144114397160523,
+        "rotation_error_rad": 1.0118322174596532
+      },
+      "270deg": {
+        "search_phase": "endpoint_ik",
+        "ik_pose_fit_count": 0,
+        "native_valid_goal_count": 0,
+        "position_error_m": 0.041608585134033184,
+        "rotation_error_rad": 0.8410020371787854
+      }
+    }
+  },
+  "V57-Trial2": {
+    "label": "V57-Trial2",
+    "run_id": "web-82094dda40f9450fafcbf455e7210afd",
+    "hole_xyz_m": [
+      0.6494,
+      -0.0514,
+      0.767
+    ],
+    "planned": true,
+    "uses_joint_transport": true,
+    "route_family": "joint_space_transport",
+    "goal_yaw_offset_deg": 90,
+    "last_stage_yaw_offset_deg": 90,
+    "target_count": 7,
+    "arm_r_j6_min_deg": -1.14,
+    "arm_r_j6_max_deg": 20.16,
+    "within_50_deg": true,
+    "min_self_collision_clearance_mm": 58.703,
+    "min_clearance_waypoint_index": 0,
+    "min_clearance_collision_pair": [
+      "arm_L_Link3/arm_L_Link3_collision",
+      "body_Link5/body_Link5_collision"
+    ],
+    "all_waypoints_safe": true,
+    "plan_wall_s": 4.398,
+    "revalidation_ok": true,
+    "revalidation_error": null,
+    "revalidation_wall_s": 2.452,
+    "jst_endpoint_clearances": {
+      "0deg": {
+        "search_phase": "endpoint_native",
+        "endpoint_rejection": "CandidateSafetyRejected:F1 collision/CoM rejected target",
+        "ik_pose_fit_count": 3,
+        "native_valid_goal_count": 0,
+        "best_fit_clearance": {
+          "safe": false,
+          "clearance_m": null,
+          "clearance_mm": null,
+          "collision_pair": [],
+          "source": "candidate_safety_rejected",
+          "reason": "F1 collision/CoM rejected target: Arm-body collision risk (clearance=-0.0100m, pair=('arm_R_Link5/arm_R_Link5_collision', 'body_Link5/body_Link5_collision'))"
+        }
+      },
+      "180deg": {
+        "search_phase": "endpoint_ik",
+        "ik_pose_fit_count": 0,
+        "native_valid_goal_count": 0,
+        "position_error_m": 0.13981874641043712,
+        "rotation_error_rad": 1.0047413424471763
+      },
+      "270deg": {
+        "search_phase": "endpoint_ik",
+        "ik_pose_fit_count": 0,
+        "native_valid_goal_count": 0,
+        "position_error_m": 0.041166148329589175,
+        "rotation_error_rad": 0.8463336529601289
+      }
+    }
+  },
+  "V57-Trial3": {
+    "label": "V57-Trial3",
+    "run_id": "web-f8b242850fac4062be8da247ab4b334c",
+    "hole_xyz_m": [
+      0.6499,
+      -0.0514,
+      0.7657
+    ],
+    "planned": true,
+    "uses_joint_transport": true,
+    "route_family": "joint_space_transport",
+    "goal_yaw_offset_deg": 90,
+    "last_stage_yaw_offset_deg": 90,
+    "target_count": 9,
+    "arm_r_j6_min_deg": -2.39,
+    "arm_r_j6_max_deg": 24.45,
+    "within_50_deg": true,
+    "min_self_collision_clearance_mm": 57.047,
+    "min_clearance_waypoint_index": 0,
+    "min_clearance_collision_pair": [
+      "arm_R_Link3/arm_R_Link3_collision",
+      "body_Link5/body_Link5_collision"
+    ],
+    "all_waypoints_safe": true,
+    "plan_wall_s": 5.479,
+    "revalidation_ok": true,
+    "revalidation_error": null,
+    "revalidation_wall_s": 3.332,
+    "jst_endpoint_clearances": {
+      "0deg": {
+        "search_phase": "endpoint_native",
+        "endpoint_rejection": "CandidateSafetyRejected:F1 collision/CoM rejected target",
+        "ik_pose_fit_count": 3,
+        "native_valid_goal_count": 0,
+        "best_fit_clearance": {
+          "safe": false,
+          "clearance_m": null,
+          "clearance_mm": null,
+          "collision_pair": [],
+          "source": "candidate_safety_rejected",
+          "reason": "F1 collision/CoM rejected target: Arm-body collision risk (clearance=-0.0100m, pair=('arm_R_Link5/arm_R_Link5_collision', 'body_Link5/body_Link5_collision'))"
+        }
+      },
+      "180deg": {
+        "search_phase": "endpoint_ik",
+        "ik_pose_fit_count": 0,
+        "native_valid_goal_count": 0,
+        "position_error_m": 0.14220173171115275,
+        "rotation_error_rad": 1.0252796758724267
+      },
+      "270deg": {
+        "search_phase": "endpoint_ik",
+        "ik_pose_fit_count": 0,
+        "native_valid_goal_count": 0,
+        "position_error_m": 0.04219227363088748,
+        "rotation_error_rad": 0.8338638865444127
+      }
+    }
+  },
+  "V56-Trial1": {
+    "label": "V56-Trial1",
+    "run_id": "web-0a935b522d8046978d8b17b95316fca5",
+    "hole_xyz_m": [
+      0.66,
+      -0.0635,
+      0.7649
+    ],
+    "planned": true,
+    "uses_joint_transport": true,
+    "route_family": "joint_space_transport",
+    "goal_yaw_offset_deg": 0,
+    "last_stage_yaw_offset_deg": 0,
+    "target_count": 9,
+    "arm_r_j6_min_deg": 14.25,
+    "arm_r_j6_max_deg": 20.46,
+    "within_50_deg": true,
+    "min_self_collision_clearance_mm": 11.894,
+    "min_clearance_waypoint_index": 8,
+    "min_clearance_collision_pair": [
+      "arm_R_Link7/arm_R_Link7_collision",
+      "body_Link5/body_Link5_collision"
+    ],
+    "all_waypoints_safe": true,
+    "plan_wall_s": 7.507,
+    "revalidation_ok": true,
+    "revalidation_error": null,
+    "revalidation_wall_s": 3.374,
+    "jst_endpoint_clearances": {}
+  },
+  "V54-Trial3": {
+    "label": "V54-Trial3",
+    "run_id": "web-5653aac6c68e490eb1d881e399d7a165",
+    "hole_xyz_m": [
+      0.6606,
+      -0.0627,
+      0.7723
+    ],
+    "planned": true,
+    "uses_joint_transport": true,
+    "route_family": "joint_space_transport",
+    "goal_yaw_offset_deg": 0,
+    "last_stage_yaw_offset_deg": 0,
+    "target_count": 9,
+    "arm_r_j6_min_deg": 16.97,
+    "arm_r_j6_max_deg": 21.74,
+    "within_50_deg": true,
+    "min_self_collision_clearance_mm": 11.254,
+    "min_clearance_waypoint_index": 8,
+    "min_clearance_collision_pair": [
+      "arm_R_Link7/arm_R_Link7_collision",
+      "body_Link5/body_Link5_collision"
+    ],
+    "all_waypoints_safe": true,
+    "plan_wall_s": 4.972,
+    "revalidation_ok": true,
+    "revalidation_error": null,
+    "revalidation_wall_s": 3.18,
+    "jst_endpoint_clearances": {}
+  }
+}
