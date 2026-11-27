@@ -1,0 +1,968 @@
+{
+  "run": "/home/user/projects/HARNESS/runs/workspace/web-5653aac6c68e490eb1d881e399d7a165/planner",
+  "result": {
+    "planner_declaration": {
+      "cell": 1,
+      "stdout": "{'placement_handoff': {'original_align_request': 'cde03dcecad946a3a592a802ff162d67', 'original_align_reason': 'observation_viewpoint_required:aperture_measurement_required:square-hole-1:fixture_aperture_not_detected_in_search_region', 'before': {'observation_id': '7b172adf4f6c4a83b434179c5709cad7:175', 'measurement_received_ns': 2990719155402, 'current_scope': True, 'planned': False, 'held': True, 'in_hand_transform': True, 'aperture_id': 'square-hole-1', 'aperture_measured': False, 'aperture_visible': False, 'fixture_collision_geometry': False, 'missing': [{'role': 'aperture', 'object_id': 'square-hole-1', 'reason': 'fixture_aperture_not_detected_in_search_region', 'recovery': 'relocalize_fixture_and_aperture'}], 'diagnostic': 'full_scene_required_for_motion'}, 'left_camera': {'available': True, 'frame': 'raw_image_pixels', 'source_ns': 1795703212102830811, 'motion_evidence': False, 'centers_px': {'square': [[346.25, 358.25]], 'triangle': [[325.3333333333333, 217.66666666666666]], 'circle': [[383.2727966308594, 291.5351867675781]]}}, 'view': {'source_observation_id': '7b172adf4f6c4a83b434179c5709cad7:157', 'target_tcp_pose': [-0.009382287934132046, -0.9989683266920352, 0.04443258870737187, 0.7149795528613135, 0.995446879282842, -0.005115728130951107, 0.09518056446430714, -0.16154850520789768, -0.0948550641725314, 0.045123293228748626, 0.9944679005423046, 0.8667267912579033, 0.0, 0.0, 0.0, 1.0], 'motion_request_id': None, 'observation_request_id': None, 'outcome': 'pending_review', 'reason': 'local_motion_scene_unavailable', 'local_motion_completed': None, 'no_motion': True, 'preview_diagnostic': 'full_scene_required_for_motion'}, 'view_source_tried': '7b172adf4f6c4a83b434179c5709cad7:157', 'view_reason': None, 'next': 'Recover a current fixture collision reference for the held viewpoint move. Resume at align.'}}\n",
+      "stderr": "",
+      "elapsed_s": 58.74,
+      "primitive_calls": [
+        {
+          "tool": "execute_skill",
+          "kwargs": {
+            "name": "approach_grasp"
+          },
+          "ok": true,
+          "error": null,
+          "request_id": "e5345f4350664795b0aeffc273ffc742",
+          "lifecycle": "completed",
+          "outcome": "success",
+          "reason": "owner_arrival_and_fresh_scene",
+          "no_motion": false,
+          "retryable": false,
+          "cancel_stage": "none",
+          "rejected_candidate_variant": null,
+          "resume_request_id": null,
+          "verification_request_id": null,
+          "planning_diagnostic": null,
+          "evidence_recorded": true
+        },
+        {
+          "tool": "execute_skill",
+          "kwargs": {
+            "name": "grasp"
+          },
+          "ok": true,
+          "error": null,
+          "request_id": "289d89e909024dd78bfaf9fed28bb3d6",
+          "lifecycle": "completed",
+          "outcome": "success",
+          "reason": "measured_blocked_closure",
+          "no_motion": false,
+          "retryable": false,
+          "cancel_stage": "none",
+          "rejected_candidate_variant": null,
+          "resume_request_id": null,
+          "verification_request_id": null,
+          "planning_diagnostic": null,
+          "evidence_recorded": true
+        },
+        {
+          "tool": "execute_skill",
+          "kwargs": {
+            "name": "verify_grasp"
+          },
+          "ok": true,
+          "error": null,
+          "request_id": "4e6bf46cf88247c79bb75cbd92b4ad67",
+          "lifecycle": "completed",
+          "outcome": "success",
+          "reason": "measured_blocked_closure",
+          "no_motion": true,
+          "retryable": false,
+          "cancel_stage": "none",
+          "rejected_candidate_variant": null,
+          "resume_request_id": null,
+          "verification_request_id": null,
+          "planning_diagnostic": null,
+          "evidence_recorded": true
+        },
+        {
+          "tool": "execute_skill",
+          "kwargs": {
+            "name": "transfer_above_hole"
+          },
+          "ok": true,
+          "error": null,
+          "request_id": "5c06c030120d46378b5e9596d33812f5",
+          "lifecycle": "completed",
+          "outcome": "success",
+          "reason": "owner_transport_endpoint_and_held_target",
+          "no_motion": false,
+          "retryable": false,
+          "cancel_stage": "none",
+          "rejected_candidate_variant": null,
+          "resume_request_id": null,
+          "verification_request_id": null,
+          "planning_diagnostic": null,
+          "evidence_recorded": true
+        },
+        {
+          "tool": "execute_skill",
+          "kwargs": {
+            "name": "inspect_in_hand"
+          },
+          "ok": true,
+          "error": null,
+          "request_id": "b79f3768e6c1434e8f2843906877b646",
+          "lifecycle": "completed",
+          "outcome": "success",
+          "reason": "grasp_observation",
+          "no_motion": true,
+          "retryable": false,
+          "cancel_stage": "none",
+          "rejected_candidate_variant": null,
+          "resume_request_id": null,
+          "verification_request_id": null,
+          "planning_diagnostic": null,
+          "evidence_recorded": true
+        },
+        {
+          "tool": "execute_skill",
+          "kwargs": {
+            "name": "align"
+          },
+          "ok": true,
+          "error": null,
+          "request_id": "cde03dcecad946a3a592a802ff162d67",
+          "lifecycle": "rejected",
+          "outcome": "pending_review",
+          "reason": "observation_viewpoint_required:aperture_measurement_required:square-hole-1:fixture_aperture_not_detected_in_search_region",
+          "no_motion": true,
+          "retryable": false,
+          "cancel_stage": "none",
+          "rejected_candidate_variant": null,
+          "resume_request_id": null,
+          "verification_request_id": null,
+          "planning_diagnostic": null,
+          "evidence_recorded": false
+        },
+        {
+          "tool": "inspect_plan",
+          "kwargs": {
+            "name": "align",
+            "parameters": {}
+          },
+          "ok": true,
+          "error": null,
+          "planning_diagnostic": {
+            "code": "full_scene_required_for_motion",
+            "error_type": "HarnessError",
+            "metrics": {
+              "recovery_hint": "refresh_scene",
+              "reason": "fixture_unavailable:fixture_aperture_not_detected_in_search_region;visual_measurements_above_age_budget",
+              "missing_entities": [
+                {
+                  "role": "aperture",
+                  "object_id": "square-hole-1",
+                  "reason": "fixture_aperture_not_detected_in_search_region",
+                  "recovery": "relocalize_fixture_and_aperture"
+                }
+              ]
+            }
+          },
+          "planned": false,
+          "current_scope": true,
+          "missing_entities": [
+            {
+              "role": "aperture",
+              "object_id": "square-hole-1",
+              "reason": "fixture_aperture_not_detected_in_search_region",
+              "recovery": "relocalize_fixture_and_aperture"
+            }
+          ],
+          "geometry_status": "partial",
+          "fixture_transit_available": false,
+          "aperture_required_for": [
+            "align",
+            "insert",
+            "release",
+            "verify_placed"
+          ],
+          "left_aperture_observation": {
+            "camera": "left",
+            "frame": "raw_image_pixels",
+            "motion_evidence": false,
+            "available": true,
+            "candidates": {
+              "square": [
+                {
+                  "corners_px": [
+                    [
+                      325,
+                      325
+                    ],
+                    [
+                      385,
+                      360
+                    ],
+                    [
+                      368,
+                      393
+                    ],
+                    [
+                      307,
+                      355
+                    ]
+                  ],
+                  "center_px": [
+                    346.25,
+                    358.25
+                  ],
+                  "area_px": 2665.0
+                }
+              ],
+              "triangle": [
+                {
+                  "corners_px": [
+                    [
+                      367,
+                      184
+                    ],
+                    [
+                      295,
+                      201
+                    ],
+                    [
+                      314,
+                      268
+                    ]
+                  ],
+                  "center_px": [
+                    325.3333333333333,
+                    217.66666666666666
+                  ],
+                  "area_px": 2820.5
+                }
+              ],
+              "circle": [
+                {
+                  "ellipse": [
+                    [
+                      383.2727966308594,
+                      291.5351867675781
+                    ],
+                    [
+                      60.79185104370117,
+                      64.59025573730469
+                    ],
+                    117.97746276855469
+                  ],
+                  "center_px": [
+                    383.2727966308594,
+                    291.5351867675781
+                  ],
+                  "area_px": 3073.5
+                }
+              ]
+            },
+            "observation_move": {
+              "target_frame": "world",
+              "target_tcp_pose": [
+                -0.009382287934132046,
+                -0.9989683266920352,
+                0.04443258870737187,
+                0.7149795528613135,
+                0.995446879282842,
+                -0.005115728130951107,
+                0.09518056446430714,
+                -0.16154850520789768,
+                -0.0948550641725314,
+                0.045123293228748626,
+                0.9944679005423046,
+                0.8667267912579033,
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ],
+              "source_observation_id": "7b172adf4f6c4a83b434179c5709cad7:157",
+              "source_frame_hashes": [
+                "11a5b09cea143f7789dee69a18bcb5896adc7c28a83fb6dbfe08aad76ab9ed15",
+                "e35525c91876daba6956eaa768ff2017bd2985379c2832b59bfcbc967697f728",
+                "f24f982248d7378c726f32974ca3f11987da230785e855b334731a8899734cee"
+              ],
+              "current_observation_id": "7b172adf4f6c4a83b434179c5709cad7:175",
+              "purpose": "noncontact_lateral_aperture_reobservation"
+            },
+            "source_ns": 1795703212102830811,
+            "received_ns": 2991335517046,
+            "frame_id": "left_wrist_color_optical_frame",
+            "sequence": 1880,
+            "source_epoch": 0,
+            "source_blob_sha256": "4e2164a2443d9c632e097e2843f7b00a946cc525ddbe8ae071467177b1bd374f"
+          },
+          "no_motion": true,
+          "executable": false,
+          "geometry": {
+            "schema": "f1-geometric-tools-v1",
+            "world_frame": "world",
+            "pose_format": {
+              "layout": "row_major_4x4",
+              "translation_unit": "metre",
+              "current_tcp_pose": "T_world_tcp",
+              "object_pose": "T_world_object",
+              "hole_pose": "T_world_hole",
+              "nominal_grasp_tcp_pose": "T_object_tcp",
+              "current_tcp_pose_object": "T_object_tcp_current"
+            },
+            "current_tcp_pose": [
+              -0.009366025576008113,
+              -0.998971243552137,
+              0.04437039689713321,
+              0.6400782397554512,
+              0.9954618578118387,
+              -0.005112530251739773,
+              0.09502395317092514,
+              -0.05183426407143146,
+              -0.09469935166998114,
+              0.045059034502801416,
+              0.9944856540961075,
+              0.8683226300389251,
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "object_pose": [
+              -0.22201212021278116,
+              -0.9159661824045292,
+              -0.3342402895668524,
+              0.6620808046873554,
+              0.9632993774794274,
+              -0.2590932060094254,
+              0.07017848635793243,
+              -0.0593566233990579,
+              -0.1508805084375777,
+              -0.30639298831876116,
+              0.9398714853014063,
+              0.8176340824884025,
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "hole_pose": null,
+            "obstacles": null,
+            "obstacle_frame_note": "Unavailable collision geometry is not empty space",
+            "support": {
+              "object_id": "square-1",
+              "relation": "separated",
+              "reason": "measured_pose_against_support_model",
+              "support_observed": false,
+              "contact_measured": false,
+              "motion_authorized": false,
+              "precision_certified": false,
+              "geometry_error_bound_m": null,
+              "tolerance_source": "caller_registered_contact_tolerance",
+              "contact_tolerance_m": 0.001,
+              "gap_m": 0.26256438011376726,
+              "penetration_m": 0.0,
+              "axis_normal_angles_deg": [
+                100.21997542821825,
+                105.66339306635642,
+                18.848545986018745
+              ],
+              "normal_in_object": [
+                -0.17742785654671395,
+                -0.2699853159389899,
+                0.9463758687215705
+              ],
+              "support_normal": [
+                -0.0296283906380154,
+                -0.03454955668436087,
+                0.9989637063482913
+              ],
+              "held": true,
+              "stationary": true,
+              "object_measurement": {
+                "source": "current_rgbd_object_pose",
+                "evidence_ids": [
+                  "9328f1b62d9d34d0e53eb0ddb69c70886a462a697084ed9c5c476757978d226d",
+                  "9947161544f33a918da5a079cba8d477e2337573855007ffef7b69e7ee124008"
+                ],
+                "measured_at_ns": 2990707583023,
+                "observation_received_ns": 2990719155402,
+                "frame_id": "world",
+                "uncertainty_m": null,
+                "dimensions_source": "registered_object_box",
+                "frames": [
+                  {
+                    "camera": "right",
+                    "stream": "rgb",
+                    "source_ns": 1795703211479755859,
+                    "received_ns": 2990709904739,
+                    "source_epoch": 0,
+                    "publisher_id": null
+                  },
+                  {
+                    "camera": "right",
+                    "stream": "depth",
+                    "source_ns": 1795703211478727295,
+                    "received_ns": 2990707583023,
+                    "source_epoch": 0,
+                    "publisher_id": null
+                  }
+                ]
+              },
+              "support_measurement": {
+                "support_id": "table",
+                "frame_id": "world",
+                "point": [
+                  1.0132560410674538,
+                  -0.1104637808693711,
+                  0.5567271560476621
+                ],
+                "normal": [
+                  -0.0296283906380154,
+                  -0.03454955668436087,
+                  0.9989637063482913
+                ],
+                "source": "registered_calibration",
+                "calibration_id": "coarse-aea05cd220e75f10",
+                "measured_at_ns": null,
+                "evidence_ids": []
+              },
+              "observation_id": "7b172adf4f6c4a83b434179c5709cad7:175",
+              "calibration_id": "coarse-aea05cd220e75f10",
+              "synthetic": false,
+              "quality_warnings": [
+                "fixture_unavailable:fixture_aperture_not_detected_in_search_region",
+                "visual_measurements_above_age_budget",
+                "support_rgbd_receipt_pairing_source_time_unverified"
+              ],
+              "pairing_quality": "receipt_only",
+              "source_time_pairing_verified": false
+            },
+            "observation_id": "7b172adf4f6c4a83b434179c5709cad7:175",
+            "calibration_id": "coarse-aea05cd220e75f10",
+            "entities": [
+              {
+                "role": "target_object",
+                "object_id": "square-1",
+                "visible": true,
+                "has_pose": true,
+                "reason": null,
+                "held": true,
+                "frame_id": "world",
+                "evidence_ids": [
+                  "9328f1b62d9d34d0e53eb0ddb69c70886a462a697084ed9c5c476757978d226d",
+                  "9947161544f33a918da5a079cba8d477e2337573855007ffef7b69e7ee124008"
+                ],
+                "in_hand_transform_available": true,
+                "inserted": null,
+                "stationary": true
+              },
+              {
+                "role": "aperture",
+                "object_id": "square-hole-1",
+                "visible": false,
+                "has_pose": false,
+                "reason": "fixture_aperture_not_detected_in_search_region"
+              }
+            ],
+            "missing_entities": [
+              {
+                "role": "aperture",
+                "object_id": "square-hole-1",
+                "reason": "fixture_aperture_not_detected_in_search_region",
+                "recovery": "relocalize_fixture_and_aperture"
+              }
+            ],
+            "quality_warnings": [
+              "fixture_unavailable:fixture_aperture_not_detected_in_search_region",
+              "visual_measurements_above_age_budget"
+            ],
+            "measurement_received_ns": 2990719155402,
+            "perception_boundary": {
+              "scope": "registered_task_entities",
+              "shape_label_is_independent_classification": false,
+              "pose_is_physical_accuracy_certificate": false,
+              "unknown_held_is_not_empty": true,
+              "fixture_reference_is_aperture_measurement": false
+            },
+            "geometry_status": "partial",
+            "fixture_collision_geometry_available": false,
+            "fixture_reference": null,
+            "aperture_required_for": [
+              "align",
+              "insert",
+              "release",
+              "verify_placed"
+            ],
+            "fixture_transit_available": false,
+            "geometry_scope": "coarse_object_verification",
+            "available_skills": [
+              "verify_grasp",
+              "inspect_in_hand",
+              "reobserve"
+            ],
+            "cartesian_motion": false,
+            "motion_authorized": false,
+            "search_entities": {
+              "left": [],
+              "right": [
+                {
+                  "object_id": "square-1",
+                  "role": "target_block"
+                }
+              ],
+              "head": [
+                {
+                  "object_id": "square-hole-1",
+                  "role": "target_aperture"
+                },
+                {
+                  "object_id": "bucket-triangle",
+                  "role": "fixture_anchor"
+                },
+                {
+                  "object_id": "bucket-left-slot",
+                  "role": "fixture_anchor"
+                },
+                {
+                  "object_id": "bucket-u-slot",
+                  "role": "fixture_anchor"
+                },
+                {
+                  "object_id": "square-1",
+                  "role": "target_block"
+                },
+                {
+                  "object_id": "bucket-lid",
+                  "role": "fixture_region"
+                }
+              ]
+            }
+          },
+          "scene_entities": [
+            {
+              "object_id": "square-1",
+              "visible": true,
+              "has_pose": true,
+              "held": true,
+              "inserted": null
+            },
+            {
+              "object_id": "square-hole-1",
+              "visible": false,
+              "has_pose": false,
+              "held": null,
+              "inserted": null
+            }
+          ]
+        },
+        {
+          "tool": "preview_skill",
+          "kwargs": {
+            "name": "move_tcp",
+            "parameters": {
+              "target_tcp_pose": [
+                -0.009382287934132046,
+                -0.9989683266920352,
+                0.04443258870737187,
+                0.7149795528613135,
+                0.995446879282842,
+                -0.005115728130951107,
+                0.09518056446430714,
+                -0.16154850520789768,
+                -0.0948550641725314,
+                0.045123293228748626,
+                0.9944679005423046,
+                0.8667267912579033,
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            }
+          },
+          "ok": true,
+          "error": null,
+          "no_motion": true,
+          "planning_diagnostic": {
+            "code": "full_scene_required_for_motion",
+            "error_type": "HarnessError",
+            "metrics": {
+              "recovery_hint": "refresh_scene",
+              "reason": "fixture_unavailable:fixture_aperture_not_detected_in_search_region",
+              "missing_entities": [
+                {
+                  "role": "aperture",
+                  "object_id": "square-hole-1",
+                  "reason": "fixture_aperture_not_detected_in_search_region",
+                  "recovery": "relocalize_fixture_and_aperture"
+                }
+              ]
+            }
+          },
+          "planned": false,
+          "current_scope": true,
+          "executable": false
+        },
+        {
+          "tool": "inspect_plan",
+          "kwargs": {
+            "name": "move_tcp",
+            "parameters": {
+              "target_tcp_pose": [
+                -0.009382287934132046,
+                -0.9989683266920352,
+                0.04443258870737187,
+                0.7149795528613135,
+                0.995446879282842,
+                -0.005115728130951107,
+                0.09518056446430714,
+                -0.16154850520789768,
+                -0.0948550641725314,
+                0.045123293228748626,
+                0.9944679005423046,
+                0.8667267912579033,
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            }
+          },
+          "ok": true,
+          "error": null,
+          "planning_diagnostic": {
+            "code": "full_scene_required_for_motion",
+            "error_type": "HarnessError",
+            "metrics": {
+              "recovery_hint": "refresh_scene",
+              "reason": "fixture_unavailable:fixture_aperture_not_detected_in_search_region;visual_measurements_above_age_budget",
+              "missing_entities": [
+                {
+                  "role": "aperture",
+                  "object_id": "square-hole-1",
+                  "reason": "fixture_aperture_not_detected_in_search_region",
+                  "recovery": "relocalize_fixture_and_aperture"
+                }
+              ]
+            }
+          },
+          "planned": false,
+          "current_scope": true,
+          "missing_entities": [
+            {
+              "role": "aperture",
+              "object_id": "square-hole-1",
+              "reason": "fixture_aperture_not_detected_in_search_region",
+              "recovery": "relocalize_fixture_and_aperture"
+            }
+          ],
+          "geometry_status": "partial",
+          "fixture_transit_available": false,
+          "aperture_required_for": [
+            "align",
+            "insert",
+            "release",
+            "verify_placed"
+          ],
+          "no_motion": true,
+          "executable": false,
+          "geometry": {
+            "schema": "f1-geometric-tools-v1",
+            "world_frame": "world",
+            "pose_format": {
+              "layout": "row_major_4x4",
+              "translation_unit": "metre",
+              "current_tcp_pose": "T_world_tcp",
+              "object_pose": "T_world_object",
+              "hole_pose": "T_world_hole",
+              "nominal_grasp_tcp_pose": "T_object_tcp",
+              "current_tcp_pose_object": "T_object_tcp_current"
+            },
+            "current_tcp_pose": [
+              -0.00938085964599001,
+              -0.9989700499646699,
+              0.04439412963319303,
+              0.6401030560827563,
+              0.9954651141090722,
+              -0.005126641446952082,
+              0.09498907378897993,
+              -0.05182635765338044,
+              -0.09466364700409677,
+              0.04508388649019671,
+              0.9944879270834942,
+              0.8683035277252645,
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "object_pose": [
+              -0.21967283075152425,
+              -0.9181645342939596,
+              -0.32972372585879195,
+              0.6618601671655276,
+              0.9632887040630649,
+              -0.25760984822370486,
+              0.0755780306877951,
+              -0.05971804784609164,
+              -0.15433314632353123,
+              -0.30101670063766434,
+              0.9410474089455053,
+              0.8176103406578656,
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "hole_pose": null,
+            "obstacles": null,
+            "obstacle_frame_note": "Unavailable collision geometry is not empty space",
+            "support": {
+              "object_id": "square-1",
+              "relation": "separated",
+              "reason": "measured_pose_against_support_model",
+              "support_observed": false,
+              "contact_measured": false,
+              "motion_authorized": false,
+              "precision_certified": false,
+              "geometry_error_bound_m": null,
+              "tolerance_source": "caller_registered_contact_tolerance",
+              "contact_tolerance_m": 0.001,
+              "gap_m": 0.2625876860755978,
+              "penetration_m": 0.0,
+              "axis_normal_angles_deg": [
+                100.42485814536265,
+                105.343228598283,
+                18.696438821954104
+              ],
+              "normal_in_object": [
+                -0.18094585710611452,
+                -0.26460071539604785,
+                0.9472302033866841
+              ],
+              "support_normal": [
+                -0.0296283906380154,
+                -0.03454955668436087,
+                0.9989637063482913
+              ],
+              "held": true,
+              "stationary": true,
+              "object_measurement": {
+                "source": "current_rgbd_object_pose",
+                "evidence_ids": [
+                  "b1d80a2a84e11c36d3ceddaf5aa2f7864c75b844401549b380c358a8b69ea246",
+                  "a8fef1c07197291822c378fe843a2e24d7d04c806ae2e1da78e8665f1bf4a8b7"
+                ],
+                "measured_at_ns": 2991041886865,
+                "observation_received_ns": 2991066432720,
+                "frame_id": "world",
+                "uncertainty_m": null,
+                "dimensions_source": "registered_object_box",
+                "frames": [
+                  {
+                    "camera": "right",
+                    "stream": "rgb",
+                    "source_ns": 1795703211812656738,
+                    "received_ns": 2991043143654,
+                    "source_epoch": 0,
+                    "publisher_id": null
+                  },
+                  {
+                    "camera": "right",
+                    "stream": "depth",
+                    "source_ns": 1795703211811629150,
+                    "received_ns": 2991041886865,
+                    "source_epoch": 0,
+                    "publisher_id": null
+                  }
+                ]
+              },
+              "support_measurement": {
+                "support_id": "table",
+                "frame_id": "world",
+                "point": [
+                  1.0132560410674538,
+                  -0.1104637808693711,
+                  0.5567271560476621
+                ],
+                "normal": [
+                  -0.0296283906380154,
+                  -0.03454955668436087,
+                  0.9989637063482913
+                ],
+                "source": "registered_calibration",
+                "calibration_id": "coarse-aea05cd220e75f10",
+                "measured_at_ns": null,
+                "evidence_ids": []
+              },
+              "observation_id": "7b172adf4f6c4a83b434179c5709cad7:176",
+              "calibration_id": "coarse-aea05cd220e75f10",
+              "synthetic": false,
+              "quality_warnings": [
+                "fixture_unavailable:fixture_aperture_not_detected_in_search_region",
+                "visual_measurements_above_age_budget",
+                "support_rgbd_receipt_pairing_source_time_unverified"
+              ],
+              "pairing_quality": "receipt_only",
+              "source_time_pairing_verified": false
+            },
+            "observation_id": "7b172adf4f6c4a83b434179c5709cad7:176",
+            "calibration_id": "coarse-aea05cd220e75f10",
+            "entities": [
+              {
+                "role": "target_object",
+                "object_id": "square-1",
+                "visible": true,
+                "has_pose": true,
+                "reason": null,
+                "held": true,
+                "frame_id": "world",
+                "evidence_ids": [
+                  "b1d80a2a84e11c36d3ceddaf5aa2f7864c75b844401549b380c358a8b69ea246",
+                  "a8fef1c07197291822c378fe843a2e24d7d04c806ae2e1da78e8665f1bf4a8b7"
+                ],
+                "in_hand_transform_available": true,
+                "inserted": null,
+                "stationary": true
+              },
+              {
+                "role": "aperture",
+                "object_id": "square-hole-1",
+                "visible": false,
+                "has_pose": false,
+                "reason": "fixture_aperture_not_detected_in_search_region"
+              }
+            ],
+            "missing_entities": [
+              {
+                "role": "aperture",
+                "object_id": "square-hole-1",
+                "reason": "fixture_aperture_not_detected_in_search_region",
+                "recovery": "relocalize_fixture_and_aperture"
+              }
+            ],
+            "quality_warnings": [
+              "fixture_unavailable:fixture_aperture_not_detected_in_search_region",
+              "visual_measurements_above_age_budget"
+            ],
+            "measurement_received_ns": 2991066432720,
+            "perception_boundary": {
+              "scope": "registered_task_entities",
+              "shape_label_is_independent_classification": false,
+              "pose_is_physical_accuracy_certificate": false,
+              "unknown_held_is_not_empty": true,
+              "fixture_reference_is_aperture_measurement": false
+            },
+            "geometry_status": "partial",
+            "fixture_collision_geometry_available": false,
+            "fixture_reference": null,
+            "aperture_required_for": [
+              "align",
+              "insert",
+              "release",
+              "verify_placed"
+            ],
+            "fixture_transit_available": false,
+            "geometry_scope": "coarse_object_verification",
+            "available_skills": [
+              "verify_grasp",
+              "inspect_in_hand",
+              "reobserve"
+            ],
+            "cartesian_motion": false,
+            "motion_authorized": false,
+            "search_entities": {
+              "left": [],
+              "right": [
+                {
+                  "object_id": "square-1",
+                  "role": "target_block"
+                }
+              ],
+              "head": [
+                {
+                  "object_id": "square-hole-1",
+                  "role": "target_aperture"
+                },
+                {
+                  "object_id": "bucket-triangle",
+                  "role": "fixture_anchor"
+                },
+                {
+                  "object_id": "bucket-left-slot",
+                  "role": "fixture_anchor"
+                },
+                {
+                  "object_id": "bucket-u-slot",
+                  "role": "fixture_anchor"
+                },
+                {
+                  "object_id": "square-1",
+                  "role": "target_block"
+                },
+                {
+                  "object_id": "bucket-lid",
+                  "role": "fixture_region"
+                }
+              ]
+            }
+          },
+          "scene_entities": [
+            {
+              "object_id": "square-1",
+              "visible": true,
+              "has_pose": true,
+              "held": true,
+              "inserted": null
+            },
+            {
+              "object_id": "square-hole-1",
+              "visible": false,
+              "has_pose": false,
+              "held": null,
+              "inserted": null
+            }
+          ]
+        }
+      ],
+      "moved": true,
+      "state": {
+        "phase": "unobserved",
+        "observation_id": "unavailable",
+        "authorized": null,
+        "state_cached": true
+      },
+      "episode_done": false,
+      "motion_status_unknown": false,
+      "published_skill_requests": 3,
+      "tool_steps": 5
+    },
+    "measured": {
+      "outcome": "pending_review",
+      "training_ready": false,
+      "placement_success": false,
+      "reset_required": true,
+      "reset_success": false,
+      "assisted": false,
+      "autonomous_success": false,
+      "goal": "placed",
+      "goal_reached": false,
+      "admission_profile": "development_coarse",
+      "partial_task": false,
+      "synthetic": false
+    },
+    "turns": [
+      {
+        "index": 0,
+        "tool": "python",
+        "elapsed_s": 58.756,
+        "ok": true,
+        "moved": true,
+        "env_steps": 5,
+        "terminated": false,
+        "sandbox_flags": []
+      }
+    ],
+    "recording_identity": {
+      "owner_run_id": "f1_hil_20261126T142550Z_a504c76b",
+      "owner_run_path": "/home/user/Bruno/HARNESS/runtime/harness-runs/f1_hil_20261126T142550Z_a504c76b",
+      "owner_instance_id": "c74079f6852441eab6b4c6c59629f223",
+      "host_boot_id": "5707be81-0cb3-4092-a119-be68060c87d1"
+    },
+    "session_id": "db92b6dcaefd4f35aabec30749ca2860",
+    "evidence_status": "awaiting_native_recording_seal",
+    "training_ready": false,
+    "attention": {
+      "skill": "align",
+      "reason": "observation_viewpoint_required:aperture_measurement_required:square-hole-1:fixture_aperture_not_detected_in_search_region",
+      "submitted": false
+    }
+  }
+}

@@ -1,0 +1,333 @@
+[
+  {
+    "event_id": "3f1e56e1bbda474dbcfccece3af347e2",
+    "kind": "run_identity",
+    "monotonic_ns": 2887701090321,
+    "scenario_id": null,
+    "synthetic": false,
+    "heldout": false,
+    "scene_manifest_sha256": null
+  },
+  {
+    "event_id": "e8868e49ba434ae0b1870c8480ae42f2",
+    "kind": "development_admission",
+    "monotonic_ns": 2887701795300,
+    "admission_profile": "development_coarse",
+    "admission_sha256": "a399cad8bcf6f908fb82bf2710e4807f7478990df05a5048da3eabcf6d81911c",
+    "calibration_id": "coarse-aea05cd220e75f10",
+    "task_hash": "16080ca3727fb5b3fda3bd94a4f085d54f17de43fe336f9d40d4d4b4dee46aa6",
+    "goal": "placed",
+    "allowed_skills": [
+      "approach_grasp",
+      "grasp",
+      "verify_grasp",
+      "inspect_in_hand",
+      "transfer_above_hole",
+      "align",
+      "insert",
+      "release",
+      "verify_placed",
+      "retreat",
+      "reobserve",
+      "regrasp",
+      "withdraw_reset",
+      "move_tcp",
+      "recover_grasp",
+      "release_supported"
+    ],
+    "empty_gripper": false,
+    "no_gripper_motion": false,
+    "scope_kind": "full_single_block_development",
+    "local_corrections": 1,
+    "regrasp_limit": 2,
+    "precision_certified": false,
+    "integration_validated": false,
+    "shadow_completed": false,
+    "skip_shadow_accepted": true,
+    "motion_authorized": false,
+    "model": {
+      "urdf_path": "/home/user/Bruno/DAgger-runtime/f1-toys-20261016/full-h20/startup-read-v2/infra/web/models/f1_wheel/urdf/f1_wheel_0602_new.urdf",
+      "mapping_path": "/home/user/Bruno/DAgger-runtime/f1-toys-20261016/full-h20/startup-read-v2/infra/configs/model_mapping.json",
+      "urdf_sha256": "bc21c6f36446aa2741d6ba20c2190836be967b1f3043dfa39eaae0983c95d5c0",
+      "mapping_sha256": "21e1879e2b5e15dfe590a27b1cb3c256626364b161cb950e24c5dd08a86633d5"
+    },
+    "bundle_id": "8818976408ce68d0c63a5e7602b26d28ca4cf9d54f0e3214cf4ffda9d3656002",
+    "boot_id": "8d11ddc8-4e08-47dd-8ee8-0430af045a3d",
+    "native_boot_checked": true,
+    "right_reference": {
+      "camera": "right",
+      "camera_serial": "260322276040",
+      "tool": "OmniPicker installed tool as photographed",
+      "reference_kind": "grasp_configuration_then_measured_in_hand"
+    },
+    "boot_recheck": {
+      "schema": "f1-harness-boot-recheck-v1",
+      "current_boot_id": "5707be81-0cb3-4092-a119-be68060c87d1",
+      "calibration_capture_boot_id": "8d11ddc8-4e08-47dd-8ee8-0430af045a3d",
+      "task_hash": "16080ca3727fb5b3fda3bd94a4f085d54f17de43fe336f9d40d4d4b4dee46aa6",
+      "evidence_sha256": "98744c0779a1407f315026b76c26f044327797538cca6bec8d9af10a4d11c245",
+      "body_head_delta_deg": {
+        "head_j1": -0.00043083634227514267,
+        "head_j2": 0.000537872314453125,
+        "head_j3": 0.0014002183452248573,
+        "body_j1": 0.0,
+        "body_j2": 0.0,
+        "body_j3": -0.102996826171875,
+        "body_j4": 0.4332733154296875,
+        "body_j5": -0.1764678955078125
+      },
+      "reference_tolerance_deg": 0.5,
+      "camera_serials": {
+        "head": "CPBJ463000E1",
+        "right": "260322276040"
+      },
+      "precision_certified": false,
+      "motion_authorized": false,
+      "head_pose_mode": "measured_kinematics",
+      "T_world_head_camera": [
+        [
+          -0.0014259617110257865,
+          -0.8965622994529575,
+          0.4429153528980737,
+          0.45010732020491595
+        ],
+        [
+          -0.9999923955353284,
+          0.0028861572629304538,
+          0.002622778635431004,
+          0.016887593572320343
+        ],
+        [
+          -0.0036298078069682865,
+          -0.44290824478200913,
+          -0.8965595971263736,
+          1.2665567027400464
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "reference_drift_warning": false
+    },
+    "parameter_sources": {
+      "plan.fixture.object_dimensions_m": {
+        "basis": "estimated",
+        "evidence_ids": [
+          "40c33f094c37164eb823bd69d6a8acbe5cf3d518daeadc064258e46c9110a8a4",
+          "ebe651e625b29c36a759b81b20ca6549dd0442d6207be132e62523ab8f35a641",
+          "d7175be6b25a0a6d5fbe1cb12bfe657ffa077c12424d93f07521cfee91338ab2"
+        ],
+        "note": "用户粗读数30×30×60mm，与存档RGB-D一致；非精密量具认证"
+      },
+      "plan.fixture.hole_inner_dimensions_m": {
+        "basis": "estimated",
+        "evidence_ids": [
+          "40c33f094c37164eb823bd69d6a8acbe5cf3d518daeadc064258e46c9110a8a4",
+          "ebe651e625b29c36a759b81b20ca6549dd0442d6207be132e62523ab8f35a641",
+          "d7175be6b25a0a6d5fbe1cb12bfe657ffa077c12424d93f07521cfee91338ab2"
+        ],
+        "note": "存档RGB-D方孔四边，按每对相对边最小值取内尺寸"
+      },
+      "plan.fixture.insertion_depth_m": {
+        "basis": "configured",
+        "evidence_ids": [
+          "40c33f094c37164eb823bd69d6a8acbe5cf3d518daeadc064258e46c9110a8a4",
+          "ebe651e625b29c36a759b81b20ca6549dd0442d6207be132e62523ab8f35a641",
+          "d7175be6b25a0a6d5fbe1cb12bfe657ffa077c12424d93f07521cfee91338ab2"
+        ],
+        "note": "12mm总进给目标；有效孔深仍未知，不能冒充实测孔深"
+      },
+      "plan.fixture.grasp_opening": {
+        "basis": "estimated",
+        "evidence_ids": [
+          "40c33f094c37164eb823bd69d6a8acbe5cf3d518daeadc064258e46c9110a8a4",
+          "ebe651e625b29c36a759b81b20ca6549dd0442d6207be132e62523ab8f35a641",
+          "d7175be6b25a0a6d5fbe1cb12bfe657ffa077c12424d93f07521cfee91338ab2"
+        ],
+        "note": "HAL12/18局部开合外推的100闭合目标，抓住须由实际反馈与视觉确认"
+      },
+      "plan.fixture.release_opening": {
+        "basis": "configured",
+        "evidence_ids": [
+          "40c33f094c37164eb823bd69d6a8acbe5cf3d518daeadc064258e46c9110a8a4",
+          "ebe651e625b29c36a759b81b20ca6549dd0442d6207be132e62523ab8f35a641",
+          "d7175be6b25a0a6d5fbe1cb12bfe657ffa077c12424d93f07521cfee91338ab2"
+        ],
+        "note": "使用已实际到达并采集的HAL18作为本任务释放目标"
+      },
+      "plan.fixture.object_grasp_eef": {
+        "basis": "configured",
+        "evidence_ids": [
+          "40c33f094c37164eb823bd69d6a8acbe5cf3d518daeadc064258e46c9110a8a4",
+          "ebe651e625b29c36a759b81b20ca6549dd0442d6207be132e62523ab8f35a641",
+          "d7175be6b25a0a6d5fbe1cb12bfe657ffa077c12424d93f07521cfee91338ab2"
+        ],
+        "note": "存档对象/FK与估计闭合指尖构造，夹取高度为底面以上50mm"
+      },
+      "gateway.scene.geometry.base_hole": {
+        "basis": "estimated",
+        "evidence_ids": [
+          "40c33f094c37164eb823bd69d6a8acbe5cf3d518daeadc064258e46c9110a8a4",
+          "ebe651e625b29c36a759b81b20ca6549dd0442d6207be132e62523ab8f35a641",
+          "d7175be6b25a0a6d5fbe1cb12bfe657ffa077c12424d93f07521cfee91338ab2"
+        ],
+        "note": "存档头部RGB-D孔口四角与桶盖平面；每次运行仍核对可见参照"
+      },
+      "gateway.scene.geometry.face_object": {
+        "basis": "estimated",
+        "evidence_ids": [
+          "40c33f094c37164eb823bd69d6a8acbe5cf3d518daeadc064258e46c9110a8a4",
+          "ebe651e625b29c36a759b81b20ca6549dd0442d6207be132e62523ab8f35a641",
+          "d7175be6b25a0a6d5fbe1cb12bfe657ffa077c12424d93f07521cfee91338ab2"
+        ],
+        "note": "竖直方块可见顶面到物体底面60mm，来自粗尺寸"
+      }
+    }
+  },
+  {
+    "event_id": "fe134d63fb694dce81404b821b9d021c",
+    "kind": "task_prepared",
+    "monotonic_ns": 2888081726899,
+    "task": {
+      "task_id": "web-9da20b8369f945f6be322c5a79d61543",
+      "object_id": "square-1",
+      "hole_id": "square-hole-1",
+      "shape": "square",
+      "allowed_skills": [
+        "approach_grasp",
+        "grasp",
+        "verify_grasp",
+        "inspect_in_hand",
+        "transfer_above_hole",
+        "align",
+        "insert",
+        "release",
+        "verify_placed",
+        "retreat",
+        "reobserve",
+        "regrasp",
+        "withdraw_reset",
+        "move_tcp",
+        "recover_grasp",
+        "release_supported"
+      ],
+      "local_corrections": 1,
+      "regrasp_limit": 2,
+      "calibration_id": "coarse-aea05cd220e75f10",
+      "goal": "placed",
+      "admission_profile": "development_coarse",
+      "operator_instruction": "将桌上的方块放入对应方孔，松爪后确认落入。"
+    },
+    "task_hash": "16080ca3727fb5b3fda3bd94a4f085d54f17de43fe336f9d40d4d4b4dee46aa6",
+    "session_id": "968cf4ea70de4af4bf654c45e187a6c0",
+    "owner_instance_id": "ef50f523550e465aa2c4b9cccde333f8",
+    "task_generation": 1
+  },
+  {
+    "event_id": "ded7313a6b2b413994b95cdf613532fb",
+    "kind": "web_control_requested",
+    "monotonic_ns": 2888365356326,
+    "method": "web_start",
+    "request_id": "be415369eb3e44a29728005c4331d550",
+    "run_id": "f1_hil_20261126T142506Z_0e79faae",
+    "owner_instance_id": "ef50f523550e465aa2c4b9cccde333f8",
+    "session_id": "968cf4ea70de4af4bf654c45e187a6c0",
+    "task_hash": "16080ca3727fb5b3fda3bd94a4f085d54f17de43fe336f9d40d4d4b4dee46aa6",
+    "epoch": 0
+  },
+  {
+    "event_id": "9d418af45c76456ab90aa949b9f7d410",
+    "kind": "web_authorization",
+    "monotonic_ns": 2888365735523,
+    "task_hash": "16080ca3727fb5b3fda3bd94a4f085d54f17de43fe336f9d40d4d4b4dee46aa6",
+    "epoch": 1,
+    "task_id": "web-9da20b8369f945f6be322c5a79d61543",
+    "session_id": "968cf4ea70de4af4bf654c45e187a6c0",
+    "owner_instance_id": "ef50f523550e465aa2c4b9cccde333f8",
+    "task_generation": 1,
+    "synthetic": false,
+    "web_request_id": "be415369eb3e44a29728005c4331d550",
+    "owner_run_id": "f1_hil_20261126T142506Z_0e79faae"
+  },
+  {
+    "event_id": "d60010f63c8e4e0ca80860d81da4b646",
+    "kind": "web_control_consumed",
+    "monotonic_ns": 2888365833487,
+    "method": "web_start",
+    "request_id": "be415369eb3e44a29728005c4331d550",
+    "run_id": "f1_hil_20261126T142506Z_0e79faae",
+    "owner_instance_id": "ef50f523550e465aa2c4b9cccde333f8",
+    "session_id": "968cf4ea70de4af4bf654c45e187a6c0",
+    "task_hash": "16080ca3727fb5b3fda3bd94a4f085d54f17de43fe336f9d40d4d4b4dee46aa6",
+    "epoch": 0
+  },
+  {
+    "event_id": "c0d9ef1484894d26a78351ccaec26de9",
+    "kind": "authority_revoked",
+    "monotonic_ns": 2903772457823,
+    "reason": "task_finished",
+    "epoch": 2
+  },
+  {
+    "event_id": "e8bf101e76e34792a9506d6ad84d5983",
+    "kind": "hold_acknowledged",
+    "monotonic_ns": 2903776917532,
+    "publication_id": "1233",
+    "stage": "owner_hold_committed"
+  },
+  {
+    "event_id": "afe4689622574e9a808490aa2ff07301",
+    "kind": "web_control_requested",
+    "monotonic_ns": 2904226356804,
+    "method": "web_stop",
+    "request_id": "3a39d6b7daa4484b9be508755737824c",
+    "run_id": "f1_hil_20261126T142506Z_0e79faae",
+    "owner_instance_id": "ef50f523550e465aa2c4b9cccde333f8",
+    "session_id": "968cf4ea70de4af4bf654c45e187a6c0",
+    "task_hash": "16080ca3727fb5b3fda3bd94a4f085d54f17de43fe336f9d40d4d4b4dee46aa6",
+    "epoch": 2
+  },
+  {
+    "event_id": "60f95e7161394f239ff84664651e87de",
+    "kind": "authority_revoked",
+    "monotonic_ns": 2904232990987,
+    "reason": "web_stop_requested",
+    "epoch": 3
+  },
+  {
+    "event_id": "d76a68819a044c8197b69addaefbffa1",
+    "kind": "web_control_consumed",
+    "monotonic_ns": 2904233032951,
+    "method": "web_stop",
+    "request_id": "3a39d6b7daa4484b9be508755737824c",
+    "run_id": "f1_hil_20261126T142506Z_0e79faae",
+    "owner_instance_id": "ef50f523550e465aa2c4b9cccde333f8",
+    "session_id": "968cf4ea70de4af4bf654c45e187a6c0",
+    "task_hash": "16080ca3727fb5b3fda3bd94a4f085d54f17de43fe336f9d40d4d4b4dee46aa6",
+    "epoch": 2
+  },
+  {
+    "event_id": "226da156c3314c62bdb82ba480d08195",
+    "kind": "hold_acknowledged",
+    "monotonic_ns": 2904547070178,
+    "publication_id": "1298",
+    "stage": "measured_stationary"
+  },
+  {
+    "event_id": "64b25f6af2424bc7938e78f1aff7c24f",
+    "kind": "authority_revoked",
+    "monotonic_ns": 2904596658430,
+    "reason": "session_closed",
+    "epoch": 4
+  },
+  {
+    "event_id": "7a3c310dbaba496f9c9e6e39ba7f73e4",
+    "kind": "authority_revoked",
+    "monotonic_ns": 2904613783446,
+    "reason": "owner_bridge_closed",
+    "epoch": 5
+  }
+]

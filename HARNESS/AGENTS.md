@@ -4,7 +4,7 @@
 
 理解系统设计读[《F1 Harness 核心思路与设计原则》](docs/ARCHITECTURE.md)；接续现场工作先核对[当前状态](agent/STATUS.md)和[待办](agent/TODO.md)；Codex 执行改进项读 [Claude 审阅与执行规格](../Claude-advice/HARNESS/review.md)。工作区通用约定见 [Projects 根规则](../AGENTS.md)和[项目规则与协作习惯](../PROJECT_RULES_AND_PREFERENCES.md)。
 
-2026-11-26：V54 已部署，前一版本是 V53。H-20 配对检查三路 10/10、五项全过 8/10、8/10、7/10，本批选定 production-gateway，尚无真机成功；重连后 7 轮都因第 4 项 `3d_geometry_missing:bucket_fixture` 未过，H-21 开跑前须先让预检第 4 项恢复通过。现场数字以状态页和待办为准。
+2026-11-26：V54 已部署，前一版本是 V53。H-20 配对检查三路 10/10，本批沿用默认环境（production-gateway）；按判定规则胜出的是 fastdds-udp，随下一个版本钉死。V54 中期批 3 次试验分别到 S4、S0、S5，暂停，尚无真机成功，下一步按第四轮审阅依次推进 H-33、H-32。现场数字以状态页和待办为准。
 
 ```mermaid
 flowchart LR

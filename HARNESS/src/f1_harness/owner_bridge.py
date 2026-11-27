@@ -73,7 +73,8 @@ def numerical_failure_detail(exc):
         'target_tcp_pose','best_fit_tcp_pose','target_minus_fit_tcp_m',
         'cell_min','cell_max','possible_target_overlap','views','camera','cells_tested',
         'refinement_budget_exhausted','evidence_observation_id','unknown_space_is_free',
-        'pixel_min','pixel_max','unknown_pixels','unknown_tiles','z_min','z_max','nearest_depth_m','margin_m','clear'}
+        'pixel_min','pixel_max','unknown_pixels','unknown_tiles','z_min','z_max','nearest_depth_m','margin_m','clear',
+        'joint','joint_index','waypoint_index','target_deg','envelope_deg'}
     def clean(value,depth=0):
         if depth>5:return None
         if value is None or isinstance(value,bool):return value

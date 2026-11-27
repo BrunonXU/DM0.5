@@ -184,7 +184,20 @@ def identify(owner, planner, issues):
     return prepared, auth
 
 
-def owner_metrics(rows, auth, planner, table, ended):
+def read_json_first(directory, names):
+    for relative in names:
+        path = directory / relative
+        if path.is_file():
+            try:
+                data = json.loads(path.read_text(encoding="utf-8"))
+                if isinstance(data, dict):
+                    return data
+            except (OSError, ValueError):
+                return None
+    return None
+
+
+def owner_metrics(rows, auth, planner, table, ended, planner_result=None):
     stamps = {key: None for key in STAGE_KEYS.values()}
     reached = {key: False for key in stamps}
     stage_request_s = {key: None for key in stamps}
@@ -268,6 +281,19 @@ def owner_metrics(rows, auth, planner, table, ended):
     if reached["S8"] and not (assisted_results or intervention_count):
         verdict = True if complete_assistance and ended else None
     source, reason, planner_reason = end_reason(planner, last_fault, last_failed_result)
+    if not reached["S8"] and source is None and reason is None and isinstance(planner_result, dict):
+        measured = planner_result.get("measured")
+        attention = planner_result.get("attention")
+        pending = (isinstance(measured, dict) and measured.get("outcome") == "pending_review") or (
+            planner_result.get("outcome") == "pending_review"
+        )
+        if pending and isinstance(attention, dict) and attention.get("reason"):
+            pending_reason = reason_code(attention.get("reason"))
+            if pending_reason:
+                source = "planner_pending_review"
+                reason = pending_reason
+                if planner_reason is None:
+                    planner_reason = pending_reason
     if reached["S8"]:
         source, reason = None, None
     stage_s = {"S0": 0.0 if reached["S0"] else None}
@@ -325,7 +351,8 @@ def analyze_run(directory, table, versions):
     scenario = one(owner or [], "run_identity").get("scenario_id")
     status = config.get("status")
     ended = any(r["kind"] == "authority_revoked" and r.get("reason") in CLEANUP for r in owner or [])
-    metrics = owner_metrics(owner or [], auth, planner or [], table, ended)
+    planner_result = read_json_first(directory, ("planner/result.json", "planner-final.json"))
+    metrics = owner_metrics(owner or [], auth, planner or [], table, ended, planner_result=planner_result)
     if issues:
         metrics = {key: None for key in metrics}
         metrics["stages"] = {s: None for s in STAGE_KEYS.values()}

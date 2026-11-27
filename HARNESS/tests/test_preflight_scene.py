@@ -246,8 +246,8 @@ def test_production_gateway_prelude_matches_start_development_default():
     pf = _load_preflight()
     sd = _load_start_development()
     bundle = '/home/user/Bruno/HARNESS/development/53af3b1d4406'
-    assert sd.ROBOT_SERVICES_ROS_ENV is None
-    assert pf.PRODUCTION_GATEWAY_ROS_ENV is None
+    assert sd.ROBOT_SERVICES_ROS_ENV == 'fastdds-udp'
+    assert pf.PRODUCTION_GATEWAY_ROS_ENV == 'fastdds-udp'
     preflight_prelude = pf._build_remote_ros_prelude('production-gateway', bundle)
     assert preflight_prelude.startswith('unset ')
     after_unset = preflight_prelude.split('\n', 1)[1]

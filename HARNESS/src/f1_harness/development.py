@@ -313,6 +313,10 @@ def validate_development(config_path):
         raise ValueError('development_planning_margin_mismatch')
     if fixture['approach_clearance_m'] <= fixture['planning_margin_m']:
         raise ValueError('development_approach_clearance_below_margin')
+    if fixture.get('planning_joint_envelope_deg') is not None:
+        from .skill_services import validate_planning_joint_envelope
+        site_limits = (configs['numerics.local.json'].get('spec') or {}).get('gate', {}).get('limits')
+        validate_planning_joint_envelope(fixture.get('planning_joint_envelope_deg'), limits=site_limits)
     parameter_sources = _check_full_parameters(record, configs) if goal == 'placed' else {}
     if goal == 'placed':
         _check_full_head_camera(calibration, configs['gateway.local.json']['scene'])

@@ -125,3 +125,30 @@ def test_old_idless_model_transport_does_not_become_zero_calls():
     result = funnel.model_metrics([row("model_transport_error", 3, error_type="ConnectError")])
     assert result["model_calls"] is None and result["model_wait_s"] is None
     assert result["model_transport_errors"] == 1
+
+
+def test_planner_pending_review_fills_missing_last_failure_reason(tmp_path):
+    owner, planner = base()
+    inspect_ok = skill(5, "inspect_in_hand", "req-inspect", outcome="success")
+    owner.extend([inspect_ok, close()])
+    planner.extend([
+        row("task_needs_attention", 1005,
+            reason="observation_viewpoint_required:aperture_measurement_required:square-hole-1:fixture_aperture_not_detected_in_search_region"),
+        row("owner_event", 1006, record=inspect_ok),
+    ])
+    (tmp_path / "planner-final.json").write_text(json.dumps({
+        "measured": {"outcome": "pending_review"},
+        "attention": {
+            "skill": "align",
+            "reason": "observation_viewpoint_required:aperture_measurement_required:square-hole-1:fixture_aperture_not_detected_in_search_region",
+            "submitted": False,
+        },
+    }))
+    r = analyze(tmp_path, owner, planner)
+    assert r["last_failure_source"] == "planner_pending_review"
+    assert r["last_failure_reason"] == (
+        "observation_viewpoint_required:aperture_measurement_required:"
+        "square-hole-1:fixture_aperture_not_detected_in_search_region"
+    )
+    assert r["planner_last_failure_reason"] == r["last_failure_reason"]
+    assert r["nonphysical_termination"] is False

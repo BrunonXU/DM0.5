@@ -181,7 +181,7 @@ Codex 报告里写“真机物理／固件在 +54.86° 顶死”，方向对，�
 4. 不对着止位做任何主动试探动作。第 6 关节的确认只读。
 5. 规格与代码事实对不上时停下报告。
 
-## H-35 `[ ]` P0：换分支、补证据、改说法
+## H-35 `[x]` P0：换分支、补证据、改说法
 
 不改运行时，离线可做。
 
@@ -196,6 +196,17 @@ Codex 报告里写“真机物理／固件在 +54.86° 顶死”，方向对，�
 5. Codex 报告 `report.md` 里“真机物理／固件在 +54.86° 顶死”改为“实测在 54.86° 停住，来源未确认”，并加上对 10 月两份事故记录的链接。
 
 **验收**：`check_project_layout.py --with-evidence` 通过；`git ls-files` 列出新增文件；重新生成的漏斗里三次试验都有停止原因。
+
+**执行记录（2026-11-26）**：
+- 分支：已从最新 `origin/main`（`4b3c0bc`）新建 `harness/round4`，`git cherry-pick 5b2dfe5` 带入中期批初版证据（`bd36753`）；不再推送 `harness/v53`。请用户／协调者关闭 PR #6（内容已在 `main` 的 `5f46046`）。
+- 证据目录：`Claude-advice/HARNESS/evidence/20261126-first-batch-interim/`（共 35 个文件，`manifest.json` 已更新，0 真实用户名/内网 IP 泄漏）：
+  - `runs/<run_id>/{owner-trace.jsonl,planner-trace.jsonl,planner-final.json,workspace-run.json}`（3 次试验完整脱敏原件）；
+  - `preflight/preflight-{1,2,3}-result.json`（连续 3 次五项全过预检原件）；
+  - `layouts.md`（3 次实测桶位与积木位姿、清空桶内散块恢复第 4 项过程、Trial #1 与 Trial #3 持块停机后人工取块 2 次介入说明）；
+  - `trial-01-j6-stall-evidence.json`（路点 10 完整 16 维目标向量 + 堵转前 3.5 秒 `arm_r_j6` 111 采样实测序列，106 帧持平 `≥54.5°`、最大 `54.8631°`）；
+  - `trial-02-right-roi-crop.jpg`（10,460 B ≤ 300 KB，右腕失败帧搜索框裁剪）与 `trial-02-seg-diagnostic.json`（H-34 项 1）。
+- 漏斗修正：`HARNESS/scripts/run_funnel.py` 在无失败原因且规划端 `pending_review` 时读取 `attention.reason` 并标注来源 `planner_pending_review`（净增 `raise HarnessError` = `0`）；`HARNESS/tests/test_run_funnel.py` 10/10 通过。重跑生成 `funnel.json` 后三次试验均具非空 `last_failure_reason`（Trial #3 为 `planner_pending_review` / `observation_viewpoint_required:aperture_measurement_required:square-hole-1:fixture_aperture_not_detected_in_search_region`）。
+- 文档回写：五处文档已统一改为“本批沿用默认环境（production-gateway）；按判定规则胜出的是 fastdds-udp，随下一个版本钉死”，`STATUS.md` 页首与 `TODO.md` 已更新为 V54 中期批与第四轮顺序，`report.md` 已改为“实测在 54.86° 停住，来源未确认”并链接 10 月两份 DAgger 事故记录。
 
 ## H-33 `[ ]` P0：右腕第 6 关节的规划上限收到 50.0°
 
@@ -260,6 +271,14 @@ Codex 报告里写“真机物理／固件在 +54.86° 顶死”，方向对，�
 **风险与回滚**：风险是可行解变少，运输改为候选耗尽。离线重算会先暴露这一点。回滚是删掉配置键。
 
 **证据**：`Claude-advice/HARNESS/evidence/<日期>-H33-j6-envelope/`，含两次离线重算的结果、四项只读确认的结论、真机试验的漏斗和原始记录。
+
+**执行记录（2026-11-26，软件完成，待真机验收）**：
+- 版本：**V56 候选**（`F1 Harness 右腕规划收紧与固定传输 V56`，`bundle_id`: `d5b1b1d2de1ae687f0d2501fcbc33404d359edc03d0d1267515406cdd1877483`，状态 `candidate`，V54 保持在用；初版候选 V55 `0e8235c53896` 因 `PlanService` 缺类默认属性被全量回归拦截，已按规则标 `cancelled` 未部署）。
+- 证据目录：`Claude-advice/HARNESS/evidence/20261126-H33-j6-envelope/`。
+- 净增 `raise HarnessError`：**+1**（`planning_joint_envelope_exceeded`，属原生关节限位类硬保护收紧，按规则单列）。
+- 离线重算：Trial #1 不设范围复现 variant 1、`arm_r_j6` 最大 `60.0°` / 终点 `59.8686°`（3.20 s）；设 `[-60.0, 50.0]` 后 variant 1 因 `52.46° > 50.0°` 被 `planning_joint_envelope_exceeded` 作废，切至 variant 2 `joint_space_transport` 成功（7.57 s，`arm_r_j6` 最大 `22.3917°` / 终点 `19.4233°`）。Trial #3 设范围前后均走 variant 2，终点保持 `16.9705°`（最大 `25.3012°`）不受影响。
+- 四项只读确认：6000D 本地 `ccs_m6_40.MvKDCfg` 左右臂 J6 为 `±60°`（ARM 实机副本待上电补核）；Trial #1 持久化日志无 `effort`/`motor_current`/`error_code`；历史 157 份非空录制中 `arm_r_j6` 全局最小 `-16.21°`（无负向平台）、最大 `55.58°`（`>52°` 共 14,663 采样，`[54.5, 55.0)` 占 80.7%）；静止目视因用户离场关机暂缓。结论标为 **“来源未确认”**，`50.0°` 不上调。
+- 验收：`test_planning_joint_envelope.py` + `test_preflight_scene.py` 12/12 通过；V56 全量 pytest `3,124 passed` + 原生数值 `65 passed`；`check_native_integration.py` `62/62 passed`；三条 V56 冻结零输出回放（`normal` 10 阶段、`grasp-miss` 12 阶段、`aperture-occluded` 12 阶段）及输出审计全过（`physical_motion=False`、`paid_model_calls=0`）。真机上线、3× 预检与 ≤3 次试验待下次上电完成。
 
 ## H-32 `[ ]` P0：持块遮挡头部时，保留刚测过的桶位姿，完成一次让开动作
 
