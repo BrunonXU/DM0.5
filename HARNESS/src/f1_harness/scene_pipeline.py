@@ -518,7 +518,7 @@ class CalibratedScenePipeline:
             accepted_views=(self.config['camera'],)
             raise
         except Exception as exc:
-            prior_fixture=self.measured_fixture
+            prior_fixture=getattr(self,'measured_fixture',None)
             self.reject_measurement(str(exc))
             if (object_measurement_recoverable(str(exc),object_id=self.config['object_id'])
                     or str(exc)=='secondary_camera_pairing_unavailable'):
