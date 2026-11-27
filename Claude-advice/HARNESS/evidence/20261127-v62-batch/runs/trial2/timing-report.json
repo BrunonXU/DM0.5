@@ -1,0 +1,250 @@
+{
+  "schema": "f1-harness-timing-v1",
+  "run": "/home/xza_100850113/projects/HARNESS/runs/workspace/web-776cd3da7ed14c79b03e634ad0d154ba",
+  "stage_budget_s": {
+    "start_to_first_publication": 2.5,
+    "approach_execution": 4.0,
+    "grasp_and_settle": 0.8,
+    "grasp_verification": 0.7,
+    "transport": 5.0,
+    "alignment": 2.5,
+    "insert_release_verify": 2.5
+  },
+  "stage_timing": {
+    "start_to_first_publication": {
+      "actual_s": 11.865169913,
+      "over_budget_s": 9.365169913,
+      "model_calls": 0,
+      "model_wait_s": 0
+    },
+    "approach_execution": {
+      "actual_s": 2.959673099,
+      "over_budget_s": 0.0,
+      "model_calls": 0,
+      "model_wait_s": 0
+    },
+    "grasp_and_settle": {
+      "actual_s": 7.071029075,
+      "over_budget_s": 6.271029075,
+      "model_calls": 0,
+      "model_wait_s": 0
+    },
+    "grasp_verification": {
+      "actual_s": 1.403800822,
+      "over_budget_s": 0.703800822,
+      "model_calls": 0,
+      "model_wait_s": 0
+    },
+    "transport": {
+      "actual_s": 20.393526293,
+      "over_budget_s": 15.393526293,
+      "model_calls": 0,
+      "model_wait_s": 0
+    },
+    "alignment": {
+      "actual_s": null,
+      "over_budget_s": null,
+      "model_calls": 0,
+      "model_wait_s": 0
+    },
+    "insert_release_verify": {
+      "actual_s": null,
+      "over_budget_s": null,
+      "model_calls": 0,
+      "model_wait_s": 0
+    }
+  },
+  "placement_target": {
+    "allocated_s": 18.0,
+    "target_s": 20.0,
+    "actual_s": null,
+    "over_budget_s": null
+  },
+  "model_timing": {
+    "model_calls": 0,
+    "model_wait_s": 0
+  },
+  "model_timing_after_placement": {
+    "model_calls": 0,
+    "model_wait_s": 0
+  },
+  "owner_startup": {
+    "source": "owner.log",
+    "status": "complete",
+    "stages": [
+      {
+        "stage": "runtime_contract",
+        "elapsed_s": 0.9827046670034179,
+        "since_start_s": 1.0638002760024392,
+        "complete": true
+      },
+      {
+        "stage": "ros_transport",
+        "elapsed_s": 0.44742329199652886,
+        "since_start_s": 1.5223692689978634,
+        "complete": true
+      },
+      {
+        "stage": "first_valid_feedback",
+        "elapsed_s": 1.01719521600171,
+        "since_start_s": 2.5410684029993718,
+        "complete": true
+      },
+      {
+        "stage": "collision_gate",
+        "elapsed_s": 0.5339387109997915,
+        "since_start_s": 3.078946747998998,
+        "complete": true
+      },
+      {
+        "stage": "arm_model",
+        "elapsed_s": 0.022172129996761214,
+        "since_start_s": 3.101250945001084,
+        "complete": true
+      },
+      {
+        "stage": "owner_initialize",
+        "elapsed_s": 0.005481403997691814,
+        "since_start_s": 3.1067929150012787,
+        "complete": true
+      },
+      {
+        "stage": "ik_warmup",
+        "elapsed_s": 0.04380535500240512,
+        "since_start_s": 3.150655511999503,
+        "complete": true
+      },
+      {
+        "stage": "harness_bridge",
+        "elapsed_s": 0.06106958999589551,
+        "since_start_s": 3.216081963997567,
+        "complete": true
+      }
+    ],
+    "expected_stage_count": 8,
+    "invalid_records": 0,
+    "scan_truncated": false,
+    "measured_stage_s": 3.113790364994202,
+    "observed_span_s": 3.216081963997567,
+    "native_entry": {
+      "source_integrity_s": 0.03225921499688411,
+      "native_import_s": 0.005703647999325767,
+      "entry_to_owner_main_s": 0.9656728529953398
+    },
+    "static_model": {
+      "static_prepare_s": 1.9938941960062948,
+      "remaining_wait_s": 0.5233180450013606,
+      "feedback_bind_s": 0.010442182996484917,
+      "overlapped_prepare_s": 1.4705761510049342
+    }
+  },
+  "click_to_first_publication_receipt_s": 11.865169913,
+  "model_response_s": 0,
+  "model_responses": 0,
+  "model_transport": [],
+  "model_connection_preparation": [],
+  "model_requests_without_receipt": 0,
+  "transport": {
+    "requests": [
+      {
+        "request_id": "a42274c5e469490ba72cc0062a79496d",
+        "solve_count": 1,
+        "solves": [
+          {
+            "seconds": 13.216530219,
+            "candidate_variant": 2,
+            "attempts": [
+              {
+                "variant": 0,
+                "outcome": "rejected",
+                "elapsed_ns": 5004848594
+              },
+              {
+                "variant": 1,
+                "outcome": "rejected",
+                "elapsed_ns": 4167853441
+              },
+              {
+                "variant": 2,
+                "outcome": "planned",
+                "route_family": "joint_space_transport",
+                "elapsed_ns": 4019438126
+              }
+            ]
+          }
+        ],
+        "revalidation_count": 1,
+        "revalidated_count": 1,
+        "first_publication_ns": 36855530916040
+      }
+    ],
+    "first_published_request": "a42274c5e469490ba72cc0062a79496d",
+    "verified_grasp_to_first_transfer_publication_s": 17.270787988
+  },
+  "owner_steps": [
+    {
+      "skill": "approach_grasp",
+      "request_id": "7b65fea09a904d1ea19cae9f1cfba7e1",
+      "outcome": "success",
+      "accepted_to_first_publication_s": 3.142159657,
+      "first_publication_to_last_measured_waypoint_s": 1.929126672,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 6.101832756
+    },
+    {
+      "skill": "grasp",
+      "request_id": "89353ddc135a4a40809a8bf8980ce87a",
+      "outcome": "success",
+      "accepted_to_first_publication_s": 2.784780321,
+      "first_publication_to_last_measured_waypoint_s": 3.912674277,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 6.756831379
+    },
+    {
+      "skill": "verify_grasp",
+      "request_id": "535e4efe0b3142108cce0c810eb1a608",
+      "outcome": "success",
+      "accepted_to_first_publication_s": null,
+      "first_publication_to_last_measured_waypoint_s": null,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 0.173672405
+    },
+    {
+      "skill": "transfer_above_hole",
+      "request_id": "a42274c5e469490ba72cc0062a79496d",
+      "outcome": "success",
+      "accepted_to_first_publication_s": 17.050185854,
+      "first_publication_to_last_measured_waypoint_s": 2.499188999,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 20.172924159
+    },
+    {
+      "skill": "inspect_in_hand",
+      "request_id": "88602cf87eaf422f99139abd5edcf8de",
+      "outcome": "success",
+      "accepted_to_first_publication_s": null,
+      "first_publication_to_last_measured_waypoint_s": null,
+      "missing_evidence_wait_s": null,
+      "verification_wait_count": 0,
+      "accepted_to_terminal_or_revocation_s": 0.533221311
+    }
+  ],
+  "full_grasp_place_reset_s": null,
+  "full_cycle_verified_s": null,
+  "full_cycle_status": "not_established_without_measured_safe_reset",
+  "full_cycle_interval": "first_approach_publication_to_measured_return_arrival",
+  "limitations": [
+    "Cross-host monotonic clocks are never subtracted.",
+    "Budget phases after first publication use successive owner milestones; missing boundaries are unknown.",
+    "Click intervals end at the coordinator receipt. Model time is charged to the phase visible at request start.",
+    "The placement target excludes reset. Budgets are retrospective and never control motion.",
+    "Owner startup covers only emitted process-local intervals, not spawn-to-ready or task success.",
+    "Receipt time is not physical motion onset.",
+    "Last measured waypoint may be intermediate; it does not prove skill completion.",
+    "Intervals can overlap; do not sum them into cycle time."
+  ]
+}
