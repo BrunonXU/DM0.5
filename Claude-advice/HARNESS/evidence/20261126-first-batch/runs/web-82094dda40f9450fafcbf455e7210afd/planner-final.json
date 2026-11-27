@@ -1,0 +1,539 @@
+{
+  "planner_declaration": {
+    "cell": 1,
+    "stdout": "",
+    "stderr": "",
+    "elapsed_s": 22.63,
+    "primitive_calls": [
+      {
+        "tool": "execute_skill",
+        "kwargs": {
+          "name": "approach_grasp"
+        },
+        "ok": true,
+        "error": null,
+        "request_id": "cfe2a99d7a594782b73b627f098ef93c",
+        "lifecycle": "completed",
+        "outcome": "success",
+        "reason": "owner_arrival_and_fresh_scene",
+        "no_motion": false,
+        "retryable": false,
+        "cancel_stage": "none",
+        "rejected_candidate_variant": null,
+        "resume_request_id": null,
+        "verification_request_id": null,
+        "planning_diagnostic": null,
+        "evidence_recorded": true
+      },
+      {
+        "tool": "execute_skill",
+        "kwargs": {
+          "name": "grasp"
+        },
+        "ok": true,
+        "error": null,
+        "request_id": "49c92af76ac24ce6b685ed4f3baca794",
+        "lifecycle": "completed",
+        "outcome": "success",
+        "reason": "measured_blocked_closure",
+        "no_motion": false,
+        "retryable": false,
+        "cancel_stage": "none",
+        "rejected_candidate_variant": null,
+        "resume_request_id": null,
+        "verification_request_id": null,
+        "planning_diagnostic": null,
+        "evidence_recorded": true
+      },
+      {
+        "tool": "execute_skill",
+        "kwargs": {
+          "name": "verify_grasp"
+        },
+        "ok": true,
+        "error": null,
+        "request_id": "de19d9117e79419684394f8acd407bbf",
+        "lifecycle": "completed",
+        "outcome": "success",
+        "reason": "measured_blocked_closure",
+        "no_motion": true,
+        "retryable": false,
+        "cancel_stage": "none",
+        "rejected_candidate_variant": null,
+        "resume_request_id": null,
+        "verification_request_id": null,
+        "planning_diagnostic": null,
+        "evidence_recorded": true
+      },
+      {
+        "tool": "execute_skill",
+        "kwargs": {
+          "name": "transfer_above_hole"
+        },
+        "ok": true,
+        "error": null,
+        "request_id": "1a4ef9b5137c438284ea1cf8b769cd39",
+        "lifecycle": "completed",
+        "outcome": "pending_review",
+        "reason": "numerical_plan_rejected:registered_candidates_exhausted",
+        "no_motion": true,
+        "retryable": false,
+        "cancel_stage": "none",
+        "rejected_candidate_variant": null,
+        "resume_request_id": null,
+        "verification_request_id": null,
+        "planning_diagnostic": {
+          "code": "registered_candidates_exhausted",
+          "error_type": "RuntimeError",
+          "metrics": {
+            "goal_index": 2,
+            "iterations": 165,
+            "position_error_m": 0.00051542064187357,
+            "rotation_error_rad": 0.0014310083608956659,
+            "cartesian_waypoint_index": 43,
+            "cartesian_waypoint_count": 79,
+            "termination": "cartesian_no_progress",
+            "cartesian_stalled_ticks": 25,
+            "route_family": "orientation_preserving_other_side_transport",
+            "stage_index": 0
+          },
+          "last_candidate_failure": {
+            "code": "bounded_IK_did_not_reach_goal",
+            "variant": 3,
+            "metrics": {
+              "position_error_m": 0.00051542064187357,
+              "rotation_error_rad": 0.0014310083608956659,
+              "termination": "cartesian_no_progress",
+              "route_family": "orientation_preserving_other_side_transport",
+              "stage_index": 0
+            }
+          },
+          "candidate_count": 5,
+          "detail_truncated": true,
+          "candidates": [
+            {
+              "code": "actual_IK_candidate_collision_rejected",
+              "variant": 0,
+              "metrics": {
+                "arm_collision_indices": [
+                  11
+                ],
+                "collision_pair": [
+                  "arm_R_Link5/arm_R_Link5_collision",
+                  "body_Link5/body_Link5_collision"
+                ],
+                "clearance_m": -0.000876048509196729,
+                "reason": "preventive_collision_boundary",
+                "route_family": "demonstrated_transport",
+                "stage_index": 0
+              }
+            },
+            {
+              "code": "actual_IK_candidate_collision_rejected",
+              "variant": 1,
+              "metrics": {
+                "arm_collision_indices": [
+                  11
+                ],
+                "collision_pair": [
+                  "arm_R_Link5/arm_R_Link5_collision",
+                  "body_Link5/body_Link5_collision"
+                ],
+                "clearance_m": -0.0006439110276693343,
+                "reason": "preventive_collision_boundary",
+                "route_family": "orientation_preserving_transport",
+                "stage_index": 0
+              }
+            },
+            {
+              "code": "actual_IK_candidate_collision_rejected",
+              "variant": 2,
+              "metrics": {
+                "arm_collision_indices": [
+                  11
+                ],
+                "collision_pair": [
+                  "arm_R_Link5/arm_R_Link5_collision",
+                  "body_Link5/body_Link5_collision"
+                ],
+                "clearance_m": -0.0002309244269438123,
+                "reason": "preventive_collision_boundary",
+                "route_family": "outside_bucket_reorientation_transport",
+                "stage_index": 0
+              }
+            },
+            {
+              "code": "bounded_IK_did_not_reach_goal",
+              "variant": 3,
+              "metrics": {
+                "position_error_m": 0.00051542064187357,
+                "rotation_error_rad": 0.0014310083608956659,
+                "termination": "cartesian_no_progress",
+                "route_family": "orientation_preserving_other_side_transport",
+                "stage_index": 0
+              }
+            }
+          ]
+        },
+        "recovery_context": {
+          "state": "available",
+          "source": "owner_geometry_after_zero_publication_rejection",
+          "motion_authorized": false,
+          "geometry": {
+            "schema": "f1-recovery-geometry-v1",
+            "motion_authorized": false,
+            "detail_tool": "robo.geometry()",
+            "omitted_fields": [],
+            "observation_id": "6421ed242a1141e892425bfd797c5175:47",
+            "calibration_id": "coarse-aea05cd220e75f10",
+            "measurement_received_ns": 6677781294051,
+            "world_frame": "world",
+            "geometry_status": "complete",
+            "geometry_scope": "coarse_static_task",
+            "current_tcp_pose": [
+              -0.04953877551105035,
+              -0.9373243150998927,
+              0.3449188861796127,
+              0.8451956316499929,
+              0.9987569291769489,
+              -0.044580514212322474,
+              0.022297402844246503,
+              -0.28541655510744773,
+              -0.00552323654206068,
+              0.34559471360986393,
+              0.9383676186777865,
+              0.6835952507751425,
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "object_pose": [
+              0.3154184461416435,
+              0.9487508296443518,
+              -0.019572099597275388,
+              0.8514841599488673,
+              -0.9487615313279135,
+              0.3148738671814679,
+              -0.026570744033030922,
+              -0.287001187280828,
+              -0.019046272756602922,
+              0.026950157981063226,
+              0.9994553158990064,
+              0.6280672892303458,
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "hole_pose": [
+              0.04102231708674627,
+              -0.9991561417083996,
+              -0.002043033827361366,
+              0.6479708264094887,
+              0.9990430956709775,
+              0.041048544851050715,
+              -0.015096686979692952,
+              -0.05002074362538336,
+              0.01516781108090408,
+              -0.0014217777592070268,
+              0.999883951293858,
+              0.7685625798280897,
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ],
+            "object_held": true,
+            "entities": [
+              {
+                "role": "target_object",
+                "object_id": "square-1",
+                "visible": true,
+                "has_pose": true,
+                "reason": null,
+                "held": true,
+                "frame_id": "world",
+                "evidence_ids": [
+                  "9ba33c23ad979e2e83c1c2a06e1e8bde87b37e42c49216291bd1b9e93f69f9e2",
+                  "f15ea4c93b92099c9e46b619ff9cac464605e31e479cd809b5aa5f34debb1988"
+                ],
+                "in_hand_transform_available": true,
+                "inserted": false,
+                "stationary": true
+              },
+              {
+                "role": "aperture",
+                "object_id": "square-hole-1",
+                "visible": true,
+                "has_pose": true,
+                "reason": null,
+                "held": null,
+                "frame_id": "world",
+                "evidence_ids": [
+                  "d5721ba301bb28129241a6cfb59ab024267807ce82b2cc2491c696a50579ea3f",
+                  "d7c5c4a01c25a9d056db15e308266dbc2cb8b54875ec073097725efeea0112cf",
+                  "cea689ead1f7b0a46125d3ff66b423ff02bd82fe298dafa1ab1b2c4f5146092e"
+                ],
+                "in_hand_transform_available": false,
+                "inserted": null,
+                "stationary": true
+              }
+            ],
+            "support": {
+              "object_id": "square-1",
+              "relation": "separated",
+              "reason": "measured_pose_against_support_model",
+              "support_observed": false,
+              "contact_measured": false,
+              "motion_authorized": false,
+              "precision_certified": false,
+              "geometry_error_bound_m": null,
+              "tolerance_source": "caller_registered_contact_tolerance",
+              "contact_tolerance_m": 0.001,
+              "gap_m": 0.08191142501586329,
+              "penetration_m": 0.0,
+              "axis_normal_angles_deg": [
+                89.74747295336455,
+                90.69137532856702,
+                0.7360543086574721
+              ],
+              "normal_in_object": [
+                0.004407414144777789,
+                -0.012066483018019188,
+                0.9999174839395628
+              ],
+              "support_normal": [
+                -0.0296283906380154,
+                -0.03454955668436087,
+                0.9989637063482913
+              ],
+              "held": true,
+              "stationary": true,
+              "object_measurement": {
+                "source": "current_rgbd_object_pose",
+                "evidence_ids": [
+                  "9ba33c23ad979e2e83c1c2a06e1e8bde87b37e42c49216291bd1b9e93f69f9e2",
+                  "f15ea4c93b92099c9e46b619ff9cac464605e31e479cd809b5aa5f34debb1988"
+                ],
+                "measured_at_ns": 6677763591916,
+                "observation_received_ns": 6677781294051,
+                "frame_id": "world",
+                "uncertainty_m": null,
+                "dimensions_source": "registered_object_box",
+                "frames": [
+                  {
+                    "camera": "right",
+                    "stream": "rgb",
+                    "source_ns": 1795747705861055664,
+                    "received_ns": 6677763591916,
+                    "source_epoch": 0,
+                    "publisher_id": null
+                  },
+                  {
+                    "camera": "right",
+                    "stream": "depth",
+                    "source_ns": 1795747705860026855,
+                    "received_ns": 6677766369136,
+                    "source_epoch": 0,
+                    "publisher_id": null
+                  }
+                ]
+              },
+              "support_measurement": {
+                "support_id": "table",
+                "frame_id": "world",
+                "point": [
+                  1.0132560410674538,
+                  -0.1104637808693711,
+                  0.5567271560476621
+                ],
+                "normal": [
+                  -0.0296283906380154,
+                  -0.03454955668436087,
+                  0.9989637063482913
+                ],
+                "source": "registered_calibration",
+                "calibration_id": "coarse-aea05cd220e75f10",
+                "measured_at_ns": null,
+                "evidence_ids": []
+              },
+              "observation_id": "6421ed242a1141e892425bfd797c5175:47",
+              "calibration_id": "coarse-aea05cd220e75f10",
+              "synthetic": false,
+              "quality_warnings": [
+                "visual_measurements_above_age_budget",
+                "support_rgbd_receipt_pairing_source_time_unverified"
+              ],
+              "pairing_quality": "receipt_only"
+            },
+            "available_skills": [
+              "approach_grasp",
+              "grasp",
+              "verify_grasp",
+              "inspect_in_hand",
+              "transfer_above_hole",
+              "align",
+              "insert",
+              "release",
+              "verify_placed",
+              "retreat",
+              "reobserve",
+              "regrasp",
+              "move_tcp",
+              "recover_grasp",
+              "release_supported"
+            ],
+            "cartesian_motion": true,
+            "missing_entities": [],
+            "object_local_box": {
+              "min": [
+                -0.015,
+                -0.015,
+                0
+              ],
+              "max": [
+                0.015,
+                0.015,
+                0.06
+              ]
+            },
+            "tool_geometry": {
+              "frame": "tcp",
+              "pose_format": "T_tcp_box_row_major_4x4",
+              "translation_unit": "metre",
+              "local_boxes": [
+                {
+                  "min": [
+                    -0.065,
+                    -0.255,
+                    -0.035
+                  ],
+                  "max": [
+                    0.07,
+                    -0.075,
+                    0.045
+                  ],
+                  "pose": [
+                    1.0,
+                    0.0,
+                    0.0,
+                    -0.006616029041456743,
+                    0.0,
+                    1.0,
+                    0.0,
+                    0.2491747634269028,
+                    0.0,
+                    0.0,
+                    1.0,
+                    -0.008671163572872698,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                  ]
+                },
+                {
+                  "min": [
+                    -0.04,
+                    -0.19631568377038375,
+                    -0.04
+                  ],
+                  "max": [
+                    0.06342784627858256,
+                    -0.055,
+                    0.13176447949444237
+                  ],
+                  "pose": [
+                    1.0,
+                    0.0,
+                    0.0,
+                    -0.006616029041456743,
+                    0.0,
+                    1.0,
+                    0.0,
+                    0.2491747634269028,
+                    0.0,
+                    0.0,
+                    1.0,
+                    -0.008671163572872698,
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                  ]
+                }
+              ],
+              "padding_m": 0.0,
+              "fallback_radius_m": null,
+              "purpose": "registered collision envelope, not measured contact or grasp success"
+            },
+            "fixture_transit_available": true,
+            "aperture_required_for": [
+              "align",
+              "insert",
+              "release",
+              "verify_placed"
+            ],
+            "quality_warnings": [
+              "visual_measurements_above_age_budget"
+            ]
+          }
+        },
+        "evidence_recorded": false
+      }
+    ],
+    "moved": true,
+    "state": {
+      "phase": "unobserved",
+      "observation_id": "unavailable",
+      "authorized": null,
+      "state_cached": true
+    },
+    "episode_done": false,
+    "motion_status_unknown": false,
+    "published_skill_requests": 2,
+    "tool_steps": 4
+  },
+  "measured": {
+    "outcome": "pending_review",
+    "training_ready": false,
+    "placement_success": false,
+    "reset_required": true,
+    "reset_success": false,
+    "assisted": false,
+    "autonomous_success": false,
+    "goal": "placed",
+    "goal_reached": false,
+    "admission_profile": "development_coarse",
+    "partial_task": false,
+    "synthetic": false
+  },
+  "turns": [
+    {
+      "index": 0,
+      "tool": "python",
+      "elapsed_s": 22.642,
+      "ok": true,
+      "moved": true,
+      "env_steps": 4,
+      "terminated": false,
+      "sandbox_flags": []
+    }
+  ],
+  "recording_identity": {
+    "owner_run_id": "f1_hil_20261127T024807Z_d19770e3",
+    "owner_run_path": "/home/user/Bruno/HARNESS/runtime/harness-runs/f1_hil_20261127T024807Z_d19770e3",
+    "owner_instance_id": "76c3c22c237b4f72943ef755a1e1516e",
+    "host_boot_id": "27a5be79-42f5-4176-9317-a65ad03f359c"
+  },
+  "session_id": "94fa9e098165476eba0a40ce6f949be0",
+  "evidence_status": "awaiting_native_recording_seal",
+  "training_ready": false,
+  "attention": {
+    "skill": "transfer_above_hole",
+    "reason": "numerical_plan_rejected:registered_candidates_exhausted",
+    "submitted": true,
+    "no_motion": true
+  }
+}

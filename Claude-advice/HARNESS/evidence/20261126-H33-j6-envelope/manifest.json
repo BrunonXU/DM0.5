@@ -1,10 +1,15 @@
 {
-  "item": "H-33",
-  "status": "software_complete_pending_hardware",
-  "date": "2026-11-26",
-  "version": 56,
-  "bundle_id": "d5b1b1d2de1ae687f0d2501fcbc33404d359edc03d0d1267515406cdd1877483",
+  "directory": "20261126-H33-j6-envelope",
+  "file_count": 15,
   "files": {
+    "arm-ccs-m6-40-mvkdcfg-j6.json": {
+      "bytes": 563,
+      "sha256": "a114af2ec211905fd7995bff776cfcff958c0d6014dc8e890d5b2c65731f57af"
+    },
+    "arm-scene-timing-summary.json": {
+      "bytes": 842,
+      "sha256": "be455df1018b95b2f1dbcf3dbdc8e7f1e822191367d149fdf7442a32b9d8cefd"
+    },
     "offline-replan-trial01-trial03.json": {
       "bytes": 24151,
       "sha256": "8d41e691fe92727a32a825679cb9f11c3b42e498a518b020d22d210f4513dd63"
@@ -21,9 +26,41 @@
       "bytes": 6625,
       "sha256": "2a2aa69eefa5dc127f3e316f7f6830edff7e43a9c0bfad99fe0323f24168d45c"
     },
+    "runs/v56-trial-01/owner-trace.jsonl": {
+      "bytes": 555393,
+      "sha256": "e8f21c9068401ebb6570de9d26f2388e210802c9ed8d17616dc326dc627a4558"
+    },
+    "runs/v56-trial-01/planner-trace.jsonl": {
+      "bytes": 759943,
+      "sha256": "4c8ddaa8497d8cf1200fb3f83d1d4ade030ad093c0d01ab7b4446fa1a16af4aa"
+    },
+    "runs/v56-trial-02/owner-trace.jsonl": {
+      "bytes": 397080,
+      "sha256": "adb4ae5b4f1321c6218c07a8b0300eed330af615b2998ef2e784044bbb0c3e03"
+    },
+    "runs/v56-trial-02/planner-trace.jsonl": {
+      "bytes": 532361,
+      "sha256": "3f969632bb9efe294bce8f6ee84fb665fdc8ff08b235bc29fb71ac8680852aea"
+    },
     "software-qualification.json": {
       "bytes": 1087,
       "sha256": "800edab07c180e889e29142c9b193ec23c5ac84137b3964f356d145ab5e0e823"
+    },
+    "trial-03-ompl-repeats.json": {
+      "bytes": 734,
+      "sha256": "be3374170c4b1c11d4bf7f234607cd87bceab891ed3f66c2ae31e218c8113f79"
+    },
+    "v56-approved-output-j6.json": {
+      "bytes": 666,
+      "sha256": "66d320794e62f8cd38a43da16de91e12441e4ff6e1638b4dd486efd846e27efb"
+    },
+    "v56-preflight-3x-summary.json": {
+      "bytes": 3057,
+      "sha256": "a3ae4a10e613ce951f1fff6bf7a8e2cdafe6d42837071b52318e82eef0e47a77"
+    },
+    "v56-real-robot-summary.json": {
+      "bytes": 3993,
+      "sha256": "75b47a5acba78800f14cc31f80d95122fda50ed441c220372116a8fed207c517"
     }
   }
 }

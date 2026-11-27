@@ -1,0 +1,23 @@
+{
+  "normal": {
+    "ticks": 3093,
+    "submitted16_arm_r_j6_min_deg": -0.4321,
+    "submitted16_arm_r_j6_max_deg": 33.8377,
+    "reference16_arm_r_j6_max_deg": 34.1334,
+    "measured16_arm_r_j6_max_deg": 33.8377
+  },
+  "grasp-miss": {
+    "ticks": 3431,
+    "submitted16_arm_r_j6_min_deg": -0.4417,
+    "submitted16_arm_r_j6_max_deg": 33.7739,
+    "reference16_arm_r_j6_max_deg": 34.0625,
+    "measured16_arm_r_j6_max_deg": 33.7739
+  },
+  "aperture-occluded": {
+    "ticks": 3230,
+    "submitted16_arm_r_j6_min_deg": -1.0996,
+    "submitted16_arm_r_j6_max_deg": 40.5097,
+    "reference16_arm_r_j6_max_deg": 41.1935,
+    "measured16_arm_r_j6_max_deg": 40.5097
+  }
+}

@@ -16,6 +16,13 @@ from .gripper_state import observed_open
 from .gripper_contact import GraspClosureEpisode, target_in_closure_region
 
 
+OCCLUDED_FIXTURE_RETAIN_NS = 20_000_000_000
+OCCLUDED_FIXTURE_RETAIN_REASONS = frozenset((
+    'bucket_landmark_registration_unavailable',
+    'partial_lid_landmarks_unavailable',
+))
+
+
 class SecondaryCameraUnavailable(ValueError):
     """No full scene; independently validated primary evidence may be retained."""
 
@@ -56,6 +63,8 @@ class CalibratedScenePipeline:
         self.live_hole=None
         self.live_fixture_anchors=None
         self.measured_fixture=None
+        self._occluded_fixture_retained=False
+        self._occluded_fixture_expired=False
         self.lid_registration=None
         self.search_hint=None
         self.return_history=deque(maxlen=256)
@@ -435,6 +444,7 @@ class CalibratedScenePipeline:
 
     def process(self,observation,*,base_eef,context=None,secondary_error=None,head_camera_pose=None):
         start=time.perf_counter();self.last_timing={};self._timing_at=start
+        self._occluded_fixture_retained=False;self._occluded_fixture_expired=False
         self._partial_targets=[];self._partial_views={}
         # Environment evidence is recomputed from this frame, never inherited
         # from a previous partial/object-only observation supplied by a caller.
@@ -985,11 +995,15 @@ class CalibratedScenePipeline:
             # moved. Keep its last independently measured world pose with the
             # ORIGINAL time and evidence; never synthesize an aperture.
             retained=None
+            occluded_retained=False
             camera_name=cfg.get('hole_camera',{}).get('camera')
             if (self.measured_fixture is not None and camera_name and
                     str(reason) in ('capture_faults:duplicate_source_stamp:'+camera_name,
                                     'capture_faults:sequence_not_increasing:'+camera_name)):
                 retained=self.measured_fixture.model_copy(update={'source':'retained_static_fixture'})
+            elif getattr(self,'_occluded_fixture_retained',False) and self.measured_fixture is not None:
+                retained=self.measured_fixture.model_copy(update={'source':'retained_static_fixture'})
+                occluded_retained=True
             else:
                 self.measured_fixture=None
             if retained is None and measured_local_input is not None and held is not True:
@@ -1001,7 +1015,9 @@ class CalibratedScenePipeline:
             self.revision+=1
             return observation.model_copy(update=dict(objects=(measured,),fixture=retained,stationary=stationary,
                 quality_warnings=(*quality_warnings,'fixture_unavailable:'+str(reason),
-                    *(('static_fixture_prediction_from_prior_measurement',) if retained else ())),
+                    *(('static_fixture_prediction_from_prior_measurement',) if retained else ()),
+                    *(('static_fixture_retained_while_held_arm_occludes_head',) if occluded_retained else ()),
+                    *(('static_fixture_retention_expired',) if getattr(self,'_occluded_fixture_expired',False) else ())),
                 frames=tuple(f for f in observation.frames if f.camera==object_camera),
                 pairings=tuple(p for p in observation.pairings if p.camera==object_camera),faults=(),
                 geometry_scope='coarse_static_task' if retained else 'coarse_object_verification',geometry_camera=object_camera,
@@ -1020,13 +1036,32 @@ class CalibratedScenePipeline:
         else:
             hole_depth=aligned[y0:y1,x0:x1];hole_masks=masks;hole_evidence=evidence
         fixture=None
+        self._occluded_fixture_retained=False
+        self._occluded_fixture_expired=False
         if self.fixture_reference_camera is not None:
             try:
                 fixture=self._locate_bucket_for_object(observation,object_camera,(hole_depth,hole_evidence,hole_masks))
                 self.measured_fixture=fixture
             except ValueError as exc:
-                self.measured_fixture=None
-                self.last_timing['independent_fixture']=dict(available=False,reason=str(exc))
+                err_code=str(exc)
+                grasp_contact=(context or {}).get('grasp_contact') or {}
+                grasp_pub_ns=grasp_contact.get('published_ns')
+                prior=self.measured_fixture
+                base_eligible=(
+                    err_code in OCCLUDED_FIXTURE_RETAIN_REASONS
+                    and held is True
+                    and prior is not None
+                    and prior.source=='rgbd_anchor_registration'
+                    and isinstance(grasp_pub_ns,int)
+                    and prior.measured_at_ns>grasp_pub_ns
+                )
+                if base_eligible and 0<=observation.received_ns-prior.measured_at_ns<=OCCLUDED_FIXTURE_RETAIN_NS:
+                    self._occluded_fixture_retained=True
+                else:
+                    if base_eligible and observation.received_ns-prior.measured_at_ns>OCCLUDED_FIXTURE_RETAIN_NS:
+                        self._occluded_fixture_expired=True
+                    self.measured_fixture=None
+                self.last_timing['independent_fixture']=dict(available=False,reason=err_code)
 
         def fixture_only(reason):
             # Preserve measured target and current bucket geometry without

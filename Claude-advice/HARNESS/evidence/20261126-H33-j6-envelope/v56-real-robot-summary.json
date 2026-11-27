@@ -1,0 +1,130 @@
+{
+  "version": 56,
+  "bundle_id": "d5b1b1d2de1ae687f0d2501fcbc33404d359edc03d0d1267515406cdd1877483",
+  "verdict": "PASS",
+  "pass_reason": "Trial 1 reached S5 (align) with transfer_above_hole arm_r_j6 targets [14.25, 22.92] deg <= 50.0 deg, actual [0.95, 22.43] deg, 0 motion_stalled, 0 camera_sample_feedback_aged:right, transport revalidation->first_publication 0.0219 s.",
+  "operator_visual_inspection": "电线没啥问题",
+  "trials": [
+    {
+      "trial": 1,
+      "run_id": "web-0a935b522d8046978d8b17b95316fca5",
+      "note": "Trial 1: PASS — reached S5 (align), transfer_above_hole succeeded with variant=2 arm_r_j6 target [14.25, 22.92] deg <= 50.0 deg, 0 motion_stalled, 0 camera_sample_feedback_aged:right.",
+      "skills": [
+        {
+          "skill": "approach_grasp",
+          "outcome": "success",
+          "reason": "owner_arrival_and_fresh_scene"
+        },
+        {
+          "skill": "grasp",
+          "outcome": "success",
+          "reason": "measured_blocked_closure"
+        },
+        {
+          "skill": "verify_grasp",
+          "outcome": "success",
+          "reason": "measured_blocked_closure"
+        },
+        {
+          "skill": "transfer_above_hole",
+          "outcome": "success",
+          "reason": "owner_transport_endpoint_and_held_target"
+        },
+        {
+          "skill": "inspect_in_hand",
+          "outcome": "success",
+          "reason": "grasp_observation"
+        },
+        {
+          "skill": "align",
+          "outcome": "pending_review",
+          "reason": "numerical_plan_rejected:registered_candidates_exhausted"
+        }
+      ],
+      "planned_arm_r_j6_deg_by_skill": {
+        "approach_grasp": [
+          1.4,
+          9.16
+        ],
+        "grasp": [
+          7.26,
+          22.42
+        ],
+        "transfer_above_hole": [
+          14.25,
+          22.92
+        ]
+      },
+      "control_measured_arm_r_j6_deg": [
+        0.95,
+        22.43
+      ],
+      "control_submitted_arm_r_j6_deg": [
+        0.95,
+        22.59
+      ],
+      "revalidation_to_first_publication_s": {
+        "approach_grasp": 0.0246,
+        "grasp": 0.0213,
+        "transfer_above_hole": 0.0219
+      },
+      "motion_stalled_count": 0,
+      "camera_sample_feedback_aged_right_count": 0,
+      "owner_trace_path": "runs/v56-trial-01/owner-trace.jsonl",
+      "planner_trace_path": "runs/v56-trial-01/planner-trace.jsonl"
+    },
+    {
+      "trial": 2,
+      "run_id": "web-13f2af62d9e342acac4a6c6551524c22",
+      "note": "Trial 2: stopped before transport (transfer_above_hole registered_candidates_exhausted: 3x arm_R_Link5/body_Link5 clearance + IK no progress), 0 motion_stalled, 0 camera_sample_feedback_aged:right.",
+      "skills": [
+        {
+          "skill": "approach_grasp",
+          "outcome": "success",
+          "reason": "owner_arrival_and_fresh_scene"
+        },
+        {
+          "skill": "grasp",
+          "outcome": "success",
+          "reason": "measured_blocked_closure"
+        },
+        {
+          "skill": "verify_grasp",
+          "outcome": "success",
+          "reason": "measured_blocked_closure"
+        },
+        {
+          "skill": "transfer_above_hole",
+          "outcome": "pending_review",
+          "reason": "numerical_plan_rejected:registered_candidates_exhausted"
+        }
+      ],
+      "planned_arm_r_j6_deg_by_skill": {
+        "approach_grasp": [
+          1.36,
+          9.0
+        ],
+        "grasp": [
+          8.29,
+          23.34
+        ]
+      },
+      "control_measured_arm_r_j6_deg": [
+        0.95,
+        23.24
+      ],
+      "control_submitted_arm_r_j6_deg": [
+        0.95,
+        23.34
+      ],
+      "revalidation_to_first_publication_s": {
+        "approach_grasp": 0.0264,
+        "grasp": 0.0275
+      },
+      "motion_stalled_count": 0,
+      "camera_sample_feedback_aged_right_count": 0,
+      "owner_trace_path": "runs/v56-trial-02/owner-trace.jsonl",
+      "planner_trace_path": "runs/v56-trial-02/planner-trace.jsonl"
+    }
+  ]
+}

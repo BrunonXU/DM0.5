@@ -1,0 +1,18 @@
+{
+  "directory": "20261126-H32-occluded-fixture",
+  "file_count": 3,
+  "files": {
+    "report.md": {
+      "bytes": 2571,
+      "sha256": "0e85c1bad5904b23841261cf7f363689e64dd77dbdd355476460891d34c3d1ae"
+    },
+    "trial-03-sidestep-replay.json": {
+      "bytes": 989,
+      "sha256": "84fa698d111f77f9a52bf3a70eaab90e0c59aeaefdadec4d93a2e6b582a9876e"
+    },
+    "v57-qualification.json": {
+      "bytes": 2021,
+      "sha256": "0ce337ba9e433c5fb7b897727a0889a4ea57ba3d8b08442def68fea1231479df"
+    }
+  }
+}

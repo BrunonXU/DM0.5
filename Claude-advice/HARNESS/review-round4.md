@@ -208,7 +208,7 @@ Codex 报告里写“真机物理／固件在 +54.86° 顶死”，方向对，�
 - 漏斗修正：`HARNESS/scripts/run_funnel.py` 在无失败原因且规划端 `pending_review` 时读取 `attention.reason` 并标注来源 `planner_pending_review`（净增 `raise HarnessError` = `0`）；`HARNESS/tests/test_run_funnel.py` 10/10 通过。重跑生成 `funnel.json` 后三次试验均具非空 `last_failure_reason`（Trial #3 为 `planner_pending_review` / `observation_viewpoint_required:aperture_measurement_required:square-hole-1:fixture_aperture_not_detected_in_search_region`）。
 - 文档回写：五处文档已统一改为“本批沿用默认环境（production-gateway）；按判定规则胜出的是 fastdds-udp，随下一个版本钉死”，`STATUS.md` 页首与 `TODO.md` 已更新为 V54 中期批与第四轮顺序，`report.md` 已改为“实测在 54.86° 停住，来源未确认”并链接 10 月两份 DAgger 事故记录。
 
-## H-33 `[ ]` P0：右腕第 6 关节的规划上限收到 50.0°
+## H-33 `[x]` P0：右腕第 6 关节的规划上限收到 50.0°
 
 **已核实的事实**
 
@@ -272,13 +272,14 @@ Codex 报告里写“真机物理／固件在 +54.86° 顶死”，方向对，�
 
 **证据**：`Claude-advice/HARNESS/evidence/<日期>-H33-j6-envelope/`，含两次离线重算的结果、四项只读确认的结论、真机试验的漏斗和原始记录。
 
-**执行记录（2026-11-26，软件完成，待真机验收）**：
-- 版本：**V56 候选**（`F1 Harness 右腕规划收紧与固定传输 V56`，`bundle_id`: `d5b1b1d2de1ae687f0d2501fcbc33404d359edc03d0d1267515406cdd1877483`，状态 `candidate`，V54 保持在用；初版候选 V55 `0e8235c53896` 因 `PlanService` 缺类默认属性被全量回归拦截，已按规则标 `cancelled` 未部署）。
+**执行记录（2026-11-26，软件与真机验收均已通过）**：
+- 版本：**V56**（`F1 Harness 右腕规划收紧与固定传输 V56`，`bundle_id`: `d5b1b1d2de1ae687f0d2501fcbc33404d359edc03d0d1267515406cdd1877483`，已部署并通过真机验收；初版候选 V55 `0e8235c53896` 因 `PlanService` 缺类默认属性被全量回归拦截，已按规则标 `cancelled` 未部署）。
 - 证据目录：`Claude-advice/HARNESS/evidence/20261126-H33-j6-envelope/`。
 - 净增 `raise HarnessError`：**+1**（`planning_joint_envelope_exceeded`，属原生关节限位类硬保护收紧，按规则单列）。
-- 离线重算：Trial #1 不设范围复现 variant 1、`arm_r_j6` 最大 `60.0°` / 终点 `59.8686°`（3.20 s）；设 `[-60.0, 50.0]` 后 variant 1 因 `52.46° > 50.0°` 被 `planning_joint_envelope_exceeded` 作废，切至 variant 2 `joint_space_transport` 成功（7.57 s，`arm_r_j6` 最大 `22.3917°` / 终点 `19.4233°`）。Trial #3 设范围前后均走 variant 2，终点保持 `16.9705°`（最大 `25.3012°`）不受影响。
-- 四项只读确认：6000D 本地 `ccs_m6_40.MvKDCfg` 左右臂 J6 为 `±60°`（ARM 实机副本待上电补核）；Trial #1 持久化日志无 `effort`/`motor_current`/`error_code`；历史 157 份非空录制中 `arm_r_j6` 全局最小 `-16.21°`（无负向平台）、最大 `55.58°`（`>52°` 共 14,663 采样，`[54.5, 55.0)` 占 80.7%）；静止目视因用户离场关机暂缓。结论标为 **“来源未确认”**，`50.0°` 不上调。
-- 验收：`test_planning_joint_envelope.py` + `test_preflight_scene.py` 12/12 通过；V56 全量 pytest `3,124 passed` + 原生数值 `65 passed`；`check_native_integration.py` `62/62 passed`；三条 V56 冻结零输出回放（`normal` 10 阶段、`grasp-miss` 12 阶段、`aperture-occluded` 12 阶段）及输出审计全过（`physical_motion=False`、`paid_model_calls=0`）。真机上线、3× 预检与 ≤3 次试验待下次上电完成。
+- 离线重算与补充核对：Trial #1 不设范围复现 variant 1、`arm_r_j6` 最大 `60.0°` / 终点 `59.8686°`（3.20 s）；设 `[-60.0, 50.0]` 后 variant 1 因 `52.46° > 50.0°` 被 `planning_joint_envelope_exceeded` 作废，切至 variant 2 `joint_space_transport` 成功（7.57 s，`arm_r_j6` 最大 `22.3917°` / 终点 `19.4233°`）。Trial #3 两次无约束补充重跑（`trial-03-ompl-repeats.json`）分别得到 10 路点最大 `20.21°` 与 9 路点最大 `24.90°`，终点均为 `16.9705°`，证实此前路点与极值差异源于 OMPL RRTConnect 随机性而非包络检查。V56 三条冻结回放实际 F1Owner/Ruckig 输出 `arm_r_j6` 最大值（`v56-approved-output-j6.json`）：`normal` `33.84°`、`grasp-miss` `33.77°`、`aperture-occluded` `40.51°`，无越界超调。
+- 四项只读确认：ARM 实机 `motor_ctl/share/motor_ctl/ccs_m6_40.MvKDCfg`（`arm-ccs-m6-40-mvkdcfg-j6.json`，SHA256 与 6000D 完全一致）确认左右臂 J6 限位均为 `[-60.0°, 60.0°]`；Trial #1 持久化日志无 `effort`/`motor_current`/`error_code`；历史 157 份非空录制中 `arm_r_j6` 全局最小 `-16.21°`（无负向平台）、最大 `55.58°`（`>52°` 共 14,663 采样，`[54.5, 55.0)` 占 80.7%）；现场静止俯视与全程真机目视确认右腕相机线束松弛无缠绕/无干涉（操作者原话：“电线没啥问题”）。结论标为 **“来源未确认”**，`50.0°` 不上调。
+- 软件验收：`test_planning_joint_envelope.py` + `test_preflight_scene.py` 12/12 通过；V56 全量 pytest `3,124 passed` + 原生数值 `65 passed`；`check_native_integration.py` `62/62 passed`；三条 V56 冻结零输出回放及审计全过（`physical_motion=False`、`paid_model_calls=0`）。
+- 上线、预检与真机验收：V56 部署至 6000D 与 F1-09 并通过 4242 只读核验；在 `fastdds-udp` 下连续 3 次预检全部 5/5 通过（`v56-preflight-3x-summary.json`，均激活 `rmw_fastrtps_cpp` + `fastdds-udp-only.xml`，连续配对 47.45–47.62 s、左腕最大间隔 0.04–0.05 s、0 动作发布）。随后真机验收（`v56-real-robot-summary.json` 及 `runs/v56-trial-0{1,2}/` 脱敏原件）：**Trial 1（`web-0a935b522d8046978d8b17b95316fca5`）一次达标**——`approach_grasp` / `grasp` / `verify_grasp` / `transfer_above_hole` / `inspect_in_hand` 全部成功并到达 S5（`align`）；`transfer_above_hole` 选中 variant 2，`arm_r_j6` 规划目标 `[14.25°, 22.92°]`（≤ `50.0°`），全程控制实测 `[0.95°, 22.43°]`、下发 `[0.95°, 22.59°]`，运输重验到首次发布 **`0.0219 s`**，**0 次 `motion_stalled`**，**0 次 `camera_sample_feedback_aged:right`**。Trial 2（`web-13f2af62d9e342acac4a6c6551524c22`）在 `transfer_above_hole` 规划阶段因 `arm_R_Link5`/`body_Link5` 碰撞余量与 IK 未收敛返回 `registered_candidates_exhausted`，同样 0 次堵转、0 次 `camera_sample_feedback_aged:right`。H-33 真机验收通过。
 
 ## H-32 `[ ]` P0：持块遮挡头部时，保留刚测过的桶位姿，完成一次让开动作
 
@@ -364,7 +365,14 @@ Codex 报告里写“真机物理／固件在 +54.86° 顶死”，方向对，�
 
 **证据**：`Claude-advice/HARNESS/evidence/<日期>-H32-occluded-fixture/`（软件和回放），以及正式 10 次的 `evidence/<日期>-first-batch/`。
 
-## H-34 `[ ]` P2：没有模型提示时积木分割不确定（先计数，不改代码）
+**执行记录（2026-11-26，软件/回放/上线/3×预检全过；真机跑至第 6 次触发 H-34 3/3 阈值暂停，尚未进入 S5 触发真机让开）**：
+- ARM 实机 `independent_fixture.reason` 核对：试验 3 遮挡帧全为 `partial_lid_landmarks_unavailable`（在 `20261126-01-claude.md` 批准的允许列表内，见 `evidence/20261126-H33-j6-envelope/arm-scene-timing-summary.json`）。
+- 代码改动（提交 `e19bf8b`）：仅改 `HARNESS/src/f1_harness/scene_pipeline.py`（净增 `raise HarnessError` = `0`），新增 `OCCLUDED_FIXTURE_RETAIN_NS = 20_000_000_000`、`OCCLUDED_FIXTURE_RETAIN_REASONS`（两项精确匹配）、五条件保留逻辑及超 20 秒清除告警 `static_fixture_retention_expired`；其他运行时文件未改。
+- 版本：**V57**（`F1 Harness 遮挡保留桶位姿与让开视野 V57`，`bundle_id`: `de4f6b0beaea03eab6c2b6c9c34901c4cf04e1b44d3846f4c834133c126e7d6d`，已部署）。
+- 软件与零输出验收（`evidence/20261126-H32-occluded-fixture/`）：`test_occluded_fixture_retention.py` 13/13 通过；试验 3 原始输入零输出让开回放 `planned=True`、位移 `0.1329 m`、`arm_r_j6` `[4.13°, 16.88°]`、预览龄 `13.569 s`、重验龄 `14.169 s`、正式重验 `revalidation_ok=True`（`f1-harness-plan-revalidation-v1`）；全量 pytest `3,137 passed` + `check_native_integration.py` `62 passed`；V57 三条冻结零输出回放（`normal` / `grasp-miss` / `aperture-occluded`）及审计全过（`physical_motion=False`、`paid_model_calls=0`）；已上线 6000D 与 F1-09（4242 显示 V57，`robot-v22.json` 未重启），连续 3 次预检 5/5 全过。
+- 真机批次（`evidence/20261126-first-batch/`，6 次试验）：第 1–3 次 15.8 s 内完成抓稳验稳后在 `transfer_above_hole` 因 `arm_R_Link5/body_Link5` `-0.04~-0.88 mm` 与 `joint_space_transport` `numerical_joint_search_no_valid_goal` 停在 S4；桶前移 3–4 cm 后第 4–6 次连续 3 次停在 S0（`mask_view=right:mask_uncertain_requires_new_prompt:object=square-1`），触发 H-34 3/3 阈值暂停。全程 0 次 `motion_stalled`、0 次 `camera_sample_feedback_aged:right`、0 次 `static_fixture_retention_expired`；因未进入 S5，真机让开成功比 / 让开后测孔比 / S6 到达数为 `0/0` / `0/0` / `0/6`。
+
+## H-34 `[!]` P2：没有模型提示时积木分割不确定（已达 3/6 触发线，待 Claude 出规格）
 
 **现场事实**：试验 2 在接近之前等了 15.02 秒，全程是 `mask_view=right:mask_uncertain_requires_new_prompt:object=square-1`，没有动作。H-20 的预检里，同一原因每 10 轮出现两三次，都在启动头一两帧，之后自行恢复；试验 2 没有恢复。
 
@@ -376,6 +384,10 @@ Codex 报告里写“真机物理／固件在 +54.86° 顶死”，方向对，�
 **何时改代码**：H-32 之后的正式 10 次里，这类停点达到 3 次（即无需模型定位成功的少于 8 次），按上一轮对 H-16 定的结论执行：固定程序在首次定位失败时，改用 `masks` 配置里的固定提示框再试一次。届时另开一轮规格。
 
 **不做**：不降低分割置信度阈值，不延长 15 秒窗口，不接模型。
+
+**执行记录（2026-11-26，已触发 ≥3 次阈值，请 Claude 出规格）**：
+- 在 V57 正式批次（`evidence/20261126-first-batch/`）前 6 次试验中，第 4、5、6 次连续 **3 次**停在 S0 且原因均为 `mask_view=right:mask_uncertain_requires_new_prompt:object=square-1`（`funnel.json` 已单列，见 `trial-06-right-wrist-crop.jpg` 与 `trial-06-seg-diagnostic.json`）。
+- 现场画面证实方形木块在右腕视角右侧完全清晰、无任何遮挡，仅因桶前移后木色桶壁（印有木块图案）进入右腕画面左侧，无提示框全图发现即连续拒识。未改阈值、未改 15 秒窗口、未接模型，已停下并写入 `handoff/20261126-02-codex.md` 请 Claude 出规格。
 
 ## 版本登记
 

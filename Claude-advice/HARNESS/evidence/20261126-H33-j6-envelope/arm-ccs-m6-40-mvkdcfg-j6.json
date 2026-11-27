@@ -1,0 +1,20 @@
+{
+  "arm_path": "/home/user/workspace/f1/install/motor_ctl/share/motor_ctl/ccs_m6_40.MvKDCfg",
+  "sha256": "ce20b1a80974c3ed58cdac4973152625096c8ad93a779e5fd4108c26ce19bd52",
+  "identical_to_6000d": true,
+  "arm_l_j6_deg": [
+    -60.0,
+    60.0
+  ],
+  "arm_r_j6_deg": [
+    -60.0,
+    60.0
+  ],
+  "planning_envelope_unchanged_deg": {
+    "arm_r_j6": [
+      -60.0,
+      50.0
+    ]
+  },
+  "operator_visual_inspection": "静止俯视与真机全程观察确认右腕相机线束自然松弛无缠绕、无干涉（操作者原话：\"电线没啥问题\"）。"
+}

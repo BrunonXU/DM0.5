@@ -1,0 +1,81 @@
+{
+  "planner_declaration": {
+    "cell": 1,
+    "stdout": "",
+    "stderr": "",
+    "elapsed_s": 15.05,
+    "primitive_calls": [
+      {
+        "tool": "execute_skill",
+        "kwargs": {
+          "name": "approach_grasp"
+        },
+        "ok": true,
+        "error": null,
+        "request_id": "e79a3c4877694e7da9b03e2358c289a7",
+        "lifecycle": "rejected",
+        "outcome": "pending_review",
+        "reason": "observation_readiness_timeout:observation_unavailable:RpcError:observe_with_status: mask_view=right:mask_uncertain_requires_new_prompt:object=square-1",
+        "no_motion": true,
+        "retryable": false,
+        "cancel_stage": "none",
+        "rejected_candidate_variant": null,
+        "resume_request_id": null,
+        "verification_request_id": null,
+        "planning_diagnostic": null,
+        "evidence_recorded": false
+      }
+    ],
+    "moved": false,
+    "state": {
+      "phase": "unobserved",
+      "observation_id": "unavailable",
+      "authorized": null,
+      "state_cached": true
+    },
+    "episode_done": false,
+    "motion_status_unknown": false,
+    "published_skill_requests": 0,
+    "tool_steps": 0
+  },
+  "measured": {
+    "outcome": "pending_review",
+    "training_ready": false,
+    "placement_success": false,
+    "reset_required": true,
+    "reset_success": false,
+    "assisted": false,
+    "autonomous_success": false,
+    "goal": "placed",
+    "goal_reached": false,
+    "admission_profile": "development_coarse",
+    "partial_task": false,
+    "synthetic": false
+  },
+  "turns": [
+    {
+      "index": 0,
+      "tool": "python",
+      "elapsed_s": 15.065,
+      "ok": true,
+      "moved": false,
+      "env_steps": 0,
+      "terminated": false,
+      "sandbox_flags": []
+    }
+  ],
+  "recording_identity": {
+    "owner_run_id": "f1_hil_20261127T025343Z_22c26e93",
+    "owner_run_path": "/home/user/Bruno/HARNESS/runtime/harness-runs/f1_hil_20261127T025343Z_22c26e93",
+    "owner_instance_id": "90bc8c1bea024195b844f4a37d540aa9",
+    "host_boot_id": "27a5be79-42f5-4176-9317-a65ad03f359c"
+  },
+  "session_id": "645a4e5347924853972252ed41b4b274",
+  "evidence_status": "awaiting_native_recording_seal",
+  "training_ready": false,
+  "attention": {
+    "skill": "approach_grasp",
+    "reason": "observation_readiness_timeout:observation_unavailable:RpcError:observe_with_status: mask_view=right:mask_uncertain_requires_new_prompt:object=square-1",
+    "submitted": false
+  }
+}
