@@ -100,7 +100,7 @@ flowchart LR
 2. 用 V60 Trial 1–3、V58 Trial 2–3 的原始输入，从运输到位接续做零输出回放：报告每次是否直接得到可以执行的 `align` 计划（不经横移）、选中的候选、`arm_r_j6` 范围、最小余量、6000D 上的规划耗时，以及缓存的年龄。
 3. 全量 pytest、`check_native_integration.py`、三条零输出回放；另加一条从运输到位直接对准的回放。
 
-> **执行记录（2026-11-27）**：已完成 `contracts.py`、`engine.py`、`owner_bridge.py`、`scene_pipeline.py`、`observation.py`、`revalidation.py`、`verification.py` 改动，实现持块周期内运输前实测方孔缓存（45 s 上限、接触故障/撤权/桶位移/换闭爪作废、兼容 2/3 哈希头部/跨视角直接实测）、H-32 45 s 同步修订与接触故障作废、`align`/`insert`/`release` 允许而 `verify_placed` 拒绝、H-39 自动降级为备用路径。单测 85 passed；V60 Trial 1–3 与 V58 Trial 2–3 共 5 次真实试验从运输到位直接进入 `align` 零输出回放 **5/5 不经横移即解出 `v=1`**（6000D 规划 3.07–4.35 s，缓存年龄 7.60–14.84 s，`arm_r_j6 ∈ [0.17°, 36.12°]`，最小余量 17.06°–44.92°）且全部通过正式 `revalidate_candidate`（17–19 段）。证据见 [evidence/20261127-H42-cached-aperture/report.md](evidence/20261127-H42-cached-aperture/report.md)。全量回归、冻结 V61 与四条回放随下步 V61 冻结一起验收。
+> **执行记录（2026-11-27）**：已完成 `contracts.py`、`engine.py`、`owner_bridge.py`、`scene_pipeline.py`、`observation.py`、`revalidation.py`、`verification.py` 改动，实现持块周期内运输前实测方孔缓存（45 s 上限、接触故障/撤权/桶位移/换闭爪作废、兼容 2/3 哈希头部/跨视角直接实测）、H-32 45 s 同步修订与接触故障作废、`align`/`insert`/`release` 允许而 `verify_placed` 拒绝、H-39 自动降级为备用路径。单测 85 passed；V60 Trial 1–3 与 V58 Trial 2–3 共 5 次真实试验从运输到位直接进入 `align` 零输出回放 **5/5 不经横移即解出 `v=1`**（6000D 规划 3.07–4.35 s，缓存年龄 7.60–14.84 s，`arm_r_j6 ∈ [0.17°, 36.12°]`，最小余量 17.06°–44.92°）且全部通过正式 `revalidate_candidate`（17–19 段）。证据见 [evidence/20261127-H42-cached-aperture/report.md](evidence/20261127-H42-cached-aperture/report.md)。已在 V62（`e9d6a8feb0f3`；V61 `2dd3292b7a64` 因 `ForwardKinematics.__init__` 提前读 `idx_qs` 触发 17 例单测 setup 失败已取消未复用）上完成全量 3,195 pytest + 62 原生集成 + 四套冻结零输出回放与审计（含第 4 条 V60 Trial 2 到位缓存直对准回放），并已部署至 6000D 与 F1-09 ARM，见 [evidence/20261127-v62-deploy/report.md](evidence/20261127-v62-deploy/report.md)。
 
 ## H-43 `[x]` P0：IK 墙钟上限改为站点配置，对准先试余量大的候选
 
@@ -119,9 +119,10 @@ flowchart LR
 - 用 V60 Trial 1–2 的原始输入：排序后 v=1 是否排第一，6000D 上的总耗时。
 - **在 ARM 上计时**：V61 上线后，上电时先在 F1-09 上用 Trial 1–2 的输入，离线（零输出）跑一次对准规划，记录 v=1 的实际耗时，再开始真机试验。如果超过 15 秒，停下交接，不要继续调大。
 
-> **执行记录（2026-11-27，离线部分完成；ARM 上电计时待 V61 上线后执行）**：
-> - 独立提交 `6b04361` 修改 `DAgger/F1/src/f1dagger/harness_compute.py` 读取 `spec['ik']['max_wall_s']`（缺省 7.0，上限 16.0），`control_manifest_sha256` 从 `8c0d2f85...` 变更为 `a62cb692...`；V61 冻结脚本中 F1-09 `numerics.local.json` 设为 `15.0`。
-> - 在 `numerical_service.py`/`numerical_pool.py`/`transport.py`/`skill_services.py` 新增 `endpoint_ik` 终点最小关节余量排序（保留全部 4 个变体，超 1 s 告警不阻塞）。单测 15 passed；V60 Trial 1–2 原始输入回放排序耗时 15.08 ms / 14.87 ms，均将 `v=1` 排第 1（余量 42.86° / 23.89°，其余 3 变体终点 IK 失败排后），1 次尝试即解出（6000D 总耗时 4.930 s / 3.861 s）且 `revalidate_candidate` 均通过。证据见 [evidence/20261127-H43-ik-wall-and-order/report.md](evidence/20261127-H43-ik-wall-and-order/report.md)。
+> **执行记录（2026-11-27，离线与 F1-09 ARM 实机计时全部完成）**：
+> - 独立提交 `6b04361` 修改 `DAgger/F1/src/f1dagger/harness_compute.py` 读取 `spec['ik']['max_wall_s']`（缺省 7.0，上限 16.0），`control_manifest_sha256` 从 `8c0d2f85...` 变更为 `a62cb692...`；V62 F1-09 站点 `numerics.local.json` 设为 `15.0`。
+> - 在 `numerical_service.py`/`numerical_pool.py`/`transport.py`/`skill_services.py` 新增 `endpoint_ik` 终点最小关节余量排序（`c92bff7` 改为延迟解析索引避免假模型单测 setup 失败；保留全部 4 个变体，超 1 s 告警不阻塞）。单测 15 passed；6000D 回放 V60 Trial 1–2 排序耗时 15.08 ms / 14.87 ms，均将 `v=1` 排第 1（4.930 s / 3.861 s）且复核通过。
+> - **F1-09 ARM 实机离线零输出计时通过**：在已部署 V62（`e9d6a8feb0f3`）的 F1-09 ARM（`ms-thor`，`aarch64`，`ik.max_wall_s=15.0`）上实测 4 组输入全部将 `v=1` 排第 1（排序仅 28.4–28.9 ms），总规划耗时：V60 Trial 1 横移后 **9.186 s** / 到位缓存直对准 **7.868 s**；V60 Trial 2 横移后 **7.417 s** / 到位缓存直对准 **5.664 s**，全部远低于 15 s 门槛并通过 `revalidate_plan`（38–41 ms）。证据见 [evidence/20261127-H43-ik-wall-and-order/report.md](evidence/20261127-H43-ik-wall-and-order/report.md) 与 [f1-09-arm-offline-align-timing.json](evidence/20261127-H43-ik-wall-and-order/f1-09-arm-offline-align-timing.json)。
 
 ## H-44 `[x]` P1：S5 读取场景的竞态
 

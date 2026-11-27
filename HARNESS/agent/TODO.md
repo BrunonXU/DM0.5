@@ -1,14 +1,12 @@
 # HARNESS 当前待办
 
-**V60（`cabff256328d`，合入 H-36 + H-39 + H-40 + H-41；V59 因单测边界取消未复用）已部署并完成 3 次真机验证：H-36（桶入右腕）、H-40（运输到位持块）、H-32（保留桶位姿）、H-39（右移露出方孔）全部真机打通，历史上首次连续两次到达 S6 `align`。** [V60 批次报告](../../Claude-advice/HARNESS/evidence/20261127-v60-batch/report.md) · [最新交接](../../Claude-advice/HARNESS/handoff/20261127-03-codex.md)
+**V62（`e9d6a8feb0f3`，合入 H-42 + H-43 + H-44 + H-45；V61 因假模型单测边界取消未复用）已部署至 6000D 与 F1-09 ARM，并通过 H-43 机载 ARM 离线零输出对准计时门槛（5.66–9.19 s ≤ 15 s），现等待人类确认 V6 复位后执行预检与正式 10 次真机验证。** [V62 上线回执](../../Claude-advice/HARNESS/evidence/20261127-v62-deploy/report.md) · [最新交接](../../Claude-advice/HARNESS/handoff/20261127-05-codex.md)
 
-当前等待 Claude 审阅合并本轮 PR 并裁定 S6 `align` 机载 `bounded_IK_wall_time_exceeded`、S5 `live_scene.latest` 竞态与 V58 Trial 1 远景误检三项议题。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
+当前重点是在 V62 上完成 3 次预检（可按操作者决定跳过并登记）和 10 次真机试验，验证运输前缓存方孔直对准（H-42）与 15 s IK 时限＋余量排序（H-43），冲击首次 S6→S7→S8 放置成功。[当前状态](STATUS.md) · [历史待办快照](history/20261118-todo.md)
 
 ## 现在做
 
-- [ ] **S6 `align` `variant=1` 机载 `bounded_IK_wall_time_exceeded` 修复（待 Claude 裁定，V60 Trial 1 & 2 暴露）：** 离线 6000D 复现证实 `variant=1` 已有 21/22 路点合法且复核全过解（3.81–4.89 s），仅因 F1-09 ARM 单候选 IK 墙钟上限过紧被截断。
-- [ ] **S5 `inspect_plan('align')` 与 `owner_perception_stage_advanced` 清空 `live_scene.latest` 竞态修复（待 Claude 裁定，V60 Trial 3 暴露）。**
-- [ ] **V60 后续补跑完整 10 次批次并冲击首次 S6→S7→S8 放置成功（含 H-37 近身补验）。**
+- [ ] **V62 预检（连续 3 次 5/5，V6 复位）与正式 10 次真机批次：** 3 次桶身入右腕画面、2 次近身 `[0.650, -0.051]`、5 次中距 `x = 0.66–0.76 m`，重点记录缓存方孔使用/作废次数、ARM 实机对准耗时、S7/S8 次数及撤离后放置确认结果。
 - [ ] **H-31（P1，第一批之后做）：修复 `support_lift` 首步下探。** 不改审计代码、不改 `1e-9` 与 `1.0 mm` 阈值，修完后 Replay A 必须审计全过。
 - [ ] **H-38 动态避让（P2，backlog）：** 静态预设部分已由 V6 关闭；动态避让触发条件不变（首次 S8 后或左臂遮挡成为首要停因）。
 
