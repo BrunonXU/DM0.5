@@ -58,6 +58,7 @@ class SkillGeometry:
     # descriptor must be reapplied to the nominal scene for every replan.
     grasp_pitch_offsets_deg: tuple[float, ...] = ()
     prefer_registered_grasp_pitch: bool = False
+    pitched_grasp_approach_direction: str = 'tool_axis_horizontal'
     parameterized_grasp: bool = False
     grasp_candidate_descriptor: dict | None = None
     grasp_candidate_variant: int | None = None

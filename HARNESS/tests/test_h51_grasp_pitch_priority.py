@@ -122,3 +122,18 @@ def test_prefer_registered_grasp_pitch_prefers_feasible_grasp_lookahead_without_
     assert fallback_res['geometry_trace'][0]['grasp_candidate_descriptor']['pitch_offset_deg'] == 15.0
     assert fallback_res['geometry_trace'][0]['native_grasp_lookahead']['feasible'] is False
 
+
+def test_pitched_grasp_approach_direction_supports_vertical_opt_in():
+    from f1_harness.grasp_candidates import apply_descriptor
+    plan, obs, _, _ = setup()
+    plan.fixture['grasp_pitch_offsets_deg'] = [15.0]
+    plan.fixture['pitched_grasp_approach_direction'] = 'vertical'
+    sc = plan._scene(obs, [0.] * 22, obs.state16)
+    applied = apply_descriptor(sc, dict(strategy='tcp_pitch', pitch_offset_deg=15.0))
+    assert applied.approach_direction == 'vertical'
+    # Legacy default remains tool_axis_horizontal.
+    legacy = apply_descriptor(replace(sc, pitched_grasp_approach_direction='tool_axis_horizontal'),
+                              dict(strategy='tcp_pitch', pitch_offset_deg=15.0))
+    assert legacy.approach_direction == 'tool_axis_horizontal'
+
+

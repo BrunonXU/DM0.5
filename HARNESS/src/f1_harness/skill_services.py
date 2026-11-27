@@ -1085,6 +1085,7 @@ class PlanService:
             tool_padding_policy=self.fixture.get('tool_padding_policy','required'),
             grasp_pitch_offsets_deg=self.fixture.get('grasp_pitch_offsets_deg',()),
             prefer_registered_grasp_pitch=bool(self.fixture.get('prefer_registered_grasp_pitch',False)),
+            pitched_grasp_approach_direction=self.fixture.get('pitched_grasp_approach_direction','tool_axis_horizontal'),
             parameterized_grasp=self.fixture.get('parameterized_grasp',False),
             transfer_policy=self.fixture.get('transfer_policy','hole_aligned'))
         if coarse and skill in ('approach_grasp','grasp','regrasp'):

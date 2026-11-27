@@ -97,5 +97,8 @@ def apply_descriptor(scene, descriptor):
     changed=nominal.copy()
     changed[:3,:3]=nominal[:3,:3]@rotation
     changed[:3,3]=point-changed[:3,:3]@tip[:3,3]
-    return replace(scene,object_grasp_eef=changed,approach_direction='tool_axis_horizontal',
+    direction=getattr(scene,'pitched_grasp_approach_direction','tool_axis_horizontal')
+    if direction not in ('tool_axis_horizontal','vertical'):
+        raise HarnessError('invalid_pitched_grasp_approach_direction')
+    return replace(scene,object_grasp_eef=changed,approach_direction=direction,
                    grasp_candidate_descriptor=selected)
