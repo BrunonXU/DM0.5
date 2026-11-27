@@ -15,15 +15,22 @@ OBSERVATION_WINDOW_S = 4.
 SOURCE_STAMP_HOLD_NS = 250_000_000
 
 
+CACHED_APERTURE_SKILLS = frozenset(('align', 'insert', 'release'))
+
+
 def measured_alignment_pair(observation, task):
-    """Direct aperture and held-block poses on this measurement, before planning."""
+    """Direct or cached pre-transport aperture and held-block poses on this measurement."""
     if observation.geometry_scope not in ('coarse_static_task', 'precision') or observation.faults:
         return False
     target = next((o for o in observation.objects if o.object_id == task.object_id), None)
     hole = next((o for o in observation.objects if o.object_id == task.hole_id), None)
     if (target is None or not target.visible or target.held is not True or not target.evidence_ids
             or target.pose is None or target.eef_object_pose is None
-            or hole is None or not hole.visible or hole.pose is None):
+            or hole is None or hole.pose is None or not hole.evidence_ids):
+        return False
+    if hole.source == 'cached_pre_transport_aperture':
+        return True
+    if not hole.visible:
         return False
     head = {f.stream: f.blob_sha256 for f in observation.frames if f.camera == 'head'}
     return all(head.get(stream) and head[stream] in hole.evidence_ids for stream in ('rgb', 'depth'))
@@ -305,18 +312,33 @@ def require_geometry_identity(observation: Observation, *, required_cameras=("he
     development = goal == "approach_grasp" and observation.geometry_scope == "coarse_static_approach"
     full_development=(admission_profile=='development_coarse' and goal=='placed'
                       and observation.geometry_scope=='coarse_static_task')
+    cached_aperture = any(
+        (hole_id is None or o.object_id == hole_id)
+        and o.source == 'cached_pre_transport_aperture'
+        and o.pose is not None and o.evidence_ids
+        for o in observation.objects
+    )
     if (hole_id and admission_profile=='development_coarse' and goal=='placed'
             and observation.geometry_scope in ('coarse_static_task','coarse_object_verification')
-            and skill in ('align','insert','release','verify_placed')
-            and not any(o.object_id==hole_id and o.pose is not None and o.evidence_ids
-                        for o in observation.objects)):
-        from .geometry_context import aperture_missing_reason
-        raise ValueError('aperture_measurement_required:'+hole_id+':'+aperture_missing_reason(observation))
+            and skill in ('align','insert','release','verify_placed')):
+        hole_obj = next((o for o in observation.objects if o.object_id == hole_id), None)
+        if skill == 'verify_placed':
+            if (hole_obj is None or hole_obj.pose is None or not hole_obj.evidence_ids
+                    or hole_obj.source == 'cached_pre_transport_aperture'):
+                from .geometry_context import aperture_missing_reason
+                reason = ('cached_aperture_not_allowed_for_verify_placed'
+                          if hole_obj is not None and hole_obj.source == 'cached_pre_transport_aperture'
+                          else aperture_missing_reason(observation))
+                raise ValueError('aperture_measurement_required:'+hole_id+':'+reason)
+        elif hole_obj is None or hole_obj.pose is None or not hole_obj.evidence_ids:
+            from .geometry_context import aperture_missing_reason
+            raise ValueError('aperture_measurement_required:'+hole_id+':'+aperture_missing_reason(observation))
     retained_fixture=(full_development and observation.fixture is not None
                       and observation.fixture.source=='retained_static_fixture')
     if retained_fixture:
         from .geometry_context import FIXTURE_TRANSIT_SKILLS
-        if skill not in FIXTURE_TRANSIT_SKILLS|{'verify_grasp','inspect_in_hand','reobserve'}:
+        if (skill not in FIXTURE_TRANSIT_SKILLS|{'verify_grasp','inspect_in_hand','reobserve'}
+                and not (cached_aperture and skill in CACHED_APERTURE_SKILLS)):
             # Static obstacle memory is not a current aperture measurement.
             raise ValueError('full_scene_required_for_motion')
     return_only=(admission_profile=='development_coarse' and goal=='placed'

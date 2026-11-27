@@ -75,6 +75,17 @@ class SceneObject(Contract):
     inserted_hole_id: str | None = None
     stationary: bool | None = None
     evidence_ids: tuple[str, ...] = ()
+    source: Literal["cached_pre_transport_aperture"] | None = None
+    measured_at_ns: int | None = Field(default=None, ge=0)
+
+    @model_serializer(mode='wrap')
+    def preserve_scene_object_identity(self, handler):
+        value = handler(self)
+        if self.source is None:
+            value.pop('source', None)
+        if self.measured_at_ns is None:
+            value.pop('measured_at_ns', None)
+        return value
 
     @model_validator(mode="after")
     def matrix_shape(self):
@@ -82,6 +93,10 @@ class SceneObject(Contract):
             raise ValueError("pose must be a row-major 4x4 transform")
         if self.eef_object_pose is not None and len(self.eef_object_pose) != 16:
             raise ValueError("in-hand pose must be a row-major 4x4 transform")
+        if self.source == "cached_pre_transport_aperture":
+            if (self.visible is not False or self.pose is None
+                    or not self.evidence_ids or self.measured_at_ns is None):
+                raise ValueError("cached_pre_transport_aperture requires visible=False, pose, evidence_ids, and measured_at_ns")
         return self
 
 

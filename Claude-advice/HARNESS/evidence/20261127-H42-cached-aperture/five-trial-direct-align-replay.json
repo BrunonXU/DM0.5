@@ -1,0 +1,238 @@
+{
+  "V60-Trial1": {
+    "trial": "V60-Trial1",
+    "arrival_obs_id": "c50ebca5033b4aec84f8d04f5eef94b4:110",
+    "fixture_source": "rgbd_anchor_registration",
+    "cache_age_s": 11.9799,
+    "sidestep_requested": false,
+    "align_executable": true,
+    "selected_variant": 1,
+    "candidate_evaluation_summary": {
+      "schema": "f1-candidate-evaluation-v1",
+      "scope": {
+        "task_hash": "795b11511175399ff885a420d9789eb78d8a32a2c9dbae19b4ce3f943b55ddfd",
+        "calibration_id": "coarse-aea05cd220e75f10",
+        "skill": "align",
+        "fixture_sha256": "292c72492df50f9a21efe86c2915923b606ba61443507b583ec91504832cb244",
+        "runtime_source_sha256": "056b67f94133267616fe4036290621a9395b797eef6f72b4c4cbce5f21badd63"
+      },
+      "request_id": "h42-replay-V60-Trial1",
+      "epoch": 1,
+      "observation_id": "c50ebca5033b4aec84f8d04f5eef94b4:110",
+      "registered_variants": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "attempts": [
+        {
+          "variant": 1,
+          "outcome": "planned",
+          "elapsed_ns": 4233608908,
+          "grasp_candidate_descriptor": null
+        }
+      ],
+      "selected_variant": 1,
+      "motion_success_inferred": false
+    },
+    "waypoints": 18,
+    "arm_r_j6_min_deg": 2.94,
+    "arm_r_j6_max_deg": 21.53,
+    "endpoint_min_margin_deg": 42.64,
+    "plan_elapsed_6000d_s": 4.299,
+    "revalidate_passed": true,
+    "revalidate_segments": 18,
+    "robot_actions": 0,
+    "pre_transport_obs_id": "c50ebca5033b4aec84f8d04f5eef94b4:77"
+  },
+  "V60-Trial2": {
+    "trial": "V60-Trial2",
+    "arrival_obs_id": "078860e21fbd4777a77df00929596a46:101",
+    "fixture_source": "retained_static_fixture",
+    "cache_age_s": 8.7027,
+    "sidestep_requested": false,
+    "align_executable": true,
+    "selected_variant": 1,
+    "candidate_evaluation_summary": {
+      "schema": "f1-candidate-evaluation-v1",
+      "scope": {
+        "task_hash": "795b11511175399ff885a420d9789eb78d8a32a2c9dbae19b4ce3f943b55ddfd",
+        "calibration_id": "coarse-aea05cd220e75f10",
+        "skill": "align",
+        "fixture_sha256": "292c72492df50f9a21efe86c2915923b606ba61443507b583ec91504832cb244",
+        "runtime_source_sha256": "056b67f94133267616fe4036290621a9395b797eef6f72b4c4cbce5f21badd63"
+      },
+      "request_id": "h42-replay-V60-Trial2",
+      "epoch": 1,
+      "observation_id": "078860e21fbd4777a77df00929596a46:101",
+      "registered_variants": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "attempts": [
+        {
+          "variant": 1,
+          "outcome": "planned",
+          "elapsed_ns": 3037410913,
+          "grasp_candidate_descriptor": null
+        }
+      ],
+      "selected_variant": 1,
+      "motion_success_inferred": false
+    },
+    "waypoints": 18,
+    "arm_r_j6_min_deg": 8.62,
+    "arm_r_j6_max_deg": 34.35,
+    "endpoint_min_margin_deg": 17.06,
+    "plan_elapsed_6000d_s": 3.1,
+    "revalidate_passed": true,
+    "revalidate_segments": 18,
+    "robot_actions": 0,
+    "pre_transport_obs_id": "078860e21fbd4777a77df00929596a46:77"
+  },
+  "V60-Trial3": {
+    "trial": "V60-Trial3",
+    "arrival_obs_id": "32e8197eb9c14f2b9d2a9c45e06820ae:108",
+    "fixture_source": "retained_static_fixture",
+    "cache_age_s": 7.6035,
+    "sidestep_requested": false,
+    "align_executable": true,
+    "selected_variant": 1,
+    "candidate_evaluation_summary": {
+      "schema": "f1-candidate-evaluation-v1",
+      "scope": {
+        "task_hash": "795b11511175399ff885a420d9789eb78d8a32a2c9dbae19b4ce3f943b55ddfd",
+        "calibration_id": "coarse-aea05cd220e75f10",
+        "skill": "align",
+        "fixture_sha256": "292c72492df50f9a21efe86c2915923b606ba61443507b583ec91504832cb244",
+        "runtime_source_sha256": "056b67f94133267616fe4036290621a9395b797eef6f72b4c4cbce5f21badd63"
+      },
+      "request_id": "h42-replay-V60-Trial3",
+      "epoch": 1,
+      "observation_id": "32e8197eb9c14f2b9d2a9c45e06820ae:108",
+      "registered_variants": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "attempts": [
+        {
+          "variant": 1,
+          "outcome": "planned",
+          "elapsed_ns": 3007893598,
+          "grasp_candidate_descriptor": null
+        }
+      ],
+      "selected_variant": 1,
+      "motion_success_inferred": false
+    },
+    "waypoints": 17,
+    "arm_r_j6_min_deg": 15.23,
+    "arm_r_j6_max_deg": 34.96,
+    "endpoint_min_margin_deg": 24.92,
+    "plan_elapsed_6000d_s": 3.066,
+    "revalidate_passed": true,
+    "revalidate_segments": 17,
+    "robot_actions": 0,
+    "pre_transport_obs_id": "32e8197eb9c14f2b9d2a9c45e06820ae:87"
+  },
+  "V58-Trial2": {
+    "trial": "V58-Trial2",
+    "arrival_obs_id": "acd02682612d433bba40f3b5e935e86d:127",
+    "fixture_source": "retained_static_fixture",
+    "cache_age_s": 13.7987,
+    "sidestep_requested": false,
+    "align_executable": true,
+    "selected_variant": 1,
+    "candidate_evaluation_summary": {
+      "schema": "f1-candidate-evaluation-v1",
+      "scope": {
+        "task_hash": "795b11511175399ff885a420d9789eb78d8a32a2c9dbae19b4ce3f943b55ddfd",
+        "calibration_id": "coarse-aea05cd220e75f10",
+        "skill": "align",
+        "fixture_sha256": "292c72492df50f9a21efe86c2915923b606ba61443507b583ec91504832cb244",
+        "runtime_source_sha256": "056b67f94133267616fe4036290621a9395b797eef6f72b4c4cbce5f21badd63"
+      },
+      "request_id": "h42-replay-V58-Trial2",
+      "epoch": 1,
+      "observation_id": "acd02682612d433bba40f3b5e935e86d:127",
+      "registered_variants": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "attempts": [
+        {
+          "variant": 1,
+          "outcome": "planned",
+          "elapsed_ns": 3147384147,
+          "grasp_candidate_descriptor": null
+        }
+      ],
+      "selected_variant": 1,
+      "motion_success_inferred": false
+    },
+    "waypoints": 17,
+    "arm_r_j6_min_deg": 13.3,
+    "arm_r_j6_max_deg": 36.12,
+    "endpoint_min_margin_deg": 19.07,
+    "plan_elapsed_6000d_s": 3.193,
+    "revalidate_passed": true,
+    "revalidate_segments": 17,
+    "robot_actions": 0,
+    "pre_transport_obs_id": "acd02682612d433bba40f3b5e935e86d:90"
+  },
+  "V58-Trial3": {
+    "trial": "V58-Trial3",
+    "arrival_obs_id": "19ed3d59082e465f99f857af7fb6534c:114",
+    "fixture_source": "retained_static_fixture",
+    "cache_age_s": 14.8397,
+    "sidestep_requested": false,
+    "align_executable": true,
+    "selected_variant": 1,
+    "candidate_evaluation_summary": {
+      "schema": "f1-candidate-evaluation-v1",
+      "scope": {
+        "task_hash": "795b11511175399ff885a420d9789eb78d8a32a2c9dbae19b4ce3f943b55ddfd",
+        "calibration_id": "coarse-aea05cd220e75f10",
+        "skill": "align",
+        "fixture_sha256": "292c72492df50f9a21efe86c2915923b606ba61443507b583ec91504832cb244",
+        "runtime_source_sha256": "056b67f94133267616fe4036290621a9395b797eef6f72b4c4cbce5f21badd63"
+      },
+      "request_id": "h42-replay-V58-Trial3",
+      "epoch": 1,
+      "observation_id": "19ed3d59082e465f99f857af7fb6534c:114",
+      "registered_variants": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "attempts": [
+        {
+          "variant": 1,
+          "outcome": "planned",
+          "elapsed_ns": 4298923438,
+          "grasp_candidate_descriptor": null
+        }
+      ],
+      "selected_variant": 1,
+      "motion_success_inferred": false
+    },
+    "waypoints": 19,
+    "arm_r_j6_min_deg": 0.17,
+    "arm_r_j6_max_deg": 21.25,
+    "endpoint_min_margin_deg": 44.92,
+    "plan_elapsed_6000d_s": 4.347,
+    "revalidate_passed": true,
+    "revalidate_segments": 19,
+    "robot_actions": 0,
+    "pre_transport_obs_id": "19ed3d59082e465f99f857af7fb6534c:76",
+    "end_to_end_live_sam_recovery": true
+  }
+}

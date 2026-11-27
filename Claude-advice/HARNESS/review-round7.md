@@ -71,7 +71,7 @@ flowchart LR
 2. H-43 要改 `DAgger/F1/src/f1dagger/harness_compute.py`。动手前先读 `DAgger/AGENTS.md`，改动只限下文写的那一处，单独提交，提交信息写明 `control_manifest_sha256` 的变化。
 3. 不放宽：碰撞余量和碰撞模型、关节限位、H-33 的 50°、分数和面积阈值、面拟合阈值、15 秒观测窗口、`intent.budget_ms`。H-32 的允许原因码不变，只有保留时长按 H-42 修订。
 
-## H-42 `[ ]` P0：对准和插入复用运输前实测的方孔
+## H-42 `[x]` P0：对准和插入复用运输前实测的方孔
 
 **代码事实**
 
@@ -99,6 +99,8 @@ flowchart LR
 1. 测试至少包括：满足全部条件时 `align` 可以规划；以下任一情况时作废，回到 `aperture_measurement_required`：闭爪请求号变了、出现过 `motion_stalled`、出现过跟踪检查失败、实测桶位姿偏差超过 `planning_margin_m`、超过 45 秒、标定变了；`verify_placed` 拒绝使用缓存；有当前帧直接测量时优先用它；H-32 在 45 秒内保留，超过 45 秒或出现接触迹象时清掉。
 2. 用 V60 Trial 1–3、V58 Trial 2–3 的原始输入，从运输到位接续做零输出回放：报告每次是否直接得到可以执行的 `align` 计划（不经横移）、选中的候选、`arm_r_j6` 范围、最小余量、6000D 上的规划耗时，以及缓存的年龄。
 3. 全量 pytest、`check_native_integration.py`、三条零输出回放；另加一条从运输到位直接对准的回放。
+
+> **执行记录（2026-11-27）**：已完成 `contracts.py`、`engine.py`、`owner_bridge.py`、`scene_pipeline.py`、`observation.py`、`revalidation.py`、`verification.py` 改动，实现持块周期内运输前实测方孔缓存（45 s 上限、接触故障/撤权/桶位移/换闭爪作废、兼容 2/3 哈希头部/跨视角直接实测）、H-32 45 s 同步修订与接触故障作废、`align`/`insert`/`release` 允许而 `verify_placed` 拒绝、H-39 自动降级为备用路径。单测 85 passed；V60 Trial 1–3 与 V58 Trial 2–3 共 5 次真实试验从运输到位直接进入 `align` 零输出回放 **5/5 不经横移即解出 `v=1`**（6000D 规划 3.07–4.35 s，缓存年龄 7.60–14.84 s，`arm_r_j6 ∈ [0.17°, 36.12°]`，最小余量 17.06°–44.92°）且全部通过正式 `revalidate_candidate`（17–19 段）。证据见 [evidence/20261127-H42-cached-aperture/report.md](evidence/20261127-H42-cached-aperture/report.md)。全量回归、冻结 V61 与四条回放随下步 V61 冻结一起验收。
 
 ## H-43 `[x]` P0：IK 墙钟上限改为站点配置，对准先试余量大的候选
 

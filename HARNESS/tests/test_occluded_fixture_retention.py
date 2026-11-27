@@ -115,7 +115,7 @@ def _run_case(
 
 
 def test_allowlist_contains_only_two_exact_occlusion_reasons():
-    assert OCCLUDED_FIXTURE_RETAIN_NS == 20_000_000_000
+    assert OCCLUDED_FIXTURE_RETAIN_NS == 45_000_000_000
     assert OCCLUDED_FIXTURE_RETAIN_REASONS == frozenset(
         (
             'bucket_landmark_registration_unavailable',
