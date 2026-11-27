@@ -60,8 +60,18 @@ def serve(kind,config_path:Path,store, *, numerical_pool=None):
                 from .aperture_view import planner_view_geometry
                 plan_path = config_path.with_name('plan.local.json')
                 if plan_path.is_file():
+                    plan_doc = json.loads(plan_path.read_text())
                     config['scene']['aperture_view_geometry'] = planner_view_geometry(
-                        json.loads(plan_path.read_text()), config['scene'])
+                        plan_doc, config['scene'])
+                    bucket_obs = [
+                        o for o in (plan_doc.get('fixture') or {}).get('obstacles', ())
+                        if o.get('role') == 'bucket' and 'min' in o and 'max' in o
+                    ]
+                    if bucket_obs and (plan_doc.get('fixture') or {}).get('fixture_reference_hole') == config['scene'].get('geometry', {}).get('base_hole'):
+                        import numpy as np
+                        lo = np.min([o['min'] for o in bucket_obs], axis=0).tolist()
+                        hi = np.max([o['max'] for o in bucket_obs], axis=0).tolist()
+                        config['scene']['geometry']['fixture_exclusion_box'] = dict(min=lo, max=hi)
                 mask_client=scene_mask_provider(config['scene'],config_path.parent)
                 observer=LiveSceneObserver(observer,config['scene'],mask_client,store)
             server=GatewayServer(Gateway(OwnerProxy(Path(config['owner_socket'])),observer,store),port=config['control_port']).start()

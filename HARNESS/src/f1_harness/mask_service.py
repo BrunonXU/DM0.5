@@ -199,14 +199,27 @@ class ConfiguredMaskProvider:
             except ValueError as exc:
                 raise ValueError('mask_view='+str(selected)+':'+str(exc)) from exc
 
-    def segment_frame(self,rgb,*,view,source,boxes=None):
+    def is_sam_seeded(self,view,key):
+        selected=self.default if view is None else view
+        with self._locked_views([selected]),self.lock:
+            if selected not in self.states:return False
+            state=(self.pending_tracking[1] if self.pending_tracking is not None else self.states)[selected]
+            return key in state['sam_seeded']
+
+    def prompt_padding_px(self,view):
+        selected=self.default if view is None else view
+        with self._locked_views([selected]),self.lock:
+            if selected not in self.states:return 0
+            return int(self.states[selected]['config'].get('prompt_padding_px',0))
+
+    def segment_frame(self,rgb,*,view,source,boxes=None,exclusion_boxes=None):
         """One source-bound request; geometry transactions never rewind video memory."""
         with self._locked_views([view]):
             with self.lock:
                 if view not in self.states:raise ValueError('unknown_or_missing_mask_view')
                 state=(self.pending_tracking[1] if self.pending_tracking is not None else self.states)[view]
             state['frame_source']=source
-            try:return _segment_state(state,rgb,search_boxes=boxes)
+            try:return _segment_state(state,rgb,search_boxes=boxes,exclusion_boxes=exclusion_boxes)
             except ValueError as exc:raise ValueError('mask_view='+str(view)+':'+str(exc)) from exc
             finally:state['frame_source']=None
 
@@ -375,7 +388,7 @@ def _mask_missing(state,key,mask,score):
         (not tracking and not sam and score<state['config']['minimum_score']))
 
 
-def _segment_state(state,rgb,search_boxes=None):
+def _segment_state(state,rgb,search_boxes=None,exclusion_boxes=None):
     cfg=state['config'];backend=state['backend'];segmenter=state['segmenter']
     # A group relocation is provisional until every required mask, measurement
     # region and identity check has passed. Failed frames must not poison the
@@ -451,6 +464,69 @@ def _segment_state(state,rgb,search_boxes=None):
             mask=np.asarray(mask,bool)
             if mask.shape!=rgb.shape[:2]:raise ValueError('mask_dimensions_changed')
         tracking=state['tracking_results'].get(key) or {}
+        fixture_exclusion_diag=None
+        if (_mask_missing(state,key,mask,score) and key in discover
+                and tracking.get('identity_status')=='unresolved'
+                and key in (exclusion_boxes or {})):
+            ex=np.asarray(exclusion_boxes[key],float)
+            total=int(tracking.get('semantic_candidates',0))
+            summary=list(tracking.get('semantic_candidate_summary') or [])
+            truncated=bool(tracking.get('semantic_candidate_summary_truncated',False))
+            fixture_exclusion_diag=dict(
+                exclusion_box=[int(round(v)) for v in ex.tolist()],
+                total_candidates=total,
+                summary_count=len(summary),
+                truncated=truncated,
+                applied=False,
+                excluded_candidates=0,
+                remaining_candidates=len(summary),
+                semantic_candidate_summary=summary,
+            )
+            if total>=2 and len(summary)==total and not truncated:
+                remaining=[]
+                for cand in summary:
+                    cbox=cand.get('box')
+                    if not isinstance(cbox,(list,tuple)) or len(cbox)!=4:
+                        remaining.append(cand);continue
+                    cx=(float(cbox[0])+float(cbox[2]))/2.0
+                    cy=(float(cbox[1])+float(cbox[3]))/2.0
+                    if ex[0]<=cx<=ex[2] and ex[1]<=cy<=ex[3]:
+                        continue
+                    remaining.append(cand)
+                excluded_count=len(summary)-len(remaining)
+                fixture_exclusion_diag.update(
+                    applied=True,
+                    excluded_candidates=excluded_count,
+                    remaining_candidates=len(remaining),
+                )
+                if len(remaining)==1:
+                    cand=remaining[0]
+                    cand_score=cand.get('score')
+                    if cand_score is not None and float(cand_score)<cfg['minimum_score']:
+                        fixture_exclusion_diag['rejected_below_minimum_score']=True
+                    else:
+                        pad=int(cfg.get('sam_tracking_padding_px',8))
+                        cbox=np.asarray(cand['box'],float)
+                        reseed_box=np.asarray([cbox[0]-pad,cbox[1]-pad,cbox[2]+pad,cbox[3]+pad],float)
+                        reseed_box=np.clip(reseed_box,[0,0,0,0],[rgb.shape[1],rgb.shape[0],rgb.shape[1],rgb.shape[0]])
+                        if (reseed_box[2]>reseed_box[0] and reseed_box[3]>reseed_box[1]
+                                and not any(np.array_equal(reseed_box,previous) for previous in attempted_boxes)):
+                            mask,score=_segment_box(state,rgb,reseed_box,key,reseed=True)
+                            attempted_boxes.append(reseed_box);mask=np.asarray(mask,bool)
+                            if mask.shape!=rgb.shape[:2]:raise ValueError('mask_dimensions_changed')
+                            tracking=state['tracking_results'].get(key) or {}
+                            if float(score)<cfg['minimum_score']:
+                                fixture_exclusion_diag['rejected_below_minimum_score']=True
+                                if key in state['tracking_results']:
+                                    state['tracking_results'][key]['identity_status']='unresolved'
+                                state['sam_seeded'].discard(key)
+                            elif key in state['tracking_results']:
+                                state['tracking_results'][key].update(
+                                    recovery_search_source='fixture_exclusion_unique_candidate',
+                                    fixture_exclusion_excluded_candidates=excluded_count,
+                                    fixture_exclusion_box=fixture_exclusion_diag['exclusion_box'],
+                                )
+        tracking=state['tracking_results'].get(key) or {}
         if (_mask_missing(state,key,mask,score) and tracking.get('identity_status')=='unresolved'
                 and tracking.get('semantic_candidates',0)>0 and tracking.get('semantic_scoped_candidates')==0):
             # A partly occluded mask can shrink its next search box so far that
@@ -483,6 +559,7 @@ def _segment_state(state,rgb,search_boxes=None):
             minimum_score=cfg['minimum_score'],minimum_area_px=cfg['minimum_area_px'],
             attempted_boxes=[np.asarray(b).tolist() for b in attempted_boxes],
             tracking=state['tracking_results'].get(key),
+            **({'fixture_exclusion':fixture_exclusion_diag} if fixture_exclusion_diag is not None else {}),
             quality_warning=('mask_quality_below_reference' if not state['tracking_results'].get(key)
                 and backend in ('sam2','sam2_remote') and score<cfg['minimum_score'] else None),
             score_kind='object_presence_not_mask_iou' if state['tracking_results'].get(key) else 'mask_quality',
