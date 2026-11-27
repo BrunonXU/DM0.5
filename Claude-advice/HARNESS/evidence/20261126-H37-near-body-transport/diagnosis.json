@@ -1,0 +1,1536 @@
+{
+  "V57-Trial1": {
+    "run_id": "web-f7c5d2a321744442929abc484b2fa545",
+    "variants": {
+      "v0": {
+        "ok": false,
+        "code": "actual_IK_candidate_collision_rejected",
+        "metrics": {
+          "arm_collision_indices": [
+            11
+          ],
+          "collision_pair": [
+            "arm_R_Link5/arm_R_Link5_collision",
+            "body_Link5/body_Link5_collision"
+          ],
+          "clearance_m": -3.626934305405935e-05,
+          "reason": "preventive_collision_boundary",
+          "route_family": "demonstrated_transport",
+          "stage_index": 0
+        }
+      },
+      "v1": {
+        "ok": false,
+        "code": "actual_IK_candidate_collision_rejected",
+        "metrics": {
+          "arm_collision_indices": [
+            11
+          ],
+          "collision_pair": [
+            "arm_R_Link5/arm_R_Link5_collision",
+            "body_Link5/body_Link5_collision"
+          ],
+          "clearance_m": -0.0004154420135274138,
+          "reason": "preventive_collision_boundary",
+          "route_family": "orientation_preserving_transport",
+          "stage_index": 0
+        }
+      },
+      "v2": {
+        "ok": false,
+        "code": "actual_IK_candidate_collision_rejected",
+        "metrics": {
+          "arm_collision_indices": [
+            11
+          ],
+          "collision_pair": [
+            "arm_R_Link5/arm_R_Link5_collision",
+            "body_Link5/body_Link5_collision"
+          ],
+          "clearance_m": -0.00032972275144260536,
+          "reason": "preventive_collision_boundary",
+          "route_family": "outside_bucket_reorientation_transport",
+          "stage_index": 0
+        }
+      },
+      "v3": {
+        "ok": false,
+        "code": "bounded_IK_did_not_reach_goal",
+        "metrics": {
+          "goal_index": 2,
+          "iterations": 161,
+          "position_error_m": 0.0007037969882100403,
+          "rotation_error_rad": 0.0019318658239316582,
+          "goal": [
+            [
+              -0.07285865281525909,
+              -0.9379343760726073,
+              0.3390733296666585,
+              0.46917215971100024
+            ],
+            [
+              0.9973422762325165,
+              -0.06850940786422727,
+              0.02479606971752285,
+              -0.025227992804214276
+            ],
+            [
+              -2.7373141543142465e-05,
+              0.3399787746542161,
+              0.9404331087511381,
+              0.942958845485824
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "final_arm_deg": [
+            -56.87926568372328,
+            -93.9999999999994,
+            74.49156642976895,
+            -114.70771270982176,
+            5.849427731011063,
+            56.31470086701385,
+            -16.19807505857672
+          ],
+          "limits": {
+            "min_constraint_margin_rad": 1.0436096431476471e-14,
+            "active_planes": [
+              8
+            ],
+            "discarded_translation_m": 0.0007037969882100403,
+            "discarded_rotation_rad": 0.001931865823931556,
+            "numerical_correction_rad": 4.143686377693811e-12,
+            "publication_lead_rad": [
+              4.440892098500626e-16,
+              0.0,
+              0.0,
+              4.440892098500626e-16,
+              -3.608224830031759e-16,
+              -3.3306690738754696e-16,
+              -2.220446049250313e-16
+            ],
+            "publication_lead_limit_rad": 0.03
+          },
+          "stalled_ticks": 18,
+          "cartesian_waypoint_index": 40,
+          "cartesian_waypoint_count": 72,
+          "solves": 121,
+          "termination": "cartesian_no_progress",
+          "cartesian_stalled_ticks": 25,
+          "route_family": "orientation_preserving_other_side_transport",
+          "stage_index": 0
+        }
+      }
+    },
+    "jst_offsets": [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.015,
+        0.0
+      ],
+      [
+        -0.015,
+        0.0
+      ],
+      [
+        0.0,
+        0.015
+      ],
+      [
+        0.0,
+        -0.015
+      ]
+    ],
+    "jst_selected_offset": [
+      0.0,
+      0.0
+    ],
+    "jst_goal_count": 1,
+    "jst_yaw_tests": {
+      "0deg": {
+        "ok": false,
+        "code": "numerical_joint_search_no_valid_goal",
+        "metrics": {
+          "search_phase": "endpoint_native",
+          "frame": "ik_world",
+          "goal": [
+            [
+              -0.01555821261154637,
+              -0.9988627457385886,
+              0.04506836136254236,
+              0.3787319702547742
+            ],
+            [
+              0.9960595292277797,
+              -0.011547075809293752,
+              0.08793224252110272,
+              -0.05868692198644973
+            ],
+            [
+              -0.08731183341832645,
+              0.04625883932639527,
+              0.9951064081440276,
+              0.8681347615332161
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "position_tolerance_m": 0.0005,
+          "rotation_tolerance_rad": 0.005,
+          "position_error_reference": "eef",
+          "path_checked": false,
+          "grasp_checked": false,
+          "best_fit_executable": false,
+          "motion_authorized": false,
+          "search_exhaustive": false,
+          "recovery_hint": "change_goal_or_approach_and_preview",
+          "ik_seed_count": 8,
+          "ik_pose_fit_count": 3,
+          "native_endpoint_checks": 3,
+          "native_valid_goal_count": 0,
+          "ompl_started": false,
+          "best_fit_eef_pose": [
+            -0.015559747364843224,
+            -0.9988627164746882,
+            0.045068480102513006,
+            0.3787321195951671,
+            0.996059549334962,
+            -0.011548615856279643,
+            0.0879318125051269,
+            -0.05868696411530361,
+            -0.08731133053948374,
+            0.04625908676803369,
+            0.9951064407644102,
+            0.8681347043727192,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "position_error_m": 1.6536237691098026e-07,
+          "rotation_error_rad": 1.6190528989341642e-06,
+          "final_arm_deg": [
+            -93.47487954485392,
+            -91.09900323762686,
+            53.15095848612637,
+            -131.5550596034979,
+            -20.205953415434386,
+            25.481931349636447,
+            -25.617148264646087
+          ],
+          "best_fit_native_checked": true,
+          "best_fit_native_valid": false,
+          "endpoint_rejection": "CandidateSafetyRejected:F1 collision/CoM rejected target"
+        }
+      },
+      "90deg": {
+        "ok": true,
+        "targets": 7,
+        "min_j6": -2.31,
+        "max_j6": 20.39,
+        "within_50": true
+      },
+      "180deg": {
+        "ok": false,
+        "code": "numerical_joint_search_no_valid_goal",
+        "metrics": {
+          "search_phase": "endpoint_ik",
+          "frame": "ik_world",
+          "goal": [
+            [
+              0.014384032786646057,
+              0.9991862815644296,
+              -0.03768121991448669,
+              0.922081225139538
+            ],
+            [
+              -0.9741181501120975,
+              0.005501304913097098,
+              -0.2259724878529241,
+              -0.058455438150965405
+            ],
+            [
+              -0.22558131399337938,
+              0.03995635591122384,
+              0.9734046231651661,
+              0.8661119922153115
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "position_tolerance_m": 0.0005,
+          "rotation_tolerance_rad": 0.005,
+          "position_error_reference": "eef",
+          "path_checked": false,
+          "grasp_checked": false,
+          "best_fit_executable": false,
+          "motion_authorized": false,
+          "search_exhaustive": false,
+          "recovery_hint": "change_goal_or_approach_and_preview",
+          "ik_seed_count": 8,
+          "ik_pose_fit_count": 0,
+          "native_endpoint_checks": 0,
+          "native_valid_goal_count": 0,
+          "ompl_started": false,
+          "best_fit_eef_pose": [
+            -0.40578407006323164,
+            0.5082417722747432,
+            -0.7596246371715094,
+            0.7848740773172177,
+            -0.8171683887070867,
+            -0.5740055163103339,
+            0.05247372431198673,
+            -0.08344139460754985,
+            -0.4093593934195021,
+            0.6420342422023415,
+            0.6482414047705407,
+            0.8896809924997947,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "position_error_m": 0.14144114397160523,
+          "rotation_error_rad": 1.0118322174596532,
+          "final_arm_deg": [
+            14.038618883034921,
+            -93.99999999999999,
+            -38.947502288491144,
+            -22.653804989602474,
+            80.33327783139461,
+            -59.99514642335169,
+            89.99999999999999
+          ],
+          "best_fit_native_checked": false,
+          "best_fit_native_valid": null
+        }
+      },
+      "270deg": {
+        "ok": false,
+        "code": "numerical_joint_search_no_valid_goal",
+        "metrics": {
+          "search_phase": "endpoint_ik",
+          "frame": "ik_world",
+          "goal": [
+            [
+              0.9869178294288857,
+              -0.00812104600233933,
+              0.16101939810844632,
+              0.6503618884173161
+            ],
+            [
+              0.0261638347307617,
+              0.9935591612689504,
+              -0.11025264990341153,
+              0.2124398212793736
+            ],
+            [
+              -0.1590869312909138,
+              0.11302319085201433,
+              0.9807737285541819,
+              0.8861279721203494
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "position_tolerance_m": 0.0005,
+          "rotation_tolerance_rad": 0.005,
+          "position_error_reference": "eef",
+          "path_checked": false,
+          "grasp_checked": false,
+          "best_fit_executable": false,
+          "motion_authorized": false,
+          "search_exhaustive": false,
+          "recovery_hint": "change_goal_or_approach_and_preview",
+          "ik_seed_count": 8,
+          "ik_pose_fit_count": 0,
+          "native_endpoint_checks": 0,
+          "native_valid_goal_count": 0,
+          "ompl_started": false,
+          "best_fit_eef_pose": [
+            0.6846269313297356,
+            -0.6891314076626542,
+            0.23745287505296522,
+            0.647692050342628,
+            0.7271726451893744,
+            0.6233777993323888,
+            -0.28743705987189,
+            0.1710369168744667,
+            0.05005905498826345,
+            0.36945638751061977,
+            0.9278987384091463,
+            0.882974271381666,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "position_error_m": 0.041608585134033184,
+          "rotation_error_rad": 0.8410020371787854,
+          "final_arm_deg": [
+            177.99999999999997,
+            119.99999999999999,
+            -167.8326451336152,
+            -21.496201061961745,
+            82.35125982191997,
+            -14.18876110650612,
+            -89.99999999999999
+          ],
+          "best_fit_native_checked": false,
+          "best_fit_native_valid": null
+        }
+      }
+    }
+  },
+  "V57-Trial2": {
+    "run_id": "web-82094dda40f9450fafcbf455e7210afd",
+    "variants": {
+      "v0": {
+        "ok": false,
+        "code": "actual_IK_candidate_collision_rejected",
+        "metrics": {
+          "arm_collision_indices": [
+            11
+          ],
+          "collision_pair": [
+            "arm_R_Link5/arm_R_Link5_collision",
+            "body_Link5/body_Link5_collision"
+          ],
+          "clearance_m": -0.0008760485091968782,
+          "reason": "preventive_collision_boundary",
+          "route_family": "demonstrated_transport",
+          "stage_index": 0
+        }
+      },
+      "v1": {
+        "ok": false,
+        "code": "actual_IK_candidate_collision_rejected",
+        "metrics": {
+          "arm_collision_indices": [
+            11
+          ],
+          "collision_pair": [
+            "arm_R_Link5/arm_R_Link5_collision",
+            "body_Link5/body_Link5_collision"
+          ],
+          "clearance_m": -0.0006439110276689336,
+          "reason": "preventive_collision_boundary",
+          "route_family": "orientation_preserving_transport",
+          "stage_index": 0
+        }
+      },
+      "v2": {
+        "ok": false,
+        "code": "actual_IK_candidate_collision_rejected",
+        "metrics": {
+          "arm_collision_indices": [
+            11
+          ],
+          "collision_pair": [
+            "arm_R_Link5/arm_R_Link5_collision",
+            "body_Link5/body_Link5_collision"
+          ],
+          "clearance_m": -0.0002309244269437915,
+          "reason": "preventive_collision_boundary",
+          "route_family": "outside_bucket_reorientation_transport",
+          "stage_index": 0
+        }
+      },
+      "v3": {
+        "ok": false,
+        "code": "bounded_IK_did_not_reach_goal",
+        "metrics": {
+          "goal_index": 2,
+          "iterations": 165,
+          "position_error_m": 0.0005154206418736382,
+          "rotation_error_rad": 0.0014310083608957576,
+          "goal": [
+            [
+              -0.05315448010112228,
+              -0.9390833632034977,
+              0.33955417564740303,
+              0.467424417027147
+            ],
+            [
+              0.9985863012706745,
+              -0.049991458355708535,
+              0.018062475080228357,
+              -0.020400714403223733
+            ],
+            [
+              1.2638585263680113e-05,
+              0.3400342498129828,
+              0.9404130522246005,
+              0.944176149776923
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "final_arm_deg": [
+            -55.48493777787659,
+            -93.9999999999994,
+            76.0759472051586,
+            -113.30322972771437,
+            5.678304379221791,
+            56.278756766858734,
+            -15.681361804639723
+          ],
+          "limits": {
+            "min_constraint_margin_rad": 1.0436096431476471e-14,
+            "active_planes": [
+              8
+            ],
+            "discarded_translation_m": 0.0005154206418736382,
+            "discarded_rotation_rad": 0.0014310083608959523,
+            "numerical_correction_rad": 3.0718709050322175e-12,
+            "publication_lead_rad": [
+              -1.1102230246251565e-16,
+              0.0,
+              -2.220446049250313e-16,
+              -2.220446049250313e-16,
+              -1.942890293094024e-16,
+              -2.220446049250313e-16,
+              -2.220446049250313e-16
+            ],
+            "publication_lead_limit_rad": 0.03
+          },
+          "stalled_ticks": 18,
+          "cartesian_waypoint_index": 43,
+          "cartesian_waypoint_count": 79,
+          "solves": 122,
+          "termination": "cartesian_no_progress",
+          "cartesian_stalled_ticks": 25,
+          "route_family": "orientation_preserving_other_side_transport",
+          "stage_index": 0
+        }
+      }
+    },
+    "jst_offsets": [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.015,
+        0.0
+      ],
+      [
+        -0.015,
+        0.0
+      ],
+      [
+        0.0,
+        0.015
+      ],
+      [
+        0.0,
+        -0.015
+      ]
+    ],
+    "jst_selected_offset": [
+      0.0,
+      0.0
+    ],
+    "jst_goal_count": 1,
+    "jst_yaw_tests": {
+      "0deg": {
+        "ok": false,
+        "code": "numerical_joint_search_no_valid_goal",
+        "metrics": {
+          "search_phase": "endpoint_native",
+          "frame": "ik_world",
+          "goal": [
+            [
+              -0.01555821261154637,
+              -0.9988627457385886,
+              0.04506836136254236,
+              0.37743386338217877
+            ],
+            [
+              0.9960595292277797,
+              -0.011547075809293752,
+              0.08793224252110272,
+              -0.05874758747475799
+            ],
+            [
+              -0.08731183341832645,
+              0.04625883932639527,
+              0.9951064081440276,
+              0.8692538878358274
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "position_tolerance_m": 0.0005,
+          "rotation_tolerance_rad": 0.005,
+          "position_error_reference": "eef",
+          "path_checked": false,
+          "grasp_checked": false,
+          "best_fit_executable": false,
+          "motion_authorized": false,
+          "search_exhaustive": false,
+          "recovery_hint": "change_goal_or_approach_and_preview",
+          "ik_seed_count": 8,
+          "ik_pose_fit_count": 3,
+          "native_endpoint_checks": 3,
+          "native_valid_goal_count": 0,
+          "ompl_started": false,
+          "best_fit_eef_pose": [
+            -0.015559817692763545,
+            -0.9988627186684131,
+            0.045068407201900494,
+            0.3774340242394974,
+            0.9960595467937394,
+            -0.011548691488837193,
+            0.08793183135785226,
+            -0.05874762562180788,
+            -0.0873113469969288,
+            0.04625902051755977,
+            0.9951064424001776,
+            0.8692538246686445,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "position_error_m": 1.7697561232596663e-07,
+          "rotation_error_rad": 1.6777236693543173e-06,
+          "final_arm_deg": [
+            -93.19034279918236,
+            -90.42021125368109,
+            52.694849927141846,
+            -131.8608346675071,
+            -19.630282987716445,
+            25.878320459154228,
+            -26.423792006927346
+          ],
+          "best_fit_native_checked": true,
+          "best_fit_native_valid": false,
+          "endpoint_rejection": "CandidateSafetyRejected:F1 collision/CoM rejected target"
+        }
+      },
+      "90deg": {
+        "ok": true,
+        "targets": 6,
+        "min_j6": -1.14,
+        "max_j6": 20.73,
+        "within_50": true
+      },
+      "180deg": {
+        "ok": false,
+        "code": "numerical_joint_search_no_valid_goal",
+        "metrics": {
+          "search_phase": "endpoint_ik",
+          "frame": "ik_world",
+          "goal": [
+            [
+              0.016078902763598305,
+              0.9986950849867686,
+              -0.048472632579557966,
+              0.9209588122605366
+            ],
+            [
+              -0.9766804856129956,
+              0.005307078741547153,
+              -0.2146323925645799,
+              -0.057328554381002206
+            ],
+            [
+              -0.21409506745528678,
+              0.05079332769670781,
+              0.9754913325872321,
+              0.8702840818744841
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "position_tolerance_m": 0.0005,
+          "rotation_tolerance_rad": 0.005,
+          "position_error_reference": "eef",
+          "path_checked": false,
+          "grasp_checked": false,
+          "best_fit_executable": false,
+          "motion_authorized": false,
+          "search_exhaustive": false,
+          "recovery_hint": "change_goal_or_approach_and_preview",
+          "ik_seed_count": 8,
+          "ik_pose_fit_count": 0,
+          "native_endpoint_checks": 0,
+          "native_valid_goal_count": 0,
+          "ompl_started": false,
+          "best_fit_eef_pose": [
+            -0.4008876249168436,
+            0.5070272082018792,
+            -0.7630285199987884,
+            0.7852781969388468,
+            -0.821608089835778,
+            -0.5674308803599728,
+            0.05461082978961762,
+            -0.08259183856776467,
+            -0.40527676827686143,
+            0.6488032106555226,
+            0.6440536739574967,
+            0.8926853975905898,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "position_error_m": 0.13981874641043712,
+          "rotation_error_rad": 1.0047413424471763,
+          "final_arm_deg": [
+            14.407670801440071,
+            -93.99999999999999,
+            -38.93463217857785,
+            -22.869977495307005,
+            79.9139990245416,
+            -59.81708694067776,
+            89.99999999999999
+          ],
+          "best_fit_native_checked": false,
+          "best_fit_native_valid": null
+        }
+      },
+      "270deg": {
+        "ok": false,
+        "code": "numerical_joint_search_no_valid_goal",
+        "metrics": {
+          "search_phase": "endpoint_ik",
+          "frame": "ik_world",
+          "goal": [
+            [
+              0.9886637972925544,
+              -0.008639003221193754,
+              0.1498975101408053,
+              0.648455234304855
+            ],
+            [
+              0.02536617576866391,
+              0.993603304761042,
+              -0.11004103732159275,
+              0.21316490679652583
+            ],
+            [
+              -0.1479880165754713,
+              0.11259591640589478,
+              0.9825587547616569,
+              0.8872047782402633
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "position_tolerance_m": 0.0005,
+          "rotation_tolerance_rad": 0.005,
+          "position_error_reference": "eef",
+          "path_checked": false,
+          "grasp_checked": false,
+          "best_fit_executable": false,
+          "motion_authorized": false,
+          "search_exhaustive": false,
+          "recovery_hint": "change_goal_or_approach_and_preview",
+          "ik_seed_count": 8,
+          "ik_pose_fit_count": 0,
+          "native_endpoint_checks": 0,
+          "native_valid_goal_count": 0,
+          "ompl_started": false,
+          "best_fit_eef_pose": [
+            0.6830175986734722,
+            -0.6931197738340635,
+            0.23037347725495994,
+            0.6465875832958697,
+            0.727783104018375,
+            0.6191451912495382,
+            -0.29494234293833077,
+            0.17218533925551918,
+            0.06179573939766062,
+            0.36911273518098703,
+            0.927327922214956,
+            0.8837640381811411,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "position_error_m": 0.041166148329589175,
+          "rotation_error_rad": 0.8463336529601289,
+          "final_arm_deg": [
+            177.99999999999997,
+            119.99999999999999,
+            -167.87205413341718,
+            -21.81921920864567,
+            82.30400582019334,
+            -14.750760026481277,
+            -89.99999999999999
+          ],
+          "best_fit_native_checked": false,
+          "best_fit_native_valid": null
+        }
+      }
+    }
+  },
+  "V57-Trial3": {
+    "run_id": "web-f8b242850fac4062be8da247ab4b334c",
+    "variants": {
+      "v0": {
+        "ok": false,
+        "code": "actual_IK_candidate_collision_rejected",
+        "metrics": {
+          "arm_collision_indices": [
+            11
+          ],
+          "collision_pair": [
+            "arm_R_Link5/arm_R_Link5_collision",
+            "body_Link5/body_Link5_collision"
+          ],
+          "clearance_m": -0.0006959624164958062,
+          "reason": "preventive_collision_boundary",
+          "route_family": "demonstrated_transport",
+          "stage_index": 0
+        }
+      },
+      "v1": {
+        "ok": false,
+        "code": "actual_IK_candidate_collision_rejected",
+        "metrics": {
+          "arm_collision_indices": [
+            11
+          ],
+          "collision_pair": [
+            "arm_R_Link5/arm_R_Link5_collision",
+            "body_Link5/body_Link5_collision"
+          ],
+          "clearance_m": -0.0005080523701723617,
+          "reason": "preventive_collision_boundary",
+          "route_family": "orientation_preserving_transport",
+          "stage_index": 0
+        }
+      },
+      "v2": {
+        "ok": false,
+        "code": "actual_IK_candidate_collision_rejected",
+        "metrics": {
+          "arm_collision_indices": [
+            11
+          ],
+          "collision_pair": [
+            "arm_R_Link5/arm_R_Link5_collision",
+            "body_Link5/body_Link5_collision"
+          ],
+          "clearance_m": -0.0003633009047374191,
+          "reason": "preventive_collision_boundary",
+          "route_family": "outside_bucket_reorientation_transport",
+          "stage_index": 0
+        }
+      },
+      "v3": {
+        "ok": false,
+        "code": "bounded_IK_did_not_reach_goal",
+        "metrics": {
+          "goal_index": 2,
+          "iterations": 154,
+          "position_error_m": 0.0005092738435098954,
+          "rotation_error_rad": 0.0014360155201125235,
+          "goal": [
+            [
+              0.013391610046313784,
+              -0.9403421611260224,
+              0.33996659363709414,
+              0.4735204508513029
+            ],
+            [
+              0.999910327305571,
+              0.012609510509117211,
+              -0.00450972198553893,
+              -0.00810174517423936
+            ],
+            [
+              -4.613061725655676e-05,
+              0.33999650035487505,
+              0.9404266997583621,
+              0.9428931000450743
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "final_arm_deg": [
+            -55.43188426242736,
+            -93.9999999999994,
+            78.24537011853323,
+            -111.94635915915964,
+            5.635763814482995,
+            54.80910058551085,
+            -17.34228717775679
+          ],
+          "limits": {
+            "min_constraint_margin_rad": 1.0436096431476471e-14,
+            "active_planes": [
+              8
+            ],
+            "discarded_translation_m": 0.0005092738435098954,
+            "discarded_rotation_rad": 0.0014360155201127872,
+            "numerical_correction_rad": 2.9014854138970804e-12,
+            "publication_lead_rad": [
+              2.220446049250313e-16,
+              0.0,
+              -2.220446049250313e-16,
+              0.0,
+              -6.106226635438361e-16,
+              -2.220446049250313e-16,
+              -7.216449660063518e-16
+            ],
+            "publication_lead_limit_rad": 0.03
+          },
+          "stalled_ticks": 16,
+          "cartesian_waypoint_index": 40,
+          "cartesian_waypoint_count": 81,
+          "solves": 114,
+          "termination": "cartesian_no_progress",
+          "cartesian_stalled_ticks": 25,
+          "route_family": "orientation_preserving_other_side_transport",
+          "stage_index": 0
+        }
+      }
+    },
+    "jst_offsets": [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.015,
+        0.0
+      ],
+      [
+        -0.015,
+        0.0
+      ],
+      [
+        0.0,
+        0.015
+      ],
+      [
+        0.0,
+        -0.015
+      ]
+    ],
+    "jst_selected_offset": [
+      0.0,
+      0.0
+    ],
+    "jst_goal_count": 1,
+    "jst_yaw_tests": {
+      "0deg": {
+        "ok": false,
+        "code": "numerical_joint_search_no_valid_goal",
+        "metrics": {
+          "search_phase": "endpoint_native",
+          "frame": "ik_world",
+          "goal": [
+            [
+              -0.01555821261154637,
+              -0.9988627457385886,
+              0.04506836136254236,
+              0.37989611937003454
+            ],
+            [
+              0.9960595292277797,
+              -0.011547075809293752,
+              0.08793224252110272,
+              -0.05713251075078659
+            ],
+            [
+              -0.08731183341832645,
+              0.04625883932639527,
+              0.9951064081440276,
+              0.868517008288467
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "position_tolerance_m": 0.0005,
+          "rotation_tolerance_rad": 0.005,
+          "position_error_reference": "eef",
+          "path_checked": false,
+          "grasp_checked": false,
+          "best_fit_executable": false,
+          "motion_authorized": false,
+          "search_exhaustive": false,
+          "recovery_hint": "change_goal_or_approach_and_preview",
+          "ik_seed_count": 8,
+          "ik_pose_fit_count": 3,
+          "native_endpoint_checks": 3,
+          "native_valid_goal_count": 0,
+          "ompl_started": false,
+          "best_fit_eef_pose": [
+            -0.015559678241371222,
+            -0.9988627175142762,
+            0.04506848092648416,
+            0.37989626943402194,
+            0.9960595533243934,
+            -0.011548548544505433,
+            0.0879317761547281,
+            -0.05713255460133823,
+            -0.08731129734596232,
+            0.04625908112480265,
+            0.9951064439391671,
+            0.8685169488416676,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "position_error_m": 1.6726025573968312e-07,
+          "rotation_error_rad": 1.5648181234451184e-06,
+          "final_arm_deg": [
+            -92.7380920874979,
+            -90.84869416373185,
+            52.78073320443281,
+            -131.27211221703166,
+            -19.678597279877884,
+            25.87124518921857,
+            -26.303331122987434
+          ],
+          "best_fit_native_checked": true,
+          "best_fit_native_valid": false,
+          "endpoint_rejection": "CandidateSafetyRejected:F1 collision/CoM rejected target"
+        }
+      },
+      "90deg": {
+        "ok": true,
+        "targets": 8,
+        "min_j6": -4.44,
+        "max_j6": 17.06,
+        "within_50": true
+      },
+      "180deg": {
+        "ok": false,
+        "code": "numerical_joint_search_no_valid_goal",
+        "metrics": {
+          "search_phase": "endpoint_ik",
+          "frame": "ik_world",
+          "goal": [
+            [
+              0.011277362096346912,
+              0.9997437078274831,
+              -0.019630072936871565,
+              0.9224672204710747
+            ],
+            [
+              -0.9698772848865361,
+              0.0061589958973903005,
+              -0.24351615763776033,
+              -0.061362566689464174
+            ],
+            [
+              -0.24333284481399264,
+              0.021784981728130277,
+              0.9696981701570015,
+              0.861157391467008
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "position_tolerance_m": 0.0005,
+          "rotation_tolerance_rad": 0.005,
+          "position_error_reference": "eef",
+          "path_checked": false,
+          "grasp_checked": false,
+          "best_fit_executable": false,
+          "motion_authorized": false,
+          "search_exhaustive": false,
+          "recovery_hint": "change_goal_or_approach_and_preview",
+          "ik_seed_count": 8,
+          "ik_pose_fit_count": 0,
+          "native_endpoint_checks": 0,
+          "native_valid_goal_count": 0,
+          "ompl_started": false,
+          "best_fit_eef_pose": [
+            -0.4190444145101041,
+            0.5089753977709903,
+            -0.7518948218545911,
+            0.7844572712950146,
+            -0.8078457585092812,
+            -0.5870187856443878,
+            0.05285996366960281,
+            -0.08503705039885703,
+            -0.41447196422248944,
+            0.6295657152072768,
+            0.6571605596116542,
+            0.8859385385584096,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "position_error_m": 0.14220173171115275,
+          "rotation_error_rad": 1.0252796758724267,
+          "final_arm_deg": [
+            13.609956372701873,
+            -93.99999999999999,
+            -39.25800745241805,
+            -22.342525075110885,
+            81.49988837446438,
+            -59.998161944624314,
+            89.99999999999999
+          ],
+          "best_fit_native_checked": false,
+          "best_fit_native_valid": null
+        }
+      },
+      "270deg": {
+        "ok": false,
+        "code": "numerical_joint_search_no_valid_goal",
+        "metrics": {
+          "search_phase": "endpoint_ik",
+          "frame": "ik_world",
+          "goal": [
+            [
+              0.9838365306691906,
+              -0.00741831151327651,
+              0.17891520219116078,
+              0.6535803761405489
+            ],
+            [
+              0.027472690397568264,
+              0.9935658234055001,
+              -0.1098735902884411,
+              0.2112164331211071
+            ],
+            [
+              -0.17694895366498054,
+              0.11301293383876451,
+              0.9777101536662213,
+              0.8862229524968206
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "position_tolerance_m": 0.0005,
+          "rotation_tolerance_rad": 0.005,
+          "position_error_reference": "eef",
+          "path_checked": false,
+          "grasp_checked": false,
+          "best_fit_executable": false,
+          "motion_authorized": false,
+          "search_exhaustive": false,
+          "recovery_hint": "change_goal_or_approach_and_preview",
+          "ik_seed_count": 8,
+          "ik_pose_fit_count": 0,
+          "native_endpoint_checks": 0,
+          "native_valid_goal_count": 0,
+          "ompl_started": false,
+          "best_fit_eef_pose": [
+            0.6841864436689025,
+            -0.6862769312853303,
+            0.24680535627350253,
+            0.6498504120567113,
+            0.7287323905666598,
+            0.6298784692677445,
+            -0.2687047020279398,
+            0.1692794861293187,
+            0.028948458313038772,
+            0.3636991717594531,
+            0.9310665385582207,
+            0.8834719891955578,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "position_error_m": 0.04219227363088748,
+          "rotation_error_rad": 0.8338638865444127,
+          "final_arm_deg": [
+            177.99999999999997,
+            119.99999999999999,
+            -166.92645466289926,
+            -21.092005321504917,
+            81.2342154167604,
+            -12.765147688493075,
+            -89.99999999999999
+          ],
+          "best_fit_native_checked": false,
+          "best_fit_native_valid": null
+        }
+      }
+    }
+  },
+  "V56-Trial1-ctrl": {
+    "run_id": "web-0a935b522d8046978d8b17b95316fca5",
+    "variants": {
+      "v0": {
+        "ok": false,
+        "code": "actual_IK_candidate_collision_rejected",
+        "metrics": {
+          "arm_collision_indices": [
+            11
+          ],
+          "collision_pair": [
+            "arm_R_Link5/arm_R_Link5_collision",
+            "body_Link5/body_Link5_collision"
+          ],
+          "clearance_m": -0.0009464119901022427,
+          "reason": "preventive_collision_boundary",
+          "route_family": "demonstrated_transport",
+          "stage_index": 0
+        }
+      },
+      "v1": {
+        "ok": false,
+        "code": "planning_joint_envelope_exceeded",
+        "metrics": {
+          "joint": "arm_r_j6",
+          "joint_index": 12,
+          "waypoint_index": 5,
+          "stage_index": 0,
+          "target_deg": 51.07135603931197,
+          "envelope_deg": [
+            -60.0,
+            50.0
+          ],
+          "route_family": "orientation_preserving_transport"
+        }
+      },
+      "v2": {
+        "ok": false,
+        "code": "actual_IK_candidate_collision_rejected",
+        "metrics": {
+          "arm_collision_indices": [
+            11
+          ],
+          "collision_pair": [
+            "arm_R_Link5/arm_R_Link5_collision",
+            "body_Link5/body_Link5_collision"
+          ],
+          "clearance_m": -0.0002312691276755291,
+          "reason": "preventive_collision_boundary",
+          "route_family": "outside_bucket_reorientation_transport",
+          "stage_index": 0
+        }
+      },
+      "v3": {
+        "ok": false,
+        "code": "bounded_IK_did_not_reach_goal",
+        "metrics": {
+          "goal_index": 2,
+          "iterations": 204,
+          "position_error_m": 0.000656097380606918,
+          "rotation_error_rad": 0.001810991467760098,
+          "goal": [
+            [
+              -0.09196813770215093,
+              -0.9364467740690274,
+              0.3385399547812786,
+              0.4883867835949797
+            ],
+            [
+              0.9957619485584024,
+              -0.08646975726220024,
+              0.031322881128499666,
+              -0.053833407294179375
+            ],
+            [
+              -5.874327383779965e-05,
+              0.3399859120827341,
+              0.9404305270111665,
+              0.9474640814967665
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "final_arm_deg": [
+            -59.891906333592814,
+            -93.9999999999994,
+            73.09040737773657,
+            -118.57514980649516,
+            5.115123584953775,
+            57.32979014774424,
+            -16.05484806812538
+          ],
+          "limits": {
+            "min_constraint_margin_rad": 1.0436096431476471e-14,
+            "active_planes": [
+              8
+            ],
+            "discarded_translation_m": 0.000656097380606918,
+            "discarded_rotation_rad": 0.0018109914677600903,
+            "numerical_correction_rad": 3.914276083668697e-12,
+            "publication_lead_rad": [
+              1.3322676295501878e-15,
+              0.0,
+              -1.3322676295501878e-15,
+              0.0,
+              -3.941291737419306e-15,
+              -6.661338147750939e-16,
+              -4.829470157119431e-15
+            ],
+            "publication_lead_limit_rad": 0.03
+          },
+          "stalled_ticks": 15,
+          "cartesian_waypoint_index": 56,
+          "cartesian_waypoint_count": 76,
+          "solves": 148,
+          "termination": "cartesian_no_progress",
+          "cartesian_stalled_ticks": 25,
+          "route_family": "orientation_preserving_other_side_transport",
+          "stage_index": 0
+        }
+      }
+    },
+    "jst_offsets": [
+      [
+        0.0,
+        0.0
+      ],
+      [
+        0.015,
+        0.0
+      ],
+      [
+        -0.015,
+        0.0
+      ],
+      [
+        0.0,
+        0.015
+      ],
+      [
+        0.0,
+        -0.015
+      ]
+    ],
+    "jst_selected_offset": [
+      0.0,
+      0.0
+    ],
+    "jst_goal_count": 1,
+    "jst_yaw_tests": {
+      "0deg": {
+        "ok": true,
+        "targets": 15,
+        "min_j6": 12.1,
+        "max_j6": 19.26,
+        "within_50": true
+      },
+      "90deg": {
+        "ok": true,
+        "targets": 7,
+        "min_j6": -12.03,
+        "max_j6": 17.56,
+        "within_50": true
+      },
+      "180deg": {
+        "ok": false,
+        "code": "numerical_joint_search_no_valid_goal",
+        "metrics": {
+          "search_phase": "endpoint_ik",
+          "frame": "ik_world",
+          "goal": [
+            [
+              0.01794829046542364,
+              0.9983595738575753,
+              -0.054369294241257166,
+              0.9270249985149231
+            ],
+            [
+              -0.9149738259652839,
+              -0.0055235170032748235,
+              -0.40347538779752956,
+              -0.08591549127092978
+            ],
+            [
+              -0.4031138259447588,
+              0.0569881746227953,
+              0.9133737412939698,
+              0.8686869264503623
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "position_tolerance_m": 0.0005,
+          "rotation_tolerance_rad": 0.005,
+          "position_error_reference": "eef",
+          "path_checked": false,
+          "grasp_checked": false,
+          "best_fit_executable": false,
+          "motion_authorized": false,
+          "search_exhaustive": false,
+          "recovery_hint": "change_goal_or_approach_and_preview",
+          "ik_seed_count": 8,
+          "ik_pose_fit_count": 0,
+          "native_endpoint_checks": 0,
+          "native_valid_goal_count": 0,
+          "ompl_started": false,
+          "best_fit_eef_pose": [
+            -0.4628540791017249,
+            0.4721140512974689,
+            -0.750249574492639,
+            0.7906525467253693,
+            -0.7513971805083992,
+            -0.6579905708998566,
+            0.04950440112664921,
+            -0.09957304690094984,
+            -0.47028542246482863,
+            0.5866487289463527,
+            0.6592987867747877,
+            0.8931927975083459,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "position_error_m": 0.13922827352657863,
+          "rotation_error_rad": 1.0470885169764836,
+          "final_arm_deg": [
+            13.40718655505801,
+            -92.7197890479201,
+            -35.85966425671479,
+            -20.875403190032653,
+            82.60482591256319,
+            -59.99999678596438,
+            89.99999999999999
+          ],
+          "best_fit_native_checked": false,
+          "best_fit_native_valid": null
+        }
+      },
+      "270deg": {
+        "ok": false,
+        "code": "numerical_joint_search_no_valid_goal",
+        "metrics": {
+          "search_phase": "endpoint_ik",
+          "frame": "ik_world",
+          "goal": [
+            [
+              0.9696593674659101,
+              -0.004098080189501884,
+              0.24442568773427406,
+              0.6646012393543066
+            ],
+            [
+              0.05631230439758778,
+              0.9767146394887235,
+              -0.20702037914623,
+              0.18335658493526077
+            ],
+            [
+              -0.2378857613625624,
+              0.21450342362576882,
+              0.9473112718604063,
+              0.9119287553558314
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "position_tolerance_m": 0.0005,
+          "rotation_tolerance_rad": 0.005,
+          "position_error_reference": "eef",
+          "path_checked": false,
+          "grasp_checked": false,
+          "best_fit_executable": false,
+          "motion_authorized": false,
+          "search_exhaustive": false,
+          "recovery_hint": "change_goal_or_approach_and_preview",
+          "ik_seed_count": 8,
+          "ik_pose_fit_count": 0,
+          "native_endpoint_checks": 0,
+          "native_valid_goal_count": 0,
+          "ompl_started": false,
+          "best_fit_eef_pose": [
+            0.71490207847277,
+            -0.6422059140274103,
+            0.2765620765461772,
+            0.6690529112409247,
+            0.69921288762554,
+            0.6543063042134747,
+            -0.28807047409420206,
+            0.15641391442055091,
+            0.004044251929442584,
+            0.39931794882614874,
+            0.9168035884373537,
+            0.9045533614165835,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "position_error_m": 0.02828641569392306,
+          "rotation_error_rad": 0.7563329741963664,
+          "final_arm_deg": [
+            177.99999999999997,
+            119.99999999999999,
+            -150.89267524076686,
+            -20.117500382975187,
+            68.82923317839018,
+            -7.18869534006876,
+            -89.99999999999999
+          ],
+          "best_fit_native_checked": false,
+          "best_fit_native_valid": null
+        }
+      }
+    }
+  }
+}

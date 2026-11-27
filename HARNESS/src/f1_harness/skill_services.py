@@ -583,6 +583,20 @@ class PlanService:
         # A demonstrated bend is a fallback for the same grasp endpoint, not
         # evidence that its direct connection is impossible.
         from dataclasses import replace
+        if joint_search and intent.skill=='transfer_above_hole':
+            from .transport import JOINT_TRANSPORT_YAW_OFFSETS_DEG
+            last_exc=None
+            for yaw_deg in JOINT_TRANSPORT_YAW_OFFSETS_DEG:
+                if last_exc is not None and deadline_ns is not None and self.clock()>=deadline_ns:
+                    break
+                try:
+                    return self._solve_route(intent,scene,held,full,variant,joint_search=True,
+                                             deadline_ns=deadline_ns,yaw_offset_deg=yaw_deg)
+                except HarnessError as exc:
+                    detail=numerical_failure_detail(exc)
+                    if detail['code'] not in CANDIDATE_FAILURES:raise
+                    last_exc=exc
+            raise last_exc
         if intent.skill!='approach_grasp' or joint_search:
             return self._solve_route(intent,scene,held,full,variant,joint_search=joint_search,deadline_ns=deadline_ns)
         failures=[]
@@ -601,7 +615,7 @@ class PlanService:
                     raise HarnessError(detail['code']+':'+json.dumps(dict(diagnostic=detail,
                         candidates=[dict(variant=variant,diagnostic=item['diagnostic']) for item in failures]))) from exc
 
-    def _solve_route(self,intent,scene,held,full,variant,*,joint_search=False,deadline_ns=None):
+    def _solve_route(self,intent,scene,held,full,variant,*,joint_search=False,deadline_ns=None,yaw_offset_deg=0):
         import numpy as np
         anchor=tuple(held)
         if intent.skill=='recover_grasp':
@@ -614,7 +628,7 @@ class PlanService:
                 if self.fixture.get('joint_space_transport') is not True or variant!=2:
                     raise HarnessError('numerical_joint_transport_not_enabled')
                 from .transport import joint_transport_goal, joint_transport_offsets
-                proposal=joint_transport_goal(scene, joint_transport_offsets(self.fixture))
+                proposal=joint_transport_goal(scene, joint_transport_offsets(self.fixture), yaw_offset_deg=yaw_offset_deg)
             else:
                 from .joint_motion import eligible,propose_joint_motion
                 if not eligible(self.fixture,intent.skill,scene):
@@ -793,6 +807,8 @@ class PlanService:
                 geometry_trace[-1]['route_family']=stage['route_family']
             if 'goal_region_offset_m' in stage:
                 geometry_trace[-1]['goal_region_offset_m']=stage['goal_region_offset_m']
+            if 'goal_yaw_offset_deg' in stage:
+                geometry_trace[-1]['goal_yaw_offset_deg']=stage['goal_yaw_offset_deg']
             if stage.get('approach_route'):
                 geometry_trace[-1]['approach_route']=stage['approach_route']
             if stage.get('pregrasp_adjustment_object_m') is not None:

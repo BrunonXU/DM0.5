@@ -168,3 +168,85 @@ def test_revalidation_cannot_reinterpret_search_without_its_fixture_binding():
         uses_joint_transport({},intent,proposal)
     with pytest.raises(HarnessError,match='contract_changed'):
         uses_joint_transport({'joint_space_transport':True},SimpleNamespace(skill='insert'),proposal)
+
+
+def test_joint_transport_goal_rotates_around_hole_normal_preserving_object_point_and_tilt():
+    from f1_harness.transport import JOINT_TRANSPORT_YAW_OFFSETS_DEG
+    assert JOINT_TRANSPORT_YAW_OFFSETS_DEG == (0, 90, 180, 270)
+    value = scene()
+    hole = np.asarray(value.base_hole, float).reshape(4, 4)
+    normal = hole[:3, 2]
+    attachment = np.asarray(value.eef_object, float).reshape(4, 4)
+    base_stage = joint_transport_goal(value)['stages'][0]
+    assert 'goal_yaw_offset_deg' not in base_stage
+    base_goal = np.asarray(base_stage['goals'][0], float).reshape(4, 4)
+    base_obj = (base_goal @ attachment)[:3, 3]
+    base_tilt = float(normal @ base_goal[:3, 2])
+    for deg in (90, 180, 270):
+        st = joint_transport_goal(value, yaw_offset_deg=deg)['stages'][0]
+        assert st['goal_yaw_offset_deg'] == deg
+        g = np.asarray(st['goals'][0], float).reshape(4, 4)
+        obj = (g @ attachment)[:3, 3]
+        assert np.allclose(obj[:2], base_obj[:2], atol=1e-6)
+        assert abs(float(normal @ g[:3, 2]) - base_tilt) < 1e-6
+        assert not np.allclose(g[:3, :3], base_goal[:3, :3], atol=1e-3)
+    with pytest.raises(ValueError, match='unregistered_joint_transport_yaw_offset'):
+        joint_transport_goal(value, yaw_offset_deg=45)
+
+
+def test_joint_transport_prefers_original_orientation_then_falls_back_to_symmetric_yaws(scenario):
+    service, args, clock, original, _, intent = scenario
+    held, full = args['held16'], args['full22']
+    clock[0] = original.received_ns
+    value = loaded()
+    service.fixture['joint_space_transport'] = True
+    intent = intent.model_copy(update=dict(skill='transfer_above_hole', budget_ms=30000))
+
+    # Case 1: 0 deg feasible -> immediately chosen, other yaws not tried
+    seen = []
+    def route_ok_zero(i, s, h, f, v, *, joint_search=False, deadline_ns=None, yaw_offset_deg=0):
+        seen.append(yaw_offset_deg)
+        return dict(geometry_trace=[dict(route_family='joint_space_transport')])
+    service._solve_route = route_ok_zero
+    res = service._solve_candidate(intent, value, held, full, 2, joint_search=True, deadline_ns=clock[0] + 10_000_000_000)
+    assert seen == [0]
+    assert 'goal_yaw_offset_deg' not in res['geometry_trace'][0]
+
+    # Case 2: 0 deg fails with numerical_joint_search_no_valid_goal -> tries 90, 180, 270 in order
+    seen.clear()
+    def route_ok_180(i, s, h, f, v, *, joint_search=False, deadline_ns=None, yaw_offset_deg=0):
+        seen.append(yaw_offset_deg)
+        if yaw_offset_deg in (0, 90):
+            raise HarnessError('numerical_joint_search_no_valid_goal')
+        return dict(geometry_trace=[dict(route_family='joint_space_transport', goal_yaw_offset_deg=yaw_offset_deg)])
+    service._solve_route = route_ok_180
+    res = service._solve_candidate(intent, value, held, full, 2, joint_search=True, deadline_ns=clock[0] + 10_000_000_000)
+    assert seen == [0, 90, 180]
+    assert res['geometry_trace'][0]['goal_yaw_offset_deg'] == 180
+
+
+def test_joint_transport_symmetric_yaw_revalidation_contract():
+    from f1_harness.joint_motion import reconstruction
+    intent = SimpleNamespace(skill='transfer_above_hole')
+    for valid_yaw in (0, 90, 180, 270):
+        prop = SimpleNamespace(
+            geometry_trace=[dict(route_family='joint_space_transport', goal_region_offset_m=[0., 0.], goal_yaw_offset_deg=valid_yaw)],
+            candidate_variant=2,
+        )
+        assert uses_joint_transport({'joint_space_transport': True}, intent, prop)
+    for bad_yaw in (45, -90, 360, True, '90'):
+        prop = SimpleNamespace(
+            geometry_trace=[dict(route_family='joint_space_transport', goal_yaw_offset_deg=bad_yaw)],
+            candidate_variant=2,
+        )
+        with pytest.raises(HarnessError, match='contract_changed'):
+            uses_joint_transport({'joint_space_transport': True}, intent, prop)
+    value = scene()
+    prop90 = SimpleNamespace(
+        geometry_trace=[dict(route_family='joint_space_transport', goal_region_offset_m=[0., 0.], goal_yaw_offset_deg=90)],
+        candidate_variant=2,
+    )
+    rebuilt = reconstruction(value, intent, prop90)['stages'][0]
+    expected = joint_transport_goal(value, [[0., 0.]], yaw_offset_deg=90)['stages'][0]
+    assert rebuilt['goal_yaw_offset_deg'] == 90
+    assert np.allclose(rebuilt['goals'][0], expected['goals'][0])

@@ -1,0 +1,24 @@
+{
+  "evidence_id": "20261126-H37-near-body-transport",
+  "item": "H-37",
+  "verdict": "offline_verified_ready_for_v58",
+  "code_modified": true,
+  "modified_files": [
+    "HARNESS/src/f1_harness/transport.py",
+    "HARNESS/src/f1_harness/joint_motion.py",
+    "HARNESS/src/f1_harness/skill_services.py",
+    "HARNESS/tests/test_joint_transport.py"
+  ],
+  "source_runs": [
+    "web-f7c5d2a321744442929abc484b2fa545",
+    "web-82094dda40f9450fafcbf455e7210afd",
+    "web-f8b242850fac4062be8da247ab4b334c",
+    "web-0a935b522d8046978d8b17b95316fca5",
+    "web-5653aac6c68e490eb1d881e399d7a165"
+  ],
+  "files": [
+    "report.md",
+    "diagnosis.json",
+    "replan-verification.json"
+  ]
+}
